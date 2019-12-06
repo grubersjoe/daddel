@@ -1,6 +1,6 @@
-export const LANDING = '/';
-export const LOGIN = '/login';
-export const LOGOUT = '/logout';
+export const ROOT = '/';
+export const MATCHES = '/matches';
+export const SIGNOUT = '/bye';
 export const PROFILE = '/profile';
 export const REGISTER = '/register';
 export const RESET = '/reset';
