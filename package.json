@@ -1,20 +1,13 @@
 {
-  "name": "daddel-n",
+  "name": "daddel",
   "version": "0.1.0",
   "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.3.2",
-    "@testing-library/user-event": "^7.1.2",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "react-scripts": "3.3.0"
-  },
   "scripts": {
-    "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "format": "prettier --write 'src/**/*' 'content/**/*' 'src/**/*' './*.{js,json,md}'",
+    "start": "react-scripts start",
+    "test": "react-scripts test"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -30,5 +23,28 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "dependencies": {
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "@types/jest": "^24.0.0",
+    "@types/node": "^12.0.0",
+    "@types/react": "^16.9.0",
+    "@types/react-dom": "^16.9.0",
+    "@types/react-router-dom": "^5.1.3",
+    "@types/react-timeago": "^4.1.1",
+    "@types/styled-components": "^4.4.0",
+    "date-fns": "^2.8.1",
+    "firebase": "^7.5.0",
+    "prettier": "^1.19.1",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-firebase-hooks": "^2.1.1",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "3.3.0",
+    "react-timeago": "^4.4.0",
+    "styled-components": "^4.4.1",
+    "typescript": "~3.7.2"
   }
 }
