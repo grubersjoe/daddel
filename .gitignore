@@ -5,7 +5,7 @@
 .firebase/
 
 .env
-.env*
+!.env.dist
 
 *.log*
 
