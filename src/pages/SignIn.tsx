@@ -8,7 +8,6 @@ import Layout from '../components/Layout';
 function signInWithEmail(history: History) {
   firebase.auth
     .signInWithEmailAndPassword('gruberjonathan@gmail.com', 'testtest')
-    .then(() => history.push('/matches'))
     .catch(error => {
       if (error.code === 'auth/wrong-password') {
         // TODO
@@ -20,7 +19,6 @@ function signInWithEmail(history: History) {
 function signInWithGoogle(history: History) {
   firebase.auth
     .signInWithPopup(firebase.googleAuthProvider)
-    .then(() => history.push('/matches'))
     .catch(error => console.error(error));
 }
 

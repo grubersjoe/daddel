@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import { User } from 'firebase';
 
 import firebase from '../api';
@@ -15,6 +15,9 @@ import Profile from '../pages/Profile';
 import ResetPassword from '../pages/ResetPassword';
 import SignUp from '../pages/SignUp';
 
+const redirectPath =
+  window.location.pathname === '/' ? 'matches/' : window.location.pathname;
+
 const App: React.FC = () => {
   const [authUser, setAuthUser] = useState<User | null>(null);
 
@@ -27,6 +30,8 @@ const App: React.FC = () => {
   return (
     <AuthUserContext.Provider value={authUser}>
       <Router>
+        {authUser && <Redirect to={redirectPath} />}
+
         <Navigation />
         <Route path={ROUTES.ROOT} component={SignIn} exact />
         <Route path={ROUTES.REGISTER} component={SignUp} />
