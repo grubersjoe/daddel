@@ -3,8 +3,9 @@ import { useCollection } from 'react-firebase-hooks/firestore';
 import fromUnixTime from 'date-fns/fromUnixTime';
 
 import firebase from '../api';
-import TimeAgo from '../components/TimeAgo';
 import { formatDate } from '../utils';
+import Layout from '../components/Layout';
+import TimeAgo from '../components/TimeAgo';
 
 type Timestamp = {
   nanoseconds: number;
@@ -34,9 +35,7 @@ const Home: React.FC = () => {
   );
 
   return (
-    <>
-      <h1>Daddel</h1>
-
+    <Layout>
       <p>{firebase.auth.currentUser ? 'Eingeloggt' : 'Nicht eingeloggt'}</p>
 
       <h2>Anstehende Matches</h2>
@@ -53,7 +52,7 @@ const Home: React.FC = () => {
             return (
               <article key={doc.id}>
                 <header>
-                  <h2
+                  <h3
                     dangerouslySetInnerHTML={{
                       __html: formatDate(match.date.seconds),
                     }}
@@ -106,7 +105,7 @@ const Home: React.FC = () => {
           })}
         </div>
       )}
-    </>
+    </Layout>
   );
 };
 
