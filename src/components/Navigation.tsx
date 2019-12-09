@@ -1,49 +1,63 @@
-import React from 'react';
-import {
-  NavLink,
-  NavLinkProps,
-  withRouter,
-  RouteComponentProps,
-} from 'react-router-dom';
-import styled from 'styled-components';
+import React, { useState } from 'react';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { History } from 'history';
+
+import { useTheme } from '@material-ui/core';
+import BottomNavigation from '@material-ui/core/BottomNavigation';
+import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
+import MatchesIcon from '@material-ui/icons/SportsEsports';
+import SettingsIcon from '@material-ui/icons/Settings';
+import SignOutIcon from '@material-ui/icons/ExitToApp';
 
 import firebase from '../api';
 import * as ROUTES from '../constants/routes';
 import AuthUserContext from './AuthUserContext';
-
-const Link: React.FC<NavLinkProps> = props => (
-  <NavLink {...props} activeClassName="active" />
-);
-
-const StyledNav = styled.nav`
-  .active {
-    font-weight: bold;
-  }
-`;
 
 async function signOut(history: History) {
   await firebase.auth.signOut();
   history.push('/bye');
 }
 
-const Navigation: React.FC<RouteComponentProps> = ({ history }) => (
-  <AuthUserContext.Consumer>
-    {authUser =>
-      authUser ? (
-        <StyledNav>
-          <Link to={ROUTES.MATCHES} exact>
-            Matches
-          </Link>
-          <Link to={ROUTES.PROFILE}>Profil</Link>
-          <button type="button" onClick={() => signOut(history)}>
-            Abmelden
-          </button>
-          <p>eingeloggt: {authUser ? 'true' : 'false'}</p>
-        </StyledNav>
-      ) : null
-    }
-  </AuthUserContext.Consumer>
-);
+const Navigation: React.FC<RouteComponentProps> = ({ history }) => {
+  const theme = useTheme();
+  const [value, setValue] = useState(0);
+
+  return (
+    <AuthUserContext.Consumer>
+      {authUser =>
+        authUser ? (
+          <BottomNavigation
+            value={value}
+            showLabels
+            onChange={(_, newValue) => {
+              setValue(newValue);
+            }}
+            style={{
+              borderTop: `solid 1px ${theme.palette.grey[300]}`,
+            }}
+          >
+            <BottomNavigationAction
+              component={Link}
+              to={ROUTES.MATCHES}
+              label="Bolzen"
+              icon={<MatchesIcon />}
+            />
+            <BottomNavigationAction
+              component={Link}
+              to={ROUTES.PROFILE}
+              label="Profil"
+              icon={<SettingsIcon />}
+            />{' '}
+            <BottomNavigationAction
+              label="Abmelden"
+              icon={<SignOutIcon />}
+              onClick={() => signOut(history)}
+            />
+          </BottomNavigation>
+        ) : null
+      }
+    </AuthUserContext.Consumer>
+  );
+};
 
 export default withRouter(Navigation);

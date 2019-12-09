@@ -1,11 +1,11 @@
 import React from 'react';
-
-import Layout from '../components/Layout';
+import { Container } from '@material-ui/core';
 
 const Profile: React.FC = () => (
-  <Layout>
-    <h1>Profile</h1>
-  </Layout>
+  <Container>
+    <h1>Profil</h1>
+    <p>TODO</p>
+  </Container>
 );
 
 export default Profile;
