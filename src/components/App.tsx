@@ -8,14 +8,15 @@ import * as ROUTES from '../constants/routes';
 import { theme } from '../styles/theme';
 import AuthUserContext from './AuthUserContext';
 
+import Layout from './Layout';
+import AddMatch from '../pages/AddMatch';
 import Bye from '../pages/Bye';
-import SignIn from '../pages/SignIn';
 import Matches from '../pages/Matches';
 import PrivateRoute from './PrivateRoute';
 import Profile from '../pages/Profile';
 import ResetPassword from '../pages/ResetPassword';
+import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
-import Layout from './Layout';
 
 const redirectPath =
   window.location.pathname === '/' ? 'matches/' : window.location.pathname;
@@ -39,6 +40,7 @@ const App: React.FC = () => {
             <Route path={ROUTES.REGISTER} component={SignUp} />
             <Route path={ROUTES.RESET} component={ResetPassword} />
             <Route path={ROUTES.SIGNOUT} component={Bye} />
+            <PrivateRoute path={ROUTES.ADD_MATCH} component={AddMatch} />
             <PrivateRoute path={ROUTES.MATCHES} component={Matches} />
             <PrivateRoute path={ROUTES.PROFILE} component={Profile} />
           </Layout>

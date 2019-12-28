@@ -11,8 +11,8 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Typography from '@material-ui/core/Typography';
 
+import { Match } from '../types';
 import { formatDate } from '../utils';
-import { Match } from '../pages/Matches';
 import TimeAgo from '../components/TimeAgo';
 
 type Props = {
@@ -32,14 +32,23 @@ const useStyles = makeStyles({
   },
   bar: {
     height: 12,
-    marginTop: '1.5em',
-    marginBottom: '0.5em',
+    marginTop: '1rem',
+    marginBottom: '0.5rem',
+  },
+  list: {
+    margin: '0.75rem 0 1rem',
+    paddingLeft: '2em',
+    lineHeight: 1.75,
   },
 });
 
 const MatchCard: React.FC<Props> = ({ match }) => {
   const classes = useStyles();
   const notFull = match.players.length < match.maxPlayers;
+
+  if (match.date instanceof Date) {
+    throw new Error('This should not happen');
+  }
 
   return (
     <Card className={classes.card}>
@@ -50,7 +59,7 @@ const MatchCard: React.FC<Props> = ({ match }) => {
         <Typography className={classes.subtitle} color="textSecondary">
           <TimeAgo date={fromUnixTime(match.date.seconds)} />
         </Typography>
-        <Typography variant="body2" component="ol">
+        <Typography className={classes.list} variant="body2" component="ol">
           {match.players.map(player => (
             <li key={player}>{player}</li>
           ))}

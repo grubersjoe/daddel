@@ -3,6 +3,7 @@ import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { History } from 'history';
 
 import { useTheme } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import MatchesIcon from '@material-ui/icons/SportsEsports';
@@ -41,6 +42,12 @@ const Navigation: React.FC<RouteComponentProps> = ({ history }) => {
               to={ROUTES.MATCHES}
               label="Bolzen"
               icon={<MatchesIcon />}
+            />
+            <BottomNavigationAction
+              component={Link}
+              to={ROUTES.ADD_MATCH}
+              label="Neuer Bolz"
+              icon={<AddIcon />}
             />
             <BottomNavigationAction
               component={Link}

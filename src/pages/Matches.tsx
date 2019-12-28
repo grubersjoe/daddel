@@ -4,23 +4,14 @@ import SwipeableViews from 'react-swipeable-views';
 
 import AppBar from '@material-ui/core/AppBar';
 import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
 
 import firebase from '../api';
+import { Match } from '../types';
 import MatchCard, { MatchCardSkeleton } from '../components/MatchCard';
-
-export type Timestamp = {
-  nanoseconds: number;
-  seconds: number;
-};
-
-export type Match = {
-  date: Timestamp;
-  players: string[];
-  maxPlayers: number;
-};
 
 const currentTime = new Date();
 
@@ -75,6 +66,15 @@ const Matches: React.FC = () => {
     setTabIndex(index);
   };
 
+  const noMatches = (
+    <>
+      <Typography paragraph>Keine Matches gefunden.</Typography>
+      <Button variant="outlined" color="primary">
+        Neuer Bolz
+      </Button>
+    </>
+  );
+
   return (
     <>
       <AppBar position="fixed" color="primary">
@@ -84,7 +84,7 @@ const Matches: React.FC = () => {
           indicatorColor="secondary"
           variant="fullWidth"
         >
-          <Tab label="Anstehend" />
+          <Tab label="Anstehende" />
           <Tab label="Vergangene" />
         </Tabs>
       </AppBar>
@@ -103,6 +103,7 @@ const Matches: React.FC = () => {
               ))}
             </div>
           )}
+          {futureMatches?.docs?.length === 0 && noMatches}
         </TabPanel>
         <TabPanel value={tabIndex} index={1}>
           {pastError && (
