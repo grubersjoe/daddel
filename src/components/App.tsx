@@ -10,7 +10,6 @@ import AuthUserContext from './AuthUserContext';
 
 import Layout from './Layout';
 import AddMatch from '../pages/AddMatch';
-import Bye from '../pages/Bye';
 import Matches from '../pages/Matches';
 import PrivateRoute from './PrivateRoute';
 import Profile from '../pages/Profile';
@@ -22,7 +21,9 @@ const redirectPath =
   window.location.pathname === '/' ? 'matches/' : window.location.pathname;
 
 const App: React.FC = () => {
-  const [authUser, setAuthUser] = useState<User | null>(null);
+  const [authUser, setAuthUser] = useState<User | null>(
+    firebase.auth.currentUser,
+  );
 
   useEffect(() => {
     firebase.auth.onAuthStateChanged(authUser => {
@@ -39,10 +40,10 @@ const App: React.FC = () => {
             <Route path={ROUTES.ROOT} component={SignIn} exact />
             <Route path={ROUTES.REGISTER} component={SignUp} />
             <Route path={ROUTES.RESET} component={ResetPassword} />
-            <Route path={ROUTES.SIGNOUT} component={Bye} />
             <PrivateRoute path={ROUTES.ADD_MATCH} component={AddMatch} />
             <PrivateRoute path={ROUTES.MATCHES} component={Matches} />
             <PrivateRoute path={ROUTES.PROFILE} component={Profile} />
+            <Redirect to="/" />
           </Layout>
         </ThemeProvider>
       </Router>

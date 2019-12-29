@@ -3,6 +3,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { History } from 'history';
 
 import firebase from '../api';
+import { Button, Container, Grid } from '@material-ui/core';
 
 function signInWithEmail(history: History) {
   firebase.auth
@@ -22,13 +23,33 @@ function signInWithGoogle(history: History) {
 }
 
 const SignIn: React.FC<RouteComponentProps> = ({ history }) => (
-  <>
-    <h1>SCHALKE!</h1>
-    <button onClick={() => signInWithEmail(history)}>Mit Email anmelden</button>
-    <button onClick={() => signInWithGoogle(history)}>
-      Mit Google anmelden
-    </button>
-  </>
+  <Container>
+    <h2>Anmelden</h2>
+    <Grid container direction="column" spacing={2}>
+      <Grid item xs>
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          onClick={() => signInWithEmail(history)}
+          fullWidth
+        >
+          Mit Email anmelden
+        </Button>
+      </Grid>
+      <Grid item xs>
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          onClick={() => signInWithGoogle(history)}
+          fullWidth
+        >
+          Mit Google anmelden
+        </Button>
+      </Grid>
+    </Grid>
+  </Container>
 );
 
 export default withRouter(SignIn);

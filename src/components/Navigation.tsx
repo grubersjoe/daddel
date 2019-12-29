@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
-import { History } from 'history';
 
 import { useTheme } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
@@ -8,16 +7,9 @@ import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import MatchesIcon from '@material-ui/icons/SportsEsports';
 import SettingsIcon from '@material-ui/icons/Settings';
-import SignOutIcon from '@material-ui/icons/ExitToApp';
 
-import firebase from '../api';
 import * as ROUTES from '../constants/routes';
 import AuthUserContext from './AuthUserContext';
-
-async function signOut(history: History) {
-  await firebase.auth.signOut();
-  history.push('/bye');
-}
 
 const Navigation: React.FC<RouteComponentProps> = ({ history }) => {
   const theme = useTheme();
@@ -54,12 +46,12 @@ const Navigation: React.FC<RouteComponentProps> = ({ history }) => {
               to={ROUTES.PROFILE}
               label="Profil"
               icon={<SettingsIcon />}
-            />{' '}
-            <BottomNavigationAction
+            />
+            {/* <BottomNavigationAction
               label="Abmelden"
               icon={<SignOutIcon />}
               onClick={() => signOut(history)}
-            />
+            /> */}
           </BottomNavigation>
         ) : null
       }

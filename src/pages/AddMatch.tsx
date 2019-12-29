@@ -80,6 +80,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
             defaultValue={maxPlayers}
             onChange={event => setMaxPlayers(Number(event.target.value))}
             variant="outlined"
+            disabled
             required
             fullWidth
           />
@@ -99,13 +100,23 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
         <Box my="2rem">
           <Grid container direction="row" spacing={2}>
             <Grid item xs>
-              <Button variant="outlined" color="default" onClick={history.goBack} fullWidth>
+              <Button
+                variant="outlined"
+                color="default"
+                onClick={history.goBack}
+                fullWidth
+              >
                 Abbrechen
               </Button>
             </Grid>
             <Grid item xs>
-              <Button type="submit" variant="contained" color="primary" fullWidth>
-                Hinzufügen
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+              >
+                Jajaja!
               </Button>
             </Grid>
           </Grid>

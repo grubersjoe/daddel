@@ -15,6 +15,8 @@ import Typography from '@material-ui/core/Typography';
 import { Match } from '../types';
 import { formatDate } from '../utils';
 import TimeAgo from '../components/TimeAgo';
+import CardMedia from '@material-ui/core/CardMedia';
+import gameImages from '../assets/images/games';
 
 type Props = {
   match: Match;
@@ -22,11 +24,19 @@ type Props = {
 
 const useStyles = makeStyles({
   card: {
-    marginBottom: '1.5rem',
+    marginBottom: '2rem',
   },
-  title: {
-    fontWeight: 'bold',
-    fontSize: '130%',
+  media: {
+    height: 160,
+    backgroundPosition: 'top',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+  },
+  date: {
+    padding: '24px 16px 8px 16px',
+    color: '#fff',
+    fontWeight: 500,
   },
   subtitle: {
     marginBottom: '0.5em',
@@ -45,28 +55,33 @@ const useStyles = makeStyles({
 
 const MatchCard: React.FC<Props> = ({ match }) => {
   const classes = useStyles();
-  const notFull = match.players.length < match.maxPlayers;
+  const lobbyNotFull = match.players.length < match.maxPlayers;
 
   if (match.date instanceof Date) {
     throw new Error('This should not happen');
   }
 
   return (
-    <Card className={classes.card}>
-      <CardContent>
+    <Card className={classes.card} raised>
+      <CardMedia className={classes.media} image={gameImages.csgo}>
         <Grid
           container
           direction="row"
           justify="space-between"
-          alignItems="flex-start"
+          alignItems="flex-end"
+          style={{
+            background: 'linear-gradient(transparent, rgba(0, 0, 0, 0.95))',
+          }}
         >
-          <Typography className={classes.title} variant="h3" gutterBottom>
+          <Typography className={classes.date}>
             {formatDate(match.date.seconds)}
           </Typography>
-          <Typography className={classes.title} variant="h3" gutterBottom>
+          <Typography className={classes.date}>
             {format(match.date.seconds, 'HH:mm')} Uhr
           </Typography>
         </Grid>
+      </CardMedia>
+      <CardContent>
         <Typography className={classes.subtitle} color="textSecondary">
           <TimeAgo date={fromUnixTime(match.date.seconds)} />
         </Typography>
@@ -84,10 +99,16 @@ const MatchCard: React.FC<Props> = ({ match }) => {
           {match.players.length}/{match.maxPlayers} Plätze belegt
         </Typography>
       </CardContent>
-      {notFull && (
-        <CardActions>
-          <Button color="primary" size="medium">
-            Mitbolzen!
+      {lobbyNotFull && (
+        <CardActions style={{ justifyContent: 'flex-end', padding: 16 }}>
+          <Button
+            color="primary"
+            size="medium"
+            variant="contained"
+            disableElevation
+            fullWidth
+          >
+            Mitbolzen
           </Button>
         </CardActions>
       )}
@@ -95,18 +116,22 @@ const MatchCard: React.FC<Props> = ({ match }) => {
   );
 };
 
-export const MatchCardSkeleton: React.FC = () => (
-  <>
-    <Box marginBottom="1.5rem">
-      <Skeleton variant="rect" height={200} />
-    </Box>
-    <Box marginBottom="1.5rem">
-      <Skeleton variant="rect" height={200} />
-    </Box>
-    <Box marginBottom="1.5rem">
-      <Skeleton variant="rect" height={200} />
-    </Box>
-  </>
-);
+export const MatchCardSkeleton: React.FC = () => {
+  const classes = useStyles();
+
+  return (
+    <>
+      <Box className={classes.card}>
+        <Skeleton variant="rect" height={200} />
+      </Box>
+      <Box className={classes.card}>
+        <Skeleton variant="rect" height={200} />
+      </Box>
+      <Box className={classes.card}>
+        <Skeleton variant="rect" height={200} />
+      </Box>
+    </>
+  );
+};
 
 export default MatchCard;
