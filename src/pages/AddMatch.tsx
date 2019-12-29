@@ -4,6 +4,7 @@ import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import DateFnsUtils from '@date-io/date-fns';
 import deLocale from 'date-fns/locale/de';
@@ -53,7 +54,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
 
   return (
     <Container>
-      <h1>Neuer Bolz</h1>
+      <h2>Neuer Bolz</h2>
       <form autoComplete="off" onSubmit={addMatch}>
         <Box my="2rem">
           <MuiPickersUtilsProvider utils={DateFnsUtils} locale={deLocale}>
@@ -96,9 +97,18 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
           />
         </Box>
         <Box my="2rem">
-          <Button variant="contained" color="primary" type="submit">
-            Bolz hinzufügen
-          </Button>
+          <Grid container direction="row" spacing={2}>
+            <Grid item xs>
+              <Button variant="outlined" color="default" onClick={history.goBack} fullWidth>
+                Abbrechen
+              </Button>
+            </Grid>
+            <Grid item xs>
+              <Button type="submit" variant="contained" color="primary" fullWidth>
+                Hinzufügen
+              </Button>
+            </Grid>
+          </Grid>
         </Box>
       </form>
       {error && <p>Fehler!</p>}

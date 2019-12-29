@@ -6,7 +6,7 @@ import isToday from 'date-fns/isToday';
 import isTomorrow from 'date-fns/isTomorrow';
 import isYesterday from 'date-fns/isYesterday';
 
-const DATE_FORMAT = 'dd.MM. – HH:mm';
+const DATE_FORMAT = 'dd.MM.';
 
 export function formatDate(timestamp: number) {
   const date = fromUnixTime(timestamp);

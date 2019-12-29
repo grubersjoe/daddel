@@ -1,12 +1,13 @@
 import React from 'react';
+import format from 'date-fns/format';
 import fromUnixTime from 'date-fns/fromUnixTime';
-
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
+import Grid from '@material-ui/core/Grid';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Typography from '@material-ui/core/Typography';
@@ -25,7 +26,7 @@ const useStyles = makeStyles({
   },
   title: {
     fontWeight: 'bold',
-    fontSize: '140%',
+    fontSize: '130%',
   },
   subtitle: {
     marginBottom: '0.5em',
@@ -53,9 +54,19 @@ const MatchCard: React.FC<Props> = ({ match }) => {
   return (
     <Card className={classes.card}>
       <CardContent>
-        <Typography className={classes.title} variant="h3" gutterBottom>
-          {formatDate(match.date.seconds)}
-        </Typography>
+        <Grid
+          container
+          direction="row"
+          justify="space-between"
+          alignItems="flex-start"
+        >
+          <Typography className={classes.title} variant="h3" gutterBottom>
+            {formatDate(match.date.seconds)}
+          </Typography>
+          <Typography className={classes.title} variant="h3" gutterBottom>
+            {format(match.date.seconds, 'HH:mm')} Uhr
+          </Typography>
+        </Grid>
         <Typography className={classes.subtitle} color="textSecondary">
           <TimeAgo date={fromUnixTime(match.date.seconds)} />
         </Typography>
@@ -87,13 +98,13 @@ const MatchCard: React.FC<Props> = ({ match }) => {
 export const MatchCardSkeleton: React.FC = () => (
   <>
     <Box marginBottom="1.5rem">
-      <Skeleton variant="rect" height={252} />
+      <Skeleton variant="rect" height={200} />
     </Box>
     <Box marginBottom="1.5rem">
-      <Skeleton variant="rect" height={252} />
+      <Skeleton variant="rect" height={200} />
     </Box>
     <Box marginBottom="1.5rem">
-      <Skeleton variant="rect" height={252} />
+      <Skeleton variant="rect" height={200} />
     </Box>
   </>
 );
