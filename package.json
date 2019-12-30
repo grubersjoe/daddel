@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "react-scripts build",
+    "deploy": "npm run build && firebase deploy --project daddel-e63d5",
     "eject": "react-scripts eject",
     "format": "prettier --write 'src/**/*' 'content/**/*' 'src/**/*' './*.{js,json,md}'",
     "start": "react-scripts start",
