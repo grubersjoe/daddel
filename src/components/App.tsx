@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import { User } from 'firebase';
 import { ThemeProvider } from '@material-ui/core';
+import CssBaseline from '@material-ui/core/CssBaseline';
 
-import firebase from '../api';
+import firebase from '../api/firebase';
 import * as ROUTES from '../constants/routes';
 import { theme } from '../styles/theme';
 import AuthUserContext from './AuthUserContext';
@@ -26,7 +27,7 @@ const App: React.FC = () => {
   );
 
   useEffect(() => {
-    firebase.auth.onAuthStateChanged(authUser => {
+    return firebase.auth.onAuthStateChanged(authUser => {
       authUser ? setAuthUser(authUser) : setAuthUser(null);
     });
   });
@@ -35,6 +36,7 @@ const App: React.FC = () => {
     <AuthUserContext.Provider value={authUser}>
       <Router>
         <ThemeProvider theme={theme}>
+          <CssBaseline />
           <Layout>
             {authUser && <Redirect to={redirectPath} />}
             <Route path={ROUTES.ROOT} component={SignIn} exact />

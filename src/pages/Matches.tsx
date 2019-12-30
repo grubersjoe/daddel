@@ -5,21 +5,23 @@ import SwipeableViews from 'react-swipeable-views';
 import AppBar from '@material-ui/core/AppBar';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
 
-import firebase from '../api';
+import firebase from '../api/firebase';
 import { Match } from '../types';
-import MatchCard, { MatchCardSkeleton } from '../components/MatchCard';
+import MatchCard from '../components/MatchCard';
+import { calcUserList } from '../utils';
 
 const currentTime = new Date();
 
 interface TabPanelProps {
   children?: React.ReactNode;
   dir?: string;
-  index: any;
-  value: any;
+  index: number;
+  value: number;
 }
 
 const TabPanel: React.FC<TabPanelProps> = props => {
@@ -43,18 +45,22 @@ const TabPanel: React.FC<TabPanelProps> = props => {
 
 const Matches: React.FC = () => {
   const [futureMatches, futureLoading, futureError] = useCollection(
-    firebase.db
+    firebase.firestore
       .collection('matches')
       .where('date', '>=', currentTime)
       .orderBy('date', 'asc'),
   );
 
   const [pastMatches, pastLoading, pastError] = useCollection(
-    firebase.db
+    firebase.firestore
       .collection('matches')
       .where('date', '<', currentTime)
-      .orderBy('date', 'asc'),
+      .orderBy('date', 'asc')
+      .limit(100),
   );
+
+  const [users] = useCollection(firebase.firestore.collection('users'));
+  const userList = users ? calcUserList(users) : null;
 
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -77,13 +83,8 @@ const Matches: React.FC = () => {
 
   return (
     <>
-      <AppBar position="fixed" color="primary">
-        <Tabs
-          value={tabIndex}
-          onChange={handleChange}
-          indicatorColor="secondary"
-          variant="fullWidth"
-        >
+      <AppBar position="fixed" color="default">
+        <Tabs value={tabIndex} onChange={handleChange} variant="fullWidth">
           <Tab label="Anstehende" />
           <Tab label="Vergangene" />
         </Tabs>
@@ -95,11 +96,15 @@ const Matches: React.FC = () => {
               <strong>Error: {JSON.stringify(futureError)}</strong>
             </p>
           )}
-          {futureLoading && <MatchCardSkeleton />}
-          {futureMatches && (
+          {futureLoading && <CircularProgress />}
+          {futureMatches && userList && (
             <div>
               {futureMatches.docs.map(doc => (
-                <MatchCard match={doc.data() as Match} key={doc.id} />
+                <MatchCard
+                  match={doc.data() as Match}
+                  userList={userList}
+                  key={doc.id}
+                />
               ))}
             </div>
           )}
@@ -111,11 +116,15 @@ const Matches: React.FC = () => {
               <strong>Error: {JSON.stringify(futureError)}</strong>
             </p>
           )}
-          {pastLoading && <MatchCardSkeleton />}
-          {pastMatches && (
+          {pastLoading && <CircularProgress />}
+          {pastMatches && userList && (
             <div>
               {pastMatches.docs.map(doc => (
-                <MatchCard match={doc.data() as Match} key={doc.id} />
+                <MatchCard
+                  match={doc.data() as Match}
+                  userList={userList}
+                  key={doc.id}
+                />
               ))}
             </div>
           )}

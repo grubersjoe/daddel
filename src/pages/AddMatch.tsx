@@ -11,7 +11,7 @@ import deLocale from 'date-fns/locale/de';
 import setMinutes from 'date-fns/setMinutes';
 import setHours from 'date-fns/setHours';
 
-import firebase from '../api';
+import firebase from '../api/firebase';
 import { Match } from '../types';
 
 const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
@@ -34,15 +34,15 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
     const { currentUser } = firebase.auth;
 
     const matchData: Match = {
-      date,
+      date: firebase.timestamp(date),
       maxPlayers,
       players: [],
       description,
-      created: new Date(),
+      created: firebase.timestamp(),
       createdBy: currentUser?.uid || 'unknown',
     };
 
-    firebase.db
+    firebase.firestore
       .collection('matches')
       .add(matchData)
       .then(doc => {

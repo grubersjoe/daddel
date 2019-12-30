@@ -6,6 +6,8 @@ import isToday from 'date-fns/isToday';
 import isTomorrow from 'date-fns/isTomorrow';
 import isYesterday from 'date-fns/isYesterday';
 
+import { QuerySnapshot, User } from '../types';
+
 const DATE_FORMAT = 'dd.MM.';
 
 export function formatDate(timestamp: number) {
@@ -24,4 +26,15 @@ export function formatDate(timestamp: number) {
   }
 
   return format(date, `EEEE ${DATE_FORMAT}`, { locale: de });
+}
+
+export function calcUserList(users: QuerySnapshot) {
+  const userMap = new Map<string, User>();
+
+  users?.docs.forEach(user => {
+    const data = user.data() as User;
+    userMap.set(data.uid, data);
+  });
+
+  return userMap;
 }

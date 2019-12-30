@@ -1,28 +1,23 @@
 import React from 'react';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { History } from 'history';
 
-import firebase from '../api';
+import firebase from '../api/firebase';
 import { Button, Container, Grid } from '@material-ui/core';
 
-function signInWithEmail(history: History) {
+function signInWithEmail() {
   firebase.auth
     .signInWithEmailAndPassword('gruberjonathan@gmail.com', 'testtest')
     .catch(error => {
       if (error.code === 'auth/wrong-password') {
         // TODO
       }
-      console.log(error);
     });
 }
 
-function signInWithGoogle(history: History) {
-  firebase.auth
-    .signInWithRedirect(firebase.googleAuthProvider)
-    .catch(error => console.error(error));
+function signInWithGoogle() {
+  firebase.auth.signInWithRedirect(firebase.googleAuthProvider);
 }
 
-const SignIn: React.FC<RouteComponentProps> = ({ history }) => (
+const SignIn: React.FC = () => (
   <Container>
     <h2>Anmelden</h2>
     <Grid container direction="column" spacing={2}>
@@ -31,7 +26,7 @@ const SignIn: React.FC<RouteComponentProps> = ({ history }) => (
           variant="contained"
           color="primary"
           size="large"
-          onClick={() => signInWithEmail(history)}
+          onClick={() => signInWithEmail()}
           fullWidth
         >
           Mit Email anmelden
@@ -42,7 +37,7 @@ const SignIn: React.FC<RouteComponentProps> = ({ history }) => (
           variant="contained"
           color="primary"
           size="large"
-          onClick={() => signInWithGoogle(history)}
+          onClick={() => signInWithGoogle()}
           fullWidth
         >
           Mit Google anmelden
@@ -52,4 +47,4 @@ const SignIn: React.FC<RouteComponentProps> = ({ history }) => (
   </Container>
 );
 
-export default withRouter(SignIn);
+export default SignIn;

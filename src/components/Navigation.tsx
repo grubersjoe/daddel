@@ -13,20 +13,21 @@ import AuthUserContext from './AuthUserContext';
 
 const Navigation: React.FC<RouteComponentProps> = ({ history }) => {
   const theme = useTheme();
-  const [value, setValue] = useState(0);
+  // TODO: move this to a more global state
+  const [selected, setSelected] = useState(0);
 
   return (
     <AuthUserContext.Consumer>
       {authUser =>
         authUser ? (
           <BottomNavigation
-            value={value}
+            value={selected}
             showLabels
             onChange={(_, newValue) => {
-              setValue(newValue);
+              setSelected(newValue);
             }}
             style={{
-              borderTop: `solid 1px ${theme.palette.grey[300]}`,
+              boxShadow: `0 0 3px ${theme.palette.grey[900]}`,
             }}
           >
             <BottomNavigationAction
@@ -47,11 +48,6 @@ const Navigation: React.FC<RouteComponentProps> = ({ history }) => {
               label="Profil"
               icon={<SettingsIcon />}
             />
-            {/* <BottomNavigationAction
-              label="Abmelden"
-              icon={<SignOutIcon />}
-              onClick={() => signOut(history)}
-            /> */}
           </BottomNavigation>
         ) : null
       }

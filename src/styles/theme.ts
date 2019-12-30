@@ -1,12 +1,17 @@
 import { createMuiTheme } from '@material-ui/core/styles';
+import pink from '@material-ui/core/colors/pink';
+import amber from '@material-ui/core/colors/yellow';
 
 export const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#274c77',
+      main: amber[700],
     },
     secondary: {
-      main: '#a3cef1',
+      main: amber[700],
     },
+    type: 'dark',
   },
 });
+
+export type Theme = typeof theme;

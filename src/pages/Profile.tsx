@@ -4,7 +4,7 @@ import { History } from 'history';
 import { Container, Button } from '@material-ui/core';
 import SignOutIcon from '@material-ui/icons/ExitToApp';
 
-import firebase from '../api';
+import firebase from '../api/firebase';
 
 async function signOut(history: History) {
   await firebase.auth.signOut();
@@ -13,7 +13,7 @@ async function signOut(history: History) {
 
 const Profile: React.FC<RouteComponentProps> = ({ history }) => (
   <Container>
-    <h1>Profil</h1>
+    <h2>Profil</h2>
 
     <Button
       variant="outlined"
