@@ -8,7 +8,7 @@ import yellow from '@material-ui/core/colors/yellow';
 import orange from '@material-ui/core/colors/orange';
 import red from '@material-ui/core/colors/red';
 
-import { Theme } from '../styles/theme';
+import { Theme } from '../../styles/theme';
 
 type Props = {
   value: number;

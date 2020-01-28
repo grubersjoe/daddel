@@ -22,8 +22,8 @@ const firestore = app.firestore();
 
 function timestamp(date: Date = new Date()) {
   return new firebase.firestore.Timestamp(
-    date.getSeconds(),
-    date.getMilliseconds(),
+    date.getTime() / 1000, // returns ms
+    0,
   );
 }
 

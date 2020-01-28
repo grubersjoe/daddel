@@ -5,15 +5,15 @@ import SwipeableViews from 'react-swipeable-views';
 import AppBar from '@material-ui/core/AppBar';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
 
 import firebase from '../api/firebase';
 import { Match } from '../types';
-import MatchCard from '../components/MatchCard';
 import { calcUserList } from '../utils';
+import MatchCard from '../components/Match/MatchCard';
+import Spinner from '../components/Spinner';
 
 const currentTime = new Date();
 
@@ -96,12 +96,12 @@ const Matches: React.FC = () => {
               <strong>Error: {JSON.stringify(futureError)}</strong>
             </p>
           )}
-          {futureLoading && <CircularProgress />}
+          {futureLoading && <Spinner />}
           {futureMatches && userList && (
             <div>
               {futureMatches.docs.map(doc => (
                 <MatchCard
-                  match={doc.data() as Match}
+                  match={{ ...doc.data(), id: doc.id } as Match}
                   userList={userList}
                   key={doc.id}
                 />
@@ -116,12 +116,12 @@ const Matches: React.FC = () => {
               <strong>Error: {JSON.stringify(futureError)}</strong>
             </p>
           )}
-          {pastLoading && <CircularProgress />}
+          {pastLoading && <Spinner />}
           {pastMatches && userList && (
             <div>
               {pastMatches.docs.map(doc => (
                 <MatchCard
-                  match={doc.data() as Match}
+                  match={{ ...doc.data(), id: doc.id } as Match}
                   userList={userList}
                   key={doc.id}
                 />

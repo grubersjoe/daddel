@@ -1,22 +1,23 @@
 import React from 'react';
 import format from 'date-fns/format';
+import isFuture from 'date-fns/isFuture';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
 import Grid from '@material-ui/core/Grid';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Typography from '@material-ui/core/Typography';
 
-import { Match, UserList } from '../types';
-import { formatDate } from '../utils';
-import TimeAgo from '../components/TimeAgo';
-import CardMedia from '@material-ui/core/CardMedia';
-import gameImages from '../assets/images/games';
+import { Match, UserList } from '../../types';
+import { formatDate } from '../../utils';
+import gameImages from '../../assets/images/games';
+import JoinDialog from './JoinDialog';
 import ProgressBar from './ProgressBar';
+import TimeAgo from '../TimeAgo';
 
 type Props = {
   match: Match;
@@ -43,7 +44,7 @@ const useStyles = makeStyles(theme => ({
     marginBottom: '0.5em',
   },
   list: {
-    margin: '1rem 0',
+    margin: '1rem 0 0',
     paddingLeft: '2em',
     lineHeight: 1.75,
   },
@@ -52,9 +53,10 @@ const useStyles = makeStyles(theme => ({
 const MatchCard: React.FC<Props> = ({ match, userList }) => {
   const classes = useStyles();
 
+  const matchInFuture = isFuture(fromUnixTime(match.date.seconds));
   const lobbyNotFull = match.players.length < match.maxPlayers;
 
-  if (match.date instanceof Date) {
+  if (match.date instanceof Date || !match.id) {
     throw new Error('This should not happen');
   }
 
@@ -90,34 +92,25 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
         </Typography>
 
         {match.players.length === 0 && (
-          <Typography color="textPrimary" style={{ margin: '1.5rem 0 0' }}>
+          <Typography color="textSecondary" style={{ margin: '1rem 0 0.5rem' }}>
             Noch niemand
           </Typography>
         )}
-        <Typography className={classes.list} variant="body2" component="ol">
-          {match.players.map((player, idx) => (
-            <li key={idx}>
-              {player.uid
-                ? userList.get(player.uid)?.nickname
-                : player.toString()}
-            </li>
-          ))}
-        </Typography>
-        {/* <Typography variant="body2" color="textSecondary">
-          {match.players.length}/{match.maxPlayers} Plätze belegt
-        </Typography> */}
+        {match.players.length > 0 && (
+          <Typography className={classes.list} variant="body2" component="ol">
+            {match.players.map((player, idx) => (
+              <li key={idx}>
+                {player.uid
+                  ? userList.get(player.uid)?.nickname
+                  : player.toString()}
+              </li>
+            ))}
+          </Typography>
+        )}
       </CardContent>
-      {lobbyNotFull && (
+      {matchInFuture && lobbyNotFull && (
         <CardActions style={{ padding: '0 16px 16px 16px' }}>
-          <Button
-            color="primary"
-            size="medium"
-            variant="contained"
-            disableElevation
-            fullWidth
-          >
-            Mitbolzen
-          </Button>
+          <JoinDialog match={match} />
         </CardActions>
       )}
     </Card>

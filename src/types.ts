@@ -1,6 +1,7 @@
 export type Timestamp = firebase.firestore.Timestamp;
 
 export type Match = {
+  id?: string;
   date: Timestamp;
   players: Array<{
     from: Timestamp;
