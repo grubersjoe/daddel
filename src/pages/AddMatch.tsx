@@ -62,7 +62,6 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
               label="Datum und Uhrzeit"
               name="date"
               variant="dialog"
-              inputVariant="outlined"
               value={date}
               onChange={setDate}
               minutesStep={15}
@@ -72,26 +71,24 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
             />
           </MuiPickersUtilsProvider>
         </Box>
-        <Box my="2rem">
+        {/* <Box my="2rem">
           <TextField
             label="Lobbygröße"
             name="maxPlayers"
             type="number"
             defaultValue={maxPlayers}
             onChange={event => setMaxPlayers(Number(event.target.value))}
-            variant="outlined"
             disabled
             required
             fullWidth
           />
-        </Box>
+        </Box> */}
         <Box my="2rem">
           <TextField
             label="Beschreibung (optional)"
             name="maxPlayers"
             defaultValue={description}
             onChange={event => setDescription(event.target.value)}
-            variant="outlined"
             multiline
             rows={3}
             fullWidth

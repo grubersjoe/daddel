@@ -12,6 +12,7 @@ import Grid from '@material-ui/core/Grid';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Typography from '@material-ui/core/Typography';
 
+import { TIME_FORMAT } from '../../constants/time';
 import { Match, UserList } from '../../types';
 import { formatDate } from '../../utils';
 import gameImages from '../../assets/images/games';
@@ -75,7 +76,7 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
             }}
           >
             <Typography className={classes.date}>
-              {formatDate(match.date.seconds)}
+              {formatDate(match.date)}
             </Typography>
             <Typography className={classes.date}>
               {format(fromUnixTime(match.date.seconds), 'H:mm')} Uhr
@@ -103,6 +104,9 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
                 {player.uid
                   ? userList.get(player.uid)?.nickname
                   : player.toString()}
+                {' - '}
+                {format(fromUnixTime(player.from.seconds), TIME_FORMAT)} -{' '}
+                {format(fromUnixTime(player.until.seconds), TIME_FORMAT)}
               </li>
             ))}
           </Typography>

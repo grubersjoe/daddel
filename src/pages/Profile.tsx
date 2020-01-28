@@ -15,6 +15,8 @@ const Profile: React.FC<RouteComponentProps> = ({ history }) => (
   <Container>
     <h2>Profil</h2>
 
+    {/* TODO: set nickname here */}
+
     <Button
       variant="outlined"
       color="default"

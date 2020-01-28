@@ -157,7 +157,7 @@ const AddMatchDialog: React.FC<Props> = ({ match }) => {
         </Grid>
       </Grid>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>{formatDate(match.date.seconds)}</DialogTitle>
+        <DialogTitle>{formatDate(match.date)}</DialogTitle>
         <DialogContent>
           <DialogContentText>Von wann bis wann hast du Zeit?</DialogContentText>
           <FormControl margin="dense" style={{ marginRight: 16 }}>

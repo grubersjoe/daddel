@@ -6,12 +6,13 @@ import isToday from 'date-fns/isToday';
 import isTomorrow from 'date-fns/isTomorrow';
 import isYesterday from 'date-fns/isYesterday';
 
-import { QuerySnapshot, User } from '../types';
+import { TIME_FORMAT } from '../constants/time';
+import { QuerySnapshot, User, Timestamp } from '../types';
 
 const DATE_FORMAT = 'dd.MM.';
 
-export function formatDate(timestamp: number) {
-  const date = fromUnixTime(timestamp);
+export function formatDate(timestamp: Timestamp) {
+  const date = fromUnixTime(timestamp.seconds);
 
   if (isYesterday(date)) {
     return `Gestern ${format(date, DATE_FORMAT, { locale: de })}`;
@@ -26,6 +27,10 @@ export function formatDate(timestamp: number) {
   }
 
   return format(date, `EEEE ${DATE_FORMAT}`, { locale: de });
+}
+
+export function foramtTime(timestamp: Timestamp, timeFormat = TIME_FORMAT) {
+  return format(fromUnixTime(timestamp.seconds), timeFormat);
 }
 
 export function calcUserList(users: QuerySnapshot) {
