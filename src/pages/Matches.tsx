@@ -77,7 +77,7 @@ const Matches: React.FC = () => {
 
   const noMatches = (
     <>
-      <Typography paragraph>Keine Matches gefunden.</Typography>
+      <Typography paragraph>Wow. Much empty.</Typography>
       <Button
         variant="outlined"
         color="primary"

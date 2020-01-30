@@ -1,10 +1,13 @@
+import { de } from 'date-fns/locale';
+import addMinutes from 'date-fns/addMinutes';
 import format from 'date-fns/format';
 import fromUnixTime from 'date-fns/fromUnixTime';
-import { de } from 'date-fns/locale';
-
+import isBefore from 'date-fns/isBefore';
 import isToday from 'date-fns/isToday';
 import isTomorrow from 'date-fns/isTomorrow';
 import isYesterday from 'date-fns/isYesterday';
+import parse from 'date-fns/parse';
+import roundToNearestMinutes from 'date-fns/roundToNearestMinutes';
 
 import { TIME_FORMAT } from '../constants/time';
 import { QuerySnapshot, User, Timestamp } from '../types';
@@ -30,10 +33,40 @@ export function formatDate(timestamp: Timestamp) {
 }
 
 export function formatTimestamp(
-  timestamp: Timestamp,
+  timestamp: Timestamp | number,
   timeFormat = TIME_FORMAT,
 ) {
+  if (typeof timestamp === 'number') {
+    return format(fromUnixTime(timestamp), timeFormat);
+  }
+
   return format(fromUnixTime(timestamp.seconds), timeFormat);
+}
+
+export function calcTimeLabelsBetweenTimes(
+  hourStart: string,
+  hourEnd: string,
+  stepInMinutes = 15,
+) {
+  let date = roundToNearestMinutes(parse(hourStart, TIME_FORMAT, new Date()), {
+    nearestTo: 15,
+  });
+
+  const endDate = roundToNearestMinutes(
+    parse(hourEnd, TIME_FORMAT, new Date()),
+    { nearestTo: 15 },
+  );
+
+  if (isBefore(endDate, date))
+    throw new RangeError('hourStart must be before hourEnd');
+
+  const options = [format(date, TIME_FORMAT)];
+  while (isBefore(date, endDate)) {
+    date = addMinutes(date, stepInMinutes);
+    options.push(format(date, TIME_FORMAT));
+  }
+
+  return options;
 }
 
 export function calcUserList(users: QuerySnapshot) {

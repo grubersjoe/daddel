@@ -16,6 +16,7 @@ import { Match, UserList } from '../../types';
 import { formatDate, formatTimestamp } from '../../utils';
 import gameImages from '../../assets/images/games';
 import JoinMatchDialog from '../Dialogs/JoinMatch';
+import Calendar from './Calendar';
 import ProgressBar from './ProgressBar';
 import TimeAgo from '../TimeAgo';
 
@@ -39,9 +40,6 @@ const useStyles = makeStyles(theme => ({
     padding: '24px 16px 8px 16px',
     color: '#fff',
     fontWeight: 500,
-  },
-  subtitle: {
-    marginBottom: '0.5em',
   },
   list: {
     margin: '1rem 0 0',
@@ -94,27 +92,16 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
         </Grid>
       </CardMedia>
       <CardContent>
-        <Typography className={classes.subtitle} color="textSecondary">
+        <Typography color="textSecondary">
           <TimeAgo date={fromUnixTime(match.date.seconds)} />
         </Typography>
-
         {match.players.length === 0 && (
           <Typography color="textSecondary" style={{ margin: '1rem 0 0.5rem' }}>
             Noch niemand
           </Typography>
         )}
         {match.players.length > 0 && (
-          <Typography className={classes.list} variant="body2" component="ol">
-            {match.players.map(({ uid, from, until }, idx) => (
-              <li key={idx}>
-                {userList.get(uid)?.nickname
-                  ? userList.get(uid)?.nickname
-                  : 'Unknown'}
-                {' - '}
-                {formatTimestamp(from)} - {formatTimestamp(until)}
-              </li>
-            ))}
-          </Typography>
+          <Calendar players={match.players} userList={userList} />
         )}
       </CardContent>
       {matchInFuture && lobbyNotFull && (
