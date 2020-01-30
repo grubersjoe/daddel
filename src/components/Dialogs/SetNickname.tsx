@@ -29,7 +29,6 @@ const SetNicknameDialog: React.FC<RouteComponentProps> = ({ history }) => {
 
   const handleSubmit: FormEventHandler = event => {
     event.preventDefault();
-
     if (!currentUser) return;
 
     firebase.firestore

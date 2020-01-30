@@ -45,7 +45,7 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
           .set({ nickname });
         history.push('/matches');
       })
-      .catch(error => setError(error))
+      .catch(setError)
       .finally(() => setLoading(false));
   };
 

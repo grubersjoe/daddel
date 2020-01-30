@@ -43,17 +43,14 @@ const SignIn: React.FC = () => {
     event.preventDefault();
     setLoading(true);
     signInWithEmailAndPassword(email, password)
-      .catch(error => setError(error))
+      .catch(setError)
       .finally(() => setLoading(false));
   };
 
   const handleGoogleLogin = () => {
     setGoogleLoading(true);
     signInWithGoogle()
-      .catch(error => {
-        setError(error);
-        console.error(error);
-      })
+      .catch(setError)
       .finally(() => setGoogleLoading(false));
   };
 
@@ -102,6 +99,11 @@ const SignIn: React.FC = () => {
             >
               Anmelden
             </Button>
+            {error && (
+              <Grid item>
+                <ErrorMessage>{error.message}</ErrorMessage>
+              </Grid>
+            )}
           </Grid>
           <Grid item>
             <Button
@@ -122,11 +124,6 @@ const SignIn: React.FC = () => {
               Mit Google anmelden
             </Button>
           </Grid>
-          {error && (
-            <Grid item>
-              <ErrorMessage>{error.message}</ErrorMessage>
-            </Grid>
-          )}
         </Grid>
       </form>
 
