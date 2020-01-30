@@ -15,6 +15,7 @@ import * as ROUTES from '../constants/routes';
 import { Match } from '../types';
 import { calcUserList } from '../utils';
 import MatchCard from '../components/Match/MatchCard';
+import SetNicknameDialog from '../components/Dialogs/SetNickname';
 import Spinner from '../components/Spinner';
 
 const currentTime = new Date();
@@ -90,6 +91,7 @@ const Matches: React.FC = () => {
 
   return (
     <>
+      <SetNicknameDialog />
       <AppBar position="fixed" color="default">
         <Tabs value={tabIndex} onChange={handleChange} variant="fullWidth">
           <Tab label="Anstehende" />
@@ -134,6 +136,9 @@ const Matches: React.FC = () => {
                 />
               ))}
             </div>
+          )}
+          {pastMatches?.docs?.length === 0 && (
+            <Typography paragraph>Wow. Much empty.</Typography>
           )}
         </TabPanel>
       </SwipeableViews>

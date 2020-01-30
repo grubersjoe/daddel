@@ -12,7 +12,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import FormControl from '@material-ui/core/FormControl';
 import Grid from '@material-ui/core/Grid';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
@@ -57,7 +56,7 @@ const timeOptionsBetween = (
   return options;
 };
 
-const AddMatchDialog: React.FC<Props> = ({ match }) => {
+const JoinMatchDialog: React.FC<Props> = ({ match }) => {
   const timeOptions = timeOptionsBetween(9, 23);
 
   const initalFrom =
@@ -163,7 +162,7 @@ const AddMatchDialog: React.FC<Props> = ({ match }) => {
         <DialogContent>
           <DialogContentText>Von wann bis wann hast du Zeit?</DialogContentText>
           <Grid container style={{ margin: `${theme.spacing(2)}px 0` }}>
-            <Grid item xs={6} style={{ paddingRight: theme.spacing(1) }}>
+            <Grid item xs={6} style={{ paddingRight: theme.spacing(1.5) }}>
               <InputLabel htmlFor="select-from">Ab</InputLabel>
               <Select
                 value={state.from}
@@ -175,7 +174,7 @@ const AddMatchDialog: React.FC<Props> = ({ match }) => {
                 {selectOptions}
               </Select>
             </Grid>
-            <Grid item xs={6} style={{ paddingLeft: theme.spacing(1) }}>
+            <Grid item xs={6} style={{ paddingLeft: theme.spacing(1.5) }}>
               <InputLabel htmlFor="select-until">Bis</InputLabel>
               <Select
                 value={state.until}
@@ -207,4 +206,4 @@ const AddMatchDialog: React.FC<Props> = ({ match }) => {
   );
 };
 
-export default AddMatchDialog;
+export default JoinMatchDialog;

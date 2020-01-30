@@ -60,7 +60,6 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
           <MuiPickersUtilsProvider utils={DateFnsUtils} locale={deLocale}>
             <DateTimePicker
               label="Datum und Uhrzeit"
-              name="date"
               variant="dialog"
               inputVariant="outlined"
               value={date}
@@ -75,7 +74,6 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
         {/* <Box my="2rem">
           <TextField
             label="Lobbygröße"
-            name="maxPlayers"
             type="number"
             defaultValue={maxPlayers}
             onChange={event => setMaxPlayers(Number(event.target.value))}
@@ -87,7 +85,6 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
         <Box my="2rem">
           <TextField
             label="Beschreibung (optional)"
-            name="maxPlayers"
             defaultValue={description}
             variant="outlined"
             onChange={event => setDescription(event.target.value)}

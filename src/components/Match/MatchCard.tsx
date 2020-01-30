@@ -16,7 +16,7 @@ import { TIME_FORMAT } from '../../constants/time';
 import { Match, UserList } from '../../types';
 import { formatDate } from '../../utils';
 import gameImages from '../../assets/images/games';
-import JoinDialog from './JoinDialog';
+import JoinDialog from '../Dialogs/JoinMatch';
 import ProgressBar from './ProgressBar';
 import TimeAgo from '../TimeAgo';
 

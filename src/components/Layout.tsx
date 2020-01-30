@@ -1,5 +1,6 @@
 import React, { CSSProperties } from 'react';
 
+import { theme } from '../styles/theme';
 import Navigation from './Navigation';
 
 const footerStyle: CSSProperties = {
@@ -10,7 +11,7 @@ const footerStyle: CSSProperties = {
 };
 
 const Layout: React.FC = ({ children }) => (
-  <div style={{ paddingBottom: 32 }}>
+  <div style={{ paddingBottom: theme.spacing(4) }}>
     <main>{children}</main>
     <footer style={footerStyle}>
       <Navigation />
