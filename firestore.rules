@@ -2,14 +2,14 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /matches/{document} {
-      allow read: if true
+      allow read: if true;
       allow create,update: if request.auth.uid != null;
-      allow delete: if request.auth.uid == resource.data.author_uid;
+      allow delete: if request.auth.uid == resource.data.createdBy;
     }
     match /users/{document} {
-    	allow read: if true
+    	allow read: if true;
       allow create,update: if request.auth.uid != null;
-      allow delete: if request.auth.uid == resource.data.author_uid;
+      allow delete: if request.auth.uid == resource.data.createdBy;
     }
   }
 }
