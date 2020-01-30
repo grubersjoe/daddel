@@ -8,7 +8,6 @@ import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import grey from '@material-ui/core/colors/grey';
 
 import * as ROUTES from '../constants/routes';
 import { theme } from '../styles/theme';
@@ -16,12 +15,6 @@ import { theme } from '../styles/theme';
 import GoogleIcon from '../assets/icons/GoogleIcon';
 import { signInWithEmailAndPassword, signInWithGoogle } from '../api/auth';
 import Logo from '../components/Logo';
-
-const Separator = styled(Typography)({
-  margin: theme.spacing(3),
-  textAlign: 'center',
-  color: grey[50],
-});
 
 const ErrorMessage = styled(Typography)(
   {

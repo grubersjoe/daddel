@@ -17,6 +17,7 @@ import { formatDate, formatTimestamp } from '../../utils';
 import gameImages from '../../assets/images/games';
 import JoinMatchDialog from '../Dialogs/JoinMatch';
 import Calendar from './Calendar';
+import Menu from './Menu';
 import ProgressBar from './ProgressBar';
 import TimeAgo from '../TimeAgo';
 
@@ -68,7 +69,16 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
   return (
     <Card className={classes.card} raised>
       <CardMedia className={classes.media} image={gameImages.csgo}>
-        <Grid container direction="column" alignItems="flex-end">
+        <Grid
+          container
+          direction="column"
+          alignItems="flex-end"
+          justify="space-between"
+          style={{ height: '100%' }}
+        >
+          <Box flexGrow={1}>
+            <Menu match={match} />
+          </Box>
           <Grid
             container
             item
