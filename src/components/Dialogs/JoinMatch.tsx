@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
-import addMinutes from 'date-fns/addMinutes';
+import React, { useState, useEffect } from 'react';
 import addHours from 'date-fns/addHours';
 import parse from 'date-fns/parse';
 import format from 'date-fns/format';
-import isBefore from 'date-fns/isBefore';
 import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -26,7 +24,11 @@ import {
 } from '../../constants/time';
 import { theme } from '../../styles/theme';
 import { Match, Timestamp } from '../../types';
-import { formatDate, formatTimestamp } from '../../utils';
+import {
+  formatDate,
+  formatTimestamp,
+  calcTimeLabelsBetweenTimes,
+} from '../../utils';
 
 type Props = {
   match: Match;
@@ -39,36 +41,16 @@ type State = {
   until: string;
 };
 
-const calcTimeOptionsBetweenHours = (
-  hourStart: number,
-  hourEnd: number,
-  stepInMinutes = 15,
-) => {
-  if (hourStart > hourEnd)
-    throw new RangeError('hourStart must be smaller than hourEnd');
-
-  let date = new Date();
-  date.setHours(hourStart, 0, 0);
-
-  let endDate = new Date();
-  endDate.setHours(hourEnd, 0, 0);
-
-  const options = [format(date, TIME_FORMAT)];
-
-  while (isBefore(date, endDate)) {
-    date = addMinutes(date, stepInMinutes);
-    options.push(format(date, TIME_FORMAT));
-  }
-
-  return options;
-};
-
 const JoinMatchDialog: React.FC<Props> = ({
   match,
   initialFrom,
   initialUntil,
 }) => {
-  const timeOptions = calcTimeOptionsBetweenHours(
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const timeOptions = calcTimeLabelsBetweenTimes(
     MATCH_TIME_START,
     MATCH_TIME_END,
   );
@@ -91,14 +73,17 @@ const JoinMatchDialog: React.FC<Props> = ({
     ? until
     : timeOptions[timeOptions.length - 1];
 
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-
   const [state, setState] = React.useState<State>({
     from: from,
     until: untilClamped,
   });
+
+  useEffect(() => {
+    setState({
+      from,
+      until: untilClamped,
+    });
+  }, [from, untilClamped]);
 
   const handleJoin = () => {
     if (!match.id) throw new Error('No match ID given');
