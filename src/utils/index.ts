@@ -29,7 +29,10 @@ export function formatDate(timestamp: Timestamp) {
   return format(date, `EEEE ${DATE_FORMAT}`, { locale: de });
 }
 
-export function foramtTime(timestamp: Timestamp, timeFormat = TIME_FORMAT) {
+export function formatTimestamp(
+  timestamp: Timestamp,
+  timeFormat = TIME_FORMAT,
+) {
   return format(fromUnixTime(timestamp.seconds), timeFormat);
 }
 

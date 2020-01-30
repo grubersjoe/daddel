@@ -1,5 +1,4 @@
 import React from 'react';
-import format from 'date-fns/format';
 import isFuture from 'date-fns/isFuture';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import { makeStyles } from '@material-ui/core/styles';
@@ -12,11 +11,11 @@ import Grid from '@material-ui/core/Grid';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Typography from '@material-ui/core/Typography';
 
-import { TIME_FORMAT } from '../../constants/time';
+import firebase from '../../api/firebase';
 import { Match, UserList } from '../../types';
-import { formatDate } from '../../utils';
+import { formatDate, formatTimestamp } from '../../utils';
 import gameImages from '../../assets/images/games';
-import JoinDialog from '../Dialogs/JoinMatch';
+import JoinMatchDialog from '../Dialogs/JoinMatch';
 import ProgressBar from './ProgressBar';
 import TimeAgo from '../TimeAgo';
 
@@ -54,6 +53,13 @@ const useStyles = makeStyles(theme => ({
 const MatchCard: React.FC<Props> = ({ match, userList }) => {
   const classes = useStyles();
 
+  const { currentUser } = firebase.auth;
+  if (!currentUser) return null;
+
+  const currentPlayer = match.players.find(
+    player => player.uid === currentUser.uid,
+  );
+
   const matchInFuture = isFuture(fromUnixTime(match.date.seconds));
   const lobbyNotFull = match.players.length < match.maxPlayers;
 
@@ -79,7 +85,7 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
               {formatDate(match.date)}
             </Typography>
             <Typography className={classes.date}>
-              {format(fromUnixTime(match.date.seconds), 'H:mm')} Uhr
+              {formatTimestamp(match.date)} Uhr
             </Typography>
           </Grid>
           <Grid container item>
@@ -105,8 +111,7 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
                   ? userList.get(uid)?.nickname
                   : 'Unknown'}
                 {' - '}
-                {format(fromUnixTime(from.seconds), TIME_FORMAT)} -{' '}
-                {format(fromUnixTime(until.seconds), TIME_FORMAT)}
+                {formatTimestamp(from)} - {formatTimestamp(until)}
               </li>
             ))}
           </Typography>
@@ -114,7 +119,11 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
       </CardContent>
       {matchInFuture && lobbyNotFull && (
         <CardActions style={{ padding: '0 16px 16px 16px' }}>
-          <JoinDialog match={match} />
+          <JoinMatchDialog
+            match={match}
+            initialFrom={currentPlayer?.from}
+            initialUntil={currentPlayer?.until}
+          />
         </CardActions>
       )}
     </Card>

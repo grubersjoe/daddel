@@ -3,7 +3,6 @@ import addMinutes from 'date-fns/addMinutes';
 import addHours from 'date-fns/addHours';
 import parse from 'date-fns/parse';
 import format from 'date-fns/format';
-import fromUnixTime from 'date-fns/fromUnixTime';
 import isBefore from 'date-fns/isBefore';
 import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
@@ -14,17 +13,25 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Grid from '@material-ui/core/Grid';
 import InputLabel from '@material-ui/core/InputLabel';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import Select from '@material-ui/core/Select';
 
 import firebase from '../../api/firebase';
 import { joinMatch, leaveMatch } from '../../api/match';
-import { TIME_FORMAT } from '../../constants/time';
+import {
+  TIME_FORMAT,
+  DEFAULT_MATCH_STARTTIME,
+  MATCH_TIME_START,
+  MATCH_TIME_END,
+} from '../../constants/time';
 import { theme } from '../../styles/theme';
-import { Match } from '../../types';
-import { formatDate } from '../../utils';
+import { Match, Timestamp } from '../../types';
+import { formatDate, formatTimestamp } from '../../utils';
 
 type Props = {
   match: Match;
+  initialFrom?: Timestamp;
+  initialUntil?: Timestamp;
 };
 
 type State = {
@@ -32,7 +39,7 @@ type State = {
   until: string;
 };
 
-const timeOptionsBetween = (
+const calcTimeOptionsBetweenHours = (
   hourStart: number,
   hourEnd: number,
   stepInMinutes = 15,
@@ -56,34 +63,47 @@ const timeOptionsBetween = (
   return options;
 };
 
-const JoinMatchDialog: React.FC<Props> = ({ match }) => {
-  const timeOptions = timeOptionsBetween(9, 23);
-
-  const initalFrom =
-    timeOptions.find(
-      option =>
-        option === format(fromUnixTime(match.date.seconds), TIME_FORMAT),
-    ) || '18:30';
-
-  const initialUntil = format(
-    addHours(parse(initalFrom, TIME_FORMAT, new Date()), 2),
-    TIME_FORMAT,
+const JoinMatchDialog: React.FC<Props> = ({
+  match,
+  initialFrom,
+  initialUntil,
+}) => {
+  const timeOptions = calcTimeOptionsBetweenHours(
+    MATCH_TIME_START,
+    MATCH_TIME_END,
   );
 
-  const [open, setOpen] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-  const [state, setState] = React.useState<State>({
-    from: initalFrom,
-    until: timeOptions.includes(initialUntil)
-      ? initialUntil
-      : timeOptions[timeOptions.length - 1],
-  });
+  const timeInitialFrom = initialFrom ? formatTimestamp(initialFrom) : null;
+  const timeMatchDate = formatTimestamp(match.date);
 
-  const { currentUser } = firebase.auth;
+  const from =
+    timeOptions.find(
+      option => option === timeInitialFrom || option === timeMatchDate,
+    ) || DEFAULT_MATCH_STARTTIME;
+
+  const timeInitialUntil = initialUntil ? formatTimestamp(initialUntil) : null;
+
+  const until =
+    timeOptions.find(option => option === timeInitialUntil) ||
+    format(addHours(parse(from, TIME_FORMAT, new Date()), 2), TIME_FORMAT);
+
+  const untilClamped = timeOptions.includes(until)
+    ? until
+    : timeOptions[timeOptions.length - 1];
+
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const [state, setState] = React.useState<State>({
+    from: from,
+    until: untilClamped,
+  });
 
   const handleJoin = () => {
     if (!match.id) throw new Error('No match ID given');
 
+    setLoading(true);
     joinMatch({
       availFrom: state.from,
       availUntil: state.until,
@@ -91,18 +111,21 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
       currentPlayers: match.players,
     })
       .then(() => setOpen(false))
-      .catch(setError);
+      .catch(setError)
+      .finally(() => setLoading(false));
   };
 
   const handleLeave = () => {
     if (!match.id) throw new Error('No match ID given');
 
+    setLoading(true);
     leaveMatch({
       players: match.players,
       matchId: match.id,
     })
       .then(() => setOpen(false))
-      .catch(error => console.error(error));
+      .catch(error => console.error(error))
+      .finally(() => setLoading(false));
   };
 
   const handleClose = () => {
@@ -119,7 +142,7 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
   };
 
   const userInLobby = match.players.find(
-    player => player.uid === currentUser?.uid,
+    player => player.uid === firebase.auth.currentUser?.uid,
   );
 
   const selectOptions = timeOptions.map(value => (
@@ -150,7 +173,6 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
             size="medium"
             variant="outlined"
             onClick={() => setOpen(true)}
-            disableElevation
             fullWidth
           >
             Mitbolzen
@@ -158,6 +180,7 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
         </Grid>
       </Grid>
       <Dialog open={open} onClose={handleClose}>
+        {loading && <LinearProgress variant="query" />}
         <DialogTitle>{formatDate(match.date)}</DialogTitle>
         <DialogContent>
           <DialogContentText>Von wann bis wann hast du Zeit?</DialogContentText>
@@ -196,8 +219,10 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Abbrechen</Button>
-          <Button onClick={handleJoin} color="primary">
+          <Button onClick={handleClose} disabled={loading}>
+            Abbrechen
+          </Button>
+          <Button onClick={handleJoin} color="primary" disabled={loading}>
             Mitbolzen
           </Button>
         </DialogActions>
