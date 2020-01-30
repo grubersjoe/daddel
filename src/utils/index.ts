@@ -35,11 +35,7 @@ export function foramtTime(timestamp: Timestamp, timeFormat = TIME_FORMAT) {
 
 export function calcUserList(users: QuerySnapshot) {
   const userMap = new Map<string, User>();
-
-  users?.docs.forEach(user => {
-    const data = user.data() as User;
-    userMap.set(data.uid, data);
-  });
+  users?.docs.forEach(doc => userMap.set(doc.id, doc.data() as User));
 
   return userMap;
 }

@@ -62,6 +62,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
               label="Datum und Uhrzeit"
               name="date"
               variant="dialog"
+              inputVariant="outlined"
               value={date}
               onChange={setDate}
               minutesStep={15}
@@ -88,6 +89,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
             label="Beschreibung (optional)"
             name="maxPlayers"
             defaultValue={description}
+            variant="outlined"
             onChange={event => setDescription(event.target.value)}
             multiline
             rows={3}
@@ -109,7 +111,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
             <Grid item xs>
               <Button
                 type="submit"
-                variant="contained"
+                variant="outlined"
                 color="primary"
                 fullWidth
               >

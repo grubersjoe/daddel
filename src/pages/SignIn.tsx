@@ -1,14 +1,14 @@
 import React, { useState, FormEventHandler } from 'react';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { CircularProgress } from '@material-ui/core';
 import { styled } from '@material-ui/core/styles';
-import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import grey from '@material-ui/core/colors/grey';
+import Link from '@material-ui/core/Link';
 
 import * as ROUTES from '../constants/routes';
 import { theme } from '../styles/theme';
@@ -43,10 +43,7 @@ const SignIn: React.FC = () => {
     event.preventDefault();
     setLoading(true);
     signInWithEmailAndPassword(email, password)
-      .catch(error => {
-        setError(error);
-        console.error(error);
-      })
+      .catch(error => setError(error))
       .finally(() => setLoading(false));
   };
 
@@ -61,7 +58,7 @@ const SignIn: React.FC = () => {
   };
 
   return (
-    <Container style={{ maxWidth: 340, margin: theme.spacing(8) }}>
+    <Container style={{ maxWidth: 340, marginTop: theme.spacing(2) }}>
       <Logo />
       <h2>Anmelden</h2>
       <form autoComplete="off" onSubmit={handleEmailLogin}>
@@ -89,7 +86,7 @@ const SignIn: React.FC = () => {
             />
           </Grid>
 
-          <Grid item>
+          <Grid item style={{ marginBottom: theme.spacing(2) }}>
             <Button
               variant="outlined"
               color="primary"
@@ -105,36 +102,49 @@ const SignIn: React.FC = () => {
             >
               Anmelden
             </Button>
-            {error && <ErrorMessage>{error.message}</ErrorMessage>}
           </Grid>
+          <Grid item>
+            <Button
+              variant="outlined"
+              size="large"
+              onClick={handleGoogleLogin}
+              disabled={googleLoading}
+              startIcon={
+                googleLoading ? (
+                  <CircularProgress size={22} thickness={3} />
+                ) : (
+                  <GoogleIcon />
+                )
+              }
+              style={{ marginBottom: theme.spacing(6) }}
+              fullWidth
+            >
+              Mit Google anmelden
+            </Button>
+          </Grid>
+          {error && (
+            <Grid item>
+              <ErrorMessage>{error.message}</ErrorMessage>
+            </Grid>
+          )}
         </Grid>
       </form>
-      <Separator>oder</Separator>
+
+      <Typography gutterBottom>Noch kein Konto?</Typography>
       <Button
         variant="outlined"
-        size="large"
-        onClick={handleGoogleLogin}
-        disabled={googleLoading}
-        startIcon={
-          googleLoading ? (
-            <CircularProgress size={22} thickness={3} />
-          ) : (
-            <GoogleIcon />
-          )
-        }
-        style={{ marginBottom: theme.spacing(6) }}
-        fullWidth
+        component={RouterLink}
+        to={ROUTES.REGISTER}
+        style={{ marginBottom: theme.spacing(4) }}
       >
-        Mit Google anmelden
+        Registrieren
       </Button>
-      <Box display="flex" alignItems="center" justifyContent="space-between">
-        <Box>Noch kein Konto?</Box>
-        <Box>
-          <Button component={Link} to={ROUTES.REGISTER}>
-            Registrieren
-          </Button>
-        </Box>
-      </Box>
+
+      <div>
+        <Link component={RouterLink} to={ROUTES.RESET} color="textPrimary">
+          Passwort vergessen?
+        </Link>
+      </div>
     </Container>
   );
 };

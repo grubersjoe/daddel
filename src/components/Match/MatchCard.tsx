@@ -99,14 +99,14 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
         )}
         {match.players.length > 0 && (
           <Typography className={classes.list} variant="body2" component="ol">
-            {match.players.map((player, idx) => (
+            {match.players.map(({ uid, from, until }, idx) => (
               <li key={idx}>
-                {player.uid
-                  ? userList.get(player.uid)?.nickname
-                  : player.toString()}
+                {userList.get(uid)?.nickname
+                  ? userList.get(uid)?.nickname
+                  : 'Unknown'}
                 {' - '}
-                {format(fromUnixTime(player.from.seconds), TIME_FORMAT)} -{' '}
-                {format(fromUnixTime(player.until.seconds), TIME_FORMAT)}
+                {format(fromUnixTime(from.seconds), TIME_FORMAT)} -{' '}
+                {format(fromUnixTime(until.seconds), TIME_FORMAT)}
               </li>
             ))}
           </Typography>

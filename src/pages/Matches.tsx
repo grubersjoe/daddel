@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import SwipeableViews from 'react-swipeable-views';
+import { Link } from 'react-router-dom';
 
 import AppBar from '@material-ui/core/AppBar';
 import Box from '@material-ui/core/Box';
@@ -10,6 +11,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
 
 import firebase from '../api/firebase';
+import * as ROUTES from '../constants/routes';
 import { Match } from '../types';
 import { calcUserList } from '../utils';
 import MatchCard from '../components/Match/MatchCard';
@@ -75,7 +77,12 @@ const Matches: React.FC = () => {
   const noMatches = (
     <>
       <Typography paragraph>Keine Matches gefunden.</Typography>
-      <Button variant="outlined" color="primary">
+      <Button
+        variant="outlined"
+        color="primary"
+        component={Link}
+        to={ROUTES.ADD_MATCH}
+      >
         Neuer Bolz
       </Button>
     </>

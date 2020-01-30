@@ -3,20 +3,22 @@ export type Timestamp = firebase.firestore.Timestamp;
 export type Match = {
   id?: string;
   date: Timestamp;
-  players: Array<{
-    from: Timestamp;
-    until: Timestamp;
-    uid: string;
-  }>;
+  players: Array<Player>;
   maxPlayers: number;
   description?: string;
   created: Timestamp;
   createdBy: string;
 };
 
+export type Player = {
+  uid: string;
+  from: Timestamp;
+  until: Timestamp;
+};
+
 export type User = {
   uid: string;
-  nickname: string;
+  nickname?: string;
 };
 
 export type UserList = Map<User['uid'], User>;

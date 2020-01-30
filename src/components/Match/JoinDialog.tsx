@@ -18,8 +18,9 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 
 import firebase from '../../api/firebase';
-import { TIME_FORMAT } from '../../constants/time';
 import { joinMatch, leaveMatch } from '../../api/match';
+import { TIME_FORMAT } from '../../constants/time';
+import { theme } from '../../styles/theme';
 import { Match } from '../../types';
 import { formatDate } from '../../utils';
 
@@ -88,6 +89,7 @@ const AddMatchDialog: React.FC<Props> = ({ match }) => {
       availFrom: state.from,
       availUntil: state.until,
       matchId: match.id,
+      currentPlayers: match.players,
     })
       .then(() => setOpen(false))
       .catch(setError);
@@ -160,31 +162,35 @@ const AddMatchDialog: React.FC<Props> = ({ match }) => {
         <DialogTitle>{formatDate(match.date)}</DialogTitle>
         <DialogContent>
           <DialogContentText>Von wann bis wann hast du Zeit?</DialogContentText>
-          <FormControl margin="dense" style={{ marginRight: 16 }}>
-            <InputLabel htmlFor="select-from">Von</InputLabel>
-            <Select
-              value={state.from}
-              onChange={handleChange('from')}
-              inputProps={{ id: 'select-from' }}
-              native
-            >
-              {selectOptions}
-            </Select>
-          </FormControl>
-          <FormControl margin="dense">
-            <InputLabel htmlFor="select-until">Bis</InputLabel>
-            <Select
-              value={state.until}
-              onChange={handleChange('until')}
-              inputProps={{ id: 'select-until' }}
-              native
-            >
-              {selectOptions}
-            </Select>
-          </FormControl>
+          <Grid container style={{ margin: `${theme.spacing(2)}px 0` }}>
+            <Grid item xs={6} style={{ paddingRight: theme.spacing(1) }}>
+              <InputLabel htmlFor="select-from">Ab</InputLabel>
+              <Select
+                value={state.from}
+                onChange={handleChange('from')}
+                inputProps={{ id: 'select-from' }}
+                fullWidth
+                native
+              >
+                {selectOptions}
+              </Select>
+            </Grid>
+            <Grid item xs={6} style={{ paddingLeft: theme.spacing(1) }}>
+              <InputLabel htmlFor="select-until">Bis</InputLabel>
+              <Select
+                value={state.until}
+                onChange={handleChange('until')}
+                inputProps={{ id: 'select-until' }}
+                fullWidth
+                native
+              >
+                {selectOptions}
+              </Select>
+            </Grid>
+          </Grid>
           {error && (
             <Alert severity="error">
-              Wie unangenehm, es konnte nicht gespeichert Werden:
+              Wie unangenehm, es konnte nicht gespeichert werden:
               <br />
               {error.message}
             </Alert>

@@ -34,9 +34,9 @@ const App: React.FC = () => {
 
   return (
     <AuthUserContext.Provider value={authUser}>
-      <Router>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Router>
           <Layout>
             {authUser && <Redirect to={redirectPath} />}
             <Route path={ROUTES.ROOT} component={SignIn} exact />
@@ -45,10 +45,9 @@ const App: React.FC = () => {
             <PrivateRoute path={ROUTES.ADD_MATCH} component={AddMatch} />
             <PrivateRoute path={ROUTES.MATCHES} component={Matches} />
             <PrivateRoute path={ROUTES.PROFILE} component={Profile} />
-            <Redirect to="/" />
           </Layout>
-        </ThemeProvider>
-      </Router>
+        </Router>
+      </ThemeProvider>
     </AuthUserContext.Provider>
   );
 };
