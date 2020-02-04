@@ -25,9 +25,8 @@ type LabelProps = {
 const useStyles = makeStyles(theme => ({
   root: {
     position: 'relative',
-    marginTop: theme.spacing(2),
     paddingTop: theme.spacing(4),
-    fontSize: '80%',
+    fontSize: '85%',
   },
   label: {
     position: 'absolute',
@@ -41,19 +40,20 @@ const useStyles = makeStyles(theme => ({
     top: 0,
     marginBottom: 8,
     padding: '0.15em',
-    backgroundColor: '#666',
+    backgroundColor: '#6E6E6E',
     borderRadius: 2,
     overflow: 'hidden',
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
     textAlign: 'center',
+    textShadow: `0 1px 0 ${theme.palette.grey[800]}`,
   },
   name: {
     fontWeight: 'bold',
   },
   time: {
     marginLeft: '0.75em',
-    color: 'rgba(255, 255, 255, 0.75)',
+    color: 'rgba(255, 255, 255, 0.9)',
   },
 }));
 
