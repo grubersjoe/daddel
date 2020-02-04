@@ -61,7 +61,6 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
   );
 
   const matchInFuture = isFuture(fromUnixTime(match.date.seconds));
-  const lobbyNotFull = match.players.length < match.maxPlayers;
 
   if (match.date instanceof Date || !match.id) {
     throw new Error('This should not happen');

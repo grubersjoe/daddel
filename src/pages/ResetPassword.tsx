@@ -3,7 +3,8 @@ import Layout from '../components/Layout';
 
 const ResetPassword: React.FC = () => (
   <Layout>
-    <h2>Passwort zurücksetzen</h2>
+    <h1>Passwort zurücksetzen</h1>
+    <p>TODO</p>
   </Layout>
 );
 

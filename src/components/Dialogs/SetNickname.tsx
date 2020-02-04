@@ -16,7 +16,6 @@ const SetNicknameDialog: React.FC<RouteComponentProps> = ({ history }) => {
   const [nickname, setNickname] = useState('');
 
   const { currentUser } = firebase.auth;
-
   const [value, loading, error] = useDocumentData(
     firebase.firestore.doc(`users/${currentUser?.uid}`),
   );

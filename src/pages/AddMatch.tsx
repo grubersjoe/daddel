@@ -51,7 +51,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
 
   return (
     <Container>
-      <h2>Neuer Bolz</h2>
+      <h1>Neuer Bolz</h1>
       <AuthUserContext.Consumer>
         {user =>
           user && (
@@ -89,7 +89,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
                   variant="outlined"
                   onChange={event => setDescription(event.target.value)}
                   multiline
-                  rows={3}
+                  rows={2}
                   fullWidth
                 />
               </Box>

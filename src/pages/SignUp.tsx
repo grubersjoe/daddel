@@ -50,7 +50,7 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
   };
 
   return (
-    <Container style={{ maxWidth: 340, marginTop: theme.spacing(2) }}>
+    <Container style={{ marginTop: theme.spacing(2) }}>
       <Logo />
       <h2>Registrieren</h2>
       <form
@@ -58,7 +58,7 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
         onSubmit={handleRegister}
         style={{ marginBottom: theme.spacing(4) }}
       >
-        <Grid container spacing={2} direction="column">
+        <Grid container md={9} spacing={2} direction="column">
           <Grid item>
             <TextField
               label="E-Mail-Adresse"
