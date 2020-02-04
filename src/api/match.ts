@@ -1,3 +1,5 @@
+import format from 'date-fns/format';
+import fromUnixTime from 'date-fns/fromUnixTime';
 import parse from 'date-fns/parse';
 
 import firebase from './firebase';
@@ -7,19 +9,31 @@ import { Match, Player } from '../types';
 export function joinMatch(args: {
   availFrom: string;
   availUntil: string;
-  matchId: string;
+  match: Match;
   currentPlayers: Player[];
 }): Promise<void> {
   const { currentUser } = firebase.auth;
-  const { availFrom, availUntil, matchId, currentPlayers } = args;
+  const { availFrom, availUntil, match, currentPlayers } = args;
 
   if (!currentUser) throw new Error('No current user');
 
-  const now = new Date();
+  const matchDate = format(fromUnixTime(match.date.seconds), 'yyyy-MM-dd');
   const updatedPlayer: Player = {
     uid: currentUser.uid,
-    from: firebase.timestamp(parse(availFrom, TIME_FORMAT, now)),
-    until: firebase.timestamp(parse(availUntil, TIME_FORMAT, now)),
+    from: firebase.timestamp(
+      parse(
+        `${matchDate} ${availFrom}`,
+        `yyyy-MM-dd ${TIME_FORMAT}`,
+        new Date(),
+      ),
+    ),
+    until: firebase.timestamp(
+      parse(
+        `${matchDate} ${availUntil}`,
+        `yyyy-MM-dd ${TIME_FORMAT}`,
+        new Date(),
+      ),
+    ),
   };
 
   // Check if player is already in lobby
@@ -39,7 +53,7 @@ export function joinMatch(args: {
 
   return firebase.firestore
     .collection('matches')
-    .doc(matchId)
+    .doc(match.id)
     .set(matchData, { merge: true });
 }
 

@@ -92,7 +92,7 @@ const JoinMatchDialog: React.FC<Props> = ({
     joinMatch({
       availFrom: state.from,
       availUntil: state.until,
-      matchId: match.id,
+      match: match,
       currentPlayers: match.players,
     })
       .then(() => setOpen(false))
