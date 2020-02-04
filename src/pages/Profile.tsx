@@ -1,31 +1,113 @@
-import React from 'react';
+import React, {
+  useState,
+  useEffect,
+  FormEventHandler,
+  ChangeEventHandler,
+} from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { History } from 'history';
-import { Container, Button } from '@material-ui/core';
+import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
+import Button from '@material-ui/core/Button';
+import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
 import SignOutIcon from '@material-ui/icons/ExitToApp';
+import TextField from '@material-ui/core/TextField';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import firebase from '../api/firebase';
+import { User } from '../types';
+import { theme } from '../styles/theme';
 
 async function signOut(history: History) {
   await firebase.auth.signOut();
   history.push('/');
 }
 
-const Profile: React.FC<RouteComponentProps> = ({ history }) => (
-  <Container>
-    <h2>Profil</h2>
+const Profile: React.FC<RouteComponentProps> = ({ history }) => {
+  const { currentUser } = firebase.auth;
+  const [user, userLoading, error] = useDocumentDataOnce<User>(
+    firebase.firestore.doc(`users/${currentUser?.uid}`),
+    { idField: 'uid' },
+  );
 
-    {/* TODO: set nickname here */}
+  const [nickname, setNickname] = useState('');
+  const [loading, setLoading] = useState(false);
 
-    <Button
-      variant="outlined"
-      color="default"
-      startIcon={<SignOutIcon />}
-      onClick={() => signOut(history)}
-    >
-      Abmelden
-    </Button>
-  </Container>
-);
+  const initialUsername = user?.nickname;
+  useEffect(() => {
+    if (initialUsername) {
+      setNickname(initialUsername);
+    }
+  }, [initialUsername]);
+
+  const handleNicknameChange: ChangeEventHandler<HTMLInputElement> = event => {
+    setNickname(event.target.value);
+  };
+
+  const submitNickname: FormEventHandler = event => {
+    event.preventDefault();
+    setLoading(true);
+
+    if (!currentUser) return;
+
+    firebase.firestore
+      .collection('users')
+      .doc(currentUser.uid)
+      .set({ nickname })
+      .finally(() => setLoading(false));
+  };
+
+  return (
+    <Container>
+      <h1>Profile</h1>
+      {error && <p>Fehler :(</p>}
+      {!error && (
+        <form
+          autoComplete="off"
+          onSubmit={submitNickname}
+          style={{ marginBottom: theme.spacing(6) }}
+        >
+          <Grid container md={7} spacing={2} direction="column">
+            <Grid item>
+              <TextField
+                label="Nickname"
+                variant="outlined"
+                size="small"
+                value={nickname}
+                onChange={handleNicknameChange}
+                fullWidth
+              />
+            </Grid>
+
+            <Grid item>
+              <Button
+                type="submit"
+                color="primary"
+                variant="outlined"
+                disabled={loading || userLoading}
+                startIcon={
+                  loading || userLoading ? (
+                    <CircularProgress color="inherit" size={22} thickness={3} />
+                  ) : null
+                }
+                fullWidth
+              >
+                Nickname ändern
+              </Button>
+            </Grid>
+          </Grid>
+        </form>
+      )}
+      <Button
+        variant="outlined"
+        color="default"
+        startIcon={<SignOutIcon />}
+        onClick={() => signOut(history)}
+      >
+        Abmelden
+      </Button>
+    </Container>
+  );
+};
 
 export default withRouter(Profile);

@@ -18,7 +18,7 @@ export type Player = {
 
 export type User = {
   uid: string;
-  nickname?: string;
+  nickname: string;
 };
 
 export type UserList = Map<User['uid'], User>;
