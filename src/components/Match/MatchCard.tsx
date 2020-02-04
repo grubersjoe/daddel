@@ -12,6 +12,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import Typography from '@material-ui/core/Typography';
 
 import firebase from '../../api/firebase';
+import { theme } from '../../styles/theme';
 import { Match, UserList } from '../../types';
 import { formatDate, formatTimestamp } from '../../utils';
 import gameImages from '../../assets/images/games';
@@ -102,11 +103,22 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
         </Grid>
       </CardMedia>
       <CardContent>
-        <Typography color="textSecondary">
+        <Typography
+          color="textSecondary"
+          style={{ marginBottom: theme.spacing(1.5) }}
+        >
           <TimeAgo date={fromUnixTime(match.date.seconds)} />
         </Typography>
+        {match.description && (
+          <Typography style={{ marginBottom: theme.spacing(3) }}>
+            {match.description}
+          </Typography>
+        )}
         {match.players.length === 0 && (
-          <Typography color="textSecondary" style={{ margin: '1rem 0 0.5rem' }}>
+          <Typography
+            color="textSecondary"
+            style={{ margin: `${theme.spacing(2)} 0` }}
+          >
             Noch niemand
           </Typography>
         )}
@@ -114,8 +126,8 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
           <Calendar players={match.players} userList={userList} />
         )}
       </CardContent>
-      {matchInFuture && lobbyNotFull && (
-        <CardActions style={{ padding: '0 16px 16px 16px' }}>
+      {matchInFuture && (
+        <CardActions style={{ padding: theme.spacing(2), paddingTop: 0 }}>
           <JoinMatchDialog
             match={match}
             initialFrom={currentPlayer?.from}
