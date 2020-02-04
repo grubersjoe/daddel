@@ -12,6 +12,7 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(2.5),
   },
   heading: {
+    margin: 0,
     fontSize: '250%',
     color: '#fff',
     textDecoration: 'none',
