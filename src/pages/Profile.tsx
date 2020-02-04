@@ -67,8 +67,8 @@ const Profile: React.FC<RouteComponentProps> = ({ history }) => {
           onSubmit={submitNickname}
           style={{ marginBottom: theme.spacing(6) }}
         >
-          <Grid container md={7} spacing={2} direction="column">
-            <Grid item>
+          <Grid container spacing={2} direction="column">
+            <Grid item md={7}>
               <TextField
                 label="Nickname"
                 variant="outlined"
@@ -79,7 +79,7 @@ const Profile: React.FC<RouteComponentProps> = ({ history }) => {
               />
             </Grid>
 
-            <Grid item>
+            <Grid item md={7}>
               <Button
                 type="submit"
                 color="primary"

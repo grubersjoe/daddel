@@ -27,6 +27,7 @@ const App: React.FC = () => {
   );
 
   useEffect(() => {
+    // Return the unsubscribe function of onAuthStateChanged (cleanup)
     return firebase.auth.onAuthStateChanged(authUser => {
       authUser ? setAuthUser(authUser) : setAuthUser(null);
     });

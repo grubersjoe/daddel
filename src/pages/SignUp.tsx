@@ -58,8 +58,8 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
         onSubmit={handleRegister}
         style={{ marginBottom: theme.spacing(4) }}
       >
-        <Grid container md={9} spacing={2} direction="column">
-          <Grid item>
+        <Grid container spacing={2} direction="column">
+          <Grid item md={9}>
             <TextField
               label="E-Mail-Adresse"
               type="email"
@@ -70,7 +70,7 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
               required
             />
           </Grid>
-          <Grid item>
+          <Grid item md={9}>
             <TextField
               label="Passwort"
               type="password"
@@ -81,7 +81,7 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
               required
             />
           </Grid>
-          <Grid item>
+          <Grid item md={9}>
             <TextField
               label="Nickname"
               variant="outlined"
@@ -91,7 +91,7 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
               required
             />
           </Grid>
-          <Grid item>
+          <Grid item md={9}>
             <Button
               variant="outlined"
               color="primary"

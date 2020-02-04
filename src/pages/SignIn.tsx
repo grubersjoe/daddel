@@ -52,8 +52,8 @@ const SignIn: React.FC = () => {
       <Logo />
       <h2>Anmelden</h2>
       <form autoComplete="off" onSubmit={handleEmailLogin}>
-        <Grid container md={9} spacing={2} direction="column">
-          <Grid item>
+        <Grid container spacing={2} direction="column">
+          <Grid item md={9}>
             <TextField
               label="E-Mail-Adresse"
               type="email"
@@ -64,7 +64,7 @@ const SignIn: React.FC = () => {
               required
             />
           </Grid>
-          <Grid item>
+          <Grid item md={9}>
             <TextField
               label="Passwort"
               type="password"
@@ -76,7 +76,7 @@ const SignIn: React.FC = () => {
             />
           </Grid>
 
-          <Grid item style={{ marginBottom: theme.spacing(2) }}>
+          <Grid item md={9} style={{ marginBottom: theme.spacing(2) }}>
             <Button
               variant="outlined"
               color="primary"
@@ -93,12 +93,12 @@ const SignIn: React.FC = () => {
               Anmelden
             </Button>
             {error && (
-              <Grid item>
+              <Grid item md={9}>
                 <ErrorMessage>{error.message}</ErrorMessage>
               </Grid>
             )}
           </Grid>
-          <Grid item>
+          <Grid item md={9}>
             <Button
               variant="outlined"
               size="large"
