@@ -18,10 +18,6 @@ type Props = {
 function calcBarColor(value: number, max: number) {
   const STEPS = 5;
 
-  if (value > max) {
-    throw new Error(`Value ${value} must be less than maximum ${max}`);
-  }
-
   const colorIndex = Math.round((value * STEPS) / max);
 
   switch (colorIndex) {
@@ -56,6 +52,8 @@ const useStyles = makeStyles<Theme, Props>(theme => ({
 }));
 
 export const ProgressBar: React.FC<Props> = ({ value, max }) => {
+  value = Math.min(value, max);
+
   const classes = useStyles({ value, max });
 
   return (
