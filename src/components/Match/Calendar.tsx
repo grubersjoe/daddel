@@ -25,35 +25,37 @@ type LabelProps = {
 const useStyles = makeStyles(theme => ({
   root: {
     position: 'relative',
-    paddingTop: theme.spacing(4),
+    paddingTop: theme.spacing(3.5),
     fontSize: '85%',
   },
   label: {
     position: 'absolute',
     top: 0,
     height: '100%',
+    borderLeft: 'solid 1px rgba(255, 255, 255, 0.2)',
     paddingLeft: '0.4em',
-    borderLeft: 'solid 1px rgba(255, 255, 255, 0.15)',
+    lineHeight: 1,
   },
   bar: {
     position: 'relative',
     top: 0,
-    marginBottom: 8,
-    padding: '0.15em',
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginBottom: 6,
+    padding: '0.2em 0.75em',
     backgroundColor: '#6E6E6E',
-    borderRadius: 2,
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-    textAlign: 'center',
+    borderRadius: 3,
     textShadow: `0 1px 0 ${theme.palette.grey[800]}`,
   },
   name: {
-    fontWeight: 'bold',
+    marginRight: '0.75em',
+    fontWeight: 500,
   },
   time: {
-    marginLeft: '0.75em',
     color: 'rgba(255, 255, 255, 0.9)',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
   },
 }));
 
