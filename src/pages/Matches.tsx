@@ -18,14 +18,15 @@ import MatchCard from '../components/Match/MatchCard';
 import SetNicknameDialog from '../components/Dialogs/SetNickname';
 import Spinner from '../components/Spinner';
 
-const currentTime = new Date();
-
 interface TabPanelProps {
   children?: React.ReactNode;
   dir?: string;
   index: number;
   value: number;
 }
+
+const today = new Date();
+today.setHours(0, 0);
 
 const TabPanel: React.FC<TabPanelProps> = props => {
   const { children, value, index, ...other } = props;
@@ -50,16 +51,16 @@ const Matches: React.FC = () => {
   const [futureMatches, futureLoading, futureError] = useCollection(
     firebase.firestore
       .collection('matches')
-      .where('date', '>=', currentTime)
+      .where('date', '>=', today)
       .orderBy('date', 'asc'),
   );
 
   const [pastMatches, pastLoading, pastError] = useCollection(
     firebase.firestore
       .collection('matches')
-      .where('date', '<', currentTime)
-      .orderBy('date', 'asc')
-      .limit(100),
+      .where('date', '<', today)
+      .orderBy('date', 'desc')
+      .limit(10),
   );
 
   const [users] = useCollection(firebase.firestore.collection('users'));
