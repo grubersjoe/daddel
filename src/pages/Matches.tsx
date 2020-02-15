@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import SwipeableViews from 'react-swipeable-views';
 import { Link } from 'react-router-dom';
+import startOfToday from 'date-fns/startOfToday';
 
 import AppBar from '@material-ui/core/AppBar';
 import Box from '@material-ui/core/Box';
@@ -25,9 +26,6 @@ interface TabPanelProps {
   value: number;
 }
 
-const today = new Date();
-today.setHours(0, 0);
-
 const TabPanel: React.FC<TabPanelProps> = props => {
   const { children, value, index, ...other } = props;
 
@@ -48,6 +46,8 @@ const TabPanel: React.FC<TabPanelProps> = props => {
 };
 
 const Matches: React.FC = () => {
+  const today = startOfToday();
+
   const [futureMatches, futureLoading, futureError] = useCollection(
     firebase.firestore
       .collection('matches')
