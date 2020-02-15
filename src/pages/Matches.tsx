@@ -68,14 +68,6 @@ const Matches: React.FC = () => {
 
   const [tabIndex, setTabIndex] = useState(0);
 
-  const handleChange = (event: React.ChangeEvent<{}>, index: number) => {
-    setTabIndex(index);
-  };
-
-  const handleChangeIndex = (index: number) => {
-    setTabIndex(index);
-  };
-
   const noMatches = (
     <>
       <Typography paragraph>Wow. Much empty.</Typography>
@@ -94,12 +86,16 @@ const Matches: React.FC = () => {
     <>
       <SetNicknameDialog />
       <AppBar position="fixed" color="default">
-        <Tabs value={tabIndex} onChange={handleChange} variant="fullWidth">
+        <Tabs
+          value={tabIndex}
+          onChange={(_event, index) => setTabIndex(index)}
+          variant="fullWidth"
+        >
           <Tab label="Anstehende" />
           <Tab label="Vergangene" />
         </Tabs>
       </AppBar>
-      <SwipeableViews index={tabIndex} onChangeIndex={handleChangeIndex}>
+      <SwipeableViews index={tabIndex} onChangeIndex={setTabIndex}>
         <TabPanel value={tabIndex} index={0}>
           {futureError && (
             <p>
