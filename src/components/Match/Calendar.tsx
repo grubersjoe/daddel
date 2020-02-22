@@ -1,5 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import differenceInMinutes from 'date-fns/differenceInMinutes';
 import format from 'date-fns/format';
 import fromUnixTime from 'date-fns/fromUnixTime';
@@ -20,6 +21,12 @@ type BarProps = {
 
 type LabelProps = {
   left: number; // in percent
+};
+
+const textOverflow: CSSProperties = {
+  overflow: 'hidden',
+  whiteSpace: 'nowrap',
+  textOverflow: 'ellipsis',
 };
 
 const useStyles = makeStyles(theme => ({
@@ -48,14 +55,12 @@ const useStyles = makeStyles(theme => ({
     textShadow: `0 1px 0 ${theme.palette.grey[800]}`,
   },
   name: {
-    marginRight: '0.75em',
+    ...textOverflow,
     fontWeight: 500,
   },
   time: {
+    ...textOverflow,
     color: 'rgba(255, 255, 255, 0.9)',
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
   },
 }));
 
