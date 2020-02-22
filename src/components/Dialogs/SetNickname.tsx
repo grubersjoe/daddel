@@ -52,7 +52,7 @@ const SetNicknameDialog: React.FC<RouteComponentProps> = ({ history }) => {
           />
           {error && (
             <Alert severity="error">
-              Wie unangenehm, es konnte nicht gespeichert werden:
+              Wie unangenehm, ein Fehler ist aufgetreten:
               <br />
               {error.message}
             </Alert>
