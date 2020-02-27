@@ -1,4 +1,5 @@
 import React from 'react';
+import endOfDay from 'date-fns/endOfDay';
 import isFuture from 'date-fns/isFuture';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import { makeStyles } from '@material-ui/core/styles';
@@ -60,7 +61,8 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
     player => player.uid === currentUser.uid,
   );
 
-  const matchInFuture = isFuture(fromUnixTime(match.date.seconds));
+  // It should be able to join a match until the end of its date
+  const isJoinable = isFuture(endOfDay(fromUnixTime(match.date.seconds)));
 
   if (match.date instanceof Date || !match.id) {
     throw new Error('This should not happen');
@@ -125,7 +127,7 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
           <Calendar players={match.players} userList={userList} />
         )}
       </CardContent>
-      {matchInFuture && (
+      {isJoinable && (
         <CardActions style={{ padding: theme.spacing(2), paddingTop: 0 }}>
           <JoinMatchDialog
             match={match}
