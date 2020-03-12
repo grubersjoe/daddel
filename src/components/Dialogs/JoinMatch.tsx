@@ -31,7 +31,7 @@ import {
 } from '../../utils';
 
 type Props = {
-  match: Match;
+  match: Required<Match>;
   initialFrom?: Timestamp;
   initialUntil?: Timestamp;
 };
@@ -86,13 +86,11 @@ const JoinMatchDialog: React.FC<Props> = ({
   }, [from, untilClamped]);
 
   const handleJoin = () => {
-    if (!match.id) throw new Error('No match ID given');
-
     setLoading(true);
     joinMatch({
       availFrom: state.from,
       availUntil: state.until,
-      match: match,
+      match,
       currentPlayers: match.players,
     })
       .then(() => setOpen(false))

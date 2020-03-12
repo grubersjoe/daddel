@@ -24,7 +24,7 @@ import ProgressBar from './ProgressBar';
 import TimeAgo from '../TimeAgo';
 
 type Props = {
-  match: Match;
+  match: Required<Match>;
   userList: UserList;
 };
 

@@ -1,10 +1,15 @@
 import React, { useState, FormEvent } from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { User } from 'firebase';
+import addHours from 'date-fns/addHours';
+import format from 'date-fns/format';
+import isSameDay from 'date-fns/isSameDay';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
 import Container from '@material-ui/core/Container';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import DateFnsUtils from '@date-io/date-fns';
@@ -13,6 +18,8 @@ import setMinutes from 'date-fns/setMinutes';
 import setHours from 'date-fns/setHours';
 
 import firebase from '../api/firebase';
+import { joinMatch } from '../api/match';
+import { MATCH_TIME_END, TIME_FORMAT } from '../constants/time';
 import { Match } from '../types';
 import AuthUserContext from '../components/AuthUserContext';
 
@@ -20,8 +27,9 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
   const defaultDate = setMinutes(setHours(new Date(), 18), 30);
 
   const [date, setDate] = useState<Date | null>(defaultDate);
-  const [maxPlayers, setMaxPlayers] = useState<number>(5); // eslint-disable-line
-  const [description, setDescription] = useState<string>('');
+  const [maxPlayers, setMaxPlayers] = useState(5); // eslint-disable-line
+  const [description, setDescription] = useState('');
+  const [joinLobby, setJoinLobby] = useState(true);
 
   const [error, setError] = useState<Error | null>(null);
 
@@ -33,7 +41,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
       return;
     }
 
-    const matchData: Match = {
+    const match: Match = {
       date: firebase.timestamp(date),
       maxPlayers,
       players: [],
@@ -44,10 +52,30 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
 
     firebase.firestore
       .collection('matches')
-      .add(matchData)
-      .then(doc => history.push('/matches'))
+      .add(match)
+      .then(doc => {
+        if (joinLobby) {
+          const availFrom = format(date, TIME_FORMAT);
+          const availUntil = isSameDay(addHours(date, 2), date)
+            ? format(addHours(date, 2), TIME_FORMAT)
+            : MATCH_TIME_END;
+
+          joinMatch({
+            availFrom,
+            availUntil,
+            currentPlayers: [],
+            match: { ...match, id: doc.id } as Required<Match>,
+          })
+            .then(() => history.push('/matches'))
+            .catch(setError);
+        } else {
+          history.push('/matches');
+        }
+      })
       .catch(setError);
   };
+
+  if (error) console.error(error);
 
   return (
     <Container>
@@ -72,17 +100,17 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
                 </MuiPickersUtilsProvider>
               </Box>
               {/* <Box my="2rem">
-          <TextField
-            label="Lobbygröße"
-            type="number"
-            defaultValue={maxPlayers}
-            onChange={event => setMaxPlayers(Number(event.target.value))}
-            disabled
-            required
-            fullWidth
-          />
-        </Box> */}
-              <Box my="2rem">
+                <TextField
+                  label="Lobbygröße"
+                  type="number"
+                  defaultValue={maxPlayers}
+                  onChange={event => setMaxPlayers(Number(event.target.value))}
+                  disabled
+                  required
+                  fullWidth
+                />
+              </Box> */}
+              <Box my="2rem" marginY="1rem">
                 <TextField
                   label="Beschreibung (optional)"
                   defaultValue={description}
@@ -93,6 +121,15 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
                   fullWidth
                 />
               </Box>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={joinLobby}
+                    onChange={event => setJoinLobby(event.target.checked)}
+                  />
+                }
+                label="Selbst mitbolzen"
+              />
               <Box my="2rem">
                 <Grid container direction="row" spacing={2}>
                   <Grid item xs>

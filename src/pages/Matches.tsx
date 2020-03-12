@@ -107,7 +107,7 @@ const Matches: React.FC = () => {
             <div>
               {futureMatches.docs.map(doc => (
                 <MatchCard
-                  match={{ ...doc.data(), id: doc.id } as Match}
+                  match={{ ...doc.data(), id: doc.id } as Required<Match>}
                   userList={userList}
                   key={doc.id}
                 />
@@ -127,7 +127,7 @@ const Matches: React.FC = () => {
             <div>
               {pastMatches.docs.map(doc => (
                 <MatchCard
-                  match={{ ...doc.data(), id: doc.id } as Match}
+                  match={{ ...doc.data(), id: doc.id } as Required<Match>}
                   userList={userList}
                   key={doc.id}
                 />
