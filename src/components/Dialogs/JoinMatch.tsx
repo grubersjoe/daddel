@@ -59,9 +59,9 @@ const JoinMatchDialog: React.FC<Props> = ({
   const timeMatchDate = formatTimestamp(match.date);
 
   const from =
-    timeOptions.find(
-      option => option === timeInitialFrom || option === timeMatchDate,
-    ) || DEFAULT_MATCH_STARTTIME;
+    timeOptions.find(option => option === timeInitialFrom) ||
+    timeOptions.find(option => option === timeMatchDate) ||
+    DEFAULT_MATCH_STARTTIME;
 
   const timeInitialUntil = initialUntil ? formatTimestamp(initialUntil) : null;
 
