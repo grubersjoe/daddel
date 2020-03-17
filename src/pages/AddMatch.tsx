@@ -21,8 +21,10 @@ import setHours from 'date-fns/setHours';
 import firebase from '../api/firebase';
 import { joinMatch } from '../api/match';
 import gameBanners from '../assets/images/games';
+import { DEFAULT_GAME } from '../constants';
 import { MATCH_TIME_END, TIME_FORMAT } from '../constants/time';
 import { Match, Game } from '../types';
+
 import AuthUserContext from '../components/AuthUserContext';
 import SelectCard from '../components/SelectCard';
 import Spinner from '../components/Spinner';
@@ -30,7 +32,7 @@ import Spinner from '../components/Spinner';
 const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
   const defaultDate = setMinutes(setHours(new Date(), 18), 30);
 
-  const [gameKey, setGameKey] = useState<Game['id']>('csgo');
+  const [gameKey, setGameKey] = useState<Game['id']>(DEFAULT_GAME);
   const [date, setDate] = useState<Date | null>(defaultDate);
   const [maxPlayers, setMaxPlayers] = useState(5); // eslint-disable-line
   const [description, setDescription] = useState('');

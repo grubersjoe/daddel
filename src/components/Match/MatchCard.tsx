@@ -13,10 +13,12 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import Typography from '@material-ui/core/Typography';
 
 import firebase from '../../api/firebase';
+import gameBanners from '../../assets/images/games';
 import { theme } from '../../styles/theme';
+import { DEFAULT_GAME } from '../../constants';
 import { Match, UserList } from '../../types';
 import { formatDate, formatTimestamp } from '../../utils';
-import gameBanners from '../../assets/images/games';
+
 import JoinMatchDialog from '../Dialogs/JoinMatch';
 import Calendar from './Calendar';
 import Menu from './Menu';
@@ -69,7 +71,7 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
   }
 
   // At the beginning of time only CSGO existed
-  const image = gameBanners[match.game || 'csgo'];
+  const image = gameBanners[match.game || DEFAULT_GAME];
 
   return (
     <Card className={classes.card} raised>
