@@ -136,7 +136,10 @@ const Calendar: React.FC<Props> = ({ players, userList }) => {
 
         return (
           <Bar width={width} left={left} key={player.uid}>
-            <span className={classes.name}>
+            <span
+              className={classes.name}
+              title={userList.get(player.uid)?.nickname}
+            >
               {userList.get(player.uid)?.nickname}
             </span>
             <span className={classes.time}>
