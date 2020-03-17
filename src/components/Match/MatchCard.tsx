@@ -116,7 +116,9 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
           <TimeAgo date={fromUnixTime(match.date.seconds)} />
         </Typography>
         {match.description && (
-          <Typography style={{ marginBottom: theme.spacing(3) }}>
+          <Typography
+            style={{ marginBottom: theme.spacing(3), lineHeight: 1.25 }}
+          >
             {match.description}
           </Typography>
         )}
