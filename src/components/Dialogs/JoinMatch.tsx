@@ -31,7 +31,7 @@ import {
 } from '../../utils';
 
 type Props = {
-  match: Required<Match>;
+  match: Match;
   initialFrom?: Timestamp;
   initialUntil?: Timestamp;
 };

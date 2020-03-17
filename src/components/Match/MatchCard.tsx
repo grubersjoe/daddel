@@ -16,7 +16,7 @@ import firebase from '../../api/firebase';
 import { theme } from '../../styles/theme';
 import { Match, UserList } from '../../types';
 import { formatDate, formatTimestamp } from '../../utils';
-import gameImages from '../../assets/images/games';
+import gameBanners from '../../assets/images/games';
 import JoinMatchDialog from '../Dialogs/JoinMatch';
 import Calendar from './Calendar';
 import Menu from './Menu';
@@ -24,11 +24,11 @@ import ProgressBar from './ProgressBar';
 import TimeAgo from '../TimeAgo';
 
 type Props = {
-  match: Required<Match>;
+  match: Match;
   userList: UserList;
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   card: {
     marginBottom: '2rem',
   },
@@ -68,9 +68,12 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
     throw new Error('This should not happen');
   }
 
+  // At the beginning of time only CSGO existed
+  const image = gameBanners[match.game || 'csgo'];
+
   return (
     <Card className={classes.card} raised>
-      <CardMedia className={classes.media} image={gameImages.csgo}>
+      <CardMedia className={classes.media} image={image}>
         <Grid
           container
           direction="column"

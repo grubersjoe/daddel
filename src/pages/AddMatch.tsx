@@ -1,6 +1,7 @@
 import React, { useState, FormEvent } from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { User } from 'firebase';
+import { useCollectionDataOnce } from 'react-firebase-hooks/firestore';
 import addHours from 'date-fns/addHours';
 import format from 'date-fns/format';
 import isSameDay from 'date-fns/isSameDay';
@@ -19,19 +20,27 @@ import setHours from 'date-fns/setHours';
 
 import firebase from '../api/firebase';
 import { joinMatch } from '../api/match';
+import gameBanners from '../assets/images/games';
 import { MATCH_TIME_END, TIME_FORMAT } from '../constants/time';
-import { Match } from '../types';
+import { Match, Game } from '../types';
 import AuthUserContext from '../components/AuthUserContext';
+import SelectCard from '../components/SelectCard';
+import Spinner from '../components/Spinner';
 
 const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
   const defaultDate = setMinutes(setHours(new Date(), 18), 30);
 
+  const [gameKey, setGameKey] = useState<Game['id']>('csgo');
   const [date, setDate] = useState<Date | null>(defaultDate);
   const [maxPlayers, setMaxPlayers] = useState(5); // eslint-disable-line
   const [description, setDescription] = useState('');
   const [joinLobby, setJoinLobby] = useState(true);
 
   const [error, setError] = useState<Error | null>(null);
+
+  const [games, gamesLoading, gamesError] = useCollectionDataOnce<Game>(
+    firebase.firestore.collection('games').orderBy('name', 'asc'),
+  );
 
   const addMatch = (event: FormEvent, currentUser: User) => {
     event.preventDefault();
@@ -42,6 +51,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
     }
 
     const match: Match = {
+      game: gameKey,
       date: firebase.timestamp(date),
       maxPlayers,
       players: [],
@@ -75,13 +85,33 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
       .catch(setError);
   };
 
+  if (gamesError) console.error(gamesError);
   if (error) console.error(error);
 
   return (
     <Container>
       <h1>Neuer Bolz</h1>
+
+      {gamesLoading && <Spinner />}
+      {games && (
+        <Grid container spacing={2}>
+          {games.map((game, idx) => (
+            <Grid item xs={6}>
+              <SelectCard
+                image={gameBanners[game.id]}
+                title={game.name}
+                isSelected={game.id === gameKey}
+                onClick={() => setGameKey(game.id)}
+                key={game.id}
+              />
+            </Grid>
+          ))}
+        </Grid>
+      )}
+
       <AuthUserContext.Consumer>
         {user =>
+          !gamesLoading &&
           user && (
             <form autoComplete="off" onSubmit={event => addMatch(event, user)}>
               <Box my="2rem">
@@ -99,17 +129,6 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
                   />
                 </MuiPickersUtilsProvider>
               </Box>
-              {/* <Box my="2rem">
-                <TextField
-                  label="Lobbygröße"
-                  type="number"
-                  defaultValue={maxPlayers}
-                  onChange={event => setMaxPlayers(Number(event.target.value))}
-                  disabled
-                  required
-                  fullWidth
-                />
-              </Box> */}
               <Box my="2rem" marginY="1rem">
                 <TextField
                   label="Beschreibung (optional)"
@@ -158,6 +177,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
           )
         }
       </AuthUserContext.Consumer>
+
       {error && <p>Fehler!</p>}
     </Container>
   );

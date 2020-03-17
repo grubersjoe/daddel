@@ -9,7 +9,7 @@ import { Match, Player } from '../types';
 export function joinMatch(args: {
   availFrom: string;
   availUntil: string;
-  match: Required<Match>;
+  match: Match;
   currentPlayers: Player[];
 }): Promise<void> {
   const { currentUser } = firebase.auth;
