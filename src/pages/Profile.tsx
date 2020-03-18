@@ -12,7 +12,6 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import SignOutIcon from '@material-ui/icons/ExitToApp';
 import TextField from '@material-ui/core/TextField';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 import firebase from '../api/firebase';
 import { User } from '../types';
@@ -61,6 +60,7 @@ const Profile: React.FC<RouteComponentProps> = ({ history }) => {
     <Container>
       <h1>Profil</h1>
       {error && <p>Fehler :(</p>}
+
       {!error && (
         <form
           autoComplete="off"
@@ -85,11 +85,6 @@ const Profile: React.FC<RouteComponentProps> = ({ history }) => {
                 color="primary"
                 variant="outlined"
                 disabled={loading || userLoading}
-                startIcon={
-                  loading || userLoading ? (
-                    <CircularProgress color="inherit" size={22} thickness={3} />
-                  ) : null
-                }
                 fullWidth
               >
                 Nickname ändern
