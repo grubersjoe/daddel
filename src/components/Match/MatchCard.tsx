@@ -29,16 +29,26 @@ type Props = {
   userList: UserMap;
 };
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
   card: {
-    marginBottom: '2rem',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
   },
   media: {
-    height: 180,
+    height: '40vw',
     backgroundPosition: 'top',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-end',
+
+    [theme.breakpoints.up('md')]: {
+      height: 180,
+    },
+
+    [theme.breakpoints.up('lg')]: {
+      height: 220,
+    },
   },
   date: {
     padding: '24px 16px 8px 16px',
@@ -74,7 +84,7 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
   }
 
   // At the beginning of time only CSGO existed
-  const image = gameBanners[match.game || 'fallback'];
+  const image = gameBanners[match.game || 'csgo'];
 
   return (
     <Card className={classes.card} raised>
@@ -116,41 +126,48 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
           )}
         </Grid>
       </CardMedia>
-      <CardContent>
-        <Typography
-          color="textSecondary"
-          style={{ marginBottom: theme.spacing(1.5) }}
-        >
-          <TimeAgo date={fromUnixTime(match.date.seconds)} />
-        </Typography>
-        {match.description && (
-          <Typography
-            style={{ marginBottom: theme.spacing(3), lineHeight: 1.25 }}
-          >
-            {match.description}
-          </Typography>
-        )}
-        {match.players.length === 0 && (
+      <Box
+        display="flex"
+        flexGrow={1}
+        flexDirection="column"
+        justifyContent="space-between"
+      >
+        <CardContent>
           <Typography
             color="textSecondary"
-            style={{ margin: `${theme.spacing(2)} 0` }}
+            style={{ marginBottom: theme.spacing(1.5) }}
           >
-            Noch niemand
+            <TimeAgo date={fromUnixTime(match.date.seconds)} />
           </Typography>
+          {match.description && (
+            <Typography
+              style={{ marginBottom: theme.spacing(3), lineHeight: 1.25 }}
+            >
+              {match.description}
+            </Typography>
+          )}
+          {match.players.length === 0 && (
+            <Typography
+              color="textSecondary"
+              style={{ margin: `${theme.spacing(2)} 0` }}
+            >
+              Noch niemand
+            </Typography>
+          )}
+          {match.players.length > 0 && (
+            <Calendar players={match.players} userList={userList} />
+          )}
+        </CardContent>
+        {isJoinable && (
+          <CardActions style={{ padding: theme.spacing(2), paddingTop: 0 }}>
+            <JoinMatchDialog
+              match={match}
+              initialFrom={currentPlayer?.from}
+              initialUntil={currentPlayer?.until}
+            />
+          </CardActions>
         )}
-        {match.players.length > 0 && (
-          <Calendar players={match.players} userList={userList} />
-        )}
-      </CardContent>
-      {isJoinable && (
-        <CardActions style={{ padding: theme.spacing(2), paddingTop: 0 }}>
-          <JoinMatchDialog
-            match={match}
-            initialFrom={currentPlayer?.from}
-            initialUntil={currentPlayer?.until}
-          />
-        </CardActions>
-      )}
+      </Box>
     </Card>
   );
 };

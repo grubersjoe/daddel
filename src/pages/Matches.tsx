@@ -7,6 +7,7 @@ import startOfToday from 'date-fns/startOfToday';
 import AppBar from '@material-ui/core/AppBar';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
@@ -126,11 +127,13 @@ const Matches: React.FC = () => {
           )}
           {futureMatchesLoading && <Spinner />}
           {futureMatches && userList && (
-            <div>
+            <Grid container spacing={5}>
               {futureMatches.map(match => (
-                <MatchCard match={match} userList={userList} key={match.id} />
+                <Grid item xs={12} md={4} lg={3}>
+                  <MatchCard match={match} userList={userList} key={match.id} />
+                </Grid>
               ))}
-            </div>
+            </Grid>
           )}
           {futureMatches && futureMatches.length === 0 && noMatches}
         </TabPanel>
@@ -142,11 +145,13 @@ const Matches: React.FC = () => {
           )}
           {pastMatchesLoading && <Spinner />}
           {pastMatches && userList && (
-            <div>
+            <Grid container spacing={5}>
               {pastMatches.map(match => (
-                <MatchCard match={match} userList={userList} key={match.id} />
+                <Grid item xs={12} md={4} lg={3}>
+                  <MatchCard match={match} userList={userList} key={match.id} />
+                </Grid>
               ))}
-            </div>
+            </Grid>
           )}
           {pastMatches && pastMatches.length === 0 && (
             <Typography paragraph>Wow. Much empty.</Typography>
