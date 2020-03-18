@@ -10,7 +10,7 @@ import parse from 'date-fns/parse';
 import roundToNearestMinutes from 'date-fns/roundToNearestMinutes';
 
 import { TIME_FORMAT } from '../constants/time';
-import { QuerySnapshot, User, Timestamp } from '../types';
+import { Timestamp, User, UserMap } from '../types';
 
 const DATE_FORMAT = 'dd.MM.';
 
@@ -69,9 +69,9 @@ export function calcTimeLabelsBetweenTimes(
   return options;
 }
 
-export function calcUserList(users: QuerySnapshot) {
+export function calcUserList(users: User[]): UserMap {
   const userMap = new Map<string, User>();
-  users?.docs.forEach(doc => userMap.set(doc.id, doc.data() as User));
+  users.forEach(user => userMap.set(user.uid, user));
 
   return userMap;
 }

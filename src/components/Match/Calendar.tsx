@@ -6,12 +6,12 @@ import format from 'date-fns/format';
 import fromUnixTime from 'date-fns/fromUnixTime';
 
 import { TIME_FORMAT } from '../../constants/time';
-import { Player, UserList } from '../../types';
+import { Player, UserMap } from '../../types';
 import { formatTimestamp, calcTimeLabelsBetweenTimes } from '../../utils';
 
 type Props = {
   players: Player[];
-  userList: UserList;
+  userList: UserMap;
 };
 
 type BarProps = {

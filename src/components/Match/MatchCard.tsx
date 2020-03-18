@@ -16,7 +16,7 @@ import firebase from '../../api/firebase';
 import gameBanners from '../../assets/images/games';
 import { theme } from '../../styles/theme';
 import { DEFAULT_GAME } from '../../constants';
-import { Match, UserList } from '../../types';
+import { Match, UserMap } from '../../types';
 import { formatDate, formatTimestamp } from '../../utils';
 
 import JoinMatchDialog from '../Dialogs/JoinMatch';
@@ -27,7 +27,7 @@ import TimeAgo from '../TimeAgo';
 
 type Props = {
   match: Match;
-  userList: UserList;
+  userList: UserMap;
 };
 
 const useStyles = makeStyles(() => ({
@@ -66,8 +66,12 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
   // It should be able to join a match until the end of its date
   const isJoinable = isFuture(endOfDay(fromUnixTime(match.date.seconds)));
 
-  if (match.date instanceof Date || !match.id) {
-    throw new Error('This should not happen');
+  if (match.date instanceof Date) {
+    throw new Error('match.date is not a Date');
+  }
+
+  if (!match.id) {
+    throw new Error('match.id is undefined');
   }
 
   // At the beginning of time only CSGO existed

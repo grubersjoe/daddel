@@ -30,7 +30,7 @@ export type User = {
   nickname: string;
 };
 
-export type UserList = Map<User['uid'], User>;
+export type UserMap = Map<User['uid'], User>;
 
 export type QuerySnapshot = firebase.firestore.QuerySnapshot<
   firebase.firestore.DocumentData

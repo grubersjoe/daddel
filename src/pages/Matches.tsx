@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useCollection } from 'react-firebase-hooks/firestore';
+import { useCollectionData } from 'react-firebase-hooks/firestore';
 import SwipeableViews from 'react-swipeable-views';
 import { Link } from 'react-router-dom';
 import startOfToday from 'date-fns/startOfToday';
@@ -13,7 +13,7 @@ import Typography from '@material-ui/core/Typography';
 
 import firebase from '../api/firebase';
 import * as ROUTES from '../constants/routes';
-import { Match } from '../types';
+import { Match, User } from '../types';
 import { calcUserList } from '../utils';
 import MatchCard from '../components/Match/MatchCard';
 import SetNicknameDialog from '../components/Dialogs/SetNickname';
@@ -48,23 +48,45 @@ const TabPanel: React.FC<TabPanelProps> = props => {
 const Matches: React.FC = () => {
   const today = startOfToday();
 
-  const [futureMatches, futureLoading, futureError] = useCollection(
+  const [
+    futureMatches,
+    futureMatchesLoading,
+    futureMatchesError,
+  ] = useCollectionData<Match>(
     firebase.firestore
       .collection('matches')
       .where('date', '>=', today)
       .orderBy('date', 'asc'),
+    {
+      idField: 'id',
+    },
   );
 
-  const [pastMatches, pastLoading, pastError] = useCollection(
+  const [pastMatches, pastMatchesLoading, pastMatchesError] = useCollectionData<
+    Match
+  >(
     firebase.firestore
       .collection('matches')
       .where('date', '<', today)
       .orderBy('date', 'desc')
       .limit(10),
+    {
+      idField: 'id',
+    },
   );
 
-  const [users] = useCollection(firebase.firestore.collection('users'));
+  const [users, , usersError] = useCollectionData<User>(
+    firebase.firestore.collection('users'),
+    {
+      idField: 'uid',
+    },
+  );
+
   const userList = users ? calcUserList(users) : null;
+
+  if (futureMatchesError) console.error(futureMatchesError);
+  if (pastMatchesError) console.error(pastMatchesError);
+  if (usersError) console.error(usersError);
 
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -97,44 +119,36 @@ const Matches: React.FC = () => {
       </AppBar>
       <SwipeableViews index={tabIndex} onChangeIndex={setTabIndex}>
         <TabPanel value={tabIndex} index={0}>
-          {futureError && (
+          {futureMatchesError && (
             <p>
-              <strong>Error: {JSON.stringify(futureError)}</strong>
+              <strong>Error: {JSON.stringify(futureMatchesError)}</strong>
             </p>
           )}
-          {futureLoading && <Spinner />}
+          {futureMatchesLoading && <Spinner />}
           {futureMatches && userList && (
             <div>
-              {futureMatches.docs.map(doc => (
-                <MatchCard
-                  match={{ ...doc.data(), id: doc.id } as Required<Match>}
-                  userList={userList}
-                  key={doc.id}
-                />
+              {futureMatches.map(match => (
+                <MatchCard match={match} userList={userList} key={match.id} />
               ))}
             </div>
           )}
-          {futureMatches?.docs?.length === 0 && noMatches}
+          {futureMatches && futureMatches.length === 0 && noMatches}
         </TabPanel>
         <TabPanel value={tabIndex} index={1}>
-          {pastError && (
+          {pastMatchesError && (
             <p>
-              <strong>Error: {JSON.stringify(futureError)}</strong>
+              <strong>Error: {JSON.stringify(futureMatchesError)}</strong>
             </p>
           )}
-          {pastLoading && <Spinner />}
+          {pastMatchesLoading && <Spinner />}
           {pastMatches && userList && (
             <div>
-              {pastMatches.docs.map(doc => (
-                <MatchCard
-                  match={{ ...doc.data(), id: doc.id } as Required<Match>}
-                  userList={userList}
-                  key={doc.id}
-                />
+              {pastMatches.map(match => (
+                <MatchCard match={match} userList={userList} key={match.id} />
               ))}
             </div>
           )}
-          {pastMatches?.docs?.length === 0 && (
+          {pastMatches && pastMatches.length === 0 && (
             <Typography paragraph>Wow. Much empty.</Typography>
           )}
         </TabPanel>
