@@ -1,6 +1,3 @@
-import fallback from './out/fallback.jpg';
-import fallbackWebp from './out/fallback.webp';
-
 import csgo from './out/csgo.jpg';
 import csgoWebp from './out/csgo.webp';
 import helldivers from './out/helldivers.jpg';
@@ -9,9 +6,6 @@ import tabletopSimulator from './out/tabletop-simulator.jpg';
 import tabletopSimulatorWebp from './out/tabletop-simulator.webp';
 
 const gameBanners = {
-  fallback,
-  fallbackWebp,
-
   csgo,
   csgoWebp,
   helldivers,
