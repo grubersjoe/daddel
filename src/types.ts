@@ -1,6 +1,6 @@
 export type Timestamp = firebase.firestore.Timestamp;
 
-export type GameID = 'csgo' | 'tabletopSimulator';
+export type GameID = 'csgo' | 'helldivers' | 'tabletopSimulator';
 
 export type Game = {
   id: GameID;

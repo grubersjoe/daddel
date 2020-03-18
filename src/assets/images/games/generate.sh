@@ -14,5 +14,5 @@ for i in *; do;
   convert $i -resize 824x -quality $QUALITY ../out/$filename.jpg
 
   echo "Generating $filename.webp"
-  cwebp $i -resize 824 360 -q $QUALITY -o ../out/$filename.webp -quiet
+  cwebp $i -resize 824 464 -q $QUALITY -o ../out/$filename.webp -quiet
 done;

@@ -12,6 +12,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Container from '@material-ui/core/Container';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
+import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 import DateFnsUtils from '@date-io/date-fns';
 import deLocale from 'date-fns/locale/de';
@@ -20,16 +21,14 @@ import setHours from 'date-fns/setHours';
 
 import firebase from '../api/firebase';
 import { joinMatch } from '../api/match';
-import gameBanners from '../assets/images/games';
 import { DEFAULT_GAME } from '../constants';
 import {
   DEFAULT_MATCH_STARTTIME,
   MATCH_TIME_END,
   TIME_FORMAT,
 } from '../constants/time';
-import { Match, Game } from '../types';
+import { Match, Game, GameID } from '../types';
 import AuthUserContext from '../components/AuthUserContext';
-import SelectCard from '../components/SelectCard';
 import Spinner from '../components/Spinner';
 
 const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
@@ -44,11 +43,14 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
   const [description, setDescription] = useState('');
   const [joinLobby, setJoinLobby] = useState(true);
 
-  const [error, setError] = useState<Error | null>(null);
-
   const [games, gamesLoading, gamesError] = useCollectionDataOnce<Game>(
     firebase.firestore.collection('games').orderBy('name', 'asc'),
   );
+
+  const [error, setError] = useState<Error | null>(null);
+
+  if (gamesError) console.error(gamesError);
+  if (error) console.error(error);
 
   const addMatch = (event: FormEvent, currentUser: User) => {
     event.preventDefault();
@@ -96,28 +98,27 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
       .catch(setError);
   };
 
-  if (gamesError) console.error(gamesError);
-  if (error) console.error(error);
-
   return (
     <Container>
       <h1>Neuer Bolz</h1>
 
       {gamesLoading && <Spinner />}
       {games && (
-        <Grid container spacing={2}>
-          {games.map(game => (
-            <Grid item xs={6}>
-              <SelectCard
-                image={gameBanners[game.id]}
-                title={game.name}
-                isSelected={game.id === gameID}
-                onClick={() => setGameID(game.id)}
-                key={game.id}
-              />
-            </Grid>
-          ))}
-        </Grid>
+        <Box my="1.5rem">
+          <Select
+            value={gameID}
+            onChange={event => setGameID(event.target.value as GameID)}
+            variant="outlined"
+            fullWidth
+            native
+          >
+            {games.map(game => (
+              <option key={game.id} value={game.id}>
+                {game.name}
+              </option>
+            ))}
+          </Select>
+        </Box>
       )}
 
       <AuthUserContext.Consumer>
@@ -125,7 +126,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
           user &&
           games && (
             <form autoComplete="off" onSubmit={event => addMatch(event, user)}>
-              <Box my="2rem">
+              <Box my="1.5rem">
                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={deLocale}>
                   <DateTimePicker
                     label="Datum und Uhrzeit"
@@ -140,7 +141,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
                   />
                 </MuiPickersUtilsProvider>
               </Box>
-              <Box my="2rem" marginY="1rem">
+              <Box my="1.5rem" marginY="1rem">
                 <TextField
                   label="Beschreibung (optional)"
                   defaultValue={description}
@@ -160,7 +161,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
                 }
                 label="Selbst mitbolzen"
               />
-              <Box my="2rem">
+              <Box my="1.5rem">
                 <Grid container direction="row" spacing={2}>
                   <Grid item xs>
                     <Button
