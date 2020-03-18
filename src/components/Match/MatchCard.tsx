@@ -107,9 +107,14 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
               {formatTimestamp(match.date)} Uhr
             </Typography>
           </Grid>
-          <Grid container item>
-            <ProgressBar value={match.players.length} max={match.maxPlayers} />
-          </Grid>
+          {match.maxPlayers && (
+            <Grid container item>
+              <ProgressBar
+                value={match.players.length}
+                max={match.maxPlayers}
+              />
+            </Grid>
+          )}
         </Grid>
       </CardMedia>
       <CardContent>

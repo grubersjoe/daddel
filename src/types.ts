@@ -4,19 +4,19 @@ export type GameID = 'csgo' | 'tabletopSimulator';
 
 export type Game = {
   id: GameID;
-  name: string;
   maxPlayers?: number;
+  name: string;
 };
 
 export type Match = {
   id?: string;
-  game?: GameID; // introduced later
-  date: Timestamp;
-  players: Array<Player>;
-  maxPlayers: number;
-  description?: string;
   created: Timestamp;
   createdBy: string;
+  date: Timestamp;
+  description?: string;
+  game?: GameID; // introduced later
+  maxPlayers?: number;
+  players: Array<Player>;
 };
 
 export type Player = {

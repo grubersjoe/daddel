@@ -22,19 +22,25 @@ import firebase from '../api/firebase';
 import { joinMatch } from '../api/match';
 import gameBanners from '../assets/images/games';
 import { DEFAULT_GAME } from '../constants';
-import { MATCH_TIME_END, TIME_FORMAT } from '../constants/time';
+import {
+  DEFAULT_MATCH_STARTTIME,
+  MATCH_TIME_END,
+  TIME_FORMAT,
+} from '../constants/time';
 import { Match, Game } from '../types';
-
 import AuthUserContext from '../components/AuthUserContext';
 import SelectCard from '../components/SelectCard';
 import Spinner from '../components/Spinner';
 
 const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
-  const defaultDate = setMinutes(setHours(new Date(), 18), 30);
+  const [defaultHour, defaultMinute] = DEFAULT_MATCH_STARTTIME.split(':');
+  const defaultDate = setMinutes(
+    setHours(new Date(), Number(defaultHour)),
+    Number(defaultMinute),
+  );
 
-  const [gameKey, setGameKey] = useState<Game['id']>(DEFAULT_GAME);
-  const [date, setDate] = useState<Date | null>(defaultDate);
-  const [maxPlayers, setMaxPlayers] = useState(5); // eslint-disable-line
+  const [gameID, setGameID] = useState<Game['id']>(DEFAULT_GAME);
+  const [date, setDate] = useState<Date | null>(defaultDate); // null because of MUI
   const [description, setDescription] = useState('');
   const [joinLobby, setJoinLobby] = useState(true);
 
@@ -48,18 +54,21 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
     event.preventDefault();
 
     if (!date) {
-      setError(new Error('Date is not set'));
-      return;
+      return setError(new Error('Date is not set'));
+    }
+
+    if (!games) {
+      throw new Error('Games are not loaded yet');
     }
 
     const match: Match = {
-      game: gameKey,
-      date: firebase.timestamp(date),
-      maxPlayers,
-      players: [],
-      description,
       created: firebase.timestamp(),
       createdBy: currentUser.uid,
+      date: firebase.timestamp(date),
+      description,
+      game: gameID,
+      maxPlayers: games.find(game => game.id === gameID)?.maxPlayers,
+      players: [],
     };
 
     firebase.firestore
@@ -76,7 +85,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
             availFrom,
             availUntil,
             currentPlayers: [],
-            match: { ...match, id: doc.id } as Required<Match>,
+            match: { ...match, id: doc.id },
           })
             .then(() => history.push('/matches'))
             .catch(setError);
@@ -97,13 +106,13 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
       {gamesLoading && <Spinner />}
       {games && (
         <Grid container spacing={2}>
-          {games.map((game, idx) => (
+          {games.map(game => (
             <Grid item xs={6}>
               <SelectCard
                 image={gameBanners[game.id]}
                 title={game.name}
-                isSelected={game.id === gameKey}
-                onClick={() => setGameKey(game.id)}
+                isSelected={game.id === gameID}
+                onClick={() => setGameID(game.id)}
                 key={game.id}
               />
             </Grid>
@@ -113,8 +122,8 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
 
       <AuthUserContext.Consumer>
         {user =>
-          !gamesLoading &&
-          user && (
+          user &&
+          games && (
             <form autoComplete="off" onSubmit={event => addMatch(event, user)}>
               <Box my="2rem">
                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={deLocale}>
