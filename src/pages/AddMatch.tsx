@@ -29,7 +29,6 @@ import {
 } from '../constants/time';
 import { Match, Game, GameID } from '../types';
 import AuthUserContext from '../components/AuthUserContext';
-import Spinner from '../components/Spinner';
 
 const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
   const [defaultHour, defaultMinute] = DEFAULT_MATCH_STARTTIME.split(':');
@@ -102,29 +101,28 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
     <Container>
       <h1>Neuer Bolz</h1>
 
-      {gamesLoading && <Spinner />}
-      {games && (
-        <Box my="1.5rem">
-          <Select
-            value={gameID}
-            onChange={event => setGameID(event.target.value as GameID)}
-            variant="outlined"
-            fullWidth
-            native
-          >
-            {games.map(game => (
+      <Box my="1.5rem">
+        <Select
+          value={gameID}
+          onChange={event => setGameID(event.target.value as GameID)}
+          variant="outlined"
+          disabled={gamesLoading}
+          fullWidth
+          native
+        >
+          {gamesLoading && <option>Lade ...</option>}
+          {games &&
+            games.map(game => (
               <option key={game.id} value={game.id}>
                 {game.name}
               </option>
             ))}
-          </Select>
-        </Box>
-      )}
+        </Select>
+      </Box>
 
       <AuthUserContext.Consumer>
         {user =>
-          user &&
-          games && (
+          user && (
             <form autoComplete="off" onSubmit={event => addMatch(event, user)}>
               <Box my="1.5rem">
                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={deLocale}>
