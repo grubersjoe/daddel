@@ -11,7 +11,7 @@ import * as ROUTES from '../constants/routes';
 import { theme } from '../styles/theme';
 import AuthUserContext from './AuthUserContext';
 
-const Links = [ROUTES.MATCHES, ROUTES.ADD_MATCH, ROUTES.PROFILE];
+const Links = [ROUTES.MATCHES_LIST, ROUTES.ADD_MATCH, ROUTES.PROFILE];
 
 const Navigation: React.FC<RouteComponentProps> = ({ history, location }) => {
   const [selected, setSelected] = useState(0);
@@ -36,7 +36,7 @@ const Navigation: React.FC<RouteComponentProps> = ({ history, location }) => {
           >
             <BottomNavigationAction
               component={Link}
-              to={ROUTES.MATCHES}
+              to={ROUTES.MATCHES_LIST}
               label="Bolzen"
               icon={<MatchesIcon />}
             />

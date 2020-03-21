@@ -42,11 +42,11 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
   const [description, setDescription] = useState('');
   const [joinLobby, setJoinLobby] = useState(true);
 
+  const [error, setError] = useState<Error | null>(null);
+
   const [games, gamesLoading, gamesError] = useCollectionDataOnce<Game>(
     firebase.firestore.collection('games').orderBy('name', 'asc'),
   );
-
-  const [error, setError] = useState<Error | null>(null);
 
   if (gamesError) console.error(gamesError);
   if (error) console.error(error);

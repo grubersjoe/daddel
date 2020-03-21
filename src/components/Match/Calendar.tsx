@@ -23,12 +23,6 @@ type LabelProps = {
   left: number; // in percent
 };
 
-const textOverflow: CSSProperties = {
-  overflow: 'hidden',
-  whiteSpace: 'nowrap',
-  textOverflow: 'ellipsis',
-};
-
 const useStyles = makeStyles(theme => ({
   root: {
     position: 'relative',
@@ -55,12 +49,14 @@ const useStyles = makeStyles(theme => ({
     textShadow: `0 1px 0 ${theme.palette.grey[800]}`,
   },
   name: {
-    ...textOverflow,
     fontWeight: 500,
   },
   time: {
-    ...textOverflow,
+    marginLeft: '0.75em',
     color: 'rgba(255, 255, 255, 0.9)',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
   },
 }));
 
