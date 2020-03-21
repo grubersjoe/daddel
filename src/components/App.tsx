@@ -12,7 +12,7 @@ import AuthUserContext from './AuthUserContext';
 import Layout from './Layout';
 import AddMatch from '../pages/AddMatch';
 import EditMatch from '../pages/EditMatch';
-import Matches from '../pages/Matches';
+import MatchesList from '../pages/MatchesList';
 import PrivateRoute from './PrivateRoute';
 import Profile from '../pages/Profile';
 import ResetPassword from '../pages/ResetPassword';
@@ -46,7 +46,7 @@ const App: React.FC = () => {
             <Route path={ROUTES.RESET} component={ResetPassword} />
             <PrivateRoute path={ROUTES.ADD_MATCH} component={AddMatch} />
             <PrivateRoute path={ROUTES.EDIT_MATCH} component={EditMatch} />
-            <PrivateRoute path={ROUTES.MATCHES_LIST} component={Matches} />
+            <PrivateRoute path={ROUTES.MATCHES_LIST} component={MatchesList} />
             <PrivateRoute path={ROUTES.PROFILE} component={Profile} />
           </Layout>
         </Router>

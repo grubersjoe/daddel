@@ -46,7 +46,7 @@ const TabPanel: React.FC<TabPanelProps> = props => {
   );
 };
 
-const Matches: React.FC = () => {
+const MatchesList: React.FC = () => {
   const today = startOfToday();
 
   const [
@@ -127,7 +127,7 @@ const Matches: React.FC = () => {
           )}
           {futureMatchesLoading && <Spinner />}
           {futureMatches && userList && (
-            <Grid container spacing={5}>
+            <Grid container spacing={5} style={{ paddingBottom: '2rem' }}>
               {futureMatches.map(match => (
                 <Grid item xs={12} md={4} lg={3}>
                   <MatchCard match={match} userList={userList} key={match.id} />
@@ -145,7 +145,7 @@ const Matches: React.FC = () => {
           )}
           {pastMatchesLoading && <Spinner />}
           {pastMatches && userList && (
-            <Grid container spacing={5}>
+            <Grid container spacing={5} style={{ paddingBottom: '2rem' }}>
               {pastMatches.map(match => (
                 <Grid item xs={12} md={4} lg={3}>
                   <MatchCard match={match} userList={userList} key={match.id} />
@@ -162,4 +162,4 @@ const Matches: React.FC = () => {
   );
 };
 
-export default Matches;
+export default MatchesList;
