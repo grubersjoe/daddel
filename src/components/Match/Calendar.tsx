@@ -1,6 +1,5 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import differenceInMinutes from 'date-fns/differenceInMinutes';
 import format from 'date-fns/format';
 import fromUnixTime from 'date-fns/fromUnixTime';

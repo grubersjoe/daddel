@@ -129,8 +129,8 @@ const MatchesList: React.FC = () => {
           {futureMatches && userList && (
             <Grid container spacing={5} style={{ paddingBottom: '2rem' }}>
               {futureMatches.map(match => (
-                <Grid item xs={12} md={4} lg={3}>
-                  <MatchCard match={match} userList={userList} key={match.id} />
+                <Grid item xs={12} md={4} lg={3} key={match.id}>
+                  <MatchCard match={match} userList={userList} />
                 </Grid>
               ))}
             </Grid>
@@ -147,8 +147,8 @@ const MatchesList: React.FC = () => {
           {pastMatches && userList && (
             <Grid container spacing={5} style={{ paddingBottom: '2rem' }}>
               {pastMatches.map(match => (
-                <Grid item xs={12} md={4} lg={3}>
-                  <MatchCard match={match} userList={userList} key={match.id} />
+                <Grid item xs={12} md={4} lg={3} key={match.id}>
+                  <MatchCard match={match} userList={userList} />
                 </Grid>
               ))}
             </Grid>

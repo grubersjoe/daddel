@@ -14,6 +14,7 @@ import Typography from '@material-ui/core/Typography';
 
 import firebase from '../../api/firebase';
 import gameBanners from '../../assets/images/games';
+import { DEFAULT_GAME, FALLBACK_GAME } from '../../constants';
 import { theme } from '../../styles/theme';
 import { Match, UserMap } from '../../types';
 import { formatDate, formatTimestamp } from '../../utils';
@@ -84,7 +85,8 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
   }
 
   // At the beginning of time only CSGO existed
-  const image = gameBanners[match.game || 'csgo'];
+  const image =
+    gameBanners[match.game || DEFAULT_GAME] || gameBanners[FALLBACK_GAME];
 
   return (
     <Card className={classes.card} raised>

@@ -1,4 +1,5 @@
 build/
+*.directory
 *.sh
 *.jpg
 *.png
