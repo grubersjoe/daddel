@@ -25,8 +25,13 @@ type LabelProps = {
 const useStyles = makeStyles(theme => ({
   root: {
     position: 'relative',
+    marginTop: theme.spacing(2.25),
     paddingTop: theme.spacing(3.5),
     fontSize: '85%',
+
+    [theme.breakpoints.up('lg')]: {
+      fontSize: '88%',
+    },
   },
   label: {
     position: 'absolute',
@@ -41,11 +46,16 @@ const useStyles = makeStyles(theme => ({
     top: 0,
     display: 'flex',
     justifyContent: 'space-between',
-    marginBottom: 6,
-    padding: '0.2em 0.75em',
+    marginBottom: '0.4em',
+    padding: '0.25em 0.75em',
     backgroundColor: '#6E6E6E',
     borderRadius: 3,
     textShadow: `0 1px 0 ${theme.palette.grey[800]}`,
+
+    [theme.breakpoints.up('lg')]: {
+      marginBottom: '0.5em',
+      // padding: '0.28em 0.75em',
+    },
   },
   name: {
     fontWeight: 500,
@@ -56,6 +66,10 @@ const useStyles = makeStyles(theme => ({
     overflow: 'hidden',
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
+
+    [theme.breakpoints.down(300)]: {
+      display: 'none',
+    },
   },
 }));
 
@@ -116,7 +130,7 @@ const Calendar: React.FC<Props> = ({ players, userList }) => {
       {labels.map((label, idx) => {
         const left = ((idx * labelStepSize) / totalMinutes) * 100;
         return (
-          // More than 90% left will run outside of container
+          // More than 88% left will run outside of container
           left <= 88 && (
             <Label left={left} key={left}>
               {label}

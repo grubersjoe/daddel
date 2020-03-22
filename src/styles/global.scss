@@ -32,3 +32,10 @@ li {
 div.MuiContainer-maxWidthLg {
   max-width: 720px;
 }
+
+@media (max-width: 360px) {
+  .MuiButtonBase-root {
+    white-space: nowrap;
+    overflow: hidden;
+  }
+}
