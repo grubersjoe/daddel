@@ -6,7 +6,7 @@
     "build": "react-scripts build",
     "deploy": "npm run build && firebase deploy --project daddel-e63d5",
     "eject": "react-scripts eject",
-    "format": "prettier --write 'src/**/*' 'content/**/*' 'src/**/*' './*.{js,json,md}'",
+    "format": "prettier --write 'src/**/*' 'src/**/*' './*.{js,json,md}'",
     "start": "react-scripts start",
     "test": "react-scripts test"
   },
@@ -44,7 +44,7 @@
     "date-fns": "^2.11.0",
     "firebase": "^7.12.0",
     "node-sass": "^4.13.1",
-    "prettier": "^1.19.1",
+    "prettier": "^2.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-firebase-hooks": "^2.1.1",

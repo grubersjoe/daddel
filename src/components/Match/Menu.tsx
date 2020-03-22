@@ -31,10 +31,7 @@ const Menu: React.FC<Props> = ({ match }) => {
   if (!match.id) throw new Error('This should not happen');
 
   const handleDelete = () => {
-    return firebase.firestore
-      .collection('matches')
-      .doc(match.id)
-      .delete();
+    return firebase.firestore.collection('matches').doc(match.id).delete();
   };
 
   return (
