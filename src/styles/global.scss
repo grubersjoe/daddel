@@ -33,6 +33,10 @@ div.MuiContainer-maxWidthLg {
   max-width: 720px;
 }
 
+li.MuiAutocomplete-option {
+  min-height: auto;
+}
+
 @media (max-width: 360px) {
   .MuiButtonBase-root {
     white-space: nowrap;

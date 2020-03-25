@@ -16,35 +16,38 @@ import firebase from '../api/firebase';
 import * as ROUTES from '../constants/routes';
 import { Match, User } from '../types';
 import { calcUserList } from '../utils';
+import Filter, { MatchFilter } from '../components/Match/Filter';
 import MatchCard from '../components/Match/MatchCard';
 import SetNicknameDialog from '../components/Dialogs/SetNickname';
 import Spinner from '../components/Spinner';
+import { filterMatches } from '../utils/filter';
 
-interface TabPanelProps {
+type TabPanelProps = {
   children?: React.ReactNode;
   dir?: string;
   index: number;
   value: number;
-}
-
-const TabPanel: React.FC<TabPanelProps> = props => {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <Typography
-      component="div"
-      role="tabpanel"
-      hidden={value !== index}
-      {...other}
-    >
-      {value === index && (
-        <Box p={3} marginTop={7}>
-          {children}
-        </Box>
-      )}
-    </Typography>
-  );
 };
+
+const TabPanel: React.FC<TabPanelProps> = ({
+  children,
+  value,
+  index,
+  ...props
+}) => (
+  <Typography
+    component="div"
+    role="tabpanel"
+    hidden={value !== index}
+    {...props}
+  >
+    {value === index && (
+      <Box p={3} marginTop={7}>
+        {children}
+      </Box>
+    )}
+  </Typography>
+);
 
 const MatchesList: React.FC = () => {
   const today = startOfToday();
@@ -76,6 +79,10 @@ const MatchesList: React.FC = () => {
     },
   );
 
+  const [filter, setFilter] = useState<MatchFilter>({
+    games: [],
+  });
+
   const [users, , usersError] = useCollectionData<User>(
     firebase.firestore.collection('users'),
     {
@@ -85,25 +92,11 @@ const MatchesList: React.FC = () => {
 
   const userList = users ? calcUserList(users) : null;
 
+  const [tabIndex, setTabIndex] = useState(0);
+
   if (futureMatchesError) console.error(futureMatchesError);
   if (pastMatchesError) console.error(pastMatchesError);
   if (usersError) console.error(usersError);
-
-  const [tabIndex, setTabIndex] = useState(0);
-
-  const noMatches = (
-    <>
-      <Typography paragraph>Wow. Much empty.</Typography>
-      <Button
-        variant="outlined"
-        color="primary"
-        component={Link}
-        to={ROUTES.ADD_MATCH}
-      >
-        Neuer Bolz
-      </Button>
-    </>
-  );
 
   return (
     <>
@@ -127,15 +120,27 @@ const MatchesList: React.FC = () => {
           )}
           {futureMatchesLoading && <Spinner />}
           {futureMatches && userList && (
-            <Grid container spacing={5} style={{ paddingBottom: '2rem' }}>
-              {futureMatches.map(match => (
+            <Grid container spacing={5}>
+              {filterMatches(futureMatches, filter).map(match => (
                 <Grid item xs={12} md={4} lg={3} key={match.id}>
                   <MatchCard match={match} userList={userList} />
                 </Grid>
               ))}
             </Grid>
           )}
-          {futureMatches && futureMatches.length === 0 && noMatches}
+          {futureMatches && futureMatches.length === 0 && (
+            <>
+              <Typography paragraph>Wow. Much empty.</Typography>
+              <Button
+                variant="outlined"
+                color="primary"
+                component={Link}
+                to={ROUTES.ADD_MATCH}
+              >
+                Neuer Bolz
+              </Button>
+            </>
+          )}
         </TabPanel>
         <TabPanel value={tabIndex} index={1}>
           {pastMatchesError && (
@@ -145,13 +150,15 @@ const MatchesList: React.FC = () => {
           )}
           {pastMatchesLoading && <Spinner />}
           {pastMatches && userList && (
-            <Grid container spacing={5} style={{ paddingBottom: '2rem' }}>
-              {pastMatches.map(match => (
-                <Grid item xs={12} md={4} lg={3} key={match.id}>
-                  <MatchCard match={match} userList={userList} />
-                </Grid>
-              ))}
-            </Grid>
+            <>
+              <Grid container spacing={5}>
+                {filterMatches(pastMatches, filter).map(match => (
+                  <Grid item xs={12} md={4} lg={3} key={match.id}>
+                    <MatchCard match={match} userList={userList} />
+                  </Grid>
+                ))}
+              </Grid>
+            </>
           )}
           {pastMatches && pastMatches.length === 0 && (
             <Typography paragraph>Wow. Much empty.</Typography>

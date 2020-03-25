@@ -11,7 +11,7 @@ const footerStyle: CSSProperties = {
 };
 
 const Layout: React.FC = ({ children }) => (
-  <div style={{ paddingBottom: theme.spacing(4) }}>
+  <div style={{ paddingBottom: theme.spacing(8) }}>
     <main>{children}</main>
     <footer style={footerStyle}>
       <Navigation />

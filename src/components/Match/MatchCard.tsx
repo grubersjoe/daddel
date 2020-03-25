@@ -35,6 +35,13 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
   },
+  cardContent: {
+    padding: theme.spacing(2),
+
+    [theme.breakpoints.up('lg')]: {
+      padding: theme.spacing(2.5),
+    },
+  },
   media: {
     height: '40vw',
     backgroundPosition: 'top',
@@ -59,6 +66,14 @@ const useStyles = makeStyles(theme => ({
     margin: '1rem 0 0',
     paddingLeft: '2em',
     lineHeight: 1.75,
+  },
+  actions: {
+    padding: theme.spacing(2),
+    paddingTop: 0,
+
+    [theme.breakpoints.up('lg')]: {
+      padding: theme.spacing(2.5),
+    },
   },
 }));
 
@@ -134,7 +149,7 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
         flexDirection="column"
         justifyContent="space-between"
       >
-        <CardContent>
+        <CardContent className={classes.cardContent}>
           <Typography
             color="textSecondary"
             style={{ marginBottom: theme.spacing(1.5) }}
@@ -161,7 +176,7 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
           )}
         </CardContent>
         {isJoinable && (
-          <CardActions style={{ padding: theme.spacing(2), paddingTop: 0 }}>
+          <CardActions className={classes.actions}>
             <JoinMatchDialog
               match={match}
               initialFrom={currentPlayer?.from}
