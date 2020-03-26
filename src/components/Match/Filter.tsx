@@ -5,18 +5,22 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 
 import firebase from '../../api/firebase';
-import { Game, GameID } from '../../types';
+import { Game } from '../../types';
 import { theme } from '../../styles/theme';
+import { setStorageItem } from '../../utils/local-storage';
 
 export type MatchFilter = {
-  games: GameID[];
+  games: Game[];
 };
 
 type Props = {
+  filter: MatchFilter;
   setFilter: Dispatch<SetStateAction<MatchFilter>>;
 };
 
-const Filter: React.FC<Props> = ({ setFilter }) => {
+export const FILTER_LOCALSTORAGE_KEY = 'daddel-match-filter';
+
+const Filter: React.FC<Props> = ({ filter, setFilter }) => {
   const [games, gamesLoading, gamesError] = useCollectionDataOnce<Game>(
     firebase.firestore.collection('games').orderBy('name', 'asc'),
   );
@@ -33,18 +37,16 @@ const Filter: React.FC<Props> = ({ setFilter }) => {
       <Grid item xs={12} lg={4}>
         <Autocomplete<Game>
           clearOnEscape
-          filterSelectedOptions
-          multiple
           disabled={gamesLoading}
+          filterSelectedOptions
           getOptionLabel={option => option.name}
           loading={gamesLoading}
-          onChange={(_event, games) =>
-            setFilter({
-              games: games.map(game => game.id),
-            })
-          }
+          multiple
+          onChange={(_event, games) => {
+            setFilter({ games });
+            setStorageItem(FILTER_LOCALSTORAGE_KEY, { games });
+          }}
           options={options}
-          size="small"
           renderInput={props => (
             <TextField
               {...props}
@@ -53,6 +55,8 @@ const Filter: React.FC<Props> = ({ setFilter }) => {
               disabled={gamesLoading}
             />
           )}
+          size="small"
+          value={filter.games}
         />
       </Grid>
     </Grid>

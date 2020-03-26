@@ -19,6 +19,8 @@ auth.languageCode = 'de';
 const analytics = app.analytics();
 const firestore = app.firestore();
 
+firestore.enablePersistence().catch(err => console.error(err));
+
 function timestamp(date: Date = new Date()) {
   return new firebase.firestore.Timestamp(
     date.getTime() / 1000, // getTime() returns ms

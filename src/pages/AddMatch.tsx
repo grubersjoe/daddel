@@ -28,6 +28,7 @@ import {
   TIME_FORMAT,
 } from '../constants/time';
 import { Match, Game, GameID } from '../types';
+import AppBar from '../components/AppBar';
 import AuthUserContext from '../components/AuthUserContext';
 
 const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
@@ -99,98 +100,105 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
   };
 
   return (
-    <Container>
-      <h1>Neuer Bolz</h1>
+    <>
+      <AppBar title="Neuer Bolz" />
+      <Container>
+        <Box mb="1.5rem">
+          <Select
+            value={gameID}
+            onChange={event => setGameID(event.target.value as GameID)}
+            variant="outlined"
+            disabled={gamesLoading}
+            fullWidth
+            native
+          >
+            {gamesLoading && <option>Lade ...</option>}
+            {games &&
+              games.map(game => (
+                <option key={game.id} value={game.id}>
+                  {game.name}
+                </option>
+              ))}
+          </Select>
+        </Box>
 
-      <Box my="1.5rem">
-        <Select
-          value={gameID}
-          onChange={event => setGameID(event.target.value as GameID)}
-          variant="outlined"
-          disabled={gamesLoading}
-          fullWidth
-          native
-        >
-          {gamesLoading && <option>Lade ...</option>}
-          {games &&
-            games.map(game => (
-              <option key={game.id} value={game.id}>
-                {game.name}
-              </option>
-            ))}
-        </Select>
-      </Box>
-
-      <AuthUserContext.Consumer>
-        {user =>
-          user && (
-            <form autoComplete="off" onSubmit={event => addMatch(event, user)}>
-              <Box my="1.5rem">
-                <MuiPickersUtilsProvider utils={DateFnsUtils} locale={deLocale}>
-                  <DateTimePicker
-                    label="Datum und Uhrzeit"
-                    variant="dialog"
-                    inputVariant="outlined"
-                    value={date}
-                    onChange={setDate}
-                    minutesStep={15}
-                    ampm={false}
-                    required
+        <AuthUserContext.Consumer>
+          {user =>
+            user && (
+              <form
+                autoComplete="off"
+                onSubmit={event => addMatch(event, user)}
+              >
+                <Box mb="1.5rem">
+                  <MuiPickersUtilsProvider
+                    utils={DateFnsUtils}
+                    locale={deLocale}
+                  >
+                    <DateTimePicker
+                      label="Datum und Uhrzeit"
+                      variant="dialog"
+                      inputVariant="outlined"
+                      value={date}
+                      onChange={setDate}
+                      minutesStep={15}
+                      ampm={false}
+                      required
+                      fullWidth
+                    />
+                  </MuiPickersUtilsProvider>
+                </Box>
+                <Box mb="1rem">
+                  <TextField
+                    label="Beschreibung (optional)"
+                    defaultValue={description}
+                    variant="outlined"
+                    onChange={event => setDescription(event.target.value)}
+                    multiline
+                    rows={2}
                     fullWidth
                   />
-                </MuiPickersUtilsProvider>
-              </Box>
-              <Box my="1.5rem" marginY="1rem">
-                <TextField
-                  label="Beschreibung (optional)"
-                  defaultValue={description}
-                  variant="outlined"
-                  onChange={event => setDescription(event.target.value)}
-                  multiline
-                  rows={2}
-                  fullWidth
+                </Box>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={joinLobby}
+                      onChange={event => setJoinLobby(event.target.checked)}
+                    />
+                  }
+                  label="Selbst mitbolzen"
                 />
-              </Box>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={joinLobby}
-                    onChange={event => setJoinLobby(event.target.checked)}
-                  />
-                }
-                label="Selbst mitbolzen"
-              />
-              <Box my="1.5rem">
-                <Grid container direction="row" spacing={2}>
-                  <Grid item xs>
-                    <Button
-                      variant="outlined"
-                      color="default"
-                      onClick={history.goBack}
-                      fullWidth
-                    >
-                      Abbrechen
-                    </Button>
+                <Box my="1.5rem">
+                  <Grid container direction="row" spacing={2}>
+                    <Grid item xs>
+                      <Button
+                        variant="outlined"
+                        color="default"
+                        onClick={history.goBack}
+                        fullWidth
+                      >
+                        Abbrechen
+                      </Button>
+                    </Grid>
+                    <Grid item xs>
+                      <Button
+                        type="submit"
+                        variant="outlined"
+                        color="primary"
+                        fullWidth
+                      >
+                        Jajaja!
+                      </Button>
+                    </Grid>
                   </Grid>
-                  <Grid item xs>
-                    <Button
-                      type="submit"
-                      variant="outlined"
-                      color="primary"
-                      fullWidth
-                    >
-                      Jajaja!
-                    </Button>
-                  </Grid>
-                </Grid>
-              </Box>
-            </form>
-          )
-        }
-      </AuthUserContext.Consumer>
+                </Box>
+              </form>
+            )
+          }
+        </AuthUserContext.Consumer>
 
-      {error && <p>Fehler!</p>}
-    </Container>
+        {error && <p>Fehler!</p>}
+      </Container>
+    </>
   );
 };
 

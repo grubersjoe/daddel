@@ -1,7 +1,7 @@
 import React, { CSSProperties } from 'react';
 
-import { theme } from '../styles/theme';
 import Navigation from './Navigation';
+import Box from '@material-ui/core/Box';
 
 const footerStyle: CSSProperties = {
   position: 'fixed',
@@ -11,12 +11,12 @@ const footerStyle: CSSProperties = {
 };
 
 const Layout: React.FC = ({ children }) => (
-  <div style={{ paddingBottom: theme.spacing(8) }}>
+  <Box py={10}>
     <main>{children}</main>
     <footer style={footerStyle}>
       <Navigation />
     </footer>
-  </div>
+  </Box>
 );
 
 export default Layout;

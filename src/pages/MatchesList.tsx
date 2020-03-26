@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import SwipeableViews from 'react-swipeable-views';
 import { Link } from 'react-router-dom';
 import startOfToday from 'date-fns/startOfToday';
 
-import AppBar from '@material-ui/core/AppBar';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -16,11 +15,16 @@ import firebase from '../api/firebase';
 import * as ROUTES from '../constants/routes';
 import { Match, User } from '../types';
 import { calcUserList } from '../utils';
-import Filter, { MatchFilter } from '../components/Match/Filter';
+import { filterMatches } from '../utils/filter';
+import { getStorageItem } from '../utils/local-storage';
+import AppBar from '../components/AppBar';
+import Filter, {
+  MatchFilter,
+  FILTER_LOCALSTORAGE_KEY,
+} from '../components/Match/Filter';
 import MatchCard from '../components/Match/MatchCard';
 import SetNicknameDialog from '../components/Dialogs/SetNickname';
 import Spinner from '../components/Spinner';
-import { filterMatches } from '../utils/filter';
 
 type TabPanelProps = {
   children?: React.ReactNode;
@@ -42,7 +46,7 @@ const TabPanel: React.FC<TabPanelProps> = ({
     {...props}
   >
     {value === index && (
-      <Box p={3} marginTop={7}>
+      <Box p={3} pt={0}>
         {children}
       </Box>
     )}
@@ -79,10 +83,6 @@ const MatchesList: React.FC = () => {
     },
   );
 
-  const [filter, setFilter] = useState<MatchFilter>({
-    games: [],
-  });
-
   const [users, , usersError] = useCollectionData<User>(
     firebase.firestore.collection('users'),
     {
@@ -90,27 +90,43 @@ const MatchesList: React.FC = () => {
     },
   );
 
+  if (usersError) console.error(usersError);
   const userList = users ? calcUserList(users) : null;
+
+  const [filter, setFilter] = useState<MatchFilter>(
+    getStorageItem<MatchFilter>(FILTER_LOCALSTORAGE_KEY) || { games: [] },
+  );
 
   const [tabIndex, setTabIndex] = useState(0);
 
-  if (futureMatchesError) console.error(futureMatchesError);
-  if (pastMatchesError) console.error(pastMatchesError);
-  if (usersError) console.error(usersError);
+  const filteredFutureMatches = useMemo(
+    () => (futureMatches ? filterMatches(futureMatches, filter) : null),
+    [futureMatches, filter],
+  );
+
+  const filteredPastMatches = useMemo(
+    () => (pastMatches ? filterMatches(pastMatches, filter) : null),
+    [pastMatches, filter],
+  );
 
   return (
     <>
       <SetNicknameDialog />
-      <AppBar position="fixed" color="default">
-        <Tabs
-          value={tabIndex}
-          onChange={(_event, index) => setTabIndex(index)}
-          variant="fullWidth"
-        >
-          <Tab label="Anstehende" />
-          <Tab label="Vergangene" />
-        </Tabs>
+      <AppBar>
+        <>
+          <Tabs
+            value={tabIndex}
+            onChange={(_event, index) => setTabIndex(index)}
+            variant="fullWidth"
+          >
+            <Tab label="Anstehende" />
+            <Tab label="Vergangene" />
+          </Tabs>
+        </>
       </AppBar>
+      <Box px={3}>
+        <Filter filter={filter} setFilter={setFilter} />
+      </Box>
       <SwipeableViews index={tabIndex} onChangeIndex={setTabIndex}>
         <TabPanel value={tabIndex} index={0}>
           {futureMatchesError && (
@@ -119,17 +135,19 @@ const MatchesList: React.FC = () => {
             </p>
           )}
           {futureMatchesLoading && <Spinner />}
-          {futureMatches && userList && (
-            <Grid container spacing={5}>
-              {filterMatches(futureMatches, filter).map(match => (
-                <Grid item xs={12} md={4} lg={3} key={match.id}>
-                  <MatchCard match={match} userList={userList} />
-                </Grid>
-              ))}
-            </Grid>
-          )}
-          {futureMatches && futureMatches.length === 0 && (
-            <>
+          {filteredFutureMatches &&
+            filteredFutureMatches.length > 0 &&
+            userList && (
+              <Grid container spacing={5}>
+                {filteredFutureMatches.map(match => (
+                  <Grid item xs={12} md={4} lg={3} key={match.id}>
+                    <MatchCard match={match} userList={userList} />
+                  </Grid>
+                ))}
+              </Grid>
+            )}
+          {filteredFutureMatches && filteredFutureMatches.length === 0 && (
+            <div>
               <Typography paragraph>Wow. Much empty.</Typography>
               <Button
                 variant="outlined"
@@ -139,7 +157,7 @@ const MatchesList: React.FC = () => {
               >
                 Neuer Bolz
               </Button>
-            </>
+            </div>
           )}
         </TabPanel>
         <TabPanel value={tabIndex} index={1}>
@@ -149,10 +167,10 @@ const MatchesList: React.FC = () => {
             </p>
           )}
           {pastMatchesLoading && <Spinner />}
-          {pastMatches && userList && (
+          {filteredPastMatches && filteredPastMatches.length > 0 && userList && (
             <>
               <Grid container spacing={5}>
-                {filterMatches(pastMatches, filter).map(match => (
+                {filteredPastMatches.map(match => (
                   <Grid item xs={12} md={4} lg={3} key={match.id}>
                     <MatchCard match={match} userList={userList} />
                   </Grid>
@@ -160,7 +178,7 @@ const MatchesList: React.FC = () => {
               </Grid>
             </>
           )}
-          {pastMatches && pastMatches.length === 0 && (
+          {filteredPastMatches && filteredPastMatches.length === 0 && (
             <Typography paragraph>Wow. Much empty.</Typography>
           )}
         </TabPanel>

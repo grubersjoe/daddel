@@ -16,6 +16,7 @@ import TextField from '@material-ui/core/TextField';
 import firebase from '../api/firebase';
 import { User } from '../types';
 import { theme } from '../styles/theme';
+import AppBar from '../components/AppBar';
 
 async function signOut(history: History) {
   await firebase.auth.signOut();
@@ -57,51 +58,53 @@ const Profile: React.FC<RouteComponentProps> = ({ history }) => {
   };
 
   return (
-    <Container>
-      <h1>Profil</h1>
-      {error && <p>Fehler :(</p>}
+    <>
+      <AppBar title="Profil" />
+      <Container>
+        {error && <p>Fehler :(</p>}
 
-      {!error && (
-        <form
-          autoComplete="off"
-          onSubmit={submitNickname}
-          style={{ marginBottom: theme.spacing(6) }}
+        {!error && (
+          <form
+            autoComplete="off"
+            onSubmit={submitNickname}
+            style={{ marginBottom: theme.spacing(6) }}
+          >
+            <Grid container spacing={2} direction="column">
+              <Grid item md={7}>
+                <TextField
+                  label="Nickname"
+                  variant="outlined"
+                  size="small"
+                  value={nickname}
+                  onChange={handleNicknameChange}
+                  fullWidth
+                />
+              </Grid>
+
+              <Grid item md={7}>
+                <Button
+                  type="submit"
+                  color="primary"
+                  variant="outlined"
+                  disabled={loading || userLoading}
+                  fullWidth
+                >
+                  Nickname ändern
+                </Button>
+              </Grid>
+            </Grid>
+          </form>
+        )}
+        <Button
+          variant="outlined"
+          color="default"
+          startIcon={<SignOutIcon />}
+          onClick={() => signOut(history)}
         >
-          <Grid container spacing={2} direction="column">
-            <Grid item md={7}>
-              <TextField
-                label="Nickname"
-                variant="outlined"
-                size="small"
-                value={nickname}
-                onChange={handleNicknameChange}
-                fullWidth
-              />
-            </Grid>
-
-            <Grid item md={7}>
-              <Button
-                type="submit"
-                color="primary"
-                variant="outlined"
-                disabled={loading || userLoading}
-                fullWidth
-              >
-                Nickname ändern
-              </Button>
-            </Grid>
-          </Grid>
-        </form>
-      )}
-      <Button
-        variant="outlined"
-        color="default"
-        startIcon={<SignOutIcon />}
-        onClick={() => signOut(history)}
-      >
-        Abmelden
-      </Button>
-    </Container>
+          Abmelden
+        </Button>
+      </Container>
+    </>
   );
 };
 
