@@ -1,3 +1,6 @@
+import { FALLBACK_GAME } from '../../../constants';
+import { GameID } from '../../../types';
+
 import fallback from './out/fallback.jpg';
 import fallbackWebp from './out/fallback.webp';
 
@@ -19,6 +22,14 @@ import tabletopSimulator from './out/tabletop-simulator.jpg';
 import tabletopSimulatorWebp from './out/tabletop-simulator.webp';
 import trackmania from './out/trackmania.jpg';
 import trackmaniaWebp from './out/trackmania.webp';
+import { supportsWebp } from '../../../utils';
+
+export async function getGameBanner(gameID: GameID | undefined) {
+  const webp = await supportsWebp();
+  const key = gameID && webp ? gameID.concat('Webp') : gameID;
+
+  return gameBanners[key || FALLBACK_GAME] || gameBanners[FALLBACK_GAME];
+}
 
 const gameBanners: {
   [key: string]: string;

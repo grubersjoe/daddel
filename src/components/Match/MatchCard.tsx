@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import endOfDay from 'date-fns/endOfDay';
 import isFuture from 'date-fns/isFuture';
 import fromUnixTime from 'date-fns/fromUnixTime';
@@ -13,8 +13,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import Typography from '@material-ui/core/Typography';
 
 import firebase from '../../api/firebase';
-import gameBanners from '../../assets/images/games';
-import { DEFAULT_GAME, FALLBACK_GAME } from '../../constants';
+import { getGameBanner } from '../../assets/images/games';
 import { theme } from '../../styles/theme';
 import { Match, UserMap } from '../../types';
 import { formatDate, formatTimestamp } from '../../utils';
@@ -66,6 +65,11 @@ const useStyles = makeStyles(theme => ({
 const MatchCard: React.FC<Props> = ({ match, userList }) => {
   const classes = useStyles();
 
+  const [banner, setBanner] = useState('');
+  getGameBanner(match.game).then(setBanner);
+
+  if (!banner) return null;
+
   const { currentUser } = firebase.auth;
   if (!currentUser) return null;
 
@@ -84,13 +88,9 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
     throw new Error('match.id is undefined');
   }
 
-  // At the beginning of time only CSGO existed
-  const image =
-    gameBanners[match.game || DEFAULT_GAME] || gameBanners[FALLBACK_GAME];
-
   return (
     <Card className={classes.card} raised>
-      <CardMedia className={classes.media} image={image}>
+      <CardMedia className={classes.media} image={banner}>
         <Grid
           container
           direction="column"
