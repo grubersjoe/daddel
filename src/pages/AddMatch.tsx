@@ -62,14 +62,15 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
       throw new Error('Games are not loaded yet');
     }
 
+    const maxPlayers = games.find(game => game.id === gameID)?.maxPlayers;
     const match: Match = {
       created: firebase.timestamp(),
       createdBy: currentUser.uid,
       date: firebase.timestamp(date),
       description,
       game: gameID,
-      maxPlayers: games.find(game => game.id === gameID)?.maxPlayers,
       players: [],
+      ...(maxPlayers && { maxPlayers }), // only add if set
     };
 
     firebase.firestore
