@@ -80,10 +80,15 @@ const useStyles = makeStyles(theme => ({
 const MatchCard: React.FC<Props> = ({ match, userList }) => {
   const classes = useStyles();
 
-  const [banner, setBanner] = useState('');
-  getGameBanner(match.game).then(setBanner);
+  const [gameBanner, setGameBanner] = useState<string | undefined>();
 
-  if (!banner) return null;
+  getGameBanner(match.game).then(banner => {
+    // Preload the game banner
+    const image = new Image();
+    image.src = banner;
+    image.onload = () => setGameBanner(banner);
+    image.onerror = console.error;
+  });
 
   const { currentUser } = firebase.auth;
   if (!currentUser) return null;
@@ -103,9 +108,9 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
     throw new Error('match.id is undefined');
   }
 
-  return (
+  return gameBanner ? (
     <Card className={classes.card} raised>
-      <CardMedia className={classes.media} image={banner}>
+      <CardMedia className={classes.media} image={gameBanner}>
         <Grid
           container
           direction="column"
@@ -186,25 +191,15 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
         )}
       </Box>
     </Card>
+  ) : (
+    <MatchCardSkeleton />
   );
 };
 
-export const MatchCardSkeleton: React.FC = () => {
-  const classes = useStyles();
-
-  return (
-    <>
-      <Box className={classes.card}>
-        <Skeleton variant="rect" height={200} />
-      </Box>
-      <Box className={classes.card}>
-        <Skeleton variant="rect" height={200} />
-      </Box>
-      <Box className={classes.card}>
-        <Skeleton variant="rect" height={200} />
-      </Box>
-    </>
-  );
-};
+const MatchCardSkeleton: React.FC = () => (
+  <Card raised style={{ height: '100%', minHeight: 400 }}>
+    <Skeleton variant="rect" height="100%" />
+  </Card>
+);
 
 export default MatchCard;
