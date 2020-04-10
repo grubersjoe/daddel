@@ -1,7 +1,7 @@
 import { History } from 'history';
 
 import firebase from './firebase';
-import * as ROUTES from '../constants/routes';
+import ROUTES from '../constants/routes';
 
 export function signInWithEmailAndPassword(email: string, password: string) {
   return firebase.auth.signInWithEmailAndPassword(email, password);

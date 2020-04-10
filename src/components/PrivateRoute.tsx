@@ -1,7 +1,7 @@
 import React, { ComponentType } from 'react';
 import { Route, Redirect, RouteProps } from 'react-router-dom';
 
-import * as ROUTES from '../constants/routes';
+import ROUTES from '../constants/routes';
 import AuthUserContext from './AuthUserContext';
 
 type Props = {

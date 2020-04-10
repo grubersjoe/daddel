@@ -13,11 +13,10 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
-import firebase from '../api/firebase';
-import * as ROUTES from '../constants/routes';
-import { theme } from '../styles/theme';
-
 import { createUser } from '../api/auth';
+import firebase from '../api/firebase';
+import ROUTES from '../constants/routes';
+import { theme } from '../styles/theme';
 import Logo from '../components/Logo';
 
 const ErrorMessage = styled(Typography)({
@@ -50,7 +49,7 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
   };
 
   return (
-    <Container style={{ marginTop: theme.spacing(2) }}>
+    <Container style={{ marginTop: -theme.spacing(9) }}>
       <Logo />
       <h2>Registrieren</h2>
       <form
@@ -105,17 +104,18 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
               }
               fullWidth
             >
-              Registrieren
+              Jajaja!
             </Button>
             {error && <ErrorMessage>{error.message}</ErrorMessage>}
           </Grid>
         </Grid>
       </form>
-      <div>
+
+      <Typography>
         <Link component={RouterLink} to={ROUTES.ROOT} color="textPrimary">
           Zurück zur Anmeldung
         </Link>
-      </div>
+      </Typography>
     </Container>
   );
 };

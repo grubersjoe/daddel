@@ -5,7 +5,7 @@ import { ThemeProvider } from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import firebase from '../api/firebase';
-import * as ROUTES from '../constants/routes';
+import ROUTES from '../constants/routes';
 import { theme } from '../styles/theme';
 import AuthUserContext from './AuthUserContext';
 
@@ -18,9 +18,6 @@ import Profile from '../pages/Profile';
 import ResetPassword from '../pages/ResetPassword';
 import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
-
-const redirectPath =
-  window.location.pathname === '/' ? 'matches/' : window.location.pathname;
 
 const App: React.FC = () => {
   const [authUser, setAuthUser] = useState<User | null>(
@@ -40,7 +37,7 @@ const App: React.FC = () => {
         <CssBaseline />
         <Router>
           <Layout>
-            {authUser && <Redirect to={redirectPath} />}
+            {authUser && <Redirect to={ROUTES.MATCHES_LIST} />}
             <Route path={ROUTES.ROOT} component={SignIn} exact />
             <Route path={ROUTES.REGISTER} component={SignUp} />
             <Route path={ROUTES.RESET} component={ResetPassword} />

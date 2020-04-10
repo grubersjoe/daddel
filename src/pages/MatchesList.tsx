@@ -12,7 +12,7 @@ import Typography from '@material-ui/core/Typography';
 
 import { futureMatchesQuery, pastMatchesQuery } from '../api/queries/matches';
 import firebase from '../api/firebase';
-import * as ROUTES from '../constants/routes';
+import ROUTES from '../constants/routes';
 import { Match, User } from '../types';
 import { calcUserList } from '../utils';
 import { filterMatches, numberOfEnabledFilters } from '../utils/filter';

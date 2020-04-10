@@ -9,7 +9,7 @@ import Link from '@material-ui/core/Link';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
-import * as ROUTES from '../constants/routes';
+import ROUTES from '../constants/routes';
 import { theme } from '../styles/theme';
 
 import GoogleIcon from '../assets/icons/GoogleIcon';
@@ -48,7 +48,7 @@ const SignIn: React.FC = () => {
   };
 
   return (
-    <Container style={{ marginTop: theme.spacing(2) }}>
+    <Container style={{ marginTop: -theme.spacing(9) }}>
       <Logo />
       <h2>Anmelden</h2>
       <form autoComplete="off" onSubmit={handleEmailLogin}>
@@ -132,11 +132,11 @@ const SignIn: React.FC = () => {
         Registrieren
       </Button>
 
-      <div>
+      <Typography>
         <Link component={RouterLink} to={ROUTES.RESET} color="textPrimary">
           Passwort vergessen?
         </Link>
-      </div>
+      </Typography>
     </Container>
   );
 };

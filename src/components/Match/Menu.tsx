@@ -8,7 +8,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import firebase from '../../api/firebase';
-import * as ROUTES from '../../constants/routes';
+import ROUTES from '../../constants/routes';
 import { Match } from '../../types';
 import AuthUserContext from '../AuthUserContext';
 

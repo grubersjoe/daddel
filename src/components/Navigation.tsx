@@ -7,7 +7,7 @@ import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import MatchesIcon from '@material-ui/icons/SportsEsports';
 import SettingsIcon from '@material-ui/icons/Settings';
 
-import * as ROUTES from '../constants/routes';
+import ROUTES from '../constants/routes';
 import { theme } from '../styles/theme';
 import AuthUserContext from './AuthUserContext';
 

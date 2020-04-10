@@ -1,7 +1,9 @@
-export const ADD_MATCH = '/add';
-export const EDIT_MATCH = '/edit';
-export const MATCHES_LIST = '/matches';
-export const PROFILE = '/profile';
-export const REGISTER = '/register';
-export const RESET = '/reset';
-export const ROOT = '/';
+export default {
+  ADD_MATCH: '/add',
+  EDIT_MATCH: '/edit',
+  MATCHES_LIST: '/matches',
+  PROFILE: '/profile',
+  REGISTER: '/register',
+  RESET: '/reset',
+  ROOT: '/',
+};

@@ -14,8 +14,9 @@ import TextField from '@material-ui/core/TextField';
 
 import firebase from '../api/firebase';
 import { DEFAULT_GAME } from '../constants';
-import * as ROUTES from '../constants/routes';
+import ROUTES from '../constants/routes';
 import { Match, Game, GameID } from '../types';
+import AppBar from '../components/AppBar';
 
 const EditMatch: React.FC<RouteComponentProps<
   {},
@@ -66,83 +67,84 @@ const EditMatch: React.FC<RouteComponentProps<
   };
 
   return (
-    <Container>
-      <h1>Bolz bearbeiten</h1>
+    <>
+      <AppBar title="Bolz bearbeiten" />
+      <Container>
+        <Box mb="1.5rem">
+          <Select
+            value={gameID}
+            onChange={event => setGameID(event.target.value as GameID)}
+            variant="outlined"
+            disabled={gamesLoading}
+            fullWidth
+            native
+          >
+            {gamesLoading && <option>Lade ...</option>}
+            {games &&
+              games.map(game => (
+                <option key={game.id} value={game.id}>
+                  {game.name}
+                </option>
+              ))}
+          </Select>
+        </Box>
 
-      <Box my="1.5rem">
-        <Select
-          value={gameID}
-          onChange={event => setGameID(event.target.value as GameID)}
-          variant="outlined"
-          disabled={gamesLoading}
-          fullWidth
-          native
-        >
-          {gamesLoading && <option>Lade ...</option>}
-          {games &&
-            games.map(game => (
-              <option key={game.id} value={game.id}>
-                {game.name}
-              </option>
-            ))}
-        </Select>
-      </Box>
-
-      <form autoComplete="off" onSubmit={editMatch}>
-        <Box my="1.5rem">
-          <MuiPickersUtilsProvider utils={DateFnsUtils} locale={deLocale}>
-            <DateTimePicker
-              label="Datum und Uhrzeit"
-              variant="dialog"
-              inputVariant="outlined"
-              value={date}
-              onChange={setDate}
-              minutesStep={15}
-              ampm={false}
-              required
+        <form autoComplete="off" onSubmit={editMatch}>
+          <Box mb="1.5rem">
+            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={deLocale}>
+              <DateTimePicker
+                label="Datum und Uhrzeit"
+                variant="dialog"
+                inputVariant="outlined"
+                value={date}
+                onChange={setDate}
+                minutesStep={15}
+                ampm={false}
+                required
+                fullWidth
+              />
+            </MuiPickersUtilsProvider>
+          </Box>
+          <Box mb="1rem">
+            <TextField
+              label="Beschreibung (optional)"
+              defaultValue={description}
+              variant="outlined"
+              onChange={event => setDescription(event.target.value)}
+              multiline
+              rows={2}
               fullWidth
             />
-          </MuiPickersUtilsProvider>
-        </Box>
-        <Box my="1.5rem" marginY="1rem">
-          <TextField
-            label="Beschreibung (optional)"
-            defaultValue={description}
-            variant="outlined"
-            onChange={event => setDescription(event.target.value)}
-            multiline
-            rows={2}
-            fullWidth
-          />
-        </Box>
-        <Box my="1.5rem">
-          <Grid container direction="row" spacing={2}>
-            <Grid item xs>
-              <Button
-                variant="outlined"
-                color="default"
-                onClick={history.goBack}
-                fullWidth
-              >
-                Abbrechen
-              </Button>
+          </Box>
+          <Box my="1.5rem">
+            <Grid container direction="row" spacing={2}>
+              <Grid item xs>
+                <Button
+                  variant="outlined"
+                  color="default"
+                  onClick={history.goBack}
+                  fullWidth
+                >
+                  Abbrechen
+                </Button>
+              </Grid>
+              <Grid item xs>
+                <Button
+                  type="submit"
+                  variant="outlined"
+                  color="primary"
+                  fullWidth
+                >
+                  Jajaja!
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item xs>
-              <Button
-                type="submit"
-                variant="outlined"
-                color="primary"
-                fullWidth
-              >
-                Jajaja!
-              </Button>
-            </Grid>
-          </Grid>
-        </Box>
-      </form>
+          </Box>
+        </form>
 
-      {error && <p>Fehler!</p>}
-    </Container>
+        {error && <p>Fehler!</p>}
+      </Container>
+    </>
   );
 };
 
