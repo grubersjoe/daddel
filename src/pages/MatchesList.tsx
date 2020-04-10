@@ -13,9 +13,10 @@ import Typography from '@material-ui/core/Typography';
 import { futureMatchesQuery, pastMatchesQuery } from '../api/queries/matches';
 import firebase from '../api/firebase';
 import ROUTES from '../constants/routes';
+import { theme } from '../styles/theme';
 import { Match, User } from '../types';
 import { calcUserList } from '../utils';
-import { filterMatches, numberOfEnabledFilters } from '../utils/filter';
+import { filterMatches, calcNumberOfEnabledFilters } from '../utils/filter';
 import {
   getStorageItem,
   setStorageItem,
@@ -85,6 +86,8 @@ const MatchesList: React.FC = () => {
     getStorageItem<MatchFilter>(STORAGE_KEYS.matchFilter) || { games: [] },
   );
 
+  const numberOfEnabledFilters = calcNumberOfEnabledFilters(filter);
+
   const [tabIndex, setTabIndex] = useState(0);
 
   const filteredFutureMatches = useMemo(
@@ -105,7 +108,7 @@ const MatchesList: React.FC = () => {
       <AppBar
         filter={{
           color: showFilter ? 'primary' : 'inherit',
-          enabled: numberOfEnabledFilters(filter),
+          enabled: numberOfEnabledFilters,
           title: showFilter ? 'Filter verstecken' : 'Filter anzeigen',
           onClick: () => {
             setShowFilter(enabled => {
@@ -154,12 +157,17 @@ const MatchesList: React.FC = () => {
             )}
           {filteredFutureMatches && filteredFutureMatches.length === 0 && (
             <div>
-              <Typography paragraph>Wow. Much empty.</Typography>
+              <Typography paragraph>Wow. Much empty. </Typography>
+              {numberOfEnabledFilters > 0 && (
+                <Typography paragraph>Obacht! Filter ist aktiv.</Typography>
+              )}
+
               <Button
                 variant="outlined"
                 color="primary"
                 component={Link}
                 to={ROUTES.ADD_MATCH}
+                style={{ marginTop: theme.spacing(1) }}
               >
                 Neuer Bolz
               </Button>
@@ -185,7 +193,12 @@ const MatchesList: React.FC = () => {
             </>
           )}
           {filteredPastMatches && filteredPastMatches.length === 0 && (
-            <Typography paragraph>Wow. Much empty.</Typography>
+            <>
+              <Typography paragraph>Wow. Much empty.</Typography>
+              {numberOfEnabledFilters > 0 && (
+                <Typography paragraph>Obacht! Filter ist aktiv.</Typography>
+              )}
+            </>
           )}
         </TabPanel>
       </SwipeableViews>
