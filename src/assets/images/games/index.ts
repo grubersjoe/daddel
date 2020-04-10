@@ -18,6 +18,8 @@ import left4Dead from './out/left4dead.jpg';
 import left4DeadWebp from './out/left4dead.webp';
 import rocketLeague from './out/rocket-league.jpg';
 import rocketLeagueWebp from './out/rocket-league.webp';
+import smite from './out/smite.jpg';
+import smiteWebp from './out/smite.webp';
 import tabletopSimulator from './out/tabletop-simulator.jpg';
 import tabletopSimulatorWebp from './out/tabletop-simulator.webp';
 import trackmania from './out/trackmania.jpg';
@@ -50,6 +52,8 @@ const gameBanners: {
   left4DeadWebp,
   rocketLeague,
   rocketLeagueWebp,
+  smite,
+  smiteWebp,
   tabletopSimulator,
   tabletopSimulatorWebp,
   trackmania,
