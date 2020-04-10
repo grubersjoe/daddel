@@ -1,14 +1,20 @@
-import React from 'react';
+import React, { MouseEventHandler } from 'react';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import Badge from '@material-ui/core/Badge';
+import FilterIcon from '@material-ui/icons/FilterListRounded';
+import IconButton from '@material-ui/core/IconButton';
 import MuiAppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
 
-type Props = {
+type Props = RouteComponentProps & {
+  filter?: {
+    color: 'inherit' | 'primary' | 'secondary' | 'default';
+    enabled: number;
+    title: string;
+    onClick: MouseEventHandler;
+  };
   title?: string;
 };
 
@@ -23,18 +29,8 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const AppBar: React.FC<Props> = ({ children, title }) => {
+const AppBar: React.FC<Props> = ({ children, filter, title }) => {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
   return (
     <MuiAppBar position="fixed" color="default">
@@ -42,31 +38,25 @@ const AppBar: React.FC<Props> = ({ children, title }) => {
         {title && <Typography variant="h6">{title}</Typography>}
         <div className={classes.children}>{children}</div>
         <div>
-          <IconButton onClick={handleMenu} color="inherit">
-            <AccountCircle />
-          </IconButton>
-          <Menu
-            id="menu-appbar"
-            anchorEl={anchorEl}
-            anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-            open={open}
-            onClose={handleClose}
-            keepMounted
-          >
-            <MenuItem onClick={handleClose}>Profile</MenuItem>
-            <MenuItem onClick={handleClose}>My account</MenuItem>
-          </Menu>
+          {filter && (
+            <IconButton
+              color={filter.color}
+              title={filter.title}
+              onClick={filter.onClick}
+            >
+              <Badge
+                badgeContent={filter.enabled}
+                color="primary"
+                variant="dot"
+              >
+                <FilterIcon />
+              </Badge>
+            </IconButton>
+          )}
         </div>
       </Toolbar>
     </MuiAppBar>
   );
 };
 
-export default AppBar;
+export default withRouter(AppBar);

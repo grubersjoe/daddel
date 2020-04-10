@@ -7,7 +7,7 @@ import TextField from '@material-ui/core/TextField';
 import firebase from '../../api/firebase';
 import { Game } from '../../types';
 import { theme } from '../../styles/theme';
-import { setStorageItem } from '../../utils/local-storage';
+import { setStorageItem, STORAGE_KEYS } from '../../utils/local-storage';
 
 export type MatchFilter = {
   games: Game[];
@@ -17,8 +17,6 @@ type Props = {
   filter: MatchFilter;
   setFilter: Dispatch<SetStateAction<MatchFilter>>;
 };
-
-export const FILTER_LOCALSTORAGE_KEY = 'daddel-match-filter';
 
 const Filter: React.FC<Props> = ({ filter, setFilter }) => {
   const [games, gamesLoading, gamesError] = useCollectionDataOnce<Game>(
@@ -44,14 +42,14 @@ const Filter: React.FC<Props> = ({ filter, setFilter }) => {
           multiple
           onChange={(_event, games) => {
             setFilter({ games });
-            setStorageItem(FILTER_LOCALSTORAGE_KEY, { games });
+            setStorageItem(STORAGE_KEYS.matchFilter, { games });
           }}
           options={options}
           renderInput={props => (
             <TextField
               {...props}
               variant="outlined"
-              placeholder="Spielefilter"
+              placeholder="Filter"
               disabled={gamesLoading}
             />
           )}

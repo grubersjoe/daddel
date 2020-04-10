@@ -1,4 +1,7 @@
+import { History } from 'history';
+
 import firebase from './firebase';
+import * as ROUTES from '../constants/routes';
 
 export function signInWithEmailAndPassword(email: string, password: string) {
   return firebase.auth.signInWithEmailAndPassword(email, password);
@@ -14,4 +17,9 @@ export function createUser(email: string, password: string) {
 
 export function resetPassword(email: string) {
   return firebase.auth.sendPasswordResetEmail(email);
+}
+
+export async function signOut(history: History) {
+  await firebase.auth.signOut();
+  history.push(ROUTES.ROOT);
 }

@@ -2,7 +2,6 @@ import React, { useState, useMemo } from 'react';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import SwipeableViews from 'react-swipeable-views';
 import { Link } from 'react-router-dom';
-import startOfToday from 'date-fns/startOfToday';
 
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
@@ -11,19 +10,22 @@ import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
 
+import { futureMatchesQuery, pastMatchesQuery } from '../api/queries/matches';
 import firebase from '../api/firebase';
 import * as ROUTES from '../constants/routes';
 import { Match, User } from '../types';
 import { calcUserList } from '../utils';
-import { filterMatches } from '../utils/filter';
-import { getStorageItem } from '../utils/local-storage';
+import { filterMatches, numberOfEnabledFilters } from '../utils/filter';
+import {
+  getStorageItem,
+  setStorageItem,
+  STORAGE_KEYS,
+} from '../utils/local-storage';
+
 import AppBar from '../components/AppBar';
-import Filter, {
-  MatchFilter,
-  FILTER_LOCALSTORAGE_KEY,
-} from '../components/Match/Filter';
-import MatchCard from '../components/Match/MatchCard';
 import SetNicknameDialog from '../components/Dialogs/SetNickname';
+import Filter, { MatchFilter } from '../components/Match/Filter';
+import MatchCard from '../components/Match/MatchCard';
 import Spinner from '../components/Spinner';
 
 type TabPanelProps = {
@@ -54,47 +56,33 @@ const TabPanel: React.FC<TabPanelProps> = ({
 );
 
 const MatchesList: React.FC = () => {
-  const today = startOfToday();
-
   const [
     futureMatches,
     futureMatchesLoading,
     futureMatchesError,
-  ] = useCollectionData<Match>(
-    firebase.firestore
-      .collection('matches')
-      .where('date', '>=', today)
-      .orderBy('date', 'asc'),
-    {
-      idField: 'id',
-    },
-  );
+  ] = useCollectionData<Match>(futureMatchesQuery, { idField: 'id' });
 
-  const [pastMatches, pastMatchesLoading, pastMatchesError] = useCollectionData<
-    Match
-  >(
-    firebase.firestore
-      .collection('matches')
-      .where('date', '<', today)
-      .orderBy('date', 'desc')
-      .limit(10),
-    {
-      idField: 'id',
-    },
-  );
+  // prettier-ignore
+  const [
+    pastMatches,
+    pastMatchesLoading,
+    pastMatchesError,
+  ] = useCollectionData<Match>(pastMatchesQuery(10), { idField: 'id' });
 
   const [users, , usersError] = useCollectionData<User>(
     firebase.firestore.collection('users'),
-    {
-      idField: 'uid',
-    },
+    { idField: 'uid' },
   );
 
   if (usersError) console.error(usersError);
   const userList = users ? calcUserList(users) : null;
 
+  const [showFilter, setShowFilter] = useState(
+    getStorageItem<boolean>(STORAGE_KEYS.matchFilterEnabled) || false,
+  );
+
   const [filter, setFilter] = useState<MatchFilter>(
-    getStorageItem<MatchFilter>(FILTER_LOCALSTORAGE_KEY) || { games: [] },
+    getStorageItem<MatchFilter>(STORAGE_KEYS.matchFilter) || { games: [] },
   );
 
   const [tabIndex, setTabIndex] = useState(0);
@@ -111,8 +99,22 @@ const MatchesList: React.FC = () => {
 
   return (
     <>
+      {/* Set initial nickname after registration */}
       <SetNicknameDialog />
-      <AppBar>
+
+      <AppBar
+        filter={{
+          color: showFilter ? 'primary' : 'inherit',
+          enabled: numberOfEnabledFilters(filter),
+          title: showFilter ? 'Filter verstecken' : 'Filter anzeigen',
+          onClick: () => {
+            setShowFilter(enabled => {
+              setStorageItem(STORAGE_KEYS.matchFilterEnabled, !enabled);
+              return !enabled;
+            });
+          },
+        }}
+      >
         <>
           <Tabs
             value={tabIndex}
@@ -124,9 +126,13 @@ const MatchesList: React.FC = () => {
           </Tabs>
         </>
       </AppBar>
-      <Box px={3}>
-        <Filter filter={filter} setFilter={setFilter} />
-      </Box>
+
+      {showFilter && (
+        <Box px={3}>
+          <Filter filter={filter} setFilter={setFilter} />
+        </Box>
+      )}
+
       <SwipeableViews index={tabIndex} onChangeIndex={setTabIndex}>
         <TabPanel value={tabIndex} index={0}>
           {futureMatchesError && (

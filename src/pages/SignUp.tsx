@@ -43,7 +43,7 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
           .collection('users')
           .doc(data.user.uid)
           .set({ nickname });
-        history.push('/matches');
+        history.push(ROUTES.MATCHES_LIST);
       })
       .catch(setError)
       .finally(() => setLoading(false));

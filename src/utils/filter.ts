@@ -11,3 +11,7 @@ export function filterMatches(matches: Match[], filter: MatchFilter) {
 
   return matches;
 }
+
+export function numberOfEnabledFilters(filter: MatchFilter) {
+  return filter.games.length;
+}

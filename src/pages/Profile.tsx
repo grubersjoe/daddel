@@ -5,7 +5,6 @@ import React, {
   ChangeEventHandler,
 } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { History } from 'history';
 import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
@@ -13,15 +12,11 @@ import Grid from '@material-ui/core/Grid';
 import SignOutIcon from '@material-ui/icons/ExitToApp';
 import TextField from '@material-ui/core/TextField';
 
+import { signOut } from '../api/auth';
 import firebase from '../api/firebase';
 import { User } from '../types';
 import { theme } from '../styles/theme';
 import AppBar from '../components/AppBar';
-
-async function signOut(history: History) {
-  await firebase.auth.signOut();
-  history.push('/');
-}
 
 const Profile: React.FC<RouteComponentProps> = ({ history }) => {
   const { currentUser } = firebase.auth;
