@@ -1,6 +1,11 @@
 import React, { useState, FormEvent } from 'react';
 import { StaticContext } from 'react-router';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
+import getDate from 'date-fns/getDate';
+import getMonth from 'date-fns/getMonth';
+import getYear from 'date-fns/getYear';
+import isSameDay from 'date-fns/isSameDay';
+import set from 'date-fns/set';
 import { useCollectionDataOnce } from 'react-firebase-hooks/firestore';
 import DateFnsUtils from '@date-io/date-fns';
 import deLocale from 'date-fns/locale/de';
@@ -17,8 +22,40 @@ import TextField from '@material-ui/core/TextField';
 import firebase from '../api/firebase';
 import { DEFAULT_GAME } from '../constants';
 import ROUTES from '../constants/routes';
-import { Match, Game, GameID } from '../types';
+import { Match, Game, GameID, Player } from '../types';
 import AppBar from '../components/AppBar';
+
+const updatePlayerDates = (players: Player[], updatedDate: Date): Player[] =>
+  players.map(player => {
+    const fromDate = player.from.toDate();
+    const untilDate = player.until.toDate();
+
+    const from = isSameDay(fromDate, updatedDate)
+      ? player.from
+      : firebase.timestamp(
+          set(fromDate, {
+            year: getYear(updatedDate),
+            month: getMonth(updatedDate),
+            date: getDate(updatedDate),
+          }),
+        );
+
+    const until = isSameDay(untilDate, updatedDate)
+      ? player.until
+      : firebase.timestamp(
+          set(untilDate, {
+            year: getYear(updatedDate),
+            month: getMonth(updatedDate),
+            date: getDate(updatedDate),
+          }),
+        );
+
+    return {
+      uid: player.uid,
+      from,
+      until,
+    };
+  });
 
 const EditMatch: React.FC<RouteComponentProps<
   {},
@@ -58,8 +95,9 @@ const EditMatch: React.FC<RouteComponentProps<
 
     const updatedMatch = {
       date: firebase.timestamp(date),
-      description,
+      description: description,
       game: gameID,
+      players: updatePlayerDates(match.players, date),
     };
 
     firebase.firestore
