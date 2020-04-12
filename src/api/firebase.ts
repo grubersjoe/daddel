@@ -19,7 +19,7 @@ auth.languageCode = 'de';
 const analytics = app.analytics();
 const firestore = app.firestore();
 
-firestore.enablePersistence().catch(err => console.error(err));
+firestore.clearPersistence();
 
 function timestamp(date: Date = new Date()) {
   return new firebase.firestore.Timestamp(
