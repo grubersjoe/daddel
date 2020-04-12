@@ -138,6 +138,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
                       onChange={setDate}
                       minutesStep={15}
                       ampm={false}
+                      disablePast
                       required
                       fullWidth
                     />

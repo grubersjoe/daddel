@@ -143,6 +143,7 @@ const EditMatch: React.FC<RouteComponentProps<
                 onChange={setDate}
                 minutesStep={15}
                 ampm={false}
+                disablePast
                 required
                 fullWidth
               />
