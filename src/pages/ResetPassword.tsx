@@ -1,8 +1,8 @@
 import React, { useState, FormEventHandler } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { CircularProgress } from '@material-ui/core';
-import { styled } from '@material-ui/core/styles';
+import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
@@ -13,14 +13,6 @@ import { resetPassword } from '../api/auth';
 import ROUTES from '../constants/routes';
 import { theme } from '../styles/theme';
 import Logo from '../components/Logo';
-
-const ErrorMessage = styled(Typography)(
-  {
-    margin: `${theme.spacing(3)}px 0`,
-    fontSize: '100%',
-  },
-  { withTheme: true },
-);
 
 const ResetPassword: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -86,7 +78,7 @@ const ResetPassword: React.FC = () => {
 
             {error && (
               <Grid item md={9}>
-                <ErrorMessage>{error.message}</ErrorMessage>
+                <Alert severity="error">Fehler: {error.message}</Alert>
               </Grid>
             )}
           </Grid>

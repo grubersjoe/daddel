@@ -6,6 +6,7 @@ import React, {
 } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
+import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
@@ -56,7 +57,7 @@ const Profile: React.FC<RouteComponentProps> = ({ history }) => {
     <>
       <AppBar title="Profil" />
       <Container>
-        {error && <p>Fehler :(</p>}
+        {error && <Alert severity="error">Fehler: {error.message}</Alert>}
 
         {!error && (
           <form

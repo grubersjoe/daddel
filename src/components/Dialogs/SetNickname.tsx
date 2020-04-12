@@ -50,13 +50,7 @@ const SetNicknameDialog: React.FC<RouteComponentProps> = ({ history }) => {
             fullWidth
             required
           />
-          {error && (
-            <Alert severity="error">
-              Wie unangenehm, ein Fehler ist aufgetreten:
-              <br />
-              {error.message}
-            </Alert>
-          )}
+          {error && <Alert severity="error">Fehler: {error.message}</Alert>}
         </DialogContent>
         <DialogActions>
           <Button type="submit" color="primary">

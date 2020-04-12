@@ -5,8 +5,10 @@ import { useCollectionDataOnce } from 'react-firebase-hooks/firestore';
 import DateFnsUtils from '@date-io/date-fns';
 import deLocale from 'date-fns/locale/de';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import Alert from '@material-ui/lab/Alert';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Select from '@material-ui/core/Select';
@@ -23,6 +25,9 @@ const EditMatch: React.FC<RouteComponentProps<
   StaticContext,
   { match: Match }
 >> = ({ location, history }) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+
   // Matches are passed as state through the <Link> component of react-router.
   // If this page is opened directly location.state will be undefined.
   const match = location?.state?.match;
@@ -31,12 +36,12 @@ const EditMatch: React.FC<RouteComponentProps<
   const [date, setDate] = useState<Date | null>(match?.date.toDate());
   const [description, setDescription] = useState(match?.description);
 
-  const [error, setError] = useState<Error | null>(null);
-
   const [games, gamesLoading, gamesError] = useCollectionDataOnce<Game>(
     firebase.firestore.collection('games').orderBy('name', 'asc'),
   );
 
+  // Hooks must not be called conditionally.
+  // So bailing out is not possible earlier.
   if (!match) {
     history.push(ROUTES.MATCHES_LIST);
     return null;
@@ -47,10 +52,9 @@ const EditMatch: React.FC<RouteComponentProps<
 
   const editMatch = (event: FormEvent) => {
     event.preventDefault();
+    setLoading(true);
 
-    if (!date) {
-      throw new Error('Date is not set');
-    }
+    if (!date) throw new Error('Date is not set.');
 
     const updatedMatch = {
       date: firebase.timestamp(date),
@@ -63,7 +67,8 @@ const EditMatch: React.FC<RouteComponentProps<
       .doc(match.id)
       .set(updatedMatch, { merge: true })
       .then(() => history.push(ROUTES.MATCHES_LIST))
-      .catch(setError);
+      .catch(setError)
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -123,6 +128,7 @@ const EditMatch: React.FC<RouteComponentProps<
                   variant="outlined"
                   color="default"
                   onClick={history.goBack}
+                  disabled={loading}
                   fullWidth
                 >
                   Abbrechen
@@ -133,6 +139,16 @@ const EditMatch: React.FC<RouteComponentProps<
                   type="submit"
                   variant="outlined"
                   color="primary"
+                  disabled={!games || loading}
+                  startIcon={
+                    loading ? (
+                      <CircularProgress
+                        color="inherit"
+                        size={22}
+                        thickness={3}
+                      />
+                    ) : null
+                  }
                   fullWidth
                 >
                   Jajaja!
@@ -142,7 +158,7 @@ const EditMatch: React.FC<RouteComponentProps<
           </Box>
         </form>
 
-        {error && <p>Fehler!</p>}
+        {error && <Alert severity="error">Fehler: {error.message}</Alert>}
       </Container>
     </>
   );

@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import SwipeableViews from 'react-swipeable-views';
 import { Link } from 'react-router-dom';
-
+import Alert from '@material-ui/lab/Alert';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -139,9 +139,7 @@ const MatchesList: React.FC = () => {
       <SwipeableViews index={tabIndex} onChangeIndex={setTabIndex}>
         <TabPanel value={tabIndex} index={0}>
           {futureMatchesError && (
-            <p>
-              <strong>Error: {JSON.stringify(futureMatchesError)}</strong>
-            </p>
+            <Alert severity="error">Fehler: {futureMatchesError.message}</Alert>
           )}
           {futureMatchesLoading && <Spinner />}
           {filteredFutureMatches &&
@@ -176,9 +174,7 @@ const MatchesList: React.FC = () => {
         </TabPanel>
         <TabPanel value={tabIndex} index={1}>
           {pastMatchesError && (
-            <p>
-              <strong>Error: {JSON.stringify(futureMatchesError)}</strong>
-            </p>
+            <Alert severity="error">Fehler: {pastMatchesError.message}</Alert>
           )}
           {pastMatchesLoading && <Spinner />}
           {filteredPastMatches && filteredPastMatches.length > 0 && userList && (

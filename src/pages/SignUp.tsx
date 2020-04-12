@@ -4,9 +4,9 @@ import {
   RouteComponentProps,
   withRouter,
 } from 'react-router-dom';
-import { CircularProgress } from '@material-ui/core';
-import { styled } from '@material-ui/core/styles';
+import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Container from '@material-ui/core/Container';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
@@ -18,11 +18,6 @@ import firebase from '../api/firebase';
 import ROUTES from '../constants/routes';
 import { theme } from '../styles/theme';
 import Logo from '../components/Logo';
-
-const ErrorMessage = styled(Typography)({
-  margin: `${theme.spacing(3)}px 0`,
-  fontSize: '100%',
-});
 
 const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
   const [loading, setLoading] = useState(false);
@@ -106,8 +101,12 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
             >
               Jajaja!
             </Button>
-            {error && <ErrorMessage>{error.message}</ErrorMessage>}
           </Grid>
+          {error && (
+            <Grid item md={9}>
+              <Alert severity="error">Fehler: {error.message}</Alert>
+            </Grid>
+          )}
         </Grid>
       </form>
 
