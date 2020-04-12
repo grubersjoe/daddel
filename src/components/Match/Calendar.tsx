@@ -1,12 +1,11 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import differenceInMinutes from 'date-fns/differenceInMinutes';
-import format from 'date-fns/format';
 import fromUnixTime from 'date-fns/fromUnixTime';
 
-import { TIME_FORMAT } from '../../constants/time';
 import { Player, UserMap } from '../../types';
-import { formatTimestamp, calcTimeLabelsBetweenTimes } from '../../utils';
+import { formatTimestamp, calcTimeLabelsBetweenDates } from '../../utils/date';
+import { MATCH_TIME_OPEN_END } from '../../constants/date';
 
 type Props = {
   players: Player[];
@@ -27,17 +26,13 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
     marginTop: theme.spacing(2.25),
     paddingTop: theme.spacing(3.5),
-    fontSize: '85%',
-
-    [theme.breakpoints.up('lg')]: {
-      fontSize: '88%',
-    },
+    fontSize: theme.typography.pxToRem(14),
   },
   label: {
     position: 'absolute',
     top: 0,
     height: '100%',
-    borderLeft: 'solid 1px rgba(255, 255, 255, 0.2)',
+    borderLeft: 'solid 1px rgba(255, 255, 255, 0.3)',
     paddingLeft: '0.4em',
     lineHeight: 1,
   },
@@ -45,24 +40,20 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
     top: 0,
     display: 'flex',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: '0.4em',
+    marginBottom: '0.5em',
     padding: '0.25em 0.75em',
-    backgroundColor: '#6E6E6E',
+    color: theme.palette.getContrastText(theme.palette.grey[300]),
+    backgroundColor: theme.palette.grey[300],
     borderRadius: 3,
-    textShadow: `0 1px 0 ${theme.palette.grey[800]}`,
 
     [theme.breakpoints.up('lg')]: {
-      marginBottom: '0.5em',
-      // padding: '0.28em 0.75em',
+      marginBottom: '0.55em',
     },
-  },
-  name: {
-    fontWeight: 500,
   },
   time: {
     marginLeft: '0.75em',
-    color: 'rgba(255, 255, 255, 0.9)',
     overflow: 'hidden',
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
@@ -106,12 +97,11 @@ const Calendar: React.FC<Props> = ({ players, userList }) => {
   const totalMinutes = differenceInMinutes(maxDate, minDate);
 
   const labelStepSize = Math.round(totalMinutes / 4 / 15) * 15;
-  const labels = calcTimeLabelsBetweenTimes(
-    format(minDate, TIME_FORMAT),
-    format(maxDate, TIME_FORMAT),
+  const timeLabels = calcTimeLabelsBetweenDates(
+    minDate,
+    maxDate,
     labelStepSize,
   );
-
   const bars = players.map(player => {
     return {
       minuteStart: differenceInMinutes(
@@ -127,13 +117,13 @@ const Calendar: React.FC<Props> = ({ players, userList }) => {
 
   return (
     <div className={classes.root}>
-      {labels.map((label, idx) => {
+      {timeLabels.map((timeLabel, idx) => {
         const left = ((idx * labelStepSize) / totalMinutes) * 100;
         return (
-          // More than 88% left will run outside of container
+          // More than about 88% left will run outside of container
           left <= 88 && (
             <Label left={left} key={left}>
-              {label}
+              {timeLabel}
             </Label>
           )
         );
@@ -143,16 +133,14 @@ const Calendar: React.FC<Props> = ({ players, userList }) => {
         const width = ((minuteEnd - minuteStart) / totalMinutes) * 100;
         const left = (minuteStart / totalMinutes) * 100;
 
+        const untilLabel = formatTimestamp(player.until);
+
         return (
           <Bar width={width} left={left} key={player.uid}>
-            <span
-              className={classes.name}
-              title={userList.get(player.uid)?.nickname}
-            >
-              {userList.get(player.uid)?.nickname}
-            </span>
+            <span>{userList.get(player.uid)?.nickname}</span>
             <span className={classes.time}>
-              {formatTimestamp(player.from)} - {formatTimestamp(player.until)}
+              {formatTimestamp(player.from)} –{' '}
+              {untilLabel === MATCH_TIME_OPEN_END ? 'Open end' : untilLabel}
             </span>
           </Bar>
         );

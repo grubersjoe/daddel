@@ -16,7 +16,7 @@ import firebase from '../../api/firebase';
 import { getGameBanner } from '../../assets/images/games';
 import { theme } from '../../styles/theme';
 import { Match, UserMap } from '../../types';
-import { formatDate, formatTimestamp } from '../../utils';
+import { formatDate, formatTimestamp } from '../../utils/date';
 
 import JoinMatchDialog from '../Dialogs/JoinMatch';
 import Calendar from './Calendar';

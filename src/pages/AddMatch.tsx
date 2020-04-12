@@ -3,12 +3,13 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { User } from 'firebase';
 import { useCollectionDataOnce } from 'react-firebase-hooks/firestore';
 import addHours from 'date-fns/addHours';
-import format from 'date-fns/format';
 import isSameDay from 'date-fns/isSameDay';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import Alert from '@material-ui/lab/Alert';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Container from '@material-ui/core/Container';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
@@ -22,16 +23,20 @@ import setHours from 'date-fns/setHours';
 import firebase from '../api/firebase';
 import { joinMatch } from '../api/match';
 import { DEFAULT_GAME } from '../constants';
+import { Match, Game, GameID, TimeLabel } from '../types';
 import {
   DEFAULT_MATCH_STARTTIME,
   MATCH_TIME_END,
   TIME_FORMAT,
-} from '../constants/time';
-import { Match, Game, GameID } from '../types';
+} from '../constants/date';
+import { format } from '../utils/date';
 import AppBar from '../components/AppBar';
 import AuthUserContext from '../components/AuthUserContext';
 
 const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+
   const [defaultHour, defaultMinute] = DEFAULT_MATCH_STARTTIME.split(':');
   const defaultDate = setMinutes(
     setHours(new Date(), Number(defaultHour)),
@@ -43,8 +48,6 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
   const [description, setDescription] = useState('');
   const [joinLobby, setJoinLobby] = useState(true);
 
-  const [error, setError] = useState<Error | null>(null);
-
   const [games, gamesLoading, gamesError] = useCollectionDataOnce<Game>(
     firebase.firestore.collection('games').orderBy('name', 'asc'),
   );
@@ -54,14 +57,10 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
 
   const addMatch = (event: FormEvent, currentUser: User) => {
     event.preventDefault();
+    setLoading(true);
 
-    if (!date) {
-      return setError(new Error('Date is not set'));
-    }
-
-    if (!games) {
-      throw new Error('Games are not loaded yet');
-    }
+    if (!date) throw new Error('Date is not set.');
+    if (!games) throw new Error('Games are not loaded yet.');
 
     const maxPlayers = games.find(game => game.id === gameID)?.maxPlayers;
     const match: Match = {
@@ -71,7 +70,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
       description,
       game: gameID,
       players: [],
-      ...(maxPlayers && { maxPlayers }), // only add if set
+      ...(maxPlayers && { maxPlayers }), // set maxPlayers only if set
     };
 
     firebase.firestore
@@ -79,21 +78,18 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
       .add(match)
       .then(doc => {
         if (joinLobby) {
-          const availFrom = format(date, TIME_FORMAT);
+          const availFrom = format(date, TIME_FORMAT) as TimeLabel;
           const availUntil = isSameDay(addHours(date, 2), date)
-            ? format(addHours(date, 2), TIME_FORMAT)
+            ? format<TimeLabel>(addHours(date, 2), TIME_FORMAT)
             : MATCH_TIME_END;
 
-          joinMatch({
-            availFrom,
-            availUntil,
-            currentPlayers: [],
-            match: { ...match, id: doc.id },
-          })
+          joinMatch(availFrom, availUntil, { id: doc.id, ...match })
             .then(() => history.push('/matches'))
-            .catch(setError);
+            .catch(setError)
+            .finally(() => setLoading(false));
         } else {
           history.push('/matches');
+          setLoading(false);
         }
       })
       .catch(setError);
@@ -174,6 +170,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
                         variant="outlined"
                         color="default"
                         onClick={history.goBack}
+                        disabled={loading}
                         fullWidth
                       >
                         Abbrechen
@@ -184,6 +181,16 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
                         type="submit"
                         variant="outlined"
                         color="primary"
+                        disabled={!games || loading}
+                        startIcon={
+                          loading ? (
+                            <CircularProgress
+                              color="inherit"
+                              size={22}
+                              thickness={3}
+                            />
+                          ) : null
+                        }
                         fullWidth
                       >
                         Jajaja!
@@ -196,7 +203,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
           }
         </AuthUserContext.Consumer>
 
-        {error && <p>Fehler!</p>}
+        {error && <Alert severity="error">Fehler: {error.message}</Alert>}
       </Container>
     </>
   );

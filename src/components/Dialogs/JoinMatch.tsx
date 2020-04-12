@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import addHours from 'date-fns/addHours';
-import parse from 'date-fns/parse';
-import format from 'date-fns/format';
+import startOfToday from 'date-fns/startOfToday';
+import { withStyles } from '@material-ui/core/styles';
 import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -11,7 +11,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Grid from '@material-ui/core/Grid';
 import InputLabel from '@material-ui/core/InputLabel';
-import LinearProgress from '@material-ui/core/LinearProgress';
+import MuiLinearProgress from '@material-ui/core/LinearProgress';
 import Select from '@material-ui/core/Select';
 
 import firebase from '../../api/firebase';
@@ -21,14 +21,17 @@ import {
   DEFAULT_MATCH_STARTTIME,
   MATCH_TIME_START,
   MATCH_TIME_END,
-} from '../../constants/time';
+  MATCH_TIME_OPEN_END,
+} from '../../constants/date';
 import { theme } from '../../styles/theme';
-import { Match, Timestamp } from '../../types';
+import { Match, Timestamp, TimeLabel } from '../../types';
 import {
+  format,
   formatDate,
   formatTimestamp,
-  calcTimeLabelsBetweenTimes,
-} from '../../utils';
+  calcTimeLabelsBetweenDates,
+  parseTimeLabel,
+} from '../../utils/date';
 
 type Props = {
   match: Match;
@@ -37,9 +40,16 @@ type Props = {
 };
 
 type State = {
-  from: string;
-  until: string;
+  availFrom: TimeLabel;
+  availUntil: TimeLabel;
 };
+
+const LinearProgress = withStyles({
+  root: {
+    height: 6,
+    backgroundColor: theme.palette.grey[700],
+  },
+})(MuiLinearProgress);
 
 const JoinMatchDialog: React.FC<Props> = ({
   match,
@@ -50,49 +60,43 @@ const JoinMatchDialog: React.FC<Props> = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const timeOptions = calcTimeLabelsBetweenTimes(
-    MATCH_TIME_START,
-    MATCH_TIME_END,
+  const timeLabels = calcTimeLabelsBetweenDates(
+    parseTimeLabel(MATCH_TIME_START, startOfToday()),
+    parseTimeLabel(MATCH_TIME_END, startOfToday()),
   );
 
   const timeInitialFrom = initialFrom ? formatTimestamp(initialFrom) : null;
   const timeMatchDate = formatTimestamp(match.date);
 
-  const from =
-    timeOptions.find(option => option === timeInitialFrom) ||
-    timeOptions.find(option => option === timeMatchDate) ||
+  const availFrom =
+    timeLabels.find(option => option === timeInitialFrom) ||
+    timeLabels.find(option => option === timeMatchDate) ||
     DEFAULT_MATCH_STARTTIME;
 
+  const defaultAvailUntil = format<TimeLabel>(
+    addHours(parseTimeLabel(availFrom), 2),
+    TIME_FORMAT,
+  );
+
+  const availUntilFallback = timeLabels.includes(defaultAvailUntil)
+    ? defaultAvailUntil
+    : timeLabels[timeLabels.length - 1];
+
   const timeInitialUntil = initialUntil ? formatTimestamp(initialUntil) : null;
+  const availUntil =
+    [...timeLabels, MATCH_TIME_OPEN_END as TimeLabel].find(
+      option => option === timeInitialUntil,
+    ) || availUntilFallback;
 
-  const until =
-    timeOptions.find(option => option === timeInitialUntil) ||
-    format(addHours(parse(from, TIME_FORMAT, new Date()), 2), TIME_FORMAT);
+  const [state, setState] = React.useState<State>({ availFrom, availUntil });
 
-  const untilClamped = timeOptions.includes(until)
-    ? until
-    : timeOptions[timeOptions.length - 1];
-
-  const [state, setState] = React.useState<State>({
-    from: from,
-    until: untilClamped,
-  });
-
-  useEffect(() => {
-    setState({
-      from,
-      until: untilClamped,
-    });
-  }, [from, untilClamped]);
+  // Required to sync state with possibly recalculated
+  // values of availFrom and availUntilClamped
+  useEffect(() => setState({ availFrom, availUntil }), [availFrom, availUntil]);
 
   const handleJoin = () => {
     setLoading(true);
-    joinMatch({
-      availFrom: state.from,
-      availUntil: state.until,
-      match,
-      currentPlayers: match.players,
-    })
+    joinMatch(state.availFrom, state.availUntil, match)
       .then(() => setOpen(false))
       .catch(setError)
       .finally(() => setLoading(false));
@@ -107,7 +111,7 @@ const JoinMatchDialog: React.FC<Props> = ({
       matchId: match.id,
     })
       .then(() => setOpen(false))
-      .catch(error => console.error(error))
+      .catch(setError)
       .finally(() => setLoading(false));
   };
 
@@ -115,12 +119,12 @@ const JoinMatchDialog: React.FC<Props> = ({
     setOpen(false);
   };
 
-  const handleChange = (name: keyof typeof state) => (
+  const handleChange = (stateProp: keyof typeof state) => (
     event: React.ChangeEvent<{ value: unknown }>,
   ) => {
     setState({
       ...state,
-      [name]: event.target.value,
+      [stateProp]: event.target.value,
     });
   };
 
@@ -128,11 +132,28 @@ const JoinMatchDialog: React.FC<Props> = ({
     player => player.uid === firebase.auth.currentUser?.uid,
   );
 
-  const selectOptions = timeOptions.map(value => (
-    <option key={value} value={value}>
-      {value}
-    </option>
-  ));
+  const getSelectOptions = (
+    timeLabels: string[],
+    optionsArg = {
+      includeOpenEnd: false,
+    },
+  ) => {
+    let options = timeLabels.map(label => (
+      <option key={label} value={label}>
+        {label}
+      </option>
+    ));
+
+    if (optionsArg.includeOpenEnd) {
+      options.push(
+        <option key={MATCH_TIME_OPEN_END} value={MATCH_TIME_OPEN_END}>
+          Open end
+        </option>,
+      );
+    }
+
+    return options;
+  };
 
   return (
     <>
@@ -163,7 +184,7 @@ const JoinMatchDialog: React.FC<Props> = ({
         </Grid>
       </Grid>
       <Dialog open={open} onClose={handleClose}>
-        {loading && <LinearProgress variant="query" />}
+        {loading && <LinearProgress />}
         <DialogTitle>{formatDate(match.date)}</DialogTitle>
         <DialogContent>
           <DialogContentText>Von wann bis wann hast du Zeit?</DialogContentText>
@@ -171,35 +192,32 @@ const JoinMatchDialog: React.FC<Props> = ({
             <Grid item xs={6} style={{ paddingRight: theme.spacing(1.5) }}>
               <InputLabel htmlFor="select-from">Ab</InputLabel>
               <Select
-                value={state.from}
-                onChange={handleChange('from')}
+                value={state.availFrom}
+                onChange={handleChange('availFrom')}
                 inputProps={{ id: 'select-from' }}
                 fullWidth
                 native
               >
-                {selectOptions}
+                {getSelectOptions(timeLabels)}
               </Select>
             </Grid>
             <Grid item xs={6} style={{ paddingLeft: theme.spacing(1.5) }}>
               <InputLabel htmlFor="select-until">Bis</InputLabel>
               <Select
-                value={state.until}
-                onChange={handleChange('until')}
+                value={state.availUntil}
+                onChange={handleChange('availUntil')}
                 inputProps={{ id: 'select-until' }}
                 fullWidth
                 native
               >
-                {selectOptions}
+                {getSelectOptions(
+                  timeLabels.slice(timeLabels.indexOf(state.availFrom) + 1),
+                  { includeOpenEnd: true },
+                )}
               </Select>
             </Grid>
           </Grid>
-          {error && (
-            <Alert severity="error">
-              Wie unangenehm, ein Fehler ist aufgetreten:
-              <br />
-              {error.message}
-            </Alert>
-          )}
+          {error && <Alert severity="error">Fehler: {error.message}</Alert>}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} disabled={loading}>
