@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import 'typeface-roboto';
 
 import './styles/global.scss';
 import App from './components/App';
