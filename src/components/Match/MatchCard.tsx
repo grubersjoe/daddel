@@ -79,7 +79,6 @@ const useStyles = makeStyles(theme => ({
 
 const MatchCard: React.FC<Props> = ({ match, userList }) => {
   const classes = useStyles();
-
   const [gameBanner, setGameBanner] = useState<string | undefined>();
 
   getGameBanner(match.game).then(banner => {
@@ -108,46 +107,54 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
     throw new Error('match.id is undefined');
   }
 
-  return gameBanner ? (
+  return (
     <Card className={classes.card} raised>
-      <CardMedia className={classes.media} image={gameBanner}>
-        <Grid
-          container
-          direction="column"
-          alignItems="flex-end"
-          justify="space-between"
-          style={{ height: '100%' }}
-        >
-          <Box flexGrow={1}>
-            <Menu match={match} />
-          </Box>
+      {gameBanner ? (
+        <CardMedia className={classes.media} image={gameBanner}>
           <Grid
             container
-            item
-            direction="row"
-            justify="space-between"
+            direction="column"
             alignItems="flex-end"
-            style={{
-              background: 'linear-gradient(transparent, rgba(0, 0, 0, 0.95))',
-            }}
+            justify="space-between"
+            style={{ height: '100%' }}
           >
-            <Typography className={classes.date}>
-              {formatDate(match.date)}
-            </Typography>
-            <Typography className={classes.date}>
-              {formatTimestamp(match.date)} Uhr
-            </Typography>
-          </Grid>
-          {match.maxPlayers && (
-            <Grid container item>
-              <ProgressBar
-                value={match.players.length}
-                max={match.maxPlayers}
-              />
+            <Box flexGrow={1}>
+              <Menu match={match} />
+            </Box>
+            <Grid
+              container
+              item
+              direction="row"
+              justify="space-between"
+              alignItems="flex-end"
+              style={{
+                background: 'linear-gradient(transparent, rgba(0, 0, 0, 0.95))',
+              }}
+            >
+              <Typography className={classes.date}>
+                {formatDate(match.date)}
+              </Typography>
+              <Typography className={classes.date}>
+                {formatTimestamp(match.date)} Uhr
+              </Typography>
             </Grid>
-          )}
-        </Grid>
-      </CardMedia>
+            {match.maxPlayers && (
+              <Grid container item>
+                <ProgressBar
+                  value={match.players.length}
+                  max={match.maxPlayers}
+                />
+              </Grid>
+            )}
+          </Grid>
+        </CardMedia>
+      ) : (
+        <Skeleton
+          variant="rect"
+          className={classes.media}
+          style={{ display: 'block' }}
+        />
+      )}
       <Box
         display="flex"
         flexGrow={1}
@@ -157,13 +164,13 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
         <CardContent className={classes.cardContent}>
           <Typography
             color="textSecondary"
-            style={{ marginBottom: theme.spacing(1.5) }}
+            style={{ marginBottom: theme.spacing(1.75) }}
           >
             <TimeAgo date={fromUnixTime(match.date.seconds)} />
           </Typography>
           {match.description && (
             <Typography
-              style={{ marginBottom: theme.spacing(3.5), lineHeight: 1.25 }}
+              style={{ marginBottom: theme.spacing(3.75), lineHeight: 1.25 }}
             >
               {match.description}
             </Typography>
@@ -191,15 +198,7 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
         )}
       </Box>
     </Card>
-  ) : (
-    <MatchCardSkeleton />
   );
 };
-
-const MatchCardSkeleton: React.FC = () => (
-  <Card raised style={{ height: '100%', minHeight: 400 }}>
-    <Skeleton variant="rect" height="100%" />
-  </Card>
-);
 
 export default MatchCard;
