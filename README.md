@@ -1,6 +1,6 @@
 # Daddel
 
-Daddel (from German _dad·deln_, meaning _to play_) let's you plan a gaming
+Daddel (from German _dad·deln_, meaning _to play_) let's you plan gaming
 sessions with your friends. Anyone can create matches that can be joined by
 others. As each player specifies the time frame in which he is available, the
 games are easier to plan. Each lobby has a maximum size dependent on the game.
