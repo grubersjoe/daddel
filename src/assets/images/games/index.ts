@@ -1,5 +1,6 @@
 import { FALLBACK_GAME } from '../../../constants';
 import { GameID } from '../../../types';
+import { supportsWebp } from '../../../utils';
 
 import fallback from './out/fallback.jpg';
 import fallbackWebp from './out/fallback.webp';
@@ -24,7 +25,8 @@ import tabletopSimulator from './out/tabletop-simulator.jpg';
 import tabletopSimulatorWebp from './out/tabletop-simulator.webp';
 import trackmania from './out/trackmania.jpg';
 import trackmaniaWebp from './out/trackmania.webp';
-import { supportsWebp } from '../../../utils';
+import valorant from './out/valorant.jpg';
+import valorantWebp from './out/valorant.webp';
 
 export async function getGameBanner(gameID: GameID | undefined) {
   const webp = await supportsWebp();
@@ -58,6 +60,8 @@ const gameBanners: {
   tabletopSimulatorWebp,
   trackmania,
   trackmaniaWebp,
+  valorant,
+  valorantWebp,
 };
 
 export default gameBanners;
