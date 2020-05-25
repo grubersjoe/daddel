@@ -33,13 +33,13 @@ const Filter: React.FC<Props> = ({ filter, setFilter }) => {
   return (
     <Grid container spacing={5} style={{ marginBottom: theme.spacing(1) }}>
       <Grid item xs={12} lg={4}>
-        <Autocomplete<Game>
+        <Autocomplete<Game, true>
           clearOnEscape
           disabled={gamesLoading}
           filterSelectedOptions
           getOptionLabel={option => option.name}
-          loading={gamesLoading}
           multiple
+          loading={gamesLoading}
           onChange={(_event, games) => {
             setFilter({ games });
             setStorageItem(STORAGE_KEYS.matchFilter, { games });
