@@ -5,6 +5,8 @@ import { supportsWebp } from '../../../utils';
 import fallback from './out/fallback.jpg';
 import fallbackWebp from './out/fallback.webp';
 
+import apex from './out/apex.jpg';
+import apexWebp from './out/apex.webp';
 import coh from './out/coh.jpg';
 import cohWebp from './out/coh.webp';
 import csgo from './out/csgo.jpg';
@@ -38,6 +40,8 @@ export async function getGameBanner(gameID: GameID | undefined) {
 const gameBanners: {
   [key: string]: string;
 } = {
+  apex,
+  apexWebp,
   coh,
   cohWebp,
   fallback,
