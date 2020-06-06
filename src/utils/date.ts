@@ -26,19 +26,21 @@ export function format<R extends string = string>(
   return formatDateFns(date, format, options) as R;
 }
 
-export function formatDate(timestamp: Timestamp) {
+export function formatDate(timestamp: Timestamp, smartWeekday = true) {
   const date = fromUnixTime(timestamp.seconds);
 
-  if (isYesterday(date)) {
-    return `Gestern ${format(date, DATE_FORMAT, { locale: de })}`;
-  }
+  if (smartWeekday) {
+    if (isYesterday(date)) {
+      return `Gestern ${format(date, DATE_FORMAT, { locale: de })}`;
+    }
 
-  if (isToday(date)) {
-    return `Heute ${format(date, DATE_FORMAT, { locale: de })}`;
-  }
+    if (isToday(date)) {
+      return `Heute ${format(date, DATE_FORMAT, { locale: de })}`;
+    }
 
-  if (isTomorrow(date)) {
-    return `Morgen ${format(date, DATE_FORMAT, { locale: de })}`;
+    if (isTomorrow(date)) {
+      return `Morgen ${format(date, DATE_FORMAT, { locale: de })}`;
+    }
   }
 
   return format(date, `EEEE ${DATE_FORMAT}`, { locale: de });

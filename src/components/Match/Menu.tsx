@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
-import { Link, useLocation, useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import { useCollectionData } from 'react-firebase-hooks/firestore';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
@@ -10,8 +11,10 @@ import MuiMenu from '@material-ui/core/Menu';
 import ShareIcon from '@material-ui/icons/Share';
 
 import firebase from '../../api/firebase';
+import { BASE_URL_PROD, FALLBACK_GAME_TITLE } from '../../constants';
 import ROUTES from '../../constants/routes';
-import { Match } from '../../types';
+import { Match, Game } from '../../types';
+import { formatDate, formatTimestamp } from '../../utils/date';
 import { AuthUserContext } from '../App';
 
 type Props = {
@@ -20,9 +23,11 @@ type Props = {
 
 const Menu: React.FC<Props> = ({ match }) => {
   const history = useHistory();
-  const location = useLocation();
-
   const authUser = useContext(AuthUserContext);
+
+  const [games, gamesLoading] = useCollectionData<Game>(
+    firebase.firestore.collection('games').orderBy('name', 'asc'),
+  );
 
   const [anchorElement, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorElement);
@@ -49,15 +54,24 @@ const Menu: React.FC<Props> = ({ match }) => {
     handleClose();
   };
 
-  const handleShare = () => {
-    if (navigator.share) {
+  const handleShare = (match: Match) => {
+    if (navigator.share && games) {
+      const game = games.find(game => game.id === match.game);
+      const gameTitle = game?.name || match.game || FALLBACK_GAME_TITLE;
+      const date = `${formatDate(match.date, false)} um ${formatTimestamp(
+        match.date,
+      )} Uhr`;
+
       navigator
         .share({
-          title: document.title,
-          url: location.pathname,
+          title: `${gameTitle} am ${date}`,
+          url: `${BASE_URL_PROD}/matches/${match.id}`,
+          text: `Spiel mit: ${gameTitle} am ${date}`,
         })
         .catch(console.error);
     }
+
+    handleClose();
   };
 
   if (!authUser) {
@@ -96,7 +110,12 @@ const Menu: React.FC<Props> = ({ match }) => {
           <LinkIcon fontSize="small" style={{ marginRight: 8 }} />
           Permalink
         </MenuItem>
-        <MenuItem onClick={handleShare}>
+        <MenuItem
+          onClick={() => handleShare(match)}
+          style={{
+            color: gamesLoading ? 'rgba(255, 255, 255, 0.5' : 'inherit',
+          }}
+        >
           <ShareIcon fontSize="small" style={{ marginRight: 8 }} />
           Teilen
         </MenuItem>
