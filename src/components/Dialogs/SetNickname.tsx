@@ -16,15 +16,15 @@ const SetNicknameDialog: React.FC<RouteComponentProps> = ({ history }) => {
   const [nickname, setNickname] = useState('');
 
   const { currentUser } = firebase.auth;
-  const [value, loading, error] = useDocumentData(
+  const [user, loading, error] = useDocumentData(
     firebase.firestore.doc(`users/${currentUser?.uid}`),
   );
 
   useEffect(() => {
-    if (!loading && value === undefined) {
+    if (!loading && user === undefined) {
       setOpen(true);
     }
-  }, [loading, value]);
+  }, [loading, user]);
 
   const handleSubmit: FormEventHandler = event => {
     event.preventDefault();

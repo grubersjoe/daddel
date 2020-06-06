@@ -6,15 +6,8 @@ export type QuerySnapshot = firebase.firestore.QuerySnapshot<
 
 export type Timestamp = firebase.firestore.Timestamp;
 
-export type GameID =
-  | 'csgo'
-  | 'fallback'
-  | 'helldivers'
-  | 'left4dead'
-  | 'tabletopSimulator';
-
 export type Game = {
-  id: GameID;
+  id: string;
   maxPlayers?: number;
   name: string;
 };
@@ -25,7 +18,7 @@ export type Match = {
   createdBy: string;
   date: Timestamp;
   description?: string;
-  game?: GameID; // introduced later
+  game?: string; // introduced later, so might be undefined
   maxPlayers?: number;
   players: Array<Player>;
 };

@@ -6,7 +6,7 @@ import getMonth from 'date-fns/getMonth';
 import getYear from 'date-fns/getYear';
 import isSameDay from 'date-fns/isSameDay';
 import set from 'date-fns/set';
-import { useCollectionDataOnce } from 'react-firebase-hooks/firestore';
+import { useCollectionData } from 'react-firebase-hooks/firestore';
 import DateFnsUtils from '@date-io/date-fns';
 import deLocale from 'date-fns/locale/de';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
@@ -22,7 +22,7 @@ import TextField from '@material-ui/core/TextField';
 import firebase from '../api/firebase';
 import { DEFAULT_GAME } from '../constants';
 import ROUTES from '../constants/routes';
-import { Match, Game, GameID, Player } from '../types';
+import { Match, Game, Player } from '../types';
 import AppBar from '../components/AppBar';
 
 const updatePlayerDates = (players: Player[], updatedDate: Date): Player[] =>
@@ -73,7 +73,7 @@ const EditMatch: React.FC<RouteComponentProps<
   const [date, setDate] = useState<Date | null>(match?.date.toDate());
   const [description, setDescription] = useState(match?.description);
 
-  const [games, gamesLoading, gamesError] = useCollectionDataOnce<Game>(
+  const [games, gamesLoading, gamesError] = useCollectionData<Game>(
     firebase.firestore.collection('games').orderBy('name', 'asc'),
   );
 
@@ -116,7 +116,7 @@ const EditMatch: React.FC<RouteComponentProps<
         <Box mb="1.5rem">
           <Select
             value={gameID}
-            onChange={event => setGameID(event.target.value as GameID)}
+            onChange={event => setGameID(String(event.target.value))}
             variant="outlined"
             disabled={gamesLoading}
             fullWidth

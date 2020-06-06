@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from 'react';
-import { useCollectionDataOnce } from 'react-firebase-hooks/firestore';
+import { useCollectionData } from 'react-firebase-hooks/firestore';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
@@ -19,7 +19,7 @@ type Props = {
 };
 
 const Filter: React.FC<Props> = ({ filter, setFilter }) => {
-  const [games, gamesLoading, gamesError] = useCollectionDataOnce<Game>(
+  const [games, gamesLoading, gamesError] = useCollectionData<Game>(
     firebase.firestore.collection('games').orderBy('name', 'asc'),
   );
 

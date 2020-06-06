@@ -1,7 +1,7 @@
-import React, { useState, FormEvent } from 'react';
+import React, { useState, FormEvent, useEffect } from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { User } from 'firebase';
-import { useCollectionDataOnce } from 'react-firebase-hooks/firestore';
+import { useCollectionData } from 'react-firebase-hooks/firestore';
 import addHours from 'date-fns/addHours';
 import isSameDay from 'date-fns/isSameDay';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
@@ -11,8 +11,10 @@ import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Container from '@material-ui/core/Container';
+import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
+import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 import DateFnsUtils from '@date-io/date-fns';
@@ -22,8 +24,7 @@ import setHours from 'date-fns/setHours';
 
 import firebase from '../api/firebase';
 import { joinMatch } from '../api/match';
-import { DEFAULT_GAME } from '../constants';
-import { Match, Game, GameID, TimeLabel } from '../types';
+import { Match, Game, TimeLabel } from '../types';
 import {
   DEFAULT_MATCH_STARTTIME,
   MATCH_TIME_END,
@@ -43,14 +44,21 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
     Number(defaultMinute),
   );
 
-  const [gameID, setGameID] = useState<Game['id']>(DEFAULT_GAME);
+  const [gameID, setGameID] = useState<Game['id']>('');
   const [date, setDate] = useState<Date | null>(defaultDate); // null because of MUI
   const [description, setDescription] = useState('');
   const [joinLobby, setJoinLobby] = useState(true);
 
-  const [games, gamesLoading, gamesError] = useCollectionDataOnce<Game>(
+  const [games, gamesLoading, gamesError] = useCollectionData<Game>(
     firebase.firestore.collection('games').orderBy('name', 'asc'),
   );
+
+  // Select first available game as soon as games are loaded
+  useEffect(() => {
+    if (games && games.length > 0) {
+      setGameID(games[0].id);
+    }
+  }, [games]);
 
   if (gamesError) console.error(gamesError);
   if (error) console.error(error);
@@ -100,22 +108,25 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
       <AppBar title="Neuer Bolz" />
       <Container>
         <Box mb="1.5rem">
-          <Select
-            value={gameID}
-            onChange={event => setGameID(event.target.value as GameID)}
-            variant="outlined"
-            disabled={gamesLoading}
-            fullWidth
-            native
-          >
-            {gamesLoading && <option>Lade ...</option>}
-            {games &&
-              games.map(game => (
-                <option key={game.id} value={game.id}>
-                  {game.name}
-                </option>
-              ))}
-          </Select>
+          <FormControl variant="outlined" fullWidth required>
+            <InputLabel>Wos wird gspuit?</InputLabel>
+            <Select
+              native
+              value={gameID}
+              onChange={event => setGameID(event.target.value as string)}
+              label="Was wird gspuit?"
+              disabled={gamesLoading}
+            >
+              {gamesLoading && <option>Lade ...</option>}
+              {games &&
+                games.map(game => (
+                  <option key={game.id} value={game.id}>
+                    {game.name}
+                    {game.maxPlayers ? ` (${game.maxPlayers} Spieler)` : null}
+                  </option>
+                ))}
+            </Select>
+          </FormControl>
         </Box>
 
         <AuthUserContext.Consumer>

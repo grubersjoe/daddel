@@ -1,5 +1,4 @@
 import { FALLBACK_GAME } from '../../../constants';
-import { GameID } from '../../../types';
 import { supportsWebp } from '../../../utils';
 
 import fallback from './out/fallback.jpg';
@@ -30,7 +29,7 @@ import trackmaniaWebp from './out/trackmania.webp';
 import valorant from './out/valorant.jpg';
 import valorantWebp from './out/valorant.webp';
 
-export async function getGameBanner(gameID: GameID | undefined) {
+export async function getGameBanner(gameID?: string) {
   const webp = await supportsWebp();
   const key = gameID && webp ? gameID.concat('Webp') : gameID;
 
