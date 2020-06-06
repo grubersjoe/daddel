@@ -1,4 +1,4 @@
-import React, { useState, FormEvent, useEffect } from 'react';
+import React, { useState, FormEvent, useEffect, useContext } from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { User } from 'firebase';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
@@ -31,10 +31,12 @@ import {
   TIME_FORMAT,
 } from '../constants/date';
 import { format } from '../utils/date';
+import { AuthUserContext } from '../components/App';
 import AppBar from '../components/AppBar';
-import AuthUserContext from '../components/AuthUserContext';
 
 const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
+  const authUser = useContext(AuthUserContext);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -129,91 +131,84 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
           </FormControl>
         </Box>
 
-        <AuthUserContext.Consumer>
-          {user =>
-            user && (
-              <form
-                autoComplete="off"
-                onSubmit={event => addMatch(event, user)}
-              >
-                <Box mb="1.5rem">
-                  <MuiPickersUtilsProvider
-                    utils={DateFnsUtils}
-                    locale={deLocale}
-                  >
-                    <DateTimePicker
-                      label="Datum und Uhrzeit"
-                      variant="dialog"
-                      inputVariant="outlined"
-                      value={date}
-                      onChange={setDate}
-                      minutesStep={15}
-                      ampm={false}
-                      disablePast
-                      required
-                      fullWidth
-                    />
-                  </MuiPickersUtilsProvider>
-                </Box>
-                <Box mb="1rem">
-                  <TextField
-                    label="Beschreibung (optional)"
-                    defaultValue={description}
-                    variant="outlined"
-                    onChange={event => setDescription(event.target.value)}
-                    multiline
-                    rows={2}
-                    fullWidth
-                  />
-                </Box>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={joinLobby}
-                      onChange={event => setJoinLobby(event.target.checked)}
-                    />
-                  }
-                  label="Selbst mitbolzen"
+        {authUser && (
+          <form
+            autoComplete="off"
+            onSubmit={event => addMatch(event, authUser)}
+          >
+            <Box mb="1.5rem">
+              <MuiPickersUtilsProvider utils={DateFnsUtils} locale={deLocale}>
+                <DateTimePicker
+                  label="Datum und Uhrzeit"
+                  variant="dialog"
+                  inputVariant="outlined"
+                  value={date}
+                  onChange={setDate}
+                  minutesStep={15}
+                  ampm={false}
+                  disablePast
+                  required
+                  fullWidth
                 />
-                <Box my="1.5rem">
-                  <Grid container direction="row" spacing={2}>
-                    <Grid item xs>
-                      <Button
-                        variant="outlined"
-                        color="default"
-                        onClick={history.goBack}
-                        disabled={loading}
-                        fullWidth
-                      >
-                        Abbrechen
-                      </Button>
-                    </Grid>
-                    <Grid item xs>
-                      <Button
-                        type="submit"
-                        variant="outlined"
-                        color="primary"
-                        disabled={!games || loading}
-                        startIcon={
-                          loading ? (
-                            <CircularProgress
-                              color="inherit"
-                              size={22}
-                              thickness={3}
-                            />
-                          ) : null
-                        }
-                        fullWidth
-                      >
-                        Jajaja!
-                      </Button>
-                    </Grid>
-                  </Grid>
-                </Box>
-              </form>
-            )
-          }
-        </AuthUserContext.Consumer>
+              </MuiPickersUtilsProvider>
+            </Box>
+            <Box mb="1rem">
+              <TextField
+                label="Beschreibung (optional)"
+                defaultValue={description}
+                variant="outlined"
+                onChange={event => setDescription(event.target.value)}
+                multiline
+                rows={2}
+                fullWidth
+              />
+            </Box>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={joinLobby}
+                  onChange={event => setJoinLobby(event.target.checked)}
+                />
+              }
+              label="Selbst mitbolzen"
+            />
+            <Box my="1.5rem">
+              <Grid container direction="row" spacing={2}>
+                <Grid item xs>
+                  <Button
+                    variant="outlined"
+                    color="default"
+                    onClick={history.goBack}
+                    disabled={loading}
+                    fullWidth
+                  >
+                    Abbrechen
+                  </Button>
+                </Grid>
+                <Grid item xs>
+                  <Button
+                    type="submit"
+                    variant="outlined"
+                    color="primary"
+                    disabled={!games || loading}
+                    startIcon={
+                      loading ? (
+                        <CircularProgress
+                          color="inherit"
+                          size={22}
+                          thickness={3}
+                        />
+                      ) : null
+                    }
+                    fullWidth
+                  >
+                    Jajaja!
+                  </Button>
+                </Grid>
+              </Grid>
+            </Box>
+          </form>
+        )}
 
         {error && <Alert severity="error">Fehler: {error.message}</Alert>}
       </Container>

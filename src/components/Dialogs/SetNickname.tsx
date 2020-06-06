@@ -21,10 +21,10 @@ const SetNicknameDialog: React.FC<RouteComponentProps> = ({ history }) => {
   );
 
   useEffect(() => {
-    if (!loading && user === undefined) {
+    if (currentUser && !loading && user === undefined) {
       setOpen(true);
     }
-  }, [loading, user]);
+  }, [currentUser, loading, user]);
 
   const handleSubmit: FormEventHandler = event => {
     event.preventDefault();

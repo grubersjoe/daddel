@@ -1,24 +1,31 @@
-import React, { ComponentType } from 'react';
+import React, { useContext } from 'react';
 import { Route, Redirect, RouteProps } from 'react-router-dom';
 
 import ROUTES from '../constants/routes';
-import AuthUserContext from './AuthUserContext';
+import { AuthUserContext } from './App';
 
-type Props = {
-  component: ComponentType;
-} & RouteProps;
+const PrivateRoute: React.FC<RouteProps> = ({ children, ...props }) => {
+  const authUser = useContext(AuthUserContext);
 
-const PrivateRoute: React.FC<Props> = ({ component: Component, ...props }) => (
-  <AuthUserContext.Consumer>
-    {authUser => (
-      <Route
-        {...props}
-        render={props =>
-          authUser ? <Component {...props} /> : <Redirect to={ROUTES.ROOT} />
-        }
-      />
-    )}
-  </AuthUserContext.Consumer>
-);
+  return (
+    <Route
+      {...props}
+      render={({ location }) =>
+        authUser ? (
+          children
+        ) : (
+          <Redirect
+            to={{
+              pathname: ROUTES.ROOT,
+              state: {
+                from: location,
+              },
+            }}
+          />
+        )
+      }
+    />
+  );
+};
 
 export default PrivateRoute;

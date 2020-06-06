@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import SwipeableViews from 'react-swipeable-views';
-import { Link } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import Alert from '@material-ui/lab/Alert';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
@@ -57,6 +57,9 @@ const TabPanel: React.FC<TabPanelProps> = ({
 );
 
 const MatchesList: React.FC = () => {
+  const { match: matchUrlParam } = useParams();
+  const history = useHistory();
+
   const [
     futureMatches,
     futureMatchesLoading,
@@ -70,7 +73,8 @@ const MatchesList: React.FC = () => {
     pastMatchesError,
   ] = useCollectionData<Match>(pastMatchesQuery(10), { idField: 'id' });
 
-  const [users, , usersError] = useCollectionData<User>(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [users, _usersLoading, usersError] = useCollectionData<User>(
     firebase.firestore.collection('users'),
     { idField: 'uid' },
   );
@@ -85,6 +89,10 @@ const MatchesList: React.FC = () => {
   const [filter, setFilter] = useState<MatchFilter>(
     getStorageItem<MatchFilter>(STORAGE_KEYS.matchFilter) || { games: [] },
   );
+
+  useEffect(() => {
+    setFilter(filter => ({ ...filter, match: matchUrlParam || undefined }));
+  }, [matchUrlParam]);
 
   const numberOfEnabledFilters = calcNumberOfEnabledFilters(filter);
 
@@ -133,6 +141,26 @@ const MatchesList: React.FC = () => {
       {showFilter && (
         <Box px={3}>
           <Filter filter={filter} setFilter={setFilter} />
+        </Box>
+      )}
+
+      {filter.match && (
+        <Box px={3} mb={4}>
+          <Button
+            variant="outlined"
+            color="default"
+            onClick={() => navigator.clipboard.writeText(window.location.href)}
+          >
+            Permalink kopieren
+          </Button>
+          <Button
+            variant="outlined"
+            color="default"
+            onClick={() => history.push('/matches')}
+            style={{ marginLeft: '0.75rem' }}
+          >
+            Alle anzeigen
+          </Button>
         </Box>
       )}
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 
 import AddIcon from '@material-ui/icons/Add';
@@ -9,11 +9,12 @@ import SettingsIcon from '@material-ui/icons/Settings';
 
 import ROUTES from '../constants/routes';
 import { theme } from '../styles/theme';
-import AuthUserContext from './AuthUserContext';
+import { AuthUserContext } from './App';
 
 const Links = [ROUTES.MATCHES_LIST, ROUTES.ADD_MATCH, ROUTES.PROFILE];
 
 const Navigation: React.FC<RouteComponentProps> = ({ history, location }) => {
+  const authUser = useContext(AuthUserContext);
   const [selected, setSelected] = useState(0);
 
   useEffect(() => {
@@ -22,41 +23,35 @@ const Navigation: React.FC<RouteComponentProps> = ({ history, location }) => {
     setSelected(activeIndex === -1 ? 0 : activeIndex);
   }, [location.pathname]);
 
-  return (
-    <AuthUserContext.Consumer>
-      {authUser =>
-        authUser ? (
-          <BottomNavigation
-            value={selected}
-            showLabels
-            onChange={(_, clickedLink) => setSelected(clickedLink)}
-            style={{
-              boxShadow: `0 0 3px ${theme.palette.grey[900]}`,
-            }}
-          >
-            <BottomNavigationAction
-              component={Link}
-              to={ROUTES.MATCHES_LIST}
-              label="Bolzen"
-              icon={<MatchesIcon />}
-            />
-            <BottomNavigationAction
-              component={Link}
-              to={ROUTES.ADD_MATCH}
-              label="Neuer Bolz"
-              icon={<AddIcon />}
-            />
-            <BottomNavigationAction
-              component={Link}
-              to={ROUTES.PROFILE}
-              label="Profil"
-              icon={<SettingsIcon />}
-            />
-          </BottomNavigation>
-        ) : null
-      }
-    </AuthUserContext.Consumer>
-  );
+  return authUser ? (
+    <BottomNavigation
+      value={selected}
+      showLabels
+      onChange={(_, clickedLink) => setSelected(clickedLink)}
+      style={{
+        boxShadow: `0 0 3px ${theme.palette.grey[900]}`,
+      }}
+    >
+      <BottomNavigationAction
+        component={Link}
+        to={ROUTES.MATCHES_LIST}
+        label="Bolzen"
+        icon={<MatchesIcon />}
+      />
+      <BottomNavigationAction
+        component={Link}
+        to={ROUTES.ADD_MATCH}
+        label="Neuer Bolz"
+        icon={<AddIcon />}
+      />
+      <BottomNavigationAction
+        component={Link}
+        to={ROUTES.PROFILE}
+        label="Profil"
+        icon={<SettingsIcon />}
+      />
+    </BottomNavigation>
+  ) : null;
 };
 
 export default withRouter(Navigation);

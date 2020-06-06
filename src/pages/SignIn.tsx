@@ -1,5 +1,6 @@
-import React, { useState, FormEventHandler } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import React, { useState, useContext, FormEventHandler } from 'react';
+import { Link as RouterLink, useHistory, useLocation } from 'react-router-dom';
+import History from 'history';
 import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -14,15 +15,28 @@ import { theme } from '../styles/theme';
 
 import GoogleIcon from '../assets/icons/GoogleIcon';
 import { signInWithEmailAndPassword, signInWithGoogle } from '../api/auth';
+import { AuthUserContext } from '../components/App';
 import Logo from '../components/Logo';
 
 const SignIn: React.FC = () => {
+  const history = useHistory();
+  const location = useLocation<{ from: History.Location }>();
+  const currentUser = useContext(AuthUserContext);
+
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const { from } = location.state || {
+    from: { pathname: ROUTES.MATCHES_LIST },
+  };
+
+  if (currentUser) {
+    history.replace(from);
+  }
 
   const handleEmailLogin: FormEventHandler = event => {
     event.preventDefault();

@@ -20,7 +20,7 @@ import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 
 import firebase from '../api/firebase';
-import { DEFAULT_GAME } from '../constants';
+import { FALLBACK_GAME } from '../constants';
 import ROUTES from '../constants/routes';
 import { Match, Game, Player } from '../types';
 import AppBar from '../components/AppBar';
@@ -69,7 +69,9 @@ const EditMatch: React.FC<RouteComponentProps<
   // If this page is opened directly location.state will be undefined.
   const match = location?.state?.match;
 
-  const [gameID, setGameID] = useState<Game['id']>(match?.game || DEFAULT_GAME);
+  const [gameID, setGameID] = useState<Game['id']>(
+    match?.game || FALLBACK_GAME,
+  );
   const [date, setDate] = useState<Date | null>(match?.date.toDate());
   const [description, setDescription] = useState(match?.description);
 

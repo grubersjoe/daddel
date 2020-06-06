@@ -11,6 +11,7 @@ import { setStorageItem, STORAGE_KEYS } from '../../utils/local-storage';
 
 export type MatchFilter = {
   games: Game[];
+  match?: Game['id'];
 };
 
 type Props = {
@@ -38,10 +39,11 @@ const Filter: React.FC<Props> = ({ filter, setFilter }) => {
           disabled={gamesLoading}
           filterSelectedOptions
           getOptionLabel={option => option.name}
+          getOptionSelected={(a, b) => a.id === b.id}
           multiple
           loading={gamesLoading}
           onChange={(_event, games) => {
-            setFilter({ games });
+            setFilter({ games, match: filter.match });
             setStorageItem(STORAGE_KEYS.matchFilter, { games });
           }}
           options={options}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import endOfDay from 'date-fns/endOfDay';
 import isFuture from 'date-fns/isFuture';
 import fromUnixTime from 'date-fns/fromUnixTime';
@@ -99,10 +100,6 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
   // It should be able to join a match until the end of its date
   const isJoinable = isFuture(endOfDay(fromUnixTime(match.date.seconds)));
 
-  if (match.date instanceof Date) {
-    throw new Error('match.date is not a Date');
-  }
-
   if (!match.id) {
     throw new Error('match.id is undefined');
   }
@@ -172,7 +169,7 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
             <Typography
               style={{ marginBottom: theme.spacing(3.75), lineHeight: 1.25 }}
             >
-              {match.description}
+              <Link to={`/matches/${match.id}`}>{match.description}</Link>
             </Typography>
           )}
           {match.players.length === 0 && (
