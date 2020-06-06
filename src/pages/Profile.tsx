@@ -74,6 +74,7 @@ const Profile: React.FC<RouteComponentProps> = ({ history }) => {
                   value={nickname}
                   onChange={handleNicknameChange}
                   fullWidth
+                  required
                 />
               </Grid>
 
