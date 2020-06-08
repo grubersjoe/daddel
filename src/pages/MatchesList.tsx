@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import SwipeableViews from 'react-swipeable-views';
 import { Link, useHistory, useParams } from 'react-router-dom';
@@ -9,6 +9,7 @@ import Grid from '@material-ui/core/Grid';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
+import LinkIcon from '@material-ui/icons/Link';
 
 import { futureMatchesQuery, pastMatchesQuery } from '../api/queries/matches';
 import firebase from '../api/firebase';
@@ -28,6 +29,7 @@ import SetNicknameDialog from '../components/Dialogs/SetNickname';
 import Filter, { MatchFilter } from '../components/Match/Filter';
 import MatchCard from '../components/Match/MatchCard';
 import Spinner from '../components/Spinner';
+import SingleView from '../components/Match/SingleView';
 
 type TabPanelProps = {
   children?: React.ReactNode;
@@ -57,7 +59,9 @@ const TabPanel: React.FC<TabPanelProps> = ({
 );
 
 const MatchesList: React.FC = () => {
-  const { match: matchUrlParam } = useParams();
+  const { match: matchParam } = useParams();
+  const isSingleView = Boolean(matchParam && matchParam.length > 0);
+
   const history = useHistory();
 
   const [
@@ -90,10 +94,6 @@ const MatchesList: React.FC = () => {
     getStorageItem<MatchFilter>(STORAGE_KEYS.matchFilter) || { games: [] },
   );
 
-  useEffect(() => {
-    setFilter(filter => ({ ...filter, match: matchUrlParam || undefined }));
-  }, [matchUrlParam]);
-
   const numberOfEnabledFilters = calcNumberOfEnabledFilters(filter);
 
   const [tabIndex, setTabIndex] = useState(0);
@@ -108,25 +108,45 @@ const MatchesList: React.FC = () => {
     [pastMatches, filter],
   );
 
+  const filterConfig = {
+    color: showFilter ? 'primary' : 'inherit',
+    enabled: numberOfEnabledFilters,
+    title: showFilter ? 'Filter verstecken' : 'Filter anzeigen',
+    onClick: () => {
+      setShowFilter(enabled => {
+        setStorageItem(STORAGE_KEYS.matchFilterEnabled, !enabled);
+        return !enabled;
+      });
+    },
+  } as const;
+
   return (
     <>
       {/* Set initial nickname after registration */}
       <SetNicknameDialog />
 
-      <AppBar
-        filter={{
-          color: showFilter ? 'primary' : 'inherit',
-          enabled: numberOfEnabledFilters,
-          title: showFilter ? 'Filter verstecken' : 'Filter anzeigen',
-          onClick: () => {
-            setShowFilter(enabled => {
-              setStorageItem(STORAGE_KEYS.matchFilterEnabled, !enabled);
-              return !enabled;
-            });
-          },
-        }}
-      >
-        <>
+      <AppBar filter={isSingleView ? undefined : filterConfig}>
+        {isSingleView && (
+          <>
+            <Button
+              variant="text"
+              onClick={() => history.push(ROUTES.MATCHES_LIST)}
+            >
+              Alle Matches
+            </Button>
+            <Button
+              variant="text"
+              startIcon={<LinkIcon />}
+              onClick={() =>
+                navigator.clipboard.writeText(window.location.href)
+              }
+              style={{ marginLeft: '0.75rem' }}
+            >
+              Link kopieren
+            </Button>
+          </>
+        )}
+        {!isSingleView && (
           <Tabs
             value={tabIndex}
             onChange={(_event, index) => setTabIndex(index)}
@@ -135,7 +155,7 @@ const MatchesList: React.FC = () => {
             <Tab label="Anstehende" />
             <Tab label="Vergangene" />
           </Tabs>
-        </>
+        )}
       </AppBar>
 
       {showFilter && (
@@ -144,88 +164,74 @@ const MatchesList: React.FC = () => {
         </Box>
       )}
 
-      {filter.match && (
-        <Box px={3} mb={4}>
-          <Button
-            variant="outlined"
-            color="default"
-            onClick={() => navigator.clipboard.writeText(window.location.href)}
-          >
-            Permalink kopieren
-          </Button>
-          <Button
-            variant="outlined"
-            color="default"
-            onClick={() => history.push('/matches')}
-            style={{ marginLeft: '0.75rem' }}
-          >
-            Alle anzeigen
-          </Button>
-        </Box>
-      )}
+      {isSingleView && userList && <SingleView userList={userList} />}
 
-      <SwipeableViews index={tabIndex} onChangeIndex={setTabIndex}>
-        <TabPanel value={tabIndex} index={0}>
-          {futureMatchesError && (
-            <Alert severity="error">Fehler: {futureMatchesError.message}</Alert>
-          )}
-          {futureMatchesLoading && <Spinner />}
-          {filteredFutureMatches &&
-            filteredFutureMatches.length > 0 &&
-            userList && (
-              <Grid container spacing={5}>
-                {filteredFutureMatches.map(match => (
-                  <Grid item xs={12} md={4} lg={3} key={match.id}>
-                    <MatchCard match={match} userList={userList} />
-                  </Grid>
-                ))}
-              </Grid>
+      {!isSingleView && (
+        <SwipeableViews index={tabIndex} onChangeIndex={setTabIndex}>
+          <TabPanel value={tabIndex} index={0}>
+            {futureMatchesError && (
+              <Alert severity="error">
+                Fehler: {futureMatchesError.message}
+              </Alert>
             )}
-          {filteredFutureMatches && filteredFutureMatches.length === 0 && (
-            <div>
-              <Typography paragraph>Wow. Much empty. </Typography>
-              {numberOfEnabledFilters > 0 && (
-                <Typography paragraph>Obacht! Filter ist aktiv.</Typography>
+            {futureMatchesLoading && <Spinner />}
+            {filteredFutureMatches &&
+              filteredFutureMatches.length > 0 &&
+              userList && (
+                <Grid container spacing={5}>
+                  {filteredFutureMatches.map(match => (
+                    <Grid item xs={12} md={4} lg={3} key={match.id}>
+                      <MatchCard match={match} userList={userList} />
+                    </Grid>
+                  ))}
+                </Grid>
               )}
+            {filteredFutureMatches && filteredFutureMatches.length === 0 && (
+              <div>
+                <Typography paragraph>Wow. Much empty. </Typography>
+                {numberOfEnabledFilters > 0 && (
+                  <Typography paragraph>Obacht! Filter ist aktiv.</Typography>
+                )}
 
-              <Button
-                variant="outlined"
-                color="primary"
-                component={Link}
-                to={ROUTES.ADD_MATCH}
-                style={{ marginTop: theme.spacing(1) }}
-              >
-                Neuer Bolz
-              </Button>
-            </div>
-          )}
-        </TabPanel>
-        <TabPanel value={tabIndex} index={1}>
-          {pastMatchesError && (
-            <Alert severity="error">Fehler: {pastMatchesError.message}</Alert>
-          )}
-          {pastMatchesLoading && <Spinner />}
-          {filteredPastMatches && filteredPastMatches.length > 0 && userList && (
-            <>
-              <Grid container spacing={5}>
-                {filteredPastMatches.map(match => (
-                  <Grid item xs={12} md={4} lg={3} key={match.id}>
-                    <MatchCard match={match} userList={userList} />
-                  </Grid>
-                ))}
-              </Grid>
-            </>
-          )}
-          {filteredPastMatches && filteredPastMatches.length === 0 && (
-            <>
-              <Typography paragraph>Wow. Much empty.</Typography>
-              {numberOfEnabledFilters > 0 && (
-                <Typography paragraph>Obacht! Filter ist aktiv.</Typography>
-              )}
-            </>
-          )}
-        </TabPanel>
-      </SwipeableViews>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  component={Link}
+                  to={ROUTES.ADD_MATCH}
+                  style={{ marginTop: theme.spacing(1) }}
+                >
+                  Neuer Bolz
+                </Button>
+              </div>
+            )}
+          </TabPanel>
+          <TabPanel value={tabIndex} index={1}>
+            {pastMatchesError && (
+              <Alert severity="error">Fehler: {pastMatchesError.message}</Alert>
+            )}
+            {pastMatchesLoading && <Spinner />}
+            {filteredPastMatches && filteredPastMatches.length > 0 && userList && (
+              <>
+                <Grid container spacing={5}>
+                  {filteredPastMatches.map(match => (
+                    <Grid item xs={12} md={4} lg={3} key={match.id}>
+                      <MatchCard match={match} userList={userList} />
+                    </Grid>
+                  ))}
+                </Grid>
+              </>
+            )}
+            {filteredPastMatches && filteredPastMatches.length === 0 && (
+              <>
+                <Typography paragraph>Wow. Much empty.</Typography>
+                {numberOfEnabledFilters > 0 && (
+                  <Typography paragraph>Obacht! Filter ist aktiv.</Typography>
+                )}
+              </>
+            )}
+          </TabPanel>
+        </SwipeableViews>
+      )}
     </>
   );
 };
