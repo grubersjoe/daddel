@@ -1,4 +1,5 @@
 import React, { useState, useEffect, FormEventHandler } from 'react';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
@@ -9,22 +10,22 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 import firebase from '../../api/firebase';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { User } from '../../types';
 
 const SetNicknameDialog: React.FC<RouteComponentProps> = ({ history }) => {
   const [open, setOpen] = useState(false);
   const [nickname, setNickname] = useState('');
 
   const { currentUser } = firebase.auth;
-  const [user, loading, error] = useDocumentData(
+  const [user, loading, error] = useDocumentData<User>(
     firebase.firestore.doc(`users/${currentUser?.uid}`),
   );
 
   useEffect(() => {
-    if (currentUser && !loading && user === undefined) {
+    if (currentUser && !error && !loading && user === undefined) {
       setOpen(true);
     }
-  }, [currentUser, loading, user]);
+  }, [currentUser, error, loading, user]);
 
   const handleSubmit: FormEventHandler = event => {
     event.preventDefault();
