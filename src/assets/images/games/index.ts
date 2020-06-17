@@ -16,6 +16,8 @@ import forest from './out/forest.jpg';
 import forestWebp from './out/forest.webp';
 import helldivers from './out/helldivers.jpg';
 import helldiversWebp from './out/helldivers.webp';
+import hunt from './out/hunt.jpg';
+import huntWebp from './out/hunt.webp';
 import left4Dead from './out/left4dead.jpg';
 import left4DeadWebp from './out/left4dead.webp';
 import rocketLeague from './out/rocket-league.jpg';
@@ -43,16 +45,18 @@ const gameBanners: {
   apexWebp,
   coh,
   cohWebp,
-  fallback,
-  fallbackWebp,
   csgo,
   csgoWebp,
   dota,
   dotaWebp,
+  fallback,
+  fallbackWebp,
   forest,
   forestWebp,
   helldivers,
   helldiversWebp,
+  hunt,
+  huntWebp,
   left4Dead,
   left4DeadWebp,
   rocketLeague,
