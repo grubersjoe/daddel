@@ -140,7 +140,7 @@ const MatchesList: React.FC = () => {
               onClick={() =>
                 navigator.clipboard.writeText(window.location.href)
               }
-              style={{ marginLeft: '0.75rem' }}
+              style={{ marginLeft: '1rem' }}
             >
               Link kopieren
             </Button>
