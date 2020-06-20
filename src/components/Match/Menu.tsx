@@ -1,6 +1,5 @@
 import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
@@ -11,7 +10,7 @@ import MuiMenu from '@material-ui/core/Menu';
 import ShareIcon from '@material-ui/icons/Share';
 
 import firebase from '../../api/firebase';
-import { BASE_URL_PROD, FALLBACK_GAME_TITLE } from '../../constants';
+import { BASE_URL_PROD } from '../../constants';
 import ROUTES from '../../constants/routes';
 import { Match, Game } from '../../types';
 import { formatDate, formatTimestamp } from '../../utils/date';
@@ -19,19 +18,18 @@ import { AuthUserContext } from '../App';
 import { SnackbarContext } from '../Layout';
 
 type Props = {
+  game: Game;
   match: Match;
 };
 
-const Menu: React.FC<Props> = ({ match }) => {
+const Menu: React.FC<Props> = ({ game, match }) => {
   const [authUser] = useContext(AuthUserContext);
   const dispatchSnack = useContext(SnackbarContext);
 
-  const [games, gamesLoading] = useCollectionData<Game>(
-    firebase.firestore.collection('games').orderBy('name', 'asc'),
-  );
-
   const [anchorElement, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorElement);
+
+  const { gameRef, ...matchWithoutRefs } = match;
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -71,18 +69,16 @@ const Menu: React.FC<Props> = ({ match }) => {
   };
 
   const handleShare = (match: Match) => {
-    if (navigator.share && games) {
-      const game = games.find(game => game.id === match.game);
-      const gameTitle = game?.name || match.game || FALLBACK_GAME_TITLE;
+    if (navigator.share) {
       const date = `${formatDate(match.date, false)} um ${formatTimestamp(
         match.date,
       )} Uhr`;
 
       navigator
         .share({
-          title: `${gameTitle} am ${date}`,
+          title: `${game.name} am ${date}`,
           url: `${BASE_URL_PROD}/matches/${match.id}`,
-          text: `Spiel mit: ${gameTitle} am ${date}`,
+          text: `Spiel mit: ${game.name} am ${date}`,
         })
         .catch(console.error);
     }
@@ -107,7 +103,7 @@ const Menu: React.FC<Props> = ({ match }) => {
             <Link
               to={{
                 pathname: ROUTES.EDIT_MATCH,
-                state: { match },
+                state: { game, match: matchWithoutRefs }, // Firestore refs can not be serialized
               }}
               style={{ display: 'flex' }}
             >
@@ -126,12 +122,7 @@ const Menu: React.FC<Props> = ({ match }) => {
           <LinkIcon fontSize="small" style={{ marginRight: 8 }} />
           Permalink
         </MenuItem>
-        <MenuItem
-          onClick={() => handleShare(match)}
-          style={{
-            color: gamesLoading ? 'rgba(255, 255, 255, 0.5' : 'inherit',
-          }}
-        >
+        <MenuItem onClick={() => handleShare(match)}>
           <ShareIcon fontSize="small" style={{ marginRight: 8 }} />
           Teilen
         </MenuItem>

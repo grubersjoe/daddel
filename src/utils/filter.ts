@@ -10,8 +10,8 @@ export function filterMatches(matches: Match[], filter: MatchFilter): Match[] {
 
   // Games
   matches = matches.filter(match => {
-    return filter.games.length > 0 && match.game
-      ? filter.games.some(filterGame => filterGame.id === match.game)
+    return filter.games.length > 0
+      ? filter.games.some(filterGame => filterGame.gid === match.gameRef.id)
       : true;
   });
 

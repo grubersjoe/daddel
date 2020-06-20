@@ -16,7 +16,7 @@ import Typography from '@material-ui/core/Typography';
 import firebase from '../../api/firebase';
 import { getGameBanner } from '../../assets/images/games';
 import { theme } from '../../styles/theme';
-import { Match, UserMap } from '../../types';
+import { Game, Match, UserMap } from '../../types';
 import { formatDate, formatTimestamp } from '../../utils/date';
 
 import JoinMatchDialog from '../Dialogs/JoinMatch';
@@ -80,18 +80,34 @@ const useStyles = makeStyles(theme => ({
 
 const MatchCard: React.FC<Props> = ({ match, userList }) => {
   const classes = useStyles();
-  const [gameBanner, setGameBanner] = useState<string | undefined>();
 
-  getGameBanner(match.game).then(banner => {
-    // Preload the game banner
-    const image = new Image();
-    image.src = banner;
-    image.onload = () => setGameBanner(banner);
-    image.onerror = console.error;
-  });
+  const [game, setGame] = useState<Game | null>(null);
+  const [gameBanner, setGameBanner] = useState<string | null>(null);
+
+  if (game === null) {
+    // Retrieve game from match
+    match.gameRef
+      .get()
+      .then(game =>
+        setGame(({ ...game.data(), gid: game.id } as Game) ?? null),
+      );
+  }
+
+  if (game) {
+    getGameBanner(game).then(banner => {
+      // Preload the game banner
+      const image = new Image();
+      image.src = banner;
+      image.onload = () => setGameBanner(banner);
+      image.onerror = console.error;
+    });
+  }
 
   const { currentUser } = firebase.auth;
-  if (!currentUser) return null;
+
+  if (!currentUser) {
+    throw new Error('No current user');
+  }
 
   const currentPlayer = match.players.find(
     player => player.uid === currentUser.uid,
@@ -100,13 +116,9 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
   // It should be able to join a match until the end of its date
   const isJoinable = isFuture(endOfDay(fromUnixTime(match.date.seconds)));
 
-  if (!match.id) {
-    throw new Error('match.id is undefined');
-  }
-
   return (
     <Card className={classes.card} raised>
-      {gameBanner ? (
+      {game && gameBanner ? (
         <CardMedia className={classes.media} image={gameBanner}>
           <Grid
             container
@@ -116,7 +128,7 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
             style={{ height: '100%' }}
           >
             <Box flexGrow={1}>
-              <Menu match={match} />
+              <Menu game={game} match={match} />
             </Box>
             <Grid
               container
@@ -135,11 +147,11 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
                 {formatTimestamp(match.date)} Uhr
               </Typography>
             </Grid>
-            {match.maxPlayers && (
+            {game.maxPlayers && (
               <Grid container item>
                 <ProgressBar
                   value={match.players.length}
-                  max={match.maxPlayers}
+                  max={game.maxPlayers}
                 />
               </Grid>
             )}

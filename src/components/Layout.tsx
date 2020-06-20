@@ -52,8 +52,6 @@ const Layout: React.FC = ({ children }) => {
           <Alert
             onClose={() => setSnackbarOpen(false)}
             severity={snackData.severity}
-            variant="filled"
-            icon={false}
           >
             {snackData.message}
           </Alert>

@@ -20,11 +20,15 @@ import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 
 import firebase from '../api/firebase';
-import { FALLBACK_GAME } from '../constants';
 import ROUTES from '../constants/routes';
 import { Match, Game, Player } from '../types';
 import AppBar from '../components/AppBar';
 import { SnackbarContext } from '../components/Layout';
+
+type LocationState = {
+  game: Omit<Game, 'gameRef'>;
+  match: Match;
+};
 
 const updatePlayerDates = (players: Player[], updatedDate: Date): Player[] =>
   players.map(player => {
@@ -58,32 +62,31 @@ const updatePlayerDates = (players: Player[], updatedDate: Date): Player[] =>
     };
   });
 
-const EditMatch: React.FC<RouteComponentProps<
-  {},
-  StaticContext,
-  { match: Match }
->> = ({ location, history }) => {
+const EditMatch: React.FC<
+  RouteComponentProps<{}, StaticContext, LocationState>
+> = ({ location, history }) => {
   const dispatchSnack = useContext(SnackbarContext);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  // Matches are passed as state through the <Link> component of react-router.
+  // The Game and Match are passed as state through the <Link> component of react-router.
   // If this page is opened directly location.state will be undefined.
+  const game = location?.state?.game;
   const match = location?.state?.match;
 
-  if (!match) {
+  if (!game || !match) {
     history.push('/matches');
   }
 
-  const [gameID, setGameID] = useState<Game['id']>(
-    match?.game || FALLBACK_GAME,
-  );
+  // TODO: Clean up this mess
+  const [gid, setGid] = useState<Game['id'] | undefined>(game?.gid);
   const [date, setDate] = useState<Date | null>(match?.date.toDate());
   const [description, setDescription] = useState(match?.description);
 
   const [games, gamesLoading, gamesError] = useCollectionData<Game>(
     firebase.firestore.collection('games').orderBy('name', 'asc'),
+    { idField: 'gid' },
   );
 
   // Hooks must not be called conditionally.
@@ -107,7 +110,7 @@ const EditMatch: React.FC<RouteComponentProps<
     const updatedMatch = {
       date: firebase.timestamp(date),
       description: description,
-      game: gameID,
+      gameRef: firebase.firestore.doc(`games/${gid}`),
       players: updatePlayerDates(match.players, date),
     };
 
@@ -129,8 +132,8 @@ const EditMatch: React.FC<RouteComponentProps<
       <Container>
         <Box mb="1.5rem">
           <Select
-            value={gameID}
-            onChange={event => setGameID(String(event.target.value))}
+            value={gid}
+            onChange={event => setGid(String(event.target.value))}
             variant="outlined"
             disabled={gamesLoading}
             fullWidth
@@ -139,7 +142,7 @@ const EditMatch: React.FC<RouteComponentProps<
             {gamesLoading && <option>Lade …</option>}
             {games &&
               games.map(game => (
-                <option key={game.id} value={game.id}>
+                <option key={game.gid} value={game.gid}>
                   {game.name}
                 </option>
               ))}
