@@ -1,14 +1,13 @@
 import firebaseNS from 'firebase';
-import { MATCH_TIME_OPEN_END } from './constants/date';
 
-export type QuerySnapshot = firebaseNS.firestore.QuerySnapshot<
-  firebaseNS.firestore.DocumentData
->;
+type Uid = string;
 
+export type DocumentReference = firebaseNS.firestore.DocumentReference;
 export type Timestamp = firebaseNS.firestore.Timestamp;
 
 export type Game = {
-  id: string;
+  gid: string;
+  id: string; // deprecated
   maxPlayers?: number;
   name: string;
 };
@@ -16,24 +15,26 @@ export type Game = {
 export type Match = {
   id?: string;
   created: Timestamp;
-  createdBy: string;
+  createdBy: Uid;
   date: Timestamp;
   description?: string;
-  game?: string; // introduced later, so might be undefined
-  maxPlayers?: number;
+  game?: string; // introduced later, so might be undefined, deprecated
+  gameRef: DocumentReference;
   players: Array<Player>;
+  maxPlayers?: number; // deprecated
 };
 
 export type Player = {
-  uid: string;
+  uid: Uid;
   from: Timestamp;
   until: Timestamp;
 };
 
 export type User = {
-  uid: string;
+  uid: Uid;
   nickname: string;
   invited: boolean;
+  subscribed: boolean;
 };
 
 export type UserMap = Map<User['uid'], User>;
@@ -100,4 +101,4 @@ export type TimeLabel =
   | '23:15'
   | '23:30'
   | '23:45'
-  | typeof MATCH_TIME_OPEN_END;
+  | '23:59'; // open end

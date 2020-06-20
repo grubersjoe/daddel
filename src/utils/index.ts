@@ -1,3 +1,4 @@
+import firebase from '../api/firebase';
 import { User, UserMap } from '../types';
 
 export function calcUserList(users: User[]): UserMap {
@@ -19,4 +20,12 @@ export function supportsWebp(): Promise<boolean> {
     img.onload = () => resolve(img.width > 0 && img.height > 0);
     img.onerror = () => resolve(false);
   });
+}
+
+export function supportsMessaging(): boolean {
+  return (
+    firebase.messaging !== undefined &&
+    'Notification' in window &&
+    'permissions' in window.navigator
+  );
 }

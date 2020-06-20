@@ -78,7 +78,7 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
             />
           </Grid>
           {error && (
-            <Grid item md={9}>
+            <Grid item md={9} style={{ marginBottom: theme.spacing(2) }}>
               <Alert severity="error">Fehler: {error.message}</Alert>
             </Grid>
           )}

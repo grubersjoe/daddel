@@ -22,9 +22,10 @@ type Props = {
 const Filter: React.FC<Props> = ({ filter, setFilter }) => {
   const [games, gamesLoading, gamesError] = useCollectionData<Game>(
     firebase.firestore.collection('games').orderBy('name', 'asc'),
+    { idField: 'gid' },
   );
 
-  const options = games || [];
+  const options = games ?? [];
 
   if (gamesError) {
     console.error(gamesError);
@@ -39,7 +40,7 @@ const Filter: React.FC<Props> = ({ filter, setFilter }) => {
           disabled={gamesLoading}
           filterSelectedOptions
           getOptionLabel={option => option.name}
-          getOptionSelected={(a, b) => a.id === b.id}
+          getOptionSelected={(a, b) => a.gid === b.gid}
           multiple
           loading={gamesLoading}
           onChange={(_event, games) => {

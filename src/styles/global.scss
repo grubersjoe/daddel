@@ -65,3 +65,10 @@ h6.MuiTypography-h6 {
 .MuiAlert-filledSuccess {
   background-color: #388e3c !important;
 }
+
+@media (max-width: 599px) {
+  .MuiSnackbar-root {
+    left: 16px !important;
+    right: 16px !important;
+  }
+}

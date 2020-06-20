@@ -49,19 +49,20 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
     Number(defaultMinute),
   );
 
-  const [gameID, setGameID] = useState<Game['id']>('');
+  const [gid, setGid] = useState<Game['gid']>('');
   const [date, setDate] = useState<Date | null>(defaultDate); // null because of MUI
   const [description, setDescription] = useState('');
   const [joinLobby, setJoinLobby] = useState(true);
 
   const [games, gamesLoading, gamesError] = useCollectionData<Game>(
     firebase.firestore.collection('games').orderBy('name', 'asc'),
+    { idField: 'gid' },
   );
 
   // Select first available game as soon as games are loaded
   useEffect(() => {
     if (games && games.length > 0) {
-      setGameID(games[0].id);
+      setGid(games[0].gid);
     }
   }, [games]);
 
@@ -81,15 +82,13 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
 
     setLoading(true);
 
-    const maxPlayers = games.find(game => game.id === gameID)?.maxPlayers;
     const match: Match = {
       created: firebase.timestamp(),
       createdBy: currentUser.uid,
       date: firebase.timestamp(date),
       description,
-      game: gameID,
+      gameRef: firebase.firestore.doc(`games/${gid}`),
       players: [],
-      ...(maxPlayers && { maxPlayers }), // set maxPlayers only if set
     };
 
     firebase.firestore
@@ -103,10 +102,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
             : MATCH_TIME_END;
 
           joinMatch(availFrom, availUntil, { id: doc.id, ...match })
-            .then(() => {
-              dispatchSnack('Neues Match hinzgefügt');
-              history.push(ROUTES.MATCHES_LIST);
-            })
+            .then(() => history.push(ROUTES.MATCHES_LIST))
             .catch(setError)
             .finally(() => setLoading(false));
         } else {
@@ -127,15 +123,15 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
             <InputLabel>Spiel</InputLabel>
             <Select
               native
-              value={gameID}
-              onChange={event => setGameID(event.target.value as string)}
+              value={gid}
+              onChange={event => setGid(String(event.target.value))}
               label="Spiel"
               disabled={gamesLoading}
             >
               {gamesLoading && <option>Lade …</option>}
               {games &&
                 games.map(game => (
-                  <option key={game.id} value={game.id}>
+                  <option key={game.gid} value={game.gid}>
                     {game.name}
                     {game.maxPlayers ? ` (${game.maxPlayers} Spieler)` : null}
                   </option>

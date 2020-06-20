@@ -13,6 +13,7 @@ import Grid from '@material-ui/core/Grid';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SignOutIcon from '@material-ui/icons/ExitToApp';
 import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 
 import { signOut } from '../api/auth';
 import firebase from '../api/firebase';
@@ -20,6 +21,8 @@ import { User } from '../types';
 import { theme } from '../styles/theme';
 import AppBar from '../components/AppBar';
 import { SnackbarContext } from '../components/Layout';
+import NotificationSettings from '../components/Settings/NotificationSettings';
+import { supportsMessaging } from '../utils';
 
 const Settings: React.FC<RouteComponentProps> = ({ history }) => {
   const dispatchSnack = useContext(SnackbarContext);
@@ -81,7 +84,7 @@ const Settings: React.FC<RouteComponentProps> = ({ history }) => {
   return (
     <>
       <AppBar title="Einstellungen" />
-      <Container style={{ marginTop: -theme.spacing(1) }}>
+      <Container style={{ marginTop: -theme.spacing(2) }}>
         <form
           autoComplete="off"
           onSubmit={submitNickname}
@@ -89,9 +92,10 @@ const Settings: React.FC<RouteComponentProps> = ({ history }) => {
         >
           <Grid container spacing={2} direction="column">
             <Grid item md={7}>
+              <Typography variant="h6">Nickname</Typography>
               <TextField
-                label="Nickname"
                 variant="outlined"
+                placeholder="Nickname"
                 value={nickname}
                 onChange={event => setNickname(event.target.value)}
                 disabled={userLoading || Boolean(userError)}
@@ -102,9 +106,7 @@ const Settings: React.FC<RouteComponentProps> = ({ history }) => {
             <Grid item md={7}>
               <Button
                 type="submit"
-                color="primary"
                 variant="outlined"
-                size="medium"
                 disabled={userLoading || loading}
                 fullWidth
               >
@@ -113,22 +115,35 @@ const Settings: React.FC<RouteComponentProps> = ({ history }) => {
             </Grid>
           </Grid>
         </form>
+
         {error && (
           <Alert severity="error" style={{ marginTop: theme.spacing(2) }}>
             Fehler: {error.message}
           </Alert>
         )}
 
+        {supportsMessaging() && (
+          <Grid
+            container
+            spacing={2}
+            direction="column"
+            style={{ marginTop: theme.spacing(4) }}
+          >
+            <Grid item md={7}>
+              <NotificationSettings />
+            </Grid>
+          </Grid>
+        )}
+
         <Grid
           container
           spacing={2}
           direction="column"
-          style={{ marginTop: theme.spacing(5) }}
+          style={{ marginTop: theme.spacing(6) }}
         >
           <Grid item md={7}>
             <Button
               variant="outlined"
-              size="medium"
               startIcon={<SignOutIcon />}
               onClick={() => signOut(history)}
               fullWidth
@@ -139,7 +154,6 @@ const Settings: React.FC<RouteComponentProps> = ({ history }) => {
           <Grid item md={7}>
             <Button
               variant="outlined"
-              size="medium"
               startIcon={<DeleteIcon />}
               onClick={deleteAccount}
               fullWidth

@@ -4,6 +4,7 @@ import 'firebase/analytics';
 import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/functions';
+import 'firebase/messaging';
 
 import { FIREBASE_REGION } from '../constants';
 
@@ -12,7 +13,9 @@ const configKeys = [
   'REACT_APP_APP_ID',
   'REACT_APP_AUTH_DOMAIN',
   'REACT_APP_MEASUREMENT_ID',
+  'REACT_APP_MESSAGING_SENDER_ID',
   'REACT_APP_PROJECT_ID',
+  'REACT_APP_VAPID_KEY',
 ];
 
 configKeys.forEach(key => {
@@ -27,14 +30,24 @@ const app = firebase.initializeApp({
   authDomain: process.env.REACT_APP_AUTH_DOMAIN,
   projectId: process.env.REACT_APP_PROJECT_ID,
   measurementId: process.env.REACT_APP_MEASUREMENT_ID,
+  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
 });
 
 const auth = app.auth();
 auth.languageCode = 'de';
 
+const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+
 const analytics = app.analytics();
 const firestore = app.firestore();
 const functions = app.functions(FIREBASE_REGION);
+
+let messaging;
+try {
+  messaging = app.messaging();
+} catch (error) {
+  messaging = undefined;
+}
 
 // Emulators
 if (window.location.hostname === 'localhost') {
@@ -47,8 +60,6 @@ if (window.location.hostname === 'localhost') {
 
   functions.useEmulator('localhost', 5001);
 }
-
-const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
 
 function timestamp(date: Date = new Date()) {
   return new firebase.firestore.Timestamp(
@@ -63,6 +74,7 @@ const exports = {
   firestore,
   functions,
   googleAuthProvider,
+  messaging,
   timestamp,
 };
 

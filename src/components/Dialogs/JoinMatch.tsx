@@ -163,7 +163,6 @@ const JoinMatchDialog: React.FC<Props> = ({
         {userInLobby && (
           <Grid item xs={6}>
             <Button
-              size="medium"
               variant="outlined"
               onClick={handleLeave}
               disableElevation
@@ -176,7 +175,6 @@ const JoinMatchDialog: React.FC<Props> = ({
         <Grid item xs={userInLobby ? 6 : 12}>
           <Button
             color="primary"
-            size="medium"
             variant="outlined"
             onClick={() => setOpen(true)}
             fullWidth
