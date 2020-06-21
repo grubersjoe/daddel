@@ -10,9 +10,12 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 import firebase from '../../api/firebase';
+import { useOnlineStatus } from '../../hooks';
 import { User } from '../../types';
 
 const SetNicknameDialog: React.FC<RouteComponentProps> = ({ history }) => {
+  const isOnline = useOnlineStatus();
+
   const [open, setOpen] = useState(false);
   const [nickname, setNickname] = useState('');
 
@@ -22,10 +25,10 @@ const SetNicknameDialog: React.FC<RouteComponentProps> = ({ history }) => {
   );
 
   useEffect(() => {
-    if (currentUser && !error && !loading && user === undefined) {
+    if (isOnline && currentUser && !loading && !error && user === undefined) {
       setOpen(true);
     }
-  }, [currentUser, error, loading, user]);
+  }, [isOnline, currentUser, error, loading, user]);
 
   const handleSubmit: FormEventHandler = event => {
     event.preventDefault();
