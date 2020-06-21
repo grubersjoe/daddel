@@ -32,7 +32,7 @@ const ResetPassword: React.FC = () => {
   return (
     <Container style={{ marginTop: -theme.spacing(9) }}>
       <Logo />
-      <h2>Passwort zurücksetzen</h2>
+      <Typography variant="h6">Passwort zurücksetzen</Typography>
       <form
         autoComplete="off"
         onSubmit={handleResetAccount}
@@ -60,7 +60,7 @@ const ResetPassword: React.FC = () => {
               disabled={loading}
               startIcon={
                 loading ? (
-                  <CircularProgress color="inherit" size={22} thickness={3} />
+                  <CircularProgress color="inherit" size={18} thickness={3} />
                 ) : null
               }
               fullWidth

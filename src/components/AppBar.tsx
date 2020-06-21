@@ -35,7 +35,11 @@ const AppBar: React.FC<Props> = ({ children, filter, title }) => {
   return (
     <MuiAppBar position="fixed" color="default">
       <Toolbar variant="dense">
-        {title && <Typography variant="h6">{title}</Typography>}
+        {title && (
+          <Typography variant="h6" style={{ marginBottom: 0 }}>
+            {title}
+          </Typography>
+        )}
         <div className={classes.children}>{children}</div>
         <div>
           {filter && (

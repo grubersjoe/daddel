@@ -46,7 +46,7 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
   return (
     <Container style={{ marginTop: -theme.spacing(9) }}>
       <Logo />
-      <h2>Registrieren</h2>
+      <Typography variant="h6">Registrieren</Typography>
       <form
         autoComplete="off"
         onSubmit={handleRegister}
@@ -94,7 +94,7 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
               disabled={loading}
               startIcon={
                 loading ? (
-                  <CircularProgress color="inherit" size={22} thickness={3} />
+                  <CircularProgress color="inherit" size={18} thickness={3} />
                 ) : null
               }
               fullWidth

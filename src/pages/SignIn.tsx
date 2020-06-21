@@ -56,7 +56,7 @@ const SignIn: React.FC = () => {
   return (
     <Container style={{ marginTop: -theme.spacing(9) }}>
       <Logo />
-      <h2>Anmelden</h2>
+      <Typography variant="h6">Anmelden</Typography>
       <form autoComplete="off" onSubmit={handleEmailLogin}>
         <Grid container spacing={2} direction="column">
           <Grid item md={9}>
@@ -91,7 +91,7 @@ const SignIn: React.FC = () => {
               disabled={loading}
               startIcon={
                 loading ? (
-                  <CircularProgress color="inherit" size={22} thickness={3} />
+                  <CircularProgress color="inherit" size={18} thickness={3} />
                 ) : null
               }
               fullWidth
@@ -112,7 +112,7 @@ const SignIn: React.FC = () => {
               disabled={googleLoading}
               startIcon={
                 googleLoading ? (
-                  <CircularProgress size={22} thickness={3} />
+                  <CircularProgress size={18} thickness={3} />
                 ) : (
                   <GoogleIcon />
                 )

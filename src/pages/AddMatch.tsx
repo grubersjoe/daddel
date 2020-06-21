@@ -111,12 +111,12 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
       <Container>
         <Box mb="1.5rem">
           <FormControl variant="outlined" fullWidth required>
-            <InputLabel>Wos wird gspuit?</InputLabel>
+            <InputLabel>Spiel</InputLabel>
             <Select
               native
               value={gameID}
               onChange={event => setGameID(event.target.value as string)}
-              label="Was wird gspuit?"
+              label="Spiel"
               disabled={gamesLoading}
             >
               {gamesLoading && <option>Lade ...</option>}
@@ -195,7 +195,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
                       loading ? (
                         <CircularProgress
                           color="inherit"
-                          size={22}
+                          size={18}
                           thickness={3}
                         />
                       ) : null
