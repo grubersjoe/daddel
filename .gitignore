@@ -3,6 +3,7 @@
 /coverage
 /build
 .firebase/
+.firebaserc
 
 .env
 !.env.dist
