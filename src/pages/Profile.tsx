@@ -56,7 +56,7 @@ const Profile: React.FC<RouteComponentProps> = ({ history }) => {
   return (
     <>
       <AppBar title="Profil" />
-      <Container>
+      <Container style={{ marginTop: -theme.spacing(1) }}>
         {error && <Alert severity="error">Fehler: {error.message}</Alert>}
 
         {!error && (
@@ -86,7 +86,7 @@ const Profile: React.FC<RouteComponentProps> = ({ history }) => {
                   disabled={loading || userLoading}
                   fullWidth
                 >
-                  Nickname ändern
+                  Name ändern
                 </Button>
               </Grid>
             </Grid>
