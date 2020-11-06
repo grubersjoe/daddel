@@ -10,18 +10,18 @@ import MatchCard from './MatchCard';
 import Spinner from '../Spinner';
 
 type Props = {
-  userList: UserMap;
+  userList?: UserMap;
 };
 
 const SingleView: React.FC<Props> = ({ userList }) => {
-  const { match: matchId } = useParams();
+  const { match: matchId } = useParams<{ match: string }>();
 
   const [match, loading, error] = useDocumentData<Match>(
     firebase.firestore.doc(`matches/${matchId}`),
     { idField: 'id' },
   );
 
-  if (loading) {
+  if (!userList || loading) {
     return <Spinner />;
   }
 

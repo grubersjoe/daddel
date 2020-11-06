@@ -12,11 +12,10 @@ import Typography from '@material-ui/core/Typography';
 import LinkIcon from '@material-ui/icons/Link';
 
 import { futureMatchesQuery, pastMatchesQuery } from '../api/queries/matches';
-import firebase from '../api/firebase';
 import ROUTES from '../constants/routes';
+import { useUserList } from '../hooks';
 import { theme } from '../styles/theme';
-import { Match, User } from '../types';
-import { calcUserList } from '../utils';
+import { Match } from '../types';
 import { filterMatches, calcNumberOfEnabledFilters } from '../utils/filter';
 import {
   getStorageItem,
@@ -59,7 +58,7 @@ const TabPanel: React.FC<TabPanelProps> = ({
 );
 
 const MatchesList: React.FC = () => {
-  const { match: matchParam } = useParams();
+  const { match: matchParam } = useParams<{ match: string }>();
   const isSingleView = Boolean(matchParam && matchParam.length > 0);
 
   const history = useHistory();
@@ -77,14 +76,7 @@ const MatchesList: React.FC = () => {
     pastMatchesError,
   ] = useCollectionData<Match>(pastMatchesQuery(10), { idField: 'id' });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [users, _usersLoading, usersError] = useCollectionData<User>(
-    firebase.firestore.collection('users'),
-    { idField: 'uid' },
-  );
-
-  if (usersError) console.error(usersError);
-  const userList = users ? calcUserList(users) : null;
+  const [userList, usersLoading] = useUserList();
 
   const [showFilter, setShowFilter] = useState(
     getStorageItem<boolean>(STORAGE_KEYS.matchFilterEnabled) || false,
@@ -164,9 +156,9 @@ const MatchesList: React.FC = () => {
         </Box>
       )}
 
-      {isSingleView && userList && <SingleView userList={userList} />}
-
-      {!isSingleView && (
+      {isSingleView ? (
+        <SingleView userList={userList} />
+      ) : (
         <SwipeableViews index={tabIndex} onChangeIndex={setTabIndex}>
           <TabPanel value={tabIndex} index={0}>
             {futureMatchesError && (
@@ -174,7 +166,9 @@ const MatchesList: React.FC = () => {
                 Fehler: {futureMatchesError.message}
               </Alert>
             )}
-            {futureMatchesLoading && <Spinner />}
+
+            {(usersLoading || futureMatchesLoading) && <Spinner />}
+
             {filteredFutureMatches &&
               filteredFutureMatches.length > 0 &&
               userList && (
@@ -186,6 +180,7 @@ const MatchesList: React.FC = () => {
                   ))}
                 </Grid>
               )}
+
             {filteredFutureMatches && filteredFutureMatches.length === 0 && (
               <div>
                 <Typography paragraph>Wow. Much empty. </Typography>
@@ -209,7 +204,9 @@ const MatchesList: React.FC = () => {
             {pastMatchesError && (
               <Alert severity="error">Fehler: {pastMatchesError.message}</Alert>
             )}
-            {pastMatchesLoading && <Spinner />}
+
+            {(usersLoading || pastMatchesLoading) && <Spinner />}
+
             {filteredPastMatches && filteredPastMatches.length > 0 && userList && (
               <>
                 <Grid container spacing={5}>
@@ -221,6 +218,7 @@ const MatchesList: React.FC = () => {
                 </Grid>
               </>
             )}
+
             {filteredPastMatches && filteredPastMatches.length === 0 && (
               <>
                 <Typography paragraph>Wow. Much empty.</Typography>
