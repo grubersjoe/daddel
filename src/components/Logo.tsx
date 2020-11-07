@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import GamingIcon from '@material-ui/icons/VideogameAssetSharp';
+import { Typography } from '@material-ui/core';
 
 import { theme } from '../styles/theme';
 
@@ -24,14 +25,16 @@ const Logo: React.FC = () => {
 
   return (
     <Link to="/">
-      <Box
-        display="flex"
-        style={{ marginBottom: theme.spacing(3) }}
-        alignItems="center"
-      >
+      <Box display="flex" alignItems="center">
         <GamingIcon color="primary" className={classes.icon} />
         <h1 className={classes.heading}>Daddel</h1>
       </Box>
+      <Typography
+        variant="subtitle1"
+        style={{ marginBottom: theme.spacing(4) }}
+      >
+        Plane Spieleabende mit deinen Freunden
+      </Typography>
     </Link>
   );
 };
