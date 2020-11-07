@@ -25,11 +25,11 @@ const SignIn: React.FC = () => {
   const [authUser, authLoading] = useContext(AuthUserContext);
 
   const [loading, setLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const { from } = location.state || {
     from: { pathname: ROUTES.MATCHES_LIST },
@@ -45,6 +45,7 @@ const SignIn: React.FC = () => {
     event.preventDefault();
     setLoading(true);
     signInWithEmailAndPassword(email, password)
+      .then()
       .catch(setError)
       .finally(() => setLoading(false));
   };
@@ -126,8 +127,8 @@ const SignIn: React.FC = () => {
                   <GoogleIcon />
                 )
               }
-              style={{ marginBottom: theme.spacing(6) }}
               fullWidth
+              style={{ marginBottom: theme.spacing(6) }}
             >
               Mit Google anmelden
             </Button>
