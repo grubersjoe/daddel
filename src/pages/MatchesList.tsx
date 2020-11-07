@@ -13,21 +13,20 @@ import LinkIcon from '@material-ui/icons/Link';
 
 import { futureMatchesQuery, pastMatchesQuery } from '../api/queries/matches';
 import ROUTES from '../constants/routes';
-import { useUserList } from '../hooks';
+import useUserList from '../hooks/user-list';
 import { theme } from '../styles/theme';
 import { Match } from '../types';
 import { filterMatches, calcNumberOfEnabledFilters } from '../utils/filter';
+
 import {
   getStorageItem,
   setStorageItem,
   STORAGE_KEYS,
 } from '../utils/local-storage';
-
 import AppBar from '../components/AppBar';
-import SetNicknameDialog from '../components/Dialogs/SetNickname';
 import Filter, { MatchFilter } from '../components/Match/Filter';
 import MatchCard from '../components/Match/MatchCard';
-import Spinner from '../components/Spinner';
+import SetupUserDialog from '../components/Dialogs/SetupUserDialog';
 import SingleView from '../components/Match/SingleView';
 
 type TabPanelProps = {
@@ -63,20 +62,17 @@ const MatchesList: React.FC = () => {
 
   const history = useHistory();
 
-  const [
-    futureMatches,
-    futureMatchesLoading,
-    futureMatchesError,
-  ] = useCollectionData<Match>(futureMatchesQuery, { idField: 'id' });
+  const [futureMatches, , futureMatchesError] = useCollectionData<Match>(
+    futureMatchesQuery,
+    { idField: 'id' },
+  );
 
-  // prettier-ignore
-  const [
-    pastMatches,
-    pastMatchesLoading,
-    pastMatchesError,
-  ] = useCollectionData<Match>(pastMatchesQuery(10), { idField: 'id' });
+  const [pastMatches, , pastMatchesError] = useCollectionData<Match>(
+    pastMatchesQuery(10),
+    { idField: 'id' },
+  );
 
-  const [userList, usersLoading] = useUserList();
+  const [userList] = useUserList();
 
   const [showFilter, setShowFilter] = useState(
     getStorageItem<boolean>(STORAGE_KEYS.matchFilterEnabled) || false,
@@ -114,8 +110,7 @@ const MatchesList: React.FC = () => {
 
   return (
     <>
-      {/* Set initial nickname after registration */}
-      <SetNicknameDialog />
+      <SetupUserDialog />
 
       <AppBar filter={isSingleView ? undefined : filterConfig}>
         {isSingleView && (
@@ -167,8 +162,6 @@ const MatchesList: React.FC = () => {
               </Alert>
             )}
 
-            {(usersLoading || futureMatchesLoading) && <Spinner />}
-
             {filteredFutureMatches &&
               filteredFutureMatches.length > 0 &&
               userList && (
@@ -204,8 +197,6 @@ const MatchesList: React.FC = () => {
             {pastMatchesError && (
               <Alert severity="error">Fehler: {pastMatchesError.message}</Alert>
             )}
-
-            {(usersLoading || pastMatchesLoading) && <Spinner />}
 
             {filteredPastMatches && filteredPastMatches.length > 0 && userList && (
               <>

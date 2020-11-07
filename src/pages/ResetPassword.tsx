@@ -36,6 +36,7 @@ const ResetPassword: React.FC = () => {
       <form
         autoComplete="off"
         onSubmit={handleResetAccount}
+        onChange={() => setError(null)}
         style={{ marginBottom: theme.spacing(2) }}
       >
         <Grid container spacing={2} direction="column">

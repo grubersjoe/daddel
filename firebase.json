@@ -15,6 +15,13 @@
   "emulators": {
     "firestore": {
       "port": 8080
+    },
+    "functions": {
+      "port": 5001
     }
+  },
+  "functions": {
+    "predeploy": "npm --prefix functions run build",
+    "source": "functions"
   }
 }

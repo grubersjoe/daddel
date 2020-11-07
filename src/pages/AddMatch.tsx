@@ -69,8 +69,13 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
     event.preventDefault();
     setLoading(true);
 
-    if (!date) throw new Error('Date is not set.');
-    if (!games) throw new Error('Games are not loaded yet.');
+    if (!date) {
+      throw new Error('Date is not set');
+    }
+
+    if (!games) {
+      throw new Error('Games are not loaded yet');
+    }
 
     const maxPlayers = games.find(game => game.id === gameID)?.maxPlayers;
     const match: Match = {
@@ -135,6 +140,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
           <form
             autoComplete="off"
             onSubmit={event => addMatch(event, authUser)}
+            onChange={() => setError(null)}
           >
             <Box mb="1.5rem">
               <MuiPickersUtilsProvider utils={DateFnsUtils} locale={deLocale}>

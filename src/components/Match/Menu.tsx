@@ -40,7 +40,9 @@ const Menu: React.FC<Props> = ({ match }) => {
     setAnchorEl(null);
   };
 
-  if (!match.id) throw new Error('This should not happen');
+  if (!match.id) {
+    throw new Error('match.id is undefined');
+  }
 
   const handleDelete = () => {
     if (window.confirm('Sicher?')) {

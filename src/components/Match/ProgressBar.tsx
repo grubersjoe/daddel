@@ -34,7 +34,7 @@ function calcBarColor(value: number, max: number) {
     case 5:
       return red[500];
     default:
-      throw new Error('This should not happen');
+      throw new Error(`Undefined color index ${colorIndex}`);
   }
 }
 

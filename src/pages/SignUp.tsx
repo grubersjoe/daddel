@@ -13,7 +13,7 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
-import { createUser } from '../api/auth';
+import { createUser, isValidInvitationCode } from '../api/auth';
 import firebase from '../api/firebase';
 import ROUTES from '../constants/routes';
 import { theme } from '../styles/theme';
@@ -23,24 +23,35 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
+  const [invitationCode, setInvitationCode] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [nickname, setNickname] = useState('');
 
-  const handleRegister: FormEventHandler = event => {
+  const handleRegister: FormEventHandler = async event => {
     event.preventDefault();
     setLoading(true);
-    createUser(email, password)
-      .then(data => {
-        if (!data?.user?.uid) throw new Error('Unable to create user');
-        firebase.firestore
-          .collection('users')
-          .doc(data.user.uid)
-          .set({ nickname });
-        history.push(ROUTES.MATCHES_LIST);
-      })
-      .catch(setError)
-      .finally(() => setLoading(false));
+
+    if (await isValidInvitationCode(invitationCode)) {
+      createUser(email, password)
+        .then(data => {
+          if (!data?.user?.uid) {
+            throw new Error('Unable to create user');
+          }
+
+          firebase.firestore
+            .collection('users')
+            .doc(data.user.uid)
+            .set({ nickname, invited: true }, { merge: true });
+
+          history.push(ROUTES.MATCHES_LIST);
+        })
+        .catch(setError)
+        .finally(() => setLoading(false));
+    } else {
+      setError(new Error('Einladungscode ungültig. Bitte probier es erneut.'));
+      setLoading(false);
+    }
   };
 
   return (
@@ -50,10 +61,28 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
       <form
         autoComplete="off"
         onSubmit={handleRegister}
+        onChange={() => setError(null)}
         style={{ marginBottom: theme.spacing(4) }}
       >
         <Grid container spacing={2} direction="column">
           <Grid item md={9}>
+            <TextField
+              label="Einladungscode"
+              helperText="Du kannst dich nur mit gültigem Einladungscode registrieren."
+              type="text"
+              variant="outlined"
+              size="small"
+              onChange={event => setInvitationCode(event.target.value)}
+              fullWidth
+              required
+            />
+          </Grid>
+          {error && (
+            <Grid item md={9}>
+              <Alert severity="error">Fehler: {error.message}</Alert>
+            </Grid>
+          )}
+          <Grid item md={9} style={{ marginTop: theme.spacing(1) }}>
             <TextField
               label="E-Mail-Adresse"
               type="email"
@@ -102,11 +131,6 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
               Jajaja!
             </Button>
           </Grid>
-          {error && (
-            <Grid item md={9}>
-              <Alert severity="error">Fehler: {error.message}</Alert>
-            </Grid>
-          )}
         </Grid>
       </form>
 

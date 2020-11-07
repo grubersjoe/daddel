@@ -32,6 +32,7 @@ export type Player = {
 export type User = {
   uid: string;
   nickname: string;
+  invited: boolean;
 };
 
 export type UserMap = Map<User['uid'], User>;

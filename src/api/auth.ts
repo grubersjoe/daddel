@@ -23,3 +23,15 @@ export async function signOut(history: History) {
   await firebase.auth.signOut();
   history.push(ROUTES.ROOT);
 }
+
+export async function isValidInvitationCode(code: string): Promise<boolean> {
+  return firebase.functions
+    .httpsCallable('isValidInvitationCode')({ code })
+    .then(function (result) {
+      return result.data.isValid as boolean;
+    })
+    .catch(error => {
+      console.error('leerror', error);
+      return false;
+    });
+}

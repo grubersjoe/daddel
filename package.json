@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "build": "react-scripts build",
-    "deploy": "npm run build && firebase deploy --project daddel-e63d5 && firebase deploy --project ts-daddel",
+    "deploy": "npm run build && firebase deploy",
     "eject": "react-scripts eject",
     "format": "prettier --write 'src/**/*' 'src/**/*' './*.{js,json,md}'",
     "start": "react-scripts start",
+    "start:emulators": "firebase emulators:start --only functions",
     "test": "react-scripts test"
   },
   "eslintConfig": {

@@ -75,7 +75,10 @@ export function leaveMatch(args: {
   matchId: string;
 }) {
   const { currentUser } = firebase.auth;
-  if (!currentUser) throw new Error('No current user');
+
+  if (!currentUser) {
+    throw new Error('No current user');
+  }
 
   // Yes this is stupid, but Firebase does not seem to support deleting  array
   // entries by nested object properties

@@ -93,7 +93,9 @@ const EditMatch: React.FC<RouteComponentProps<
     event.preventDefault();
     setLoading(true);
 
-    if (!date) throw new Error('Date is not set.');
+    if (!date) {
+      throw new Error('Date is not set');
+    }
 
     const updatedMatch = {
       date: firebase.timestamp(date),
@@ -134,7 +136,11 @@ const EditMatch: React.FC<RouteComponentProps<
           </Select>
         </Box>
 
-        <form autoComplete="off" onSubmit={editMatch}>
+        <form
+          autoComplete="off"
+          onSubmit={editMatch}
+          onChange={() => setError(null)}
+        >
           <Box mb="1.5rem">
             <MuiPickersUtilsProvider utils={DateFnsUtils} locale={deLocale}>
               <DateTimePicker

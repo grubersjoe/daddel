@@ -57,7 +57,11 @@ const SignIn: React.FC = () => {
     <Container style={{ marginTop: -theme.spacing(9) }}>
       <Logo />
       <Typography variant="h6">Anmelden</Typography>
-      <form autoComplete="off" onSubmit={handleEmailLogin}>
+      <form
+        autoComplete="off"
+        onSubmit={handleEmailLogin}
+        onChange={() => setError(null)}
+      >
         <Grid container spacing={2} direction="column">
           <Grid item md={9}>
             <TextField
@@ -82,7 +86,7 @@ const SignIn: React.FC = () => {
             />
           </Grid>
 
-          <Grid item md={9} style={{ marginBottom: theme.spacing(2) }}>
+          <Grid item md={9} style={{ marginBottom: theme.spacing(3) }}>
             <Button
               variant="outlined"
               color="primary"

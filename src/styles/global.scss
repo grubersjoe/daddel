@@ -47,3 +47,7 @@ li.MuiAutocomplete-option {
 h6.MuiTypography-h6 {
   margin-bottom: 1rem;
 }
+
+.MuiDialogContent-root:first-child {
+  padding-top: 0 !important;
+}

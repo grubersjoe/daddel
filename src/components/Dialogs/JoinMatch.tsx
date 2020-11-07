@@ -103,7 +103,9 @@ const JoinMatchDialog: React.FC<Props> = ({
   };
 
   const handleLeave = () => {
-    if (!match.id) throw new Error('No match ID given');
+    if (!match.id) {
+      throw new Error('No match ID given');
+    }
 
     setLoading(true);
     leaveMatch({
