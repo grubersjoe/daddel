@@ -14,7 +14,7 @@ import { AuthUserContext } from './App';
 const Links = [ROUTES.MATCHES_LIST, ROUTES.ADD_MATCH, ROUTES.PROFILE];
 
 const Navigation: React.FC<RouteComponentProps> = ({ history, location }) => {
-  const authUser = useContext(AuthUserContext);
+  const [authUser] = useContext(AuthUserContext);
   const [selected, setSelected] = useState(0);
 
   useEffect(() => {

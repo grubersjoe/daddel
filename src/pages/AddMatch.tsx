@@ -35,7 +35,7 @@ import { AuthUserContext } from '../components/App';
 import AppBar from '../components/AppBar';
 
 const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
-  const authUser = useContext(AuthUserContext);
+  const [authUser] = useContext(AuthUserContext);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);

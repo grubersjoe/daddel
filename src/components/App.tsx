@@ -18,22 +18,29 @@ import ResetPassword from '../pages/ResetPassword';
 import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
 
-export const AuthUserContext = React.createContext<User | null>(null);
+type AuthUserValue = [User | null, boolean];
+
+export const AuthUserContext = React.createContext<AuthUserValue>([null, true]);
 
 const App: React.FC = () => {
+  const [authLoading, setAuthLoading] = useState(true);
   const [authUser, setAuthUser] = useState<User | null>(
     firebase.auth.currentUser,
   );
 
   useEffect(() => {
-    // Return the unsubscribe function of onAuthStateChanged (cleanup)
-    return firebase.auth.onAuthStateChanged(authUser => {
+    const unsubscribeFn = firebase.auth.onAuthStateChanged(authUser => {
+      setAuthLoading(false);
       authUser ? setAuthUser(authUser) : setAuthUser(null);
+      console.log(authLoading);
     });
+
+    // Cleanup
+    return unsubscribeFn;
   });
 
   return (
-    <AuthUserContext.Provider value={authUser}>
+    <AuthUserContext.Provider value={[authUser, authLoading]}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Router>

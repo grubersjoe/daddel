@@ -5,7 +5,7 @@ import ROUTES from '../constants/routes';
 import { AuthUserContext } from './App';
 
 const PrivateRoute: React.FC<RouteProps> = ({ children, ...props }) => {
-  const authUser = useContext(AuthUserContext);
+  const [authUser] = useContext(AuthUserContext);
 
   return (
     <Route

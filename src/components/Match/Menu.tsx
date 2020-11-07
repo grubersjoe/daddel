@@ -23,7 +23,7 @@ type Props = {
 
 const Menu: React.FC<Props> = ({ match }) => {
   const history = useHistory();
-  const authUser = useContext(AuthUserContext);
+  const [authUser] = useContext(AuthUserContext);
 
   const [games, gamesLoading] = useCollectionData<Game>(
     firebase.firestore.collection('games').orderBy('name', 'asc'),

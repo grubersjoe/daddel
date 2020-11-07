@@ -17,11 +17,12 @@ import GoogleIcon from '../assets/icons/GoogleIcon';
 import { signInWithEmailAndPassword, signInWithGoogle } from '../api/auth';
 import { AuthUserContext } from '../components/App';
 import Logo from '../components/Logo';
+import Spinner from '../components/Spinner';
 
 const SignIn: React.FC = () => {
   const history = useHistory();
   const location = useLocation<{ from: History.Location }>();
-  const currentUser = useContext(AuthUserContext);
+  const [authUser, authLoading] = useContext(AuthUserContext);
 
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
@@ -34,8 +35,10 @@ const SignIn: React.FC = () => {
     from: { pathname: ROUTES.MATCHES_LIST },
   };
 
-  if (currentUser) {
+  if (authUser) {
     history.replace(from);
+
+    return null;
   }
 
   const handleEmailLogin: FormEventHandler = event => {
@@ -53,7 +56,9 @@ const SignIn: React.FC = () => {
       .finally(() => setGoogleLoading(false));
   };
 
-  return (
+  return authLoading ? (
+    <Spinner />
+  ) : (
     <Container style={{ marginTop: -theme.spacing(9) }}>
       <Logo />
       <Typography variant="h6">Anmelden</Typography>
