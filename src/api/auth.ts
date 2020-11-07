@@ -8,7 +8,7 @@ export function signInWithEmailAndPassword(email: string, password: string) {
 }
 
 export function signInWithGoogle() {
-  return firebase.auth.signInWithPopup(firebase.googleAuthProvider);
+  return firebase.auth.signInWithRedirect(firebase.googleAuthProvider);
 }
 
 export function createUser(email: string, password: string) {
