@@ -21,20 +21,20 @@ import AppBar from '../components/AppBar';
 
 const Profile: React.FC<RouteComponentProps> = ({ history }) => {
   const { currentUser } = firebase.auth;
-  const [user, userLoading, error] = useDocumentDataOnce<User>(
+
+  const [user, userLoading, userError] = useDocumentDataOnce<User>(
     firebase.firestore.doc(`users/${currentUser?.uid}`),
     { idField: 'uid' },
   );
 
-  const [nickname, setNickname] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [nickname, setNickname] = useState('Lade …');
+  const [submitLoading, setSubmitLoading] = useState(false);
 
-  const initialUsername = user?.nickname;
   useEffect(() => {
-    if (initialUsername) {
-      setNickname(initialUsername);
+    if (user) {
+      setNickname(user.nickname);
     }
-  }, [initialUsername]);
+  }, [user]);
 
   const handleNicknameChange: ChangeEventHandler<HTMLInputElement> = event => {
     setNickname(event.target.value);
@@ -42,24 +42,28 @@ const Profile: React.FC<RouteComponentProps> = ({ history }) => {
 
   const submitNickname: FormEventHandler = event => {
     event.preventDefault();
-    setLoading(true);
 
-    if (!currentUser) return;
+    if (!currentUser) {
+      throw new Error('No user authenticated');
+    }
 
+    setSubmitLoading(true);
     firebase.firestore
       .collection('users')
       .doc(currentUser.uid)
-      .set({ nickname })
-      .finally(() => setLoading(false));
+      .set({ nickname }, { merge: true })
+      .finally(() => setSubmitLoading(false));
   };
 
   return (
     <>
       <AppBar title="Profil" />
       <Container style={{ marginTop: -theme.spacing(1) }}>
-        {error && <Alert severity="error">Fehler: {error.message}</Alert>}
-
-        {!error && (
+        {userError ? (
+          <Alert severity="error" style={{ marginBottom: theme.spacing(2) }}>
+            Fehler: {userError.message}
+          </Alert>
+        ) : (
           <form
             autoComplete="off"
             onSubmit={submitNickname}
@@ -73,6 +77,7 @@ const Profile: React.FC<RouteComponentProps> = ({ history }) => {
                   size="small"
                   value={nickname}
                   onChange={handleNicknameChange}
+                  disabled={userLoading || userError}
                   fullWidth
                   required
                 />
@@ -83,7 +88,7 @@ const Profile: React.FC<RouteComponentProps> = ({ history }) => {
                   type="submit"
                   color="primary"
                   variant="outlined"
-                  disabled={loading || userLoading}
+                  disabled={userLoading || submitLoading}
                   fullWidth
                 >
                   Name ändern

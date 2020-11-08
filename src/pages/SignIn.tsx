@@ -92,7 +92,7 @@ const SignIn: React.FC = () => {
             />
           </Grid>
 
-          <Grid item md={9} style={{ marginBottom: theme.spacing(3) }}>
+          <Grid item md={9}>
             <Button
               variant="outlined"
               color="primary"
@@ -108,13 +108,13 @@ const SignIn: React.FC = () => {
             >
               Anmelden
             </Button>
-            {error && (
-              <Grid item md={9}>
-                <Alert severity="error">Fehler: {error.message}</Alert>
-              </Grid>
-            )}
           </Grid>
-          <Grid item md={9}>
+          {error && (
+            <Grid item md={9}>
+              <Alert severity="error">Fehler: {error.message}</Alert>
+            </Grid>
+          )}
+          <Grid item md={9} style={{ marginTop: theme.spacing(3) }}>
             <Button
               variant="outlined"
               size="large"
