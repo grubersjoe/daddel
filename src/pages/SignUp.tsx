@@ -28,7 +28,7 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
   const [password, setPassword] = useState('');
   const [nickname, setNickname] = useState('');
 
-  const handleRegister: FormEventHandler = async event => {
+  const register: FormEventHandler = async event => {
     event.preventDefault();
     setLoading(true);
 
@@ -60,7 +60,7 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
       <Typography variant="h6">Registrieren</Typography>
       <form
         autoComplete="off"
-        onSubmit={handleRegister}
+        onSubmit={register}
         onChange={() => setError(null)}
         style={{ marginBottom: theme.spacing(4) }}
       >

@@ -13,7 +13,7 @@ import AddMatch from '../pages/AddMatch';
 import EditMatch from '../pages/EditMatch';
 import MatchesList from '../pages/MatchesList';
 import PrivateRoute from './PrivateRoute';
-import Profile from '../pages/Profile';
+import Settings from '../pages/Settings';
 import ResetPassword from '../pages/ResetPassword';
 import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
@@ -53,8 +53,8 @@ const App: React.FC = () => {
               <PrivateRoute path={ROUTES.MATCHES_LIST_DYNAMIC}>
                 <MatchesList />
               </PrivateRoute>
-              <PrivateRoute path={ROUTES.PROFILE}>
-                <Profile />
+              <PrivateRoute path={ROUTES.SETTINGS}>
+                <Settings />
               </PrivateRoute>
               <Route path={ROUTES.REGISTER}>
                 <SignUp />

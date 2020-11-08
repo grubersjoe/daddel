@@ -124,7 +124,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
               label="Spiel"
               disabled={gamesLoading}
             >
-              {gamesLoading && <option>Lade …</option>}
+              {gamesLoading && <option>Lade ...</option>}
               {games &&
                 games.map(game => (
                   <option key={game.id} value={game.id}>

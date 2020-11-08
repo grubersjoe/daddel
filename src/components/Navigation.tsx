@@ -11,7 +11,7 @@ import ROUTES from '../constants/routes';
 import { theme } from '../styles/theme';
 import { AuthUserContext } from './App';
 
-const Links = [ROUTES.MATCHES_LIST, ROUTES.ADD_MATCH, ROUTES.PROFILE];
+const Links = [ROUTES.MATCHES_LIST, ROUTES.ADD_MATCH, ROUTES.SETTINGS];
 
 const Navigation: React.FC<RouteComponentProps> = ({ history, location }) => {
   const [authUser] = useContext(AuthUserContext);
@@ -46,8 +46,8 @@ const Navigation: React.FC<RouteComponentProps> = ({ history, location }) => {
       />
       <BottomNavigationAction
         component={Link}
-        to={ROUTES.PROFILE}
-        label="Profil"
+        to={ROUTES.SETTINGS}
+        label="Einstellungen"
         icon={<SettingsIcon />}
       />
     </BottomNavigation>

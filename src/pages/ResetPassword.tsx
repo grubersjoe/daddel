@@ -20,7 +20,7 @@ const ResetPassword: React.FC = () => {
   const [success, setSuccess] = useState(false);
   const [email, setEmail] = useState('');
 
-  const handleResetAccount: FormEventHandler = event => {
+  const resetAccount: FormEventHandler = event => {
     event.preventDefault();
     setLoading(true);
     resetPassword(email)
@@ -35,7 +35,7 @@ const ResetPassword: React.FC = () => {
       <Typography variant="h6">Passwort zurücksetzen</Typography>
       <form
         autoComplete="off"
-        onSubmit={handleResetAccount}
+        onSubmit={resetAccount}
         onChange={() => setError(null)}
         style={{ marginBottom: theme.spacing(2) }}
       >
