@@ -28,6 +28,7 @@ import Filter, { MatchFilter } from '../components/Match/Filter';
 import MatchCard from '../components/Match/MatchCard';
 import SetupUserDialog from '../components/Dialogs/SetupUserDialog';
 import SingleView from '../components/Match/SingleView';
+import Spinner from '../components/Spinner';
 
 type TabPanelProps = {
   children?: React.ReactNode;
@@ -162,6 +163,8 @@ const MatchesList: React.FC = () => {
               </Alert>
             )}
 
+            {!filteredFutureMatches && <Spinner />}
+
             {filteredFutureMatches &&
               filteredFutureMatches.length > 0 &&
               userList && (
@@ -198,16 +201,16 @@ const MatchesList: React.FC = () => {
               <Alert severity="error">Fehler: {pastMatchesError.message}</Alert>
             )}
 
+            {!filteredPastMatches && <Spinner />}
+
             {filteredPastMatches && filteredPastMatches.length > 0 && userList && (
-              <>
-                <Grid container spacing={5}>
-                  {filteredPastMatches.map(match => (
-                    <Grid item xs={12} md={4} lg={3} key={match.id}>
-                      <MatchCard match={match} userList={userList} />
-                    </Grid>
-                  ))}
-                </Grid>
-              </>
+              <Grid container spacing={5}>
+                {filteredPastMatches.map(match => (
+                  <Grid item xs={12} md={4} lg={3} key={match.id}>
+                    <MatchCard match={match} userList={userList} />
+                  </Grid>
+                ))}
+              </Grid>
             )}
 
             {filteredPastMatches && filteredPastMatches.length === 0 && (
