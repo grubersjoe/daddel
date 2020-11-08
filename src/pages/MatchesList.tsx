@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useContext } from 'react';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import SwipeableViews from 'react-swipeable-views';
 import { Link, useHistory, useParams } from 'react-router-dom';
@@ -28,7 +28,7 @@ import Filter, { MatchFilter } from '../components/Match/Filter';
 import MatchCard from '../components/Match/MatchCard';
 import SetupUserDialog from '../components/Dialogs/SetupUserDialog';
 import SingleView from '../components/Match/SingleView';
-import Spinner from '../components/Spinner';
+import { SnackbarContext } from '../components/Layout';
 
 type TabPanelProps = {
   children?: React.ReactNode;
@@ -62,6 +62,7 @@ const MatchesList: React.FC = () => {
   const isSingleView = Boolean(matchParam && matchParam.length > 0);
 
   const history = useHistory();
+  const dispatchSnack = useContext(SnackbarContext);
 
   const [futureMatches, , futureMatchesError] = useCollectionData<Match>(
     futureMatchesQuery,
@@ -83,8 +84,6 @@ const MatchesList: React.FC = () => {
     getStorageItem<MatchFilter>(STORAGE_KEYS.matchFilter) || { games: [] },
   );
 
-  const numberOfEnabledFilters = calcNumberOfEnabledFilters(filter);
-
   const [tabIndex, setTabIndex] = useState(0);
 
   const filteredFutureMatches = useMemo(
@@ -97,6 +96,7 @@ const MatchesList: React.FC = () => {
     [pastMatches, filter],
   );
 
+  const numberOfEnabledFilters = calcNumberOfEnabledFilters(filter);
   const filterConfig = {
     color: showFilter ? 'primary' : 'inherit',
     enabled: numberOfEnabledFilters,
@@ -125,9 +125,17 @@ const MatchesList: React.FC = () => {
             <Button
               variant="text"
               startIcon={<LinkIcon />}
-              onClick={() =>
-                navigator.clipboard.writeText(window.location.href)
-              }
+              onClick={() => {
+                if (navigator.clipboard) {
+                  navigator.clipboard
+                    .writeText(window.location.href)
+                    .then(() => {
+                      dispatchSnack('In Zwischenablage kopiert');
+                    });
+                } else {
+                  dispatchSnack('Aktion nicht unterstützt', 'error');
+                }
+              }}
               style={{ marginLeft: '1rem' }}
             >
               Link kopieren
@@ -155,74 +163,80 @@ const MatchesList: React.FC = () => {
       {isSingleView ? (
         <SingleView userList={userList} />
       ) : (
-        <SwipeableViews index={tabIndex} onChangeIndex={setTabIndex}>
-          <TabPanel value={tabIndex} index={0}>
-            {futureMatchesError && (
-              <Alert severity="error">
-                Fehler: {futureMatchesError.message}
-              </Alert>
-            )}
-
-            {!filteredFutureMatches && <Spinner />}
-
-            {filteredFutureMatches &&
-              filteredFutureMatches.length > 0 &&
-              userList && (
-                <Grid container spacing={5}>
-                  {filteredFutureMatches.map(match => (
-                    <Grid item xs={12} md={4} lg={3} key={match.id}>
-                      <MatchCard match={match} userList={userList} />
-                    </Grid>
-                  ))}
-                </Grid>
+        <>
+          <SwipeableViews index={tabIndex} onChangeIndex={setTabIndex}>
+            <TabPanel value={tabIndex} index={0}>
+              {futureMatchesError && (
+                <Alert severity="error">
+                  Fehler: {futureMatchesError.message}
+                </Alert>
               )}
 
-            {filteredFutureMatches && filteredFutureMatches.length === 0 && (
-              <div>
-                <Typography paragraph>Wow. Much empty. </Typography>
-                {numberOfEnabledFilters > 0 && (
-                  <Typography paragraph>Obacht! Filter ist aktiv.</Typography>
-                )}
+              {!filteredFutureMatches && <p>Lade …</p>}
 
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  component={Link}
-                  to={ROUTES.ADD_MATCH}
-                  style={{ marginTop: theme.spacing(1) }}
-                >
-                  Neuer Bolz
-                </Button>
-              </div>
-            )}
-          </TabPanel>
-          <TabPanel value={tabIndex} index={1}>
-            {pastMatchesError && (
-              <Alert severity="error">Fehler: {pastMatchesError.message}</Alert>
-            )}
-
-            {!filteredPastMatches && <Spinner />}
-
-            {filteredPastMatches && filteredPastMatches.length > 0 && userList && (
-              <Grid container spacing={5}>
-                {filteredPastMatches.map(match => (
-                  <Grid item xs={12} md={4} lg={3} key={match.id}>
-                    <MatchCard match={match} userList={userList} />
+              {filteredFutureMatches &&
+                filteredFutureMatches.length > 0 &&
+                userList && (
+                  <Grid container spacing={5}>
+                    {filteredFutureMatches.map(match => (
+                      <Grid item xs={12} md={4} lg={3} key={match.id}>
+                        <MatchCard match={match} userList={userList} />
+                      </Grid>
+                    ))}
                   </Grid>
-                ))}
-              </Grid>
-            )}
-
-            {filteredPastMatches && filteredPastMatches.length === 0 && (
-              <>
-                <Typography paragraph>Wow. Much empty.</Typography>
-                {numberOfEnabledFilters > 0 && (
-                  <Typography paragraph>Obacht! Filter ist aktiv.</Typography>
                 )}
-              </>
-            )}
-          </TabPanel>
-        </SwipeableViews>
+
+              {filteredFutureMatches && filteredFutureMatches.length === 0 && (
+                <div>
+                  <Typography paragraph>Wow. Much empty. </Typography>
+                  {numberOfEnabledFilters > 0 && (
+                    <Typography paragraph>Obacht! Filter ist aktiv.</Typography>
+                  )}
+
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    component={Link}
+                    to={ROUTES.ADD_MATCH}
+                    style={{ marginTop: theme.spacing(1) }}
+                  >
+                    Neuer Bolz
+                  </Button>
+                </div>
+              )}
+            </TabPanel>
+            <TabPanel value={tabIndex} index={1}>
+              {pastMatchesError && (
+                <Alert severity="error">
+                  Fehler: {pastMatchesError.message}
+                </Alert>
+              )}
+
+              {!filteredPastMatches && <p>Lade …</p>}
+
+              {filteredPastMatches &&
+                filteredPastMatches.length > 0 &&
+                userList && (
+                  <Grid container spacing={5}>
+                    {filteredPastMatches.map(match => (
+                      <Grid item xs={12} md={4} lg={3} key={match.id}>
+                        <MatchCard match={match} userList={userList} />
+                      </Grid>
+                    ))}
+                  </Grid>
+                )}
+
+              {filteredPastMatches && filteredPastMatches.length === 0 && (
+                <>
+                  <Typography paragraph>Wow. Much empty.</Typography>
+                  {numberOfEnabledFilters > 0 && (
+                    <Typography paragraph>Obacht! Filter ist aktiv.</Typography>
+                  )}
+                </>
+              )}
+            </TabPanel>
+          </SwipeableViews>
+        </>
       )}
     </>
   );

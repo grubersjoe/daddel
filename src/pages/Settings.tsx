@@ -1,4 +1,9 @@
-import React, { useState, useEffect, FormEventHandler } from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  FormEventHandler,
+} from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
 import Alert from '@material-ui/lab/Alert';
@@ -14,8 +19,11 @@ import firebase from '../api/firebase';
 import { User } from '../types';
 import { theme } from '../styles/theme';
 import AppBar from '../components/AppBar';
+import { SnackbarContext } from '../components/Layout';
 
 const Settings: React.FC<RouteComponentProps> = ({ history }) => {
+  const dispatchSnack = useContext(SnackbarContext);
+
   const { currentUser } = firebase.auth;
 
   const [user, userLoading, userError] = useDocumentDataOnce<User>(
@@ -28,10 +36,10 @@ const Settings: React.FC<RouteComponentProps> = ({ history }) => {
   const [nickname, setNickname] = useState('Lade …');
 
   useEffect(() => {
-    if (user) {
+    if (user && nickname === 'Lade …') {
       setNickname(user.nickname);
     }
-  }, [user]);
+  }, [user, nickname]);
 
   if (userError) {
     setError(userError);
@@ -49,6 +57,7 @@ const Settings: React.FC<RouteComponentProps> = ({ history }) => {
       .collection('users')
       .doc(currentUser.uid)
       .set({ nickname }, { merge: true })
+      .then(() => dispatchSnack('Name geändert'))
       .catch(setError)
       .finally(() => setLoading(false));
   };

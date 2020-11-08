@@ -17,12 +17,13 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 
+import { isValidInvitationCode } from '../../api/auth';
 import firebase from '../../api/firebase';
 import useOnlineStatus from '../../hooks/online-status';
+import { theme } from '../../styles/theme';
 import { User } from '../../types';
 import { AuthUserContext } from '../App';
-import { isValidInvitationCode } from '../../api/auth';
-import { theme } from '../../styles/theme';
+import { SnackbarContext } from '../Layout';
 
 type Content = {
   title: string;
@@ -37,8 +38,10 @@ type Content = {
  * 2. Set the user nickname
  */
 const SetupUserDialog: React.FC<RouteComponentProps> = ({ history }) => {
-  const isOnline = useOnlineStatus();
   const [authUser] = useContext(AuthUserContext);
+  const dispatchSnack = useContext(SnackbarContext);
+
+  const isOnline = useOnlineStatus();
 
   const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState(false);
@@ -119,7 +122,10 @@ const SetupUserDialog: React.FC<RouteComponentProps> = ({ history }) => {
       .collection('users')
       .doc(authUser.uid)
       .set({ nickname }, { merge: true })
-      .then(() => setOpen(false))
+      .then(() => {
+        dispatchSnack('Registrierung abgeschlossen');
+        setOpen(false);
+      })
       .catch(setError)
       .finally(() => setLoading(false));
   };

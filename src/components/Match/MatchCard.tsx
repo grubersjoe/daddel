@@ -163,7 +163,9 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
             color="textSecondary"
             style={{ marginBottom: theme.spacing(1.75) }}
           >
-            <TimeAgo date={fromUnixTime(match.date.seconds)} />
+            <TimeAgo date={fromUnixTime(match.date.seconds)} />{' '}
+            <span style={{ margin: '0 0.15em' }}>•</span>{' '}
+            <Link to={`/matches/${match.id}`}>Permalink</Link>
           </Typography>
           {match.description && (
             <Typography

@@ -1,4 +1,4 @@
-import React, { useState, FormEvent } from 'react';
+import React, { useState, FormEvent, useContext } from 'react';
 import { StaticContext } from 'react-router';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import getDate from 'date-fns/getDate';
@@ -24,6 +24,7 @@ import { FALLBACK_GAME } from '../constants';
 import ROUTES from '../constants/routes';
 import { Match, Game, Player } from '../types';
 import AppBar from '../components/AppBar';
+import { SnackbarContext } from '../components/Layout';
 
 const updatePlayerDates = (players: Player[], updatedDate: Date): Player[] =>
   players.map(player => {
@@ -62,12 +63,18 @@ const EditMatch: React.FC<RouteComponentProps<
   StaticContext,
   { match: Match }
 >> = ({ location, history }) => {
+  const dispatchSnack = useContext(SnackbarContext);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   // Matches are passed as state through the <Link> component of react-router.
   // If this page is opened directly location.state will be undefined.
   const match = location?.state?.match;
+
+  if (!match) {
+    history.push('/matches');
+  }
 
   const [gameID, setGameID] = useState<Game['id']>(
     match?.game || FALLBACK_GAME,
@@ -108,7 +115,10 @@ const EditMatch: React.FC<RouteComponentProps<
       .collection('matches')
       .doc(match.id)
       .set(updatedMatch, { merge: true })
-      .then(() => history.push(ROUTES.MATCHES_LIST))
+      .then(() => {
+        dispatchSnack('Match aktualisiert');
+        history.push(ROUTES.MATCHES_LIST);
+      })
       .catch(setError)
       .finally(() => setLoading(false));
   };
@@ -198,7 +208,7 @@ const EditMatch: React.FC<RouteComponentProps<
                   }
                   fullWidth
                 >
-                  Jajaja!
+                  Jajaja
                 </Button>
               </Grid>
             </Grid>

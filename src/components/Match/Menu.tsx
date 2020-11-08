@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
@@ -16,20 +16,21 @@ import ROUTES from '../../constants/routes';
 import { Match, Game } from '../../types';
 import { formatDate, formatTimestamp } from '../../utils/date';
 import { AuthUserContext } from '../App';
+import { SnackbarContext } from '../Layout';
 
 type Props = {
   match: Match;
 };
 
 const Menu: React.FC<Props> = ({ match }) => {
-  const history = useHistory();
   const [authUser] = useContext(AuthUserContext);
+  const dispatchSnack = useContext(SnackbarContext);
 
   const [games, gamesLoading] = useCollectionData<Game>(
     firebase.firestore.collection('games').orderBy('name', 'asc'),
   );
 
-  const [anchorElement, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorElement, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorElement);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -46,13 +47,26 @@ const Menu: React.FC<Props> = ({ match }) => {
 
   const handleDelete = () => {
     if (window.confirm('Sicher?')) {
-      return firebase.firestore.collection('matches').doc(match.id).delete();
+      firebase.firestore
+        .collection('matches')
+        .doc(match.id)
+        .delete()
+        .catch(() => dispatchSnack('Fehler', 'error'));
     }
     handleClose();
   };
 
   const handlePermalink = (match: Match) => {
-    history.push(`/matches/${match.id}`);
+    if (navigator.clipboard) {
+      navigator.clipboard
+        .writeText(`${window.location.href}/${match.id}`)
+        .then(() => {
+          dispatchSnack('In Zwischenablage kopiert');
+        });
+    } else {
+      dispatchSnack('Aktion nicht unterstützt', 'error');
+    }
+
     handleClose();
   };
 

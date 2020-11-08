@@ -24,6 +24,7 @@ import setHours from 'date-fns/setHours';
 
 import firebase from '../api/firebase';
 import { joinMatch } from '../api/match';
+import ROUTES from '../constants/routes';
 import { Match, Game, TimeLabel } from '../types';
 import {
   DEFAULT_MATCH_STARTTIME,
@@ -32,10 +33,12 @@ import {
 } from '../constants/date';
 import { format } from '../utils/date';
 import { AuthUserContext } from '../components/App';
+import { SnackbarContext } from '../components/Layout';
 import AppBar from '../components/AppBar';
 
 const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
   const [authUser] = useContext(AuthUserContext);
+  const dispatchSnack = useContext(SnackbarContext);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -67,7 +70,6 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
 
   const addMatch = (event: FormEvent, currentUser: User) => {
     event.preventDefault();
-    setLoading(true);
 
     if (!date) {
       throw new Error('Date is not set');
@@ -76,6 +78,8 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
     if (!games) {
       throw new Error('Games are not loaded yet');
     }
+
+    setLoading(true);
 
     const maxPlayers = games.find(game => game.id === gameID)?.maxPlayers;
     const match: Match = {
@@ -99,11 +103,15 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
             : MATCH_TIME_END;
 
           joinMatch(availFrom, availUntil, { id: doc.id, ...match })
-            .then(() => history.push('/matches'))
+            .then(() => {
+              dispatchSnack('Neues Match hinzgefügt');
+              history.push(ROUTES.MATCHES_LIST);
+            })
             .catch(setError)
             .finally(() => setLoading(false));
         } else {
-          history.push('/matches');
+          dispatchSnack('Fehler', 'error');
+          history.push(ROUTES.MATCHES_LIST);
           setLoading(false);
         }
       })
@@ -124,7 +132,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
               label="Spiel"
               disabled={gamesLoading}
             >
-              {gamesLoading && <option>Lade ...</option>}
+              {gamesLoading && <option>Lade …</option>}
               {games &&
                 games.map(game => (
                   <option key={game.id} value={game.id}>
@@ -208,7 +216,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
                     }
                     fullWidth
                   >
-                    Jajaja!
+                    Jajaja
                   </Button>
                 </Grid>
               </Grid>
