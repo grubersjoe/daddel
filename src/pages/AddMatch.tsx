@@ -1,6 +1,6 @@
 import React, { useState, FormEvent, useEffect, useContext } from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { User } from 'firebase';
+import firebaseNS from 'firebase';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import addHours from 'date-fns/addHours';
 import isSameDay from 'date-fns/isSameDay';
@@ -68,7 +68,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
   if (gamesError) console.error(gamesError);
   if (error) console.error(error);
 
-  const addMatch = (event: FormEvent, currentUser: User) => {
+  const addMatch = (event: FormEvent, currentUser: firebaseNS.User) => {
     event.preventDefault();
 
     if (!date) {

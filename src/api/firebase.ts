@@ -45,7 +45,7 @@ if (window.location.hostname === 'localhost') {
     });
   }
 
-  functions.useFunctionsEmulator('http://localhost:5001');
+  functions.useEmulator('localhost', 5001);
 }
 
 const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
@@ -57,7 +57,7 @@ function timestamp(date: Date = new Date()) {
   );
 }
 
-export default {
+const exports = {
   analytics,
   auth,
   firestore,
@@ -65,3 +65,5 @@ export default {
   googleAuthProvider,
   timestamp,
 };
+
+export default exports;

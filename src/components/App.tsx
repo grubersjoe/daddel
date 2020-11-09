@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { User } from 'firebase';
+import firebaseNS from 'firebase';
 import { ThemeProvider } from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
@@ -18,13 +18,13 @@ import ResetPassword from '../pages/ResetPassword';
 import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
 
-type AuthUserValue = [User | null, boolean];
+type AuthUserValue = [firebaseNS.User | null, boolean];
 
 export const AuthUserContext = React.createContext<AuthUserValue>([null, true]);
 
 const App: React.FC = () => {
   const [authLoading, setAuthLoading] = useState(true);
-  const [authUser, setAuthUser] = useState<User | null>(
+  const [authUser, setAuthUser] = useState<firebaseNS.User | null>(
     firebase.auth.currentUser,
   );
 

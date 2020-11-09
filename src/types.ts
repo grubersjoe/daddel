@@ -1,10 +1,11 @@
+import firebaseNS from 'firebase';
 import { MATCH_TIME_OPEN_END } from './constants/date';
 
-export type QuerySnapshot = firebase.firestore.QuerySnapshot<
-  firebase.firestore.DocumentData
+export type QuerySnapshot = firebaseNS.firestore.QuerySnapshot<
+  firebaseNS.firestore.DocumentData
 >;
 
-export type Timestamp = firebase.firestore.Timestamp;
+export type Timestamp = firebaseNS.firestore.Timestamp;
 
 export type Game = {
   id: string;

@@ -1,4 +1,4 @@
-export default {
+const routes = {
   ADD_MATCH: '/add',
   EDIT_MATCH: '/edit',
   MATCHES_LIST: '/matches',
@@ -8,3 +8,5 @@ export default {
   RESET: '/reset',
   ROOT: '/',
 };
+
+export default routes;

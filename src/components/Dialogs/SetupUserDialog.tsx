@@ -3,7 +3,6 @@ import React, {
   useEffect,
   FormEventHandler,
   useContext,
-  ReactNode,
 } from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
@@ -24,13 +23,6 @@ import { theme } from '../../styles/theme';
 import { User } from '../../types';
 import { AuthUserContext } from '../App';
 import { SnackbarContext } from '../Layout';
-
-type Content = {
-  title: string;
-  form: ReactNode;
-  onSubmit: FormEventHandler;
-  buttonText: string;
-};
 
 /**
  * Required after Google sing in
