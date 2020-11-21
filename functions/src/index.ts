@@ -1,7 +1,7 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 
-const FIREBASE_REGION = 'europe-west1'; // Belgium
+const FIREBASE_REGION = 'europe-west3'; // Frankfurt
 
 admin.initializeApp();
 
