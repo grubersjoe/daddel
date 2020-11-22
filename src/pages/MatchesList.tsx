@@ -29,6 +29,7 @@ import MatchCard from '../components/Match/MatchCard';
 import SetupUserDialog from '../components/Dialogs/SetupUserDialog';
 import SingleView from '../components/Match/SingleView';
 import { SnackbarContext } from '../components/Layout';
+import MatchCardSkeleton from '../components/Match/MatchCardSkeleton';
 
 type TabPanelProps = {
   children?: React.ReactNode;
@@ -212,7 +213,7 @@ const MatchesList: React.FC = () => {
                 </Alert>
               )}
 
-              {!filteredPastMatches && <p>Lade …</p>}
+              {!filteredPastMatches && <MatchCardSkeleton />}
 
               {filteredPastMatches &&
                 filteredPastMatches.length > 0 &&

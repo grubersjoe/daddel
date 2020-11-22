@@ -20,6 +20,7 @@ import { formatDate, formatTimestamp } from '../../utils/date';
 
 import JoinMatchDialog from '../Dialogs/JoinMatch';
 import Calendar from './Calendar';
+import MatchCardSkeleton from './MatchCardSkeleton';
 import Menu from './Menu';
 import ProgressBar from './ProgressBar';
 import TimeAgo from '../TimeAgo';
@@ -29,7 +30,7 @@ type Props = {
   userList: UserMap;
 };
 
-const useStyles = makeStyles(theme => ({
+export const useStyles = makeStyles(theme => ({
   card: {
     height: '100%',
     display: 'flex',
@@ -115,7 +116,11 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
   // It should be able to join a match until the end of its date
   const isJoinable = isFuture(endOfDay(fromUnixTime(match.date.seconds)));
 
-  return game && gameBanner ? (
+  if (!game || !gameBanner) {
+    return <MatchCardSkeleton />;
+  }
+
+  return (
     <Card className={classes.card} raised>
       <CardMedia className={classes.media} image={gameBanner}>
         <Grid
@@ -197,7 +202,7 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
         )}
       </Box>
     </Card>
-  ) : null;
+  );
 };
 
 export default MatchCard;
