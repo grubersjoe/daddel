@@ -211,7 +211,7 @@ const EditMatch: React.FC<
                   }
                   fullWidth
                 >
-                  Match speichern
+                  Speichern
                 </Button>
               </Grid>
             </Grid>

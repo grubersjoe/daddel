@@ -212,7 +212,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
                     }
                     fullWidth
                   >
-                    Match hinzufügen
+                    Hinzufügen
                   </Button>
                 </Grid>
               </Grid>
