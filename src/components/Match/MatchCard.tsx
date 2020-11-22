@@ -14,6 +14,7 @@ import Typography from '@material-ui/core/Typography';
 
 import firebase from '../../api/firebase';
 import { getGameBanner } from '../../assets/images/games';
+import { FALLBACK_GAME_BANNER } from '../../constants';
 import { theme } from '../../styles/theme';
 import { Game, Match, UserMap } from '../../types';
 import { formatDate, formatTimestamp } from '../../utils/date';
@@ -93,15 +94,21 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
       );
   }
 
-  if (game) {
+  if (game && gameBanner === null) {
     getGameBanner(game).then(banner => {
-      // Preload the game banner
-      const image = new Image();
-      image.src = banner;
-      image.onload = () => setGameBanner(banner);
-      image.onerror = console.error;
+      if (banner === FALLBACK_GAME_BANNER) {
+        setGameBanner(FALLBACK_GAME_BANNER);
+      } else {
+        // Preload the game banner
+        const image = new Image();
+        image.src = banner;
+        image.onload = () => setGameBanner(banner);
+        image.onerror = console.error;
+      }
     });
   }
+
+  const isFallbackBanner = gameBanner === FALLBACK_GAME_BANNER;
 
   const { currentUser } = firebase.auth;
 
@@ -116,23 +123,54 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
   // It should be able to join a match until the end of its date
   const isJoinable = isFuture(endOfDay(fromUnixTime(match.date.seconds)));
 
-  if (!game || !gameBanner) {
+  if (!game || gameBanner === null) {
     return <MatchCardSkeleton />;
   }
 
   return (
     <Card className={classes.card} raised>
-      <CardMedia className={classes.media} image={gameBanner}>
+      <CardMedia
+        className={classes.media}
+        image={isFallbackBanner ? undefined : gameBanner}
+        style={{
+          ...(isFallbackBanner && {
+            background:
+              'linear-gradient(to bottom, rgb(60, 60, 60) 0%, rgb(40, 40, 40) 100%)',
+          }),
+        }}
+      >
         <Grid
           container
           direction="column"
           alignItems="flex-end"
-          justify="space-between"
-          style={{ height: '100%' }}
+          style={{ position: 'relative', height: '100%' }}
         >
-          <Box flexGrow={1}>
+          <Box flexGrow={1} zIndex={1}>
             <Menu game={game} match={match} />
           </Box>
+
+          {gameBanner === FALLBACK_GAME_BANNER && (
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              width="100%"
+              height="100%"
+              position="absolute"
+            >
+              <span
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: 'clamp(1rem, 20vw, 120px)',
+                  marginTop: -28,
+                  userSelect: 'none',
+                }}
+              >
+                ?
+              </span>
+            </Box>
+          )}
+
           <Grid
             container
             item
@@ -140,7 +178,10 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
             justify="space-between"
             alignItems="flex-end"
             style={{
-              background: 'linear-gradient(transparent, rgba(0, 0, 0, 0.95))',
+              background: isFallbackBanner
+                ? 'linear-gradient(transparent, rgba(0, 0, 0, 0.3))'
+                : 'linear-gradient(transparent, rgba(0, 0, 0, 0.95))',
+              zIndex: 1,
             }}
           >
             <Typography className={classes.date}>

@@ -1,11 +1,8 @@
 import slugify from '@sindresorhus/slugify';
 
-import { FALLBACK_GAME } from '../../../constants';
+import { FALLBACK_GAME_BANNER } from '../../../constants';
 import { Game } from '../../../types';
 import { supportsWebp } from '../../../utils';
-
-import fallback from './out/fallback.jpg';
-import fallback_webp from './out/fallback.webp';
 
 import apex_legends from './out/apex.jpg';
 import apex_legends_webp from './out/apex.webp';
@@ -43,7 +40,7 @@ export async function getGameBanner(game: Game) {
   const webp = await supportsWebp();
   const key = banner && webp ? banner.concat('_webp') : banner;
 
-  return gameBanners[key || FALLBACK_GAME] || gameBanners[FALLBACK_GAME];
+  return gameBanners[key] || FALLBACK_GAME_BANNER;
 }
 
 const gameBanners: {
@@ -57,8 +54,6 @@ const gameBanners: {
   counter_strike_global_offensive_webp,
   dota_2,
   dota_2_webp,
-  fallback,
-  fallback_webp,
   the_forest,
   the_forest_webp,
   helldivers,
