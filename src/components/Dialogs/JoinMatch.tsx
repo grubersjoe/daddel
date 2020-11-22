@@ -179,7 +179,7 @@ const JoinMatchDialog: React.FC<Props> = ({
             onClick={() => setOpen(true)}
             fullWidth
           >
-            {userInLobby ? 'Zeit ändern' : 'Mitbolzen'}
+            {userInLobby ? 'Zeit ändern' : 'Mitspielen'}
           </Button>
         </Grid>
       </Grid>
@@ -224,7 +224,7 @@ const JoinMatchDialog: React.FC<Props> = ({
             Abbrechen
           </Button>
           <Button onClick={handleJoin} color="primary" disabled={loading}>
-            Mitbolzen
+            Mitspielen
           </Button>
         </DialogActions>
       </Dialog>

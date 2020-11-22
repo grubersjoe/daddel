@@ -116,7 +116,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
 
   return (
     <>
-      <AppBar title="Neuer Bolz" />
+      <AppBar title="Neues Match" />
       <Container>
         <Box mb="1.5rem">
           <FormControl variant="outlined" fullWidth required>
@@ -180,7 +180,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
                   onChange={event => setJoinLobby(event.target.checked)}
                 />
               }
-              label="Selbst mitbolzen"
+              label="Selbst mitspielen"
             />
             <Box my="1.5rem">
               <Grid container direction="row" spacing={2}>
@@ -212,7 +212,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
                     }
                     fullWidth
                   >
-                    Jajaja
+                    Match hinzufügen
                   </Button>
                 </Grid>
               </Grid>

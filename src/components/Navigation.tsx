@@ -26,7 +26,6 @@ const Navigation: React.FC<RouteComponentProps> = ({ history, location }) => {
   return authUser ? (
     <BottomNavigation
       value={selected}
-      showLabels
       onChange={(_, clickedLink) => setSelected(clickedLink)}
       style={{
         boxShadow: `0 0 3px ${theme.palette.grey[900]}`,
@@ -35,19 +34,22 @@ const Navigation: React.FC<RouteComponentProps> = ({ history, location }) => {
       <BottomNavigationAction
         component={Link}
         to={ROUTES.MATCHES_LIST}
-        label="Bolzen"
+        label="Matches"
+        title="Matches"
         icon={<MatchesIcon />}
       />
       <BottomNavigationAction
         component={Link}
         to={ROUTES.ADD_MATCH}
-        label="Neuer Bolz"
+        label="Neues Match"
+        title="Neues Match"
         icon={<AddIcon />}
       />
       <BottomNavigationAction
         component={Link}
         to={ROUTES.SETTINGS}
         label="Einstellungen"
+        title="Einstellungen"
         icon={<SettingsIcon />}
       />
     </BottomNavigation>
