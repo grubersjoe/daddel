@@ -201,7 +201,7 @@ const MatchesList: React.FC = () => {
                     to={ROUTES.ADD_MATCH}
                     style={{ marginTop: theme.spacing(1) }}
                   >
-                    Neuer Bolz
+                    Neues Match
                   </Button>
                 </div>
               )}

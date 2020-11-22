@@ -128,7 +128,7 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
               }
               fullWidth
             >
-              Jajaja
+              Registrieren
             </Button>
           </Grid>
         </Grid>

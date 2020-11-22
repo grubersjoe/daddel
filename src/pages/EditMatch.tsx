@@ -128,7 +128,7 @@ const EditMatch: React.FC<
 
   return (
     <>
-      <AppBar title="Bolz bearbeiten" />
+      <AppBar title="Match bearbeiten" />
       <Container>
         <Box mb="1.5rem">
           <Select
@@ -211,7 +211,7 @@ const EditMatch: React.FC<
                   }
                   fullWidth
                 >
-                  Jajaja
+                  Match speichern
                 </Button>
               </Grid>
             </Grid>
