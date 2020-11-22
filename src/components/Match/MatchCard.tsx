@@ -10,7 +10,6 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Grid from '@material-ui/core/Grid';
-import Skeleton from '@material-ui/lab/Skeleton';
 import Typography from '@material-ui/core/Typography';
 
 import firebase from '../../api/firebase';
@@ -116,54 +115,43 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
   // It should be able to join a match until the end of its date
   const isJoinable = isFuture(endOfDay(fromUnixTime(match.date.seconds)));
 
-  return (
+  return game && gameBanner ? (
     <Card className={classes.card} raised>
-      {game && gameBanner ? (
-        <CardMedia className={classes.media} image={gameBanner}>
+      <CardMedia className={classes.media} image={gameBanner}>
+        <Grid
+          container
+          direction="column"
+          alignItems="flex-end"
+          justify="space-between"
+          style={{ height: '100%' }}
+        >
+          <Box flexGrow={1}>
+            <Menu game={game} match={match} />
+          </Box>
           <Grid
             container
-            direction="column"
-            alignItems="flex-end"
+            item
+            direction="row"
             justify="space-between"
-            style={{ height: '100%' }}
+            alignItems="flex-end"
+            style={{
+              background: 'linear-gradient(transparent, rgba(0, 0, 0, 0.95))',
+            }}
           >
-            <Box flexGrow={1}>
-              <Menu game={game} match={match} />
-            </Box>
-            <Grid
-              container
-              item
-              direction="row"
-              justify="space-between"
-              alignItems="flex-end"
-              style={{
-                background: 'linear-gradient(transparent, rgba(0, 0, 0, 0.95))',
-              }}
-            >
-              <Typography className={classes.date}>
-                {formatDate(match.date)}
-              </Typography>
-              <Typography className={classes.date}>
-                {formatTimestamp(match.date)} Uhr
-              </Typography>
-            </Grid>
-            {game.maxPlayers && (
-              <Grid container item>
-                <ProgressBar
-                  value={match.players.length}
-                  max={game.maxPlayers}
-                />
-              </Grid>
-            )}
+            <Typography className={classes.date}>
+              {formatDate(match.date)}
+            </Typography>
+            <Typography className={classes.date}>
+              {formatTimestamp(match.date)} Uhr
+            </Typography>
           </Grid>
-        </CardMedia>
-      ) : (
-        <Skeleton
-          variant="rect"
-          className={classes.media}
-          style={{ display: 'block' }}
-        />
-      )}
+          {game.maxPlayers && (
+            <Grid container item>
+              <ProgressBar value={match.players.length} max={game.maxPlayers} />
+            </Grid>
+          )}
+        </Grid>
+      </CardMedia>
       <Box
         display="flex"
         flexGrow={1}
@@ -209,7 +197,7 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
         )}
       </Box>
     </Card>
-  );
+  ) : null;
 };
 
 export default MatchCard;
