@@ -1,5 +1,5 @@
 import React, { useState, useContext, FormEventHandler } from 'react';
-import { Link as RouterLink, useHistory, useLocation } from 'react-router-dom';
+import { Link as RouterLink, Redirect, useLocation } from 'react-router-dom';
 import History from 'history';
 import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
@@ -20,7 +20,6 @@ import Logo from '../components/Logo';
 import Spinner from '../components/Spinner';
 
 const SignIn: React.FC = () => {
-  const history = useHistory();
   const location = useLocation<{ from: History.Location }>();
   const [authUser, authLoading] = useContext(AuthUserContext);
 
@@ -36,9 +35,7 @@ const SignIn: React.FC = () => {
   };
 
   if (authUser) {
-    history.replace(from);
-
-    return null;
+    return <Redirect to={from} />;
   }
 
   const handleEmailLogin: FormEventHandler = event => {
