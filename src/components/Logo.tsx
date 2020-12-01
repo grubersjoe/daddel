@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
-import GamingIcon from '@material-ui/icons/VideogameAssetSharp';
+import GamingIcon from '@material-ui/icons/SportsEsports';
 import { Typography } from '@material-ui/core';
 
 import { theme } from '../styles/theme';
@@ -10,7 +10,7 @@ import { theme } from '../styles/theme';
 const useStyles = makeStyles(theme => ({
   icon: {
     fontSize: '700%',
-    marginRight: theme.spacing(2.5),
+    marginRight: theme.spacing(2),
   },
   heading: {
     margin: 0,
