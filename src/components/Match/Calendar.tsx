@@ -24,8 +24,8 @@ type LabelProps = {
 const useStyles = makeStyles(theme => ({
   root: {
     position: 'relative',
-    marginTop: theme.spacing(2.25),
-    paddingTop: theme.spacing(3.5),
+    marginTop: theme.spacing(2.5),
+    paddingTop: theme.spacing(3.5), // space for legend
     fontSize: theme.typography.pxToRem(14),
   },
   label: {

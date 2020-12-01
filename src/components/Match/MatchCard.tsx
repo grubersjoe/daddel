@@ -41,7 +41,7 @@ export const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2),
 
     [theme.breakpoints.up('lg')]: {
-      padding: theme.spacing(2.5),
+      padding: `${theme.spacing(2.5)}px ${theme.spacing(2.5)}px 0`,
     },
   },
   media: {
@@ -78,6 +78,8 @@ export const useStyles = makeStyles(theme => ({
     },
   },
 }));
+
+const Separator: React.FC = () => <span style={{ margin: '0 0.4em' }}>•</span>;
 
 const MatchCard: React.FC<Props> = ({ match, userList }) => {
   const classes = useStyles();
@@ -209,26 +211,26 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
             color="textSecondary"
             style={{ marginBottom: theme.spacing(1.75) }}
           >
-            <TimeAgo date={fromUnixTime(match.date.seconds)} />{' '}
-            <span style={{ margin: '0 0.15em' }}>•</span>{' '}
+            <TimeAgo date={fromUnixTime(match.date.seconds)} />
+            <Separator />
             <Link to={`/matches/${match.id}`}>Permalink</Link>
           </Typography>
+
           {match.description && (
             <Typography
-              style={{ marginBottom: theme.spacing(3.75), lineHeight: 1.25 }}
+              style={{ marginBottom: theme.spacing(2), lineHeight: 1.25 }}
             >
               <Link to={`/matches/${match.id}`}>{match.description}</Link>
             </Typography>
           )}
-          {match.players.length === 0 && (
+          {match.players.length === 0 ? (
             <Typography
               color="textSecondary"
-              style={{ margin: `${theme.spacing(2)} 0` }}
+              style={{ marginBottom: theme.spacing(1) }}
             >
-              Noch niemand
+              Keine Mitspieler bisher
             </Typography>
-          )}
-          {match.players.length > 0 && (
+          ) : (
             <Calendar players={match.players} userList={userList} />
           )}
         </CardContent>
