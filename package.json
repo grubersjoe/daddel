@@ -5,10 +5,11 @@
   "scripts": {
     "build": "react-scripts build",
     "deploy": "npm run build && firebase deploy",
+    "dev": "npm run start",
     "eject": "react-scripts eject",
     "format": "prettier --write 'src/**/*' 'src/**/*' './*.{js,json,md}'",
-    "start": "react-scripts start",
     "start:emulators": "firebase emulators:start --only functions",
+    "start": "react-scripts start",
     "test": "react-scripts test"
   },
   "eslintConfig": {
