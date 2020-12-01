@@ -1,6 +1,7 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 
+import { APP_URL } from '.';
 import { Game, Match, User } from './types';
 import { formatDate, formatTimestamp } from './util/date';
 
@@ -104,12 +105,17 @@ export const onCreateMatch = functions
               match.date,
             )} Uhr`;
 
-            const message = {
+            const message: admin.messaging.Message = {
               notification: {
                 title: 'Daddel – Neues Match',
                 body: `${user.nickname} hat ein neues Match erstellt: ${game.name} am ${date}.`,
               },
               topic: DEFAULT_TOPIC,
+              webpush: {
+                fcmOptions: {
+                  link: APP_URL,
+                },
+              },
             };
 
             return admin

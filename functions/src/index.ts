@@ -7,6 +7,7 @@ import {
   onCreateMatch,
 } from './messaging';
 
+export const APP_URL = 'https://daddel.jogruber.de'; // Frankfurt
 export const FIREBASE_REGION = 'europe-west3'; // Frankfurt
 
 admin.initializeApp();
