@@ -4,6 +4,8 @@ import { FALLBACK_GAME_BANNER } from '../../../constants';
 import { Game } from '../../../types';
 import { supportsWebp } from '../../../utils';
 
+import age_of_empires_ii from './out/aeo2.jpg';
+import age_of_empires_ii_webp from './out/aeo2.webp';
 import apex_legends from './out/apex.jpg';
 import apex_legends_webp from './out/apex.webp';
 import company_of_heroes_2 from './out/coh.jpg';
@@ -46,6 +48,8 @@ export async function getGameBanner(game: Game) {
 const gameBanners: {
   [key: string]: string;
 } = {
+  age_of_empires_ii,
+  age_of_empires_ii_webp,
   apex_legends,
   apex_legends_webp,
   company_of_heroes_2,
