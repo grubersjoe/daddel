@@ -16,3 +16,6 @@ for i in *; do;
   echo "Generating $filename.webp"
   cwebp $i -resize 824 464 -q $QUALITY -o ../out/$filename.webp -quiet
 done;
+
+echo "Optimizing JPEG files"
+jpegoptim --all-progressive --strip-all -p -t ../out/*.jpg
