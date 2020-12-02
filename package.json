@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "react-scripts build",
-    "deploy": "npm run build && firebase deploy",
+    "deploy": "npm run build && firebase deploy --except functions",
     "dev": "npm run start",
     "eject": "react-scripts eject",
     "format": "prettier --write 'src/**/*' 'src/**/*' './*.{js,json,md}'",
