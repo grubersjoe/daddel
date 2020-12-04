@@ -7,7 +7,6 @@ export type Timestamp = firebaseNS.firestore.Timestamp;
 
 export type Game = {
   gid: string;
-  id: string; // deprecated
   maxPlayers?: number;
   name: string;
 };

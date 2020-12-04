@@ -14,7 +14,7 @@ import Typography from '@material-ui/core/Typography';
 
 import firebase from '../../api/firebase';
 import { getGameBanner } from '../../assets/images/games';
-import { FALLBACK_GAME_BANNER } from '../../constants';
+import { UNKNOWN_GAME_ID } from '../../constants';
 import { theme } from '../../styles/theme';
 import { Game, Match, UserMap } from '../../types';
 import { formatDate, formatTimestamp } from '../../utils/date';
@@ -81,51 +81,74 @@ export const useStyles = makeStyles(theme => ({
 
 const Separator: React.FC = () => <span style={{ margin: '0 0.4em' }}>•</span>;
 
+const FallbackBanner: React.FC<{ game: Game }> = ({ game }) => {
+  const isUnknownGame = game.gid === UNKNOWN_GAME_ID;
+
+  return (
+    <Box
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      width="100%"
+      height="100%"
+      position="absolute"
+    >
+      <span
+        style={{
+          margin: '-28px 1em 0 1em',
+          textAlign: 'center',
+          fontWeight: 'bold',
+          fontSize: isUnknownGame
+            ? 'clamp(1rem, 20vw, 120px)'
+            : 'clamp(1.25rem, 2vw, 1.5rem)',
+          lineHeight: 1.4,
+          userSelect: 'none',
+        }}
+      >
+        {isUnknownGame ? '?' : game.name}
+      </span>
+    </Box>
+  );
+};
+
 const MatchCard: React.FC<Props> = ({ match, userList }) => {
   const classes = useStyles();
 
-  const [game, setGame] = useState<Game | null>(null);
-  const [gameBanner, setGameBanner] = useState<string | null>(null);
+  const [game, setGame] = useState<Game | null>();
+  const [gameBanner, setGameBanner] = useState<string | null>();
 
-  if (game === null) {
-    // Retrieve game from match
-    match.gameRef
-      .get()
-      .then(game =>
-        setGame(({ ...game.data(), gid: game.id } as Game) ?? null),
-      );
+  // Retrieve the game via reference
+  if (game === undefined) {
+    match.gameRef.get().then(game => {
+      const data = game.data();
+      setGame(data ? ({ ...data, gid: game.id } as Game) : null);
+    });
   }
 
-  if (game && gameBanner === null) {
+  // Then retrieve game banner
+  if (game && gameBanner === undefined) {
     getGameBanner(game).then(banner => {
-      if (banner === FALLBACK_GAME_BANNER) {
-        setGameBanner(FALLBACK_GAME_BANNER);
+      if (banner === null) {
+        setGameBanner(null);
       } else {
-        // Preload the game banner
+        // Preload the image
         const image = new Image();
         image.src = banner;
         image.onload = () => setGameBanner(banner);
-        image.onerror = console.error;
       }
     });
   }
 
-  const isFallbackBanner = gameBanner === FALLBACK_GAME_BANNER;
-
-  const { currentUser } = firebase.auth;
-
-  if (!currentUser) {
-    throw new Error('No current user');
-  }
+  const hasNoBanner = gameBanner === null;
 
   const currentPlayer = match.players.find(
-    player => player.uid === currentUser.uid,
+    player => player.uid === firebase.auth.currentUser?.uid,
   );
 
   // It should be able to join a match until the end of its date
   const isJoinable = isFuture(endOfDay(fromUnixTime(match.date.seconds)));
 
-  if (!game || gameBanner === null) {
+  if (!game || gameBanner === undefined) {
     return <MatchCardSkeleton />;
   }
 
@@ -133,9 +156,9 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
     <Card className={classes.card} raised>
       <CardMedia
         className={classes.media}
-        image={isFallbackBanner ? undefined : gameBanner}
+        image={gameBanner || undefined}
         style={{
-          ...(isFallbackBanner && {
+          ...(hasNoBanner && {
             background:
               'linear-gradient(to bottom, rgb(60, 60, 60) 0%, rgb(40, 40, 40) 100%)',
           }),
@@ -151,27 +174,7 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
             <Menu game={game} match={match} />
           </Box>
 
-          {gameBanner === FALLBACK_GAME_BANNER && (
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              width="100%"
-              height="100%"
-              position="absolute"
-            >
-              <span
-                style={{
-                  fontWeight: 'bold',
-                  fontSize: 'clamp(1rem, 20vw, 120px)',
-                  marginTop: -28,
-                  userSelect: 'none',
-                }}
-              >
-                ?
-              </span>
-            </Box>
-          )}
+          {hasNoBanner && <FallbackBanner game={game} />}
 
           <Grid
             container
@@ -180,7 +183,7 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
             justify="space-between"
             alignItems="flex-end"
             style={{
-              background: isFallbackBanner
+              background: hasNoBanner
                 ? 'linear-gradient(transparent, rgba(0, 0, 0, 0.3))'
                 : 'linear-gradient(transparent, rgba(0, 0, 0, 0.95))',
               zIndex: 1,
