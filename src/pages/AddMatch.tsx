@@ -66,8 +66,9 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
     }
   }, [games]);
 
-  if (gamesError) console.error(gamesError);
-  if (error) console.error(error);
+  if (gamesError) {
+    setError(gamesError);
+  }
 
   const addMatch = (event: FormEvent, currentUser: firebaseNS.User) => {
     event.preventDefault();

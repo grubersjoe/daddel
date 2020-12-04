@@ -30,8 +30,7 @@ export async function isValidInvitationCode(code: string): Promise<boolean> {
     .then(function (result) {
       return result.data.isValid as boolean;
     })
-    .catch(error => {
-      console.error('leerror', error);
+    .catch(() => {
       return false;
     });
 }

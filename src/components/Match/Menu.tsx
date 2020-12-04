@@ -74,13 +74,11 @@ const Menu: React.FC<Props> = ({ game, match }) => {
         match.date,
       )} Uhr`;
 
-      navigator
-        .share({
-          title: `${game.name} am ${date}`,
-          url: `${BASE_URL_PROD}/matches/${match.id}`,
-          text: `Spiel mit: ${game.name} am ${date}`,
-        })
-        .catch(console.error);
+      navigator.share({
+        title: `${game.name} am ${date}`,
+        url: `${BASE_URL_PROD}/matches/${match.id}`,
+        text: `Spiel mit: ${game.name} am ${date}`,
+      });
     }
 
     handleClose();

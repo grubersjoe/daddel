@@ -18,7 +18,7 @@ export async function getGameBanner(game: Game): Promise<string | null> {
   if (cache[fileName] === undefined) {
     try {
       cache[fileName] = (await import(`./out/${fileName}`)).default;
-    } catch (error) {
+    } catch {
       cache[fileName] = null;
     }
   }

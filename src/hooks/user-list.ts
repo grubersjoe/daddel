@@ -14,9 +14,5 @@ export default function useUserList(): [
     { idField: 'uid' },
   );
 
-  if (usersError) {
-    console.error(usersError);
-  }
-
   return [users ? calcUserList(users) : undefined, usersLoading, usersError];
 }
