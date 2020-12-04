@@ -27,10 +27,6 @@ export async function signOut(history: History) {
 export async function isValidInvitationCode(code: string): Promise<boolean> {
   return firebase.functions
     .httpsCallable('isValidInvitationCode')({ code })
-    .then(function (result) {
-      return result.data.isValid as boolean;
-    })
-    .catch(() => {
-      return false;
-    });
+    .then(result => result.data.isValid as boolean)
+    .catch(() => false);
 }

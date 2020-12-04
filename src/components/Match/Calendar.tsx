@@ -83,12 +83,10 @@ const Calendar: React.FC<Props> = ({ players, userList }) => {
   const classes = useStyles();
 
   const timeBounds = players.reduce(
-    (bounds, player) => {
-      return {
+    (bounds, player) => ({
         min: Math.min(bounds.min, player.from.seconds),
         max: Math.max(bounds.max, player.until.seconds),
-      };
-    },
+      }),
     { min: Infinity, max: -Infinity },
   );
 
@@ -102,8 +100,7 @@ const Calendar: React.FC<Props> = ({ players, userList }) => {
     maxDate,
     labelStepSize,
   );
-  const bars = players.map(player => {
-    return {
+  const bars = players.map(player => ({
       minuteStart: differenceInMinutes(
         fromUnixTime(player.from.seconds),
         minDate,
@@ -112,8 +109,7 @@ const Calendar: React.FC<Props> = ({ players, userList }) => {
         fromUnixTime(player.until.seconds),
         minDate,
       ),
-    };
-  });
+    }));
 
   return (
     <div className={classes.root}>

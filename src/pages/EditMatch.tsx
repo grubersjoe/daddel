@@ -1,5 +1,5 @@
-import React, { useState, FormEvent, useContext } from 'react';
-import { StaticContext } from 'react-router';
+import React, { useState, FormEvent, useContext, useEffect } from 'react';
+import { Redirect, StaticContext } from 'react-router';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import getDate from 'date-fns/getDate';
 import getMonth from 'date-fns/getMonth';
@@ -21,6 +21,7 @@ import TextField from '@material-ui/core/TextField';
 
 import firebase from '../api/firebase';
 import ROUTES from '../constants/routes';
+import { reorderGames } from '../utils';
 import { Match, Game, Player } from '../types';
 import AppBar from '../components/AppBar';
 import { SnackbarContext } from '../components/Layout';
@@ -75,28 +76,31 @@ const EditMatch: React.FC<
   const game = location?.state?.game;
   const match = location?.state?.match;
 
-  if (!game || !match) {
-    history.push('/matches');
-  }
+  const [gid, setGid] = useState<Game['gid']>();
+  const [date, setDate] = useState<Date | null>(); // null because of MUI
+  const [description, setDescription] = useState<string>();
 
-  const [gid, setGid] = useState<Game['gid']>(game?.gid);
-  const [date, setDate] = useState<Date | null>(match?.date.toDate()); // null because of MUI
-  const [description, setDescription] = useState(match?.description);
+  useEffect(() => {
+    if (game && match) {
+      setGid(game.gid);
+      setDate(match.date.toDate());
+      setDescription(match.description);
+    }
+  }, [game, match]);
 
   const [games, gamesLoading, gamesError] = useCollectionData<Game>(
     firebase.firestore.collection('games').orderBy('name', 'asc'),
     { idField: 'gid' },
   );
 
-  // Hooks must not be called conditionally.
-  // So bailing out is not possible earlier.
-  if (!match) {
-    history.push(ROUTES.MATCHES_LIST);
-    return null;
-  }
-
   if (gamesError) {
     setError(gamesError);
+  }
+
+  // Hooks must not be called conditionally.
+  // So bailing out is not possible earlier.
+  if (!game || !match) {
+    return <Redirect to={ROUTES.MATCHES_LIST} />;
   }
 
   const editMatch = (event: FormEvent) => {
@@ -141,7 +145,7 @@ const EditMatch: React.FC<
           >
             {gamesLoading && <option>Lade …</option>}
             {games &&
-              games.map(game => (
+              reorderGames(games).map(game => (
                 <option key={game.gid} value={game.gid}>
                   {game.name}
                 </option>

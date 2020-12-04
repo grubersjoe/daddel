@@ -27,7 +27,7 @@ const NotificationSettings = () => {
 
   function requestNotificationPermission() {
     if ('Notification' in window) {
-      Notification.requestPermission().then(function (permission) {
+      Notification.requestPermission().then(permission => {
         if (permission !== 'granted') {
           dispatchSnack('Berechtigung muss manuell erteilt werden', 'error');
         }

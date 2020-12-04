@@ -31,6 +31,7 @@ import {
   MATCH_TIME_END,
   TIME_FORMAT,
 } from '../constants/date';
+import { reorderGames } from '../utils';
 import { format } from '../utils/date';
 import { AuthUserContext } from '../components/App';
 import { SnackbarContext } from '../components/Layout';
@@ -131,7 +132,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
             >
               {gamesLoading && <option>Lade …</option>}
               {games &&
-                games.map(game => (
+                reorderGames(games).map(game => (
                   <option key={game.gid} value={game.gid}>
                     {game.name}
                     {game.maxPlayers && ` (${game.maxPlayers} Spieler)`}
