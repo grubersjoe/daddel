@@ -82,7 +82,7 @@ export const useStyles = makeStyles(theme => ({
 const Separator: React.FC = () => <span style={{ margin: '0 0.4em' }}>•</span>;
 
 const FallbackBanner: React.FC<{ game: Game }> = ({ game }) => {
-  const isUnknownGame = game.gid === UNKNOWN_GAME_ID;
+  const isUnknownGame = game.id === UNKNOWN_GAME_ID;
 
   return (
     <Box
@@ -121,7 +121,7 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
   if (game === undefined) {
     match.gameRef.get().then(game => {
       const data = game.data();
-      setGame(data ? ({ ...data, gid: game.id } as Game) : null);
+      setGame(data ? ({ ...data, id: game.id } as Game) : null);
     });
   }
 

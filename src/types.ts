@@ -6,7 +6,7 @@ export type DocumentReference = firebaseNS.firestore.DocumentReference;
 export type Timestamp = firebaseNS.firestore.Timestamp;
 
 export type Game = {
-  gid: string;
+  id: string;
   maxPlayers?: number;
   name: string;
 };

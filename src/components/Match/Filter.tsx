@@ -11,7 +11,6 @@ import { setStorageItem, STORAGE_KEYS } from '../../utils/local-storage';
 
 export type MatchFilter = {
   games: Game[];
-  match?: Game['gid'];
 };
 
 type Props = {
@@ -22,7 +21,7 @@ type Props = {
 const Filter: React.FC<Props> = ({ filter, setFilter }) => {
   const [games, gamesLoading, gamesError] = useCollectionData<Game>(
     firebase.firestore.collection('games').orderBy('name', 'asc'),
-    { idField: 'gid' },
+    { idField: 'id' },
   );
 
   const options = games ?? [];
@@ -39,11 +38,11 @@ const Filter: React.FC<Props> = ({ filter, setFilter }) => {
           disabled={gamesLoading}
           filterSelectedOptions
           getOptionLabel={option => option.name}
-          getOptionSelected={(a, b) => a.gid === b.gid}
+          getOptionSelected={(a, b) => a.id === b.id}
           multiple
           loading={gamesLoading}
           onChange={(_event, games) => {
-            setFilter({ games, match: filter.match });
+            setFilter({ games });
             setStorageItem(STORAGE_KEYS.matchFilter, { games });
           }}
           options={options}

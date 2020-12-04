@@ -32,12 +32,12 @@ import { SnackbarContext } from '../Layout';
 const SetupUserDialog: React.FC<RouteComponentProps> = ({ history }) => {
   const [authUser] = useContext(AuthUserContext);
   const dispatchSnack = useContext(SnackbarContext);
-
   const isOnline = useOnlineStatus();
 
   const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
+
+  const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);
 
   const [nickname, setNickname] = useState('');
@@ -58,11 +58,11 @@ const SetupUserDialog: React.FC<RouteComponentProps> = ({ history }) => {
     const userDataMissing = user && (!user.invited || !user.nickname);
 
     if (isOnline && authUser && !userLoading && !userError && userDataMissing) {
-      setOpen(true);
+      setIsOpen(true);
     }
   }, [isOnline, authUser, user, userError, userLoading]);
 
-  if (!open) {
+  if (!isOpen) {
     return null;
   }
 
@@ -116,7 +116,7 @@ const SetupUserDialog: React.FC<RouteComponentProps> = ({ history }) => {
       .set({ nickname }, { merge: true })
       .then(() => {
         dispatchSnack('Registrierung abgeschlossen');
-        setOpen(false);
+        setIsOpen(false);
       })
       .catch(setError)
       .finally(() => setLoading(false));
@@ -128,7 +128,7 @@ const SetupUserDialog: React.FC<RouteComponentProps> = ({ history }) => {
   switch (step) {
     case 1:
       return (
-        <Dialog open={open} key="step-1">
+        <Dialog open={isOpen} key="step-1">
           <DialogTitle>{title}</DialogTitle>
           <form autoComplete="off" onSubmit={handleSubmitInvitationCode}>
             <DialogContent>
@@ -171,7 +171,7 @@ const SetupUserDialog: React.FC<RouteComponentProps> = ({ history }) => {
 
     case 2:
       return (
-        <Dialog open={open} key="step-2">
+        <Dialog open={isOpen} key="step-2">
           <DialogTitle>{title}</DialogTitle>
           <form autoComplete="off" onSubmit={handleSubmitNickname}>
             <DialogContent>

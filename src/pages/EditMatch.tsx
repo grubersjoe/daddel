@@ -76,13 +76,13 @@ const EditMatch: React.FC<
   const game = location?.state?.game;
   const match = location?.state?.match;
 
-  const [gid, setGid] = useState<Game['gid']>();
+  const [gameId, setGameId] = useState<Game['id']>();
   const [date, setDate] = useState<Date | null>(); // null because of MUI
   const [description, setDescription] = useState<string>();
 
   useEffect(() => {
     if (game && match) {
-      setGid(game.gid);
+      setGameId(game.id);
       setDate(match.date.toDate());
       setDescription(match.description);
     }
@@ -90,7 +90,7 @@ const EditMatch: React.FC<
 
   const [games, gamesLoading, gamesError] = useCollectionData<Game>(
     firebase.firestore.collection('games').orderBy('name', 'asc'),
-    { idField: 'gid' },
+    { idField: 'id' },
   );
 
   if (gamesError) {
@@ -114,7 +114,7 @@ const EditMatch: React.FC<
     const updatedMatch = {
       date: firebase.timestamp(date),
       description: description,
-      gameRef: firebase.firestore.doc(`games/${gid}`),
+      gameRef: firebase.firestore.doc(`games/${gameId}`),
       players: updatePlayerDates(match.players, date),
     };
 
@@ -136,8 +136,8 @@ const EditMatch: React.FC<
       <Container>
         <Box mb="1.5rem">
           <Select
-            value={gid}
-            onChange={event => setGid(String(event.target.value))}
+            value={gameId}
+            onChange={event => setGameId(String(event.target.value))}
             variant="outlined"
             disabled={gamesLoading}
             fullWidth
@@ -146,7 +146,7 @@ const EditMatch: React.FC<
             {gamesLoading && <option>Lade …</option>}
             {games &&
               reorderGames(games).map(game => (
-                <option key={game.gid} value={game.gid}>
+                <option key={game.id} value={game.id}>
                   {game.name}
                 </option>
               ))}
