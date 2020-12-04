@@ -34,12 +34,10 @@ import {
 import { reorderGames } from '../utils';
 import { format } from '../utils/date';
 import { AuthUserContext } from '../components/App';
-import { SnackbarContext } from '../components/Layout';
 import AppBar from '../components/AppBar';
 
 const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
   const [authUser] = useContext(AuthUserContext);
-  const dispatchSnack = useContext(SnackbarContext);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -53,7 +51,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
   const [gameId, setGameId] = useState<Game['id']>('');
   const [date, setDate] = useState<Date | null>(defaultDate); // null because of MUI
   const [description, setDescription] = useState('');
-  const [joinLobby, setJoinLobby] = useState(true);
+  const [selfJoinMatch, setSelfJoinMatch] = useState(true);
 
   const [games, gamesLoading, gamesError] = useCollectionData<Game>(
     firebase.firestore.collection('games').orderBy('name', 'asc'),
@@ -97,7 +95,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
       .collection('matches')
       .add(match)
       .then(doc => {
-        if (joinLobby) {
+        if (selfJoinMatch) {
           const availFrom = format(date, TIME_FORMAT) as TimeLabel;
           const availUntil = isSameDay(addHours(date, 2), date)
             ? format<TimeLabel>(addHours(date, 2), TIME_FORMAT)
@@ -108,7 +106,6 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
             .catch(setError)
             .finally(() => setLoading(false));
         } else {
-          dispatchSnack('Fehler', 'error');
           history.push(ROUTES.MATCHES_LIST);
           setLoading(false);
         }
@@ -178,8 +175,8 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={joinLobby}
-                  onChange={event => setJoinLobby(event.target.checked)}
+                  checked={selfJoinMatch}
+                  onChange={event => setSelfJoinMatch(event.target.checked)}
                 />
               }
               label="Selbst mitspielen"
