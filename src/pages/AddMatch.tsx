@@ -133,7 +133,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
                 games.map(game => (
                   <option key={game.gid} value={game.gid}>
                     {game.name}
-                    {game.maxPlayers ? ` (${game.maxPlayers} Spieler)` : null}
+                    {game.maxPlayers && ` (${game.maxPlayers} Spieler)`}
                   </option>
                 ))}
             </Select>
@@ -200,7 +200,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
                     type="submit"
                     variant="outlined"
                     color="primary"
-                    disabled={!games || loading}
+                    disabled={!games || games.length === 0 || loading}
                     startIcon={
                       loading ? (
                         <CircularProgress

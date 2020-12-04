@@ -80,7 +80,7 @@ const EditMatch: React.FC<
   }
 
   // TODO: Clean up this mess
-  const [gid, setGid] = useState<Game['id'] | undefined>(game?.gid);
+  const [gid, setGid] = useState<Game['gid'] | undefined>(game?.gid);
   const [date, setDate] = useState<Date | null>(match?.date.toDate());
   const [description, setDescription] = useState(match?.description);
 

@@ -11,7 +11,7 @@ import { setStorageItem, STORAGE_KEYS } from '../../utils/local-storage';
 
 export type MatchFilter = {
   games: Game[];
-  match?: Game['id'];
+  match?: Game['gid'];
 };
 
 type Props = {
