@@ -1,11 +1,20 @@
 import firebase from '../api/firebase';
-import { User, UserMap } from '../types';
+import { UNKNOWN_GAME_ID } from '../constants';
+import { Game, User, UserMap } from '../types';
 
 export function calcUserList(users: User[]): UserMap {
   const userMap = new Map<string, User>();
   users.forEach(user => userMap.set(user.uid, user));
 
   return userMap;
+}
+
+export function reorderGames(games: Game[]): Game[] {
+  const unknownGame = games.find(game => game.gid === UNKNOWN_GAME_ID);
+
+  return unknownGame
+    ? games.filter(game => game.gid !== UNKNOWN_GAME_ID).concat(unknownGame)
+    : games;
 }
 
 // See https://developers.google.com/speed/webp/faq#in_your_own_javascript

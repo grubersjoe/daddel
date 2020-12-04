@@ -9,11 +9,11 @@ export function filterMatches(matches: Match[], filter: MatchFilter): Match[] {
   }
 
   // Games
-  matches = matches.filter(match => {
-    return filter.games.length > 0
+  matches = matches.filter(match =>
+    filter.games.length > 0
       ? filter.games.some(filterGame => filterGame.gid === match.gameRef.id)
-      : true;
-  });
+      : true,
+  );
 
   return matches;
 }
