@@ -79,9 +79,8 @@ const EditMatch: React.FC<
     history.push('/matches');
   }
 
-  // TODO: Clean up this mess
-  const [gid, setGid] = useState<Game['gid'] | undefined>(game?.gid);
-  const [date, setDate] = useState<Date | null>(match?.date.toDate());
+  const [gid, setGid] = useState<Game['gid']>(game?.gid);
+  const [date, setDate] = useState<Date | null>(match?.date.toDate()); // null because of MUI
   const [description, setDescription] = useState(match?.description);
 
   const [games, gamesLoading, gamesError] = useCollectionData<Game>(
@@ -96,8 +95,9 @@ const EditMatch: React.FC<
     return null;
   }
 
-  if (gamesError) console.error(gamesError);
-  if (error) console.error(error);
+  if (gamesError) {
+    setError(gamesError);
+  }
 
   const editMatch = (event: FormEvent) => {
     event.preventDefault();
