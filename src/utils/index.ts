@@ -10,10 +10,10 @@ export function calcUserList(users: User[]): UserMap {
 }
 
 export function reorderGames(games: Game[]): Game[] {
-  const unknownGame = games.find(game => game.gid === UNKNOWN_GAME_ID);
+  const unknownGame = games.find(game => game.id === UNKNOWN_GAME_ID);
 
   return unknownGame
-    ? games.filter(game => game.gid !== UNKNOWN_GAME_ID).concat(unknownGame)
+    ? games.filter(game => game.id !== UNKNOWN_GAME_ID).concat(unknownGame)
     : games;
 }
 

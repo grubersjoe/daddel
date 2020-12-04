@@ -50,20 +50,20 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
     Number(defaultMinute),
   );
 
-  const [gid, setGid] = useState<Game['gid']>('');
+  const [gameId, setGameId] = useState<Game['id']>('');
   const [date, setDate] = useState<Date | null>(defaultDate); // null because of MUI
   const [description, setDescription] = useState('');
   const [joinLobby, setJoinLobby] = useState(true);
 
   const [games, gamesLoading, gamesError] = useCollectionData<Game>(
     firebase.firestore.collection('games').orderBy('name', 'asc'),
-    { idField: 'gid' },
+    { idField: 'id' },
   );
 
   // Select first available game as soon as games are loaded
   useEffect(() => {
     if (games && games.length > 0) {
-      setGid(games[0].gid);
+      setGameId(games[0].id);
     }
   }, [games]);
 
@@ -89,7 +89,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
       createdBy: currentUser.uid,
       date: firebase.timestamp(date),
       description,
-      gameRef: firebase.firestore.doc(`games/${gid}`),
+      gameRef: firebase.firestore.doc(`games/${gameId}`),
       players: [],
     };
 
@@ -125,15 +125,15 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
             <InputLabel>Spiel</InputLabel>
             <Select
               native
-              value={gid}
-              onChange={event => setGid(String(event.target.value))}
+              value={gameId}
+              onChange={event => setGameId(String(event.target.value))}
               label="Spiel"
               disabled={gamesLoading}
             >
               {gamesLoading && <option>Lade …</option>}
               {games &&
                 reorderGames(games).map(game => (
-                  <option key={game.gid} value={game.gid}>
+                  <option key={game.id} value={game.id}>
                     {game.name}
                     {game.maxPlayers && ` (${game.maxPlayers} Spieler)`}
                   </option>
