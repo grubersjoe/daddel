@@ -97,7 +97,12 @@ const Menu: React.FC<Props> = ({ game, match }) => {
       <IconButton onClick={handleClick}>
         <MoreVertIcon />
       </IconButton>
-      <MuiMenu anchorEl={anchorElement} open={open} onClose={handleClose}>
+      <MuiMenu
+        anchorEl={anchorElement}
+        open={open}
+        onClose={handleClose}
+        style={{ zIndex: 10 }}
+      >
         {isOwnMatch && (
           <MenuItem>
             <Link
