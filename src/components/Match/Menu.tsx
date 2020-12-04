@@ -1,5 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
+import fromUnixTime from 'date-fns/fromUnixTime';
+import isPast from 'date-fns/isPast';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
@@ -89,6 +91,7 @@ const Menu: React.FC<Props> = ({ game, match }) => {
   }
 
   const isOwnMatch = authUser.uid === match.createdBy;
+  const isPastMatch = isPast(fromUnixTime(match.date.seconds));
 
   return (
     <>
@@ -101,7 +104,7 @@ const Menu: React.FC<Props> = ({ game, match }) => {
         onClose={handleClose}
         style={{ zIndex: 10 }}
       >
-        {isOwnMatch && (
+        {isOwnMatch && !isPastMatch && (
           <MenuItem>
             <Link
               to={{

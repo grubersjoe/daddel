@@ -1,4 +1,4 @@
-import React, { useState, FormEvent, useContext, useEffect } from 'react';
+import React, { useState, FormEvent, useContext } from 'react';
 import { Redirect, StaticContext } from 'react-router';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import getDate from 'date-fns/getDate';
@@ -27,8 +27,8 @@ import AppBar from '../components/AppBar';
 import { SnackbarContext } from '../components/Layout';
 
 type LocationState = {
-  game: Omit<Game, 'gameRef'>;
-  match: Match;
+  game?: Omit<Game, 'gameRef'>;
+  match?: Match;
 };
 
 const updatePlayerDates = (players: Player[], updatedDate: Date): Player[] =>
@@ -73,20 +73,12 @@ const EditMatch: React.FC<
 
   // The Game and Match are passed as state through the <Link> component of react-router.
   // If this page is opened directly location.state will be undefined.
-  const game = location?.state?.game;
-  const match = location?.state?.match;
+  const game = location.state?.game;
+  const match = location.state?.match;
 
-  const [gameId, setGameId] = useState<Game['id']>();
-  const [date, setDate] = useState<Date | null>(); // null because of MUI
-  const [description, setDescription] = useState<string>();
-
-  useEffect(() => {
-    if (game && match) {
-      setGameId(game.id);
-      setDate(match.date.toDate());
-      setDescription(match.description);
-    }
-  }, [game, match]);
+  const [gameId, setGameId] = useState<Game['id'] | null>(game?.id || null);
+  const [date, setDate] = useState<Date | null>(match?.date.toDate() || null);
+  const [description, setDescription] = useState(match?.description || '');
 
   const [games, gamesLoading, gamesError] = useCollectionData<Game>(
     firebase.firestore.collection('games').orderBy('name', 'asc'),
@@ -113,7 +105,7 @@ const EditMatch: React.FC<
 
     const updatedMatch = {
       date: firebase.timestamp(date),
-      description: description,
+      description,
       gameRef: firebase.firestore.doc(`games/${gameId}`),
       players: updatePlayerDates(match.players, date),
     };
