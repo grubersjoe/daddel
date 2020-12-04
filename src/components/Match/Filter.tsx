@@ -28,7 +28,6 @@ const Filter: React.FC<Props> = ({ filter, setFilter }) => {
   const options = games ?? [];
 
   if (gamesError) {
-    console.error(gamesError);
     return null;
   }
 

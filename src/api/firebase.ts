@@ -45,7 +45,7 @@ const functions = app.functions(FIREBASE_REGION);
 let messaging;
 try {
   messaging = app.messaging();
-} catch (error) {
+} catch {
   messaging = undefined;
 }
 
