@@ -95,28 +95,23 @@ const Menu: React.FC<Props> = ({ game, match }) => {
 
   return (
     <>
-      <IconButton onClick={handleClick}>
+      <IconButton onClick={handleClick} style={{ zIndex: 1 }}>
         <MoreVertIcon />
       </IconButton>
-      <MuiMenu
-        anchorEl={anchorElement}
-        open={open}
-        onClose={handleClose}
-        style={{ zIndex: 10 }}
-      >
+      <MuiMenu anchorEl={anchorElement} open={open} onClose={handleClose}>
         {isOwnMatch && !isPastMatch && (
-          <MenuItem>
-            <Link
-              to={{
-                pathname: ROUTES.EDIT_MATCH,
-                state: { game, match: matchWithoutRefs }, // Firestore refs can not be serialized
-              }}
-              style={{ display: 'flex' }}
-            >
+          <Link
+            to={{
+              pathname: ROUTES.EDIT_MATCH,
+              state: { game, match: matchWithoutRefs }, // Firestore refs can not be serialized
+            }}
+            style={{ display: 'flex' }}
+          >
+            <MenuItem>
               <EditIcon fontSize="small" style={{ marginRight: 8 }} />{' '}
               Bearbeiten
-            </Link>
-          </MenuItem>
+            </MenuItem>
+          </Link>
         )}
         {isOwnMatch && (
           <MenuItem onClick={handleDelete}>
