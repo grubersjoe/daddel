@@ -68,26 +68,26 @@ const EditMatch: React.FC<
 > = ({ location, history }) => {
   const dispatchSnack = useContext(SnackbarContext);
 
+  const dispatchError = () =>
+    dispatchSnack('Match konnte nicht bearbeitet werden', 'error');
+
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
 
   // The Game and Match are passed as state through the <Link> component of react-router.
   // If this page is opened directly location.state will be undefined.
   const game = location.state?.game;
   const match = location.state?.match;
 
-  const [gameId, setGameId] = useState<Game['id'] | null>(game?.id || null);
-  const [date, setDate] = useState<Date | null>(match?.date.toDate() || null);
-  const [description, setDescription] = useState(match?.description || '');
+  const [gameId, setGameId] = useState<Maybe<Game['id']>>(game?.id);
+  const [date, setDate] = useState<Date | null>(match?.date.toDate() || null); // null required for MUI
+  const [description, setDescription] = useState<string>(
+    match?.description || '',
+  );
 
-  const [games, gamesLoading, gamesError] = useCollectionData<Game>(
+  const [games, gamesLoading] = useCollectionData<Game>(
     firebase.firestore.collection('games').orderBy('name', 'asc'),
     { idField: 'id' },
   );
-
-  if (gamesError) {
-    setError(gamesError);
-  }
 
   // Hooks must not be called conditionally.
   // So bailing out is not possible earlier.
@@ -99,8 +99,8 @@ const EditMatch: React.FC<
     event.preventDefault();
     setLoading(true);
 
-    if (!date) {
-      throw new Error('Date is not set');
+    if (!date || !gameId) {
+      return dispatchError();
     }
 
     const updatedMatch = {
@@ -118,7 +118,7 @@ const EditMatch: React.FC<
         dispatchSnack('Match aktualisiert');
         history.push(ROUTES.MATCHES_LIST);
       })
-      .catch(setError)
+      .catch(dispatchError)
       .finally(() => setLoading(false));
   };
 
@@ -145,11 +145,7 @@ const EditMatch: React.FC<
           </Select>
         </Box>
 
-        <form
-          autoComplete="off"
-          onSubmit={editMatch}
-          onChange={() => setError(null)}
-        >
+        <form autoComplete="off" onSubmit={editMatch}>
           <Box mb="1.5rem">
             <MuiPickersUtilsProvider utils={DateFnsUtils} locale={deLocale}>
               <DateTimePicker
@@ -213,8 +209,6 @@ const EditMatch: React.FC<
             </Grid>
           </Box>
         </form>
-
-        {error && <Alert severity="error">Fehler: {error.message}</Alert>}
       </Container>
     </>
   );
