@@ -1,5 +1,9 @@
 import firebaseNS from 'firebase';
 
+declare global {
+  type Maybe<T> = T | undefined;
+}
+
 type Uid = string;
 
 export type DocumentReference = firebaseNS.firestore.DocumentReference;

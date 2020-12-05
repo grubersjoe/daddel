@@ -5,7 +5,6 @@ import { useCollectionData } from 'react-firebase-hooks/firestore';
 import addHours from 'date-fns/addHours';
 import isSameDay from 'date-fns/isSameDay';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import Alert from '@material-ui/lab/Alert';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -35,12 +34,16 @@ import { reorderGames } from '../utils';
 import { format } from '../utils/date';
 import { AuthUserContext } from '../components/App';
 import AppBar from '../components/AppBar';
+import { SnackbarContext } from '../components/Layout';
 
 const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
   const [authUser] = useContext(AuthUserContext);
+  const dispatchSnack = useContext(SnackbarContext);
+
+  const dispatchError = () =>
+    dispatchSnack('Match konnte nicht angelegt werden', 'error');
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
 
   const [defaultHour, defaultMinute] = DEFAULT_MATCH_STARTTIME.split(':');
   const defaultDate = setMinutes(
@@ -48,12 +51,12 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
     Number(defaultMinute),
   );
 
-  const [gameId, setGameId] = useState<Game['id']>('');
-  const [date, setDate] = useState<Date | null>(defaultDate); // null because of MUI
-  const [description, setDescription] = useState('');
+  const [gameId, setGameId] = useState<Game['id']>();
+  const [date, setDate] = useState<Date | null>(defaultDate); // null required for MUI
+  const [description, setDescription] = useState<string>();
   const [selfJoinMatch, setSelfJoinMatch] = useState(true);
 
-  const [games, gamesLoading, gamesError] = useCollectionData<Game>(
+  const [games, gamesLoading] = useCollectionData<Game>(
     firebase.firestore.collection('games').orderBy('name', 'asc'),
     { idField: 'id' },
   );
@@ -65,19 +68,11 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
     }
   }, [games]);
 
-  if (gamesError) {
-    setError(gamesError);
-  }
-
   const addMatch = (event: FormEvent, currentUser: firebaseNS.User) => {
     event.preventDefault();
 
-    if (!date) {
-      throw new Error('Date is not set');
-    }
-
-    if (!games) {
-      throw new Error('Games are not loaded yet');
+    if (!date || !gameId) {
+      return dispatchError();
     }
 
     setLoading(true);
@@ -86,7 +81,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
       created: firebase.timestamp(),
       createdBy: currentUser.uid,
       date: firebase.timestamp(date),
-      description,
+      ...(description && { description }),
       gameRef: firebase.firestore.doc(`games/${gameId}`),
       players: [],
     };
@@ -103,14 +98,14 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
 
           joinMatch(availFrom, availUntil, { id: doc.id, ...match })
             .then(() => history.push(ROUTES.MATCHES_LIST))
-            .catch(setError)
+            .catch(dispatchError)
             .finally(() => setLoading(false));
         } else {
           history.push(ROUTES.MATCHES_LIST);
           setLoading(false);
         }
       })
-      .catch(setError);
+      .catch(dispatchError);
   };
 
   return (
@@ -143,7 +138,6 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
           <form
             autoComplete="off"
             onSubmit={event => addMatch(event, authUser)}
-            onChange={() => setError(null)}
           >
             <Box mb="1.5rem">
               <MuiPickersUtilsProvider utils={DateFnsUtils} locale={deLocale}>
@@ -218,8 +212,6 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
             </Box>
           </form>
         )}
-
-        {error && <Alert severity="error">Fehler: {error.message}</Alert>}
       </Container>
     </>
   );
