@@ -63,6 +63,7 @@ export const useStyles = makeStyles(theme => ({
     padding: '24px 16px 8px 16px',
     color: '#fff',
     fontWeight: 500,
+    zIndex: 1,
   },
   list: {
     margin: '1rem 0 0',
@@ -170,7 +171,7 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
           alignItems="flex-end"
           style={{ position: 'relative', height: '100%' }}
         >
-          <Box flexGrow={1} zIndex={1}>
+          <Box flexGrow={1}>
             <Menu game={game} match={match} />
           </Box>
 
@@ -186,7 +187,6 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
               background: hasNoBanner
                 ? 'linear-gradient(transparent, rgba(0, 0, 0, 0.3))'
                 : 'linear-gradient(transparent, rgba(0, 0, 0, 0.95))',
-              zIndex: 1,
             }}
           >
             <Typography className={classes.date}>
