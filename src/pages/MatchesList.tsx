@@ -38,6 +38,9 @@ type TabPanelProps = {
   value: number;
 };
 
+const loadingAnimation =
+  'pulse 0.75s cubic-bezier(.46,.03,.52,.96) 0s infinite';
+
 const TabPanel: React.FC<TabPanelProps> = ({
   children,
   value,
@@ -65,14 +68,25 @@ const MatchesList: React.FC = () => {
   const history = useHistory();
   const dispatchSnack = useContext(SnackbarContext);
 
+  const [isRefetching, setIsRefetching] = useState(false);
+
   const [futureMatches, , futureMatchesError] = useCollectionData<Match>(
     futureMatchesQuery,
-    { idField: 'id' },
+    {
+      idField: 'id',
+      snapshotListenOptions: {
+        includeMetadataChanges: true,
+      },
+    },
   );
 
   const [pastMatches, , pastMatchesError] = useCollectionData<Match>(
     pastMatchesQuery(10),
     { idField: 'id' },
+  );
+
+  futureMatchesQuery.onSnapshot(doc =>
+    setIsRefetching(doc.metadata.fromCache || doc.metadata.hasPendingWrites),
   );
 
   const [userList] = useUserList();
@@ -149,7 +163,12 @@ const MatchesList: React.FC = () => {
             onChange={(_event, index) => setTabIndex(index)}
             variant="fullWidth"
           >
-            <Tab label="Anstehende" />
+            <Tab
+              label="Anstehende"
+              style={{
+                ...(isRefetching && { animation: loadingAnimation }),
+              }}
+            />
             <Tab label="Vergangene" />
           </Tabs>
         )}
