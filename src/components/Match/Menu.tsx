@@ -11,8 +11,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import MuiMenu from '@material-ui/core/Menu';
 import ShareIcon from '@material-ui/icons/Share';
 
-import firebase from '../../api/firebase';
-import { BASE_URL_PROD } from '../../constants';
+import firebase from '../../services/firebase';
 import ROUTES from '../../constants/routes';
 import { Match, Game } from '../../types';
 import { formatDate, formatTimestamp } from '../../utils/date';
@@ -78,7 +77,7 @@ const Menu: React.FC<Props> = ({ game, match }) => {
 
       navigator.share({
         title: `${game.name} am ${date}`,
-        url: `${BASE_URL_PROD}/matches/${match.id}`,
+        url: `${window.location.origin}/matches/${match.id}`,
         text: `Spiel mit: ${game.name} am ${date}`,
       });
     }

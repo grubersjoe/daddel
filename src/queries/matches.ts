@@ -1,6 +1,6 @@
 import startOfToday from 'date-fns/startOfToday';
 
-import firebase from '../firebase';
+import firebase from '../services/firebase';
 
 export const futureMatchesQuery = firebase.firestore
   .collection('matches')

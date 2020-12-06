@@ -21,8 +21,8 @@ import deLocale from 'date-fns/locale/de';
 import setMinutes from 'date-fns/setMinutes';
 import setHours from 'date-fns/setHours';
 
-import firebase from '../api/firebase';
-import { joinMatch } from '../api/match';
+import firebase from '../services/firebase';
+import { joinMatch } from '../services/match';
 import ROUTES from '../constants/routes';
 import { Match, Game, TimeLabel } from '../types';
 import {

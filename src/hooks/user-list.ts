@@ -1,6 +1,6 @@
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 
-import firebase from '../api/firebase';
+import firebase from '../services/firebase';
 import { User, UserMap } from '../types';
 import { calcUserList } from '../utils';
 

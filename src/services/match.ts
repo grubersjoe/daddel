@@ -51,14 +51,13 @@ export function joinMatch(
     };
 
     if (targetIndex === -1) {
-      // No match, so simply add the player
+      // Not found, so simply add the player
       matchData.players = [...match.players, updatedPlayer];
     } else {
-      // Update current list of players
-      matchData.players = match.players.map((player, index) => {
-        if (index !== targetIndex) return player;
-        return updatedPlayer;
-      });
+      // Update list of players otherwise
+      matchData.players = match.players.map((player, index) =>
+        index === targetIndex ? updatedPlayer : player,
+      );
     }
 
     return firebase.firestore

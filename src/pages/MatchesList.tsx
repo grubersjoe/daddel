@@ -11,7 +11,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
 import LinkIcon from '@material-ui/icons/Link';
 
-import { futureMatchesQuery, pastMatchesQuery } from '../api/queries/matches';
+import { futureMatchesQuery, pastMatchesQuery } from '../queries/matches';
 import ROUTES from '../constants/routes';
 import useUserList from '../hooks/user-list';
 import { theme } from '../styles/theme';

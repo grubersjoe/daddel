@@ -5,7 +5,7 @@ import Alert from '@material-ui/lab/Alert';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 
-import firebase from '../../api/firebase';
+import firebase from '../../services/firebase';
 import { UserMap, Match } from '../../types';
 import MatchCard from './MatchCard';
 import Spinner from '../Spinner';

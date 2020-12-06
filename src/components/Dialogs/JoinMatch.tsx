@@ -14,8 +14,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MuiLinearProgress from '@material-ui/core/LinearProgress';
 import Select from '@material-ui/core/Select';
 
-import firebase from '../../api/firebase';
-import { joinMatch, leaveMatch } from '../../api/match';
+import firebase from '../../services/firebase';
+import { joinMatch, leaveMatch } from '../../services/match';
 import {
   TIME_FORMAT,
   DEFAULT_MATCH_STARTTIME,

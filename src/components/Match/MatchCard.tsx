@@ -12,7 +12,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
-import firebase from '../../api/firebase';
+import firebase from '../../services/firebase';
 import { getGameBanner } from '../../assets/images/games';
 import { UNKNOWN_GAME_ID } from '../../constants';
 import { theme } from '../../styles/theme';

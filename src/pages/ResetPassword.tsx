@@ -9,7 +9,7 @@ import Link from '@material-ui/core/Link';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
-import { resetPassword } from '../api/auth';
+import { resetPassword } from '../services/auth';
 import ROUTES from '../constants/routes';
 import { theme } from '../styles/theme';
 import Logo from '../components/Logo';
