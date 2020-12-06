@@ -8,12 +8,10 @@
     "dev": "npm run start",
     "eject": "react-scripts eject",
     "format": "prettier --write 'src/**/*' 'src/**/*' './*.{js,json,md}'",
+    "lint": "eslint .",
     "start:emulators": "firebase emulators:start --only functions",
     "start": "react-scripts start",
     "test": "react-scripts test"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": {
     "production": [

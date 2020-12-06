@@ -4,7 +4,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 
-import firebase from '../../api/firebase';
+import firebase from '../../services/firebase';
 import { Game } from '../../types';
 import { theme } from '../../styles/theme';
 import { setStorageItem, STORAGE_KEYS } from '../../utils/local-storage';

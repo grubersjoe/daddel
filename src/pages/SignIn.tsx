@@ -14,7 +14,7 @@ import ROUTES from '../constants/routes';
 import { theme } from '../styles/theme';
 
 import GoogleIcon from '../assets/icons/GoogleIcon';
-import { signInWithEmailAndPassword, signInWithGoogle } from '../api/auth';
+import { signInWithEmailAndPassword, signInWithGoogle } from '../services/auth';
 import { AuthUserContext } from '../components/App';
 import Logo from '../components/Logo';
 import Spinner from '../components/Spinner';

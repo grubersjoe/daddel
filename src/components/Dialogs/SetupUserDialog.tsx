@@ -16,8 +16,8 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 
-import { isValidInvitationCode } from '../../api/auth';
-import firebase from '../../api/firebase';
+import { isValidInvitationCode } from '../../services/auth';
+import firebase from '../../services/firebase';
 import useOnlineStatus from '../../hooks/online-status';
 import { theme } from '../../styles/theme';
 import { User } from '../../types';

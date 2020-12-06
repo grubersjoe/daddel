@@ -4,7 +4,7 @@ import firebaseNS from 'firebase';
 import { ThemeProvider } from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
-import firebase from '../api/firebase';
+import firebase from '../services/firebase';
 import ROUTES from '../constants/routes';
 import { theme } from '../styles/theme';
 

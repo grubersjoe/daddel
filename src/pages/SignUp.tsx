@@ -13,8 +13,8 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
-import { createUser, isValidInvitationCode } from '../api/auth';
-import firebase from '../api/firebase';
+import { createUser, isValidInvitationCode } from '../services/auth';
+import firebase from '../services/firebase';
 import ROUTES from '../constants/routes';
 import { theme } from '../styles/theme';
 import Logo from '../components/Logo';

@@ -1,4 +1,4 @@
-import firebase from '../api/firebase';
+import firebase from '../services/firebase';
 import { UNKNOWN_GAME_ID } from '../constants';
 import { Game, User, UserMap } from '../types';
 

@@ -10,7 +10,6 @@ import { useCollectionData } from 'react-firebase-hooks/firestore';
 import DateFnsUtils from '@date-io/date-fns';
 import deLocale from 'date-fns/locale/de';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import Alert from '@material-ui/lab/Alert';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -19,7 +18,7 @@ import Grid from '@material-ui/core/Grid';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 
-import firebase from '../api/firebase';
+import firebase from '../services/firebase';
 import ROUTES from '../constants/routes';
 import { reorderGames } from '../utils';
 import { Match, Game, Player } from '../types';

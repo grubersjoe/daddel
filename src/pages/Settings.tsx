@@ -15,8 +15,8 @@ import SignOutIcon from '@material-ui/icons/ExitToApp';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
-import { signOut } from '../api/auth';
-import firebase from '../api/firebase';
+import { signOut } from '../services/auth';
+import firebase from '../services/firebase';
 import { User } from '../types';
 import { theme } from '../styles/theme';
 import AppBar from '../components/AppBar';

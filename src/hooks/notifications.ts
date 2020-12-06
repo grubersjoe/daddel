@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 
-import firebase from '../api/firebase';
+import firebase from '../services/firebase';
 import { User } from '../types';
 import { supportsMessaging } from '../utils';
 
