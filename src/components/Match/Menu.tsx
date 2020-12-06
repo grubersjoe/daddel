@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
+import endOfDay from 'date-fns/endOfDay';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import isPast from 'date-fns/isPast';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -90,7 +91,7 @@ const Menu: React.FC<Props> = ({ game, match }) => {
   }
 
   const isOwnMatch = authUser.uid === match.createdBy;
-  const isPastMatch = isPast(fromUnixTime(match.date.seconds));
+  const isPastMatch = isPast(endOfDay(fromUnixTime(match.date.seconds)));
 
   return (
     <>
