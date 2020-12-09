@@ -25,14 +25,14 @@ export function joinMatch(
   try {
     const updatedPlayer: Player = {
       uid: currentUser.uid,
-      from: firebase.timestamp(
+      from: firebase.getTimestamp(
         parse(
           `${matchDate} ${availFrom}`,
           `yyyy-MM-dd ${TIME_FORMAT}`,
           new Date(),
         ),
       ),
-      until: firebase.timestamp(
+      until: firebase.getTimestamp(
         parse(
           `${matchDate} ${availUntil}`,
           `yyyy-MM-dd ${TIME_FORMAT}`,

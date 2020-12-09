@@ -4,21 +4,19 @@ import differenceInMinutes from 'date-fns/differenceInMinutes';
 import fromUnixTime from 'date-fns/fromUnixTime';
 
 import { Player, UserMap } from '../../types';
-import { formatTimestamp, calcTimeLabelsBetweenDates } from '../../utils/date';
-import { MATCH_TIME_OPEN_END } from '../../constants/date';
+import {
+  calcTimeLabelsBetweenDates,
+  formatTimestamp,
+  isOpenEndTimestamp,
+} from '../../utils/date';
+import {
+  DEFAULT_TIME_INCREMENT,
+  MATCH_TIME_OPEN_END,
+} from '../../constants/date';
 
 type Props = {
   players: Player[];
   userList: UserMap;
-};
-
-type BarProps = {
-  left: number; // in percent
-  width: number; // in percent
-};
-
-type LabelProps = {
-  left: number; // in percent
 };
 
 const useStyles = makeStyles(theme => ({
@@ -64,13 +62,17 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Label: React.FC<LabelProps> = ({ left, children }) => (
+const Label: React.FC<{ left: number }> = ({ left, children }) => (
   <div className={useStyles().label} style={{ left: `${left}%` }}>
     {children}
   </div>
 );
 
-const Bar: React.FC<BarProps> = ({ left, width, children }) => (
+const Bar: React.FC<{ left: number; width: number }> = ({
+  left,
+  width,
+  children,
+}) => (
   <div
     className={useStyles().bar}
     style={{ left: `${left}%`, width: `${width}%` }}
@@ -83,35 +85,60 @@ const Calendar: React.FC<Props> = ({ players, userList }) => {
   const classes = useStyles();
 
   const timeBounds = players.reduce(
-    (bounds, player) => ({
-      min: Math.min(bounds.min, player.from.seconds),
-      max: Math.max(bounds.max, player.until.seconds),
-    }),
-    { min: Infinity, max: -Infinity },
+    (bounds, player) => {
+      // Do not enlarge time bounds for open end timestamps
+      if (isOpenEndTimestamp(player.until)) {
+        return {
+          min: Math.min(bounds.min, player.from.seconds),
+          max: bounds.max,
+          withOpenEnd: true,
+        };
+      }
+
+      return {
+        min: Math.min(bounds.min, player.from.seconds),
+        max: Math.max(bounds.max, player.until.seconds),
+        withOpenEnd: bounds.withOpenEnd,
+      };
+    },
+    { min: Infinity, max: -Infinity, withOpenEnd: false },
   );
 
   const minDate = fromUnixTime(timeBounds.min);
-  const maxDate = fromUnixTime(timeBounds.max);
+  const maxDate = fromUnixTime(
+    timeBounds.withOpenEnd
+      ? timeBounds.max + DEFAULT_TIME_INCREMENT * 60
+      : timeBounds.max,
+  );
   const totalMinutes = differenceInMinutes(maxDate, minDate);
 
-  const labelStepSize = Math.round(totalMinutes / 4 / 15) * 15;
+  const labelStepSize =
+    Math.round(totalMinutes / 4 / DEFAULT_TIME_INCREMENT) *
+    DEFAULT_TIME_INCREMENT;
+
   const timeLabels = calcTimeLabelsBetweenDates(
     minDate,
     maxDate,
     labelStepSize,
   );
-  const bars = players.map(player => ({
+
+  const playerTimeIntervals = players.map(player => ({
     minuteStart: differenceInMinutes(
       fromUnixTime(player.from.seconds),
       minDate,
     ),
-    minuteEnd: differenceInMinutes(fromUnixTime(player.until.seconds), minDate),
+    minuteEnd: differenceInMinutes(
+      isOpenEndTimestamp(player.until)
+        ? maxDate
+        : fromUnixTime(player.until.seconds),
+      minDate,
+    ),
   }));
 
   return (
     <div className={classes.root}>
-      {timeLabels.map((timeLabel, idx) => {
-        const left = ((idx * labelStepSize) / totalMinutes) * 100;
+      {timeLabels.map((timeLabel, index) => {
+        const left = ((index * labelStepSize) / totalMinutes) * 100;
         return (
           // More than about 88% left will run outside of container
           left <= 88 && (
@@ -121,8 +148,8 @@ const Calendar: React.FC<Props> = ({ players, userList }) => {
           )
         );
       })}
-      {players.map((player, idx) => {
-        const { minuteEnd, minuteStart } = bars[idx];
+      {players.map((player, index) => {
+        const { minuteEnd, minuteStart } = playerTimeIntervals[index];
         const width = ((minuteEnd - minuteStart) / totalMinutes) * 100;
         const left = (minuteStart / totalMinutes) * 100;
 

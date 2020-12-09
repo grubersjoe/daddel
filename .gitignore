@@ -1,10 +1,9 @@
 node_modules/
 
-/coverage
-/build
+.coverage/
 .firebase/
 .firebaserc
-
+build/
 public/firebase-messaging-sw.js
 
 .env

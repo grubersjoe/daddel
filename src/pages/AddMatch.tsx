@@ -27,6 +27,7 @@ import ROUTES from '../constants/routes';
 import { Match, Game, TimeLabel } from '../types';
 import {
   DEFAULT_MATCH_STARTTIME,
+  DEFAULT_TIME_INCREMENT,
   MATCH_TIME_END,
   TIME_FORMAT,
 } from '../constants/date';
@@ -78,9 +79,9 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
     setLoading(true);
 
     const match: Match = {
-      created: firebase.timestamp(),
+      created: firebase.getTimestamp(),
       createdBy: currentUser.uid,
-      date: firebase.timestamp(date),
+      date: firebase.getTimestamp(date),
       ...(description && { description }),
       gameRef: firebase.firestore.doc(`games/${gameId}`),
       players: [],
@@ -147,7 +148,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
                   inputVariant="outlined"
                   value={date}
                   onChange={setDate}
-                  minutesStep={15}
+                  minutesStep={DEFAULT_TIME_INCREMENT}
                   ampm={false}
                   disablePast
                   required
