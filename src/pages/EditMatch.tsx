@@ -18,8 +18,9 @@ import Grid from '@material-ui/core/Grid';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 
-import firebase from '../services/firebase';
 import ROUTES from '../constants/routes';
+import { DEFAULT_TIME_INCREMENT } from '../constants/date';
+import firebase from '../services/firebase';
 import { reorderGames } from '../utils';
 import { Match, Game, Player } from '../types';
 import AppBar from '../components/AppBar';
@@ -37,7 +38,7 @@ const updatePlayerDates = (players: Player[], updatedDate: Date): Player[] =>
 
     const from = isSameDay(fromDate, updatedDate)
       ? player.from
-      : firebase.timestamp(
+      : firebase.getTimestamp(
           set(fromDate, {
             year: getYear(updatedDate),
             month: getMonth(updatedDate),
@@ -47,7 +48,7 @@ const updatePlayerDates = (players: Player[], updatedDate: Date): Player[] =>
 
     const until = isSameDay(untilDate, updatedDate)
       ? player.until
-      : firebase.timestamp(
+      : firebase.getTimestamp(
           set(untilDate, {
             year: getYear(updatedDate),
             month: getMonth(updatedDate),
@@ -103,7 +104,7 @@ const EditMatch: React.FC<
     }
 
     const updatedMatch = {
-      date: firebase.timestamp(date),
+      date: firebase.getTimestamp(date),
       description,
       gameRef: firebase.firestore.doc(`games/${gameId}`),
       players: updatePlayerDates(match.players, date),
@@ -153,7 +154,7 @@ const EditMatch: React.FC<
                 inputVariant="outlined"
                 value={date}
                 onChange={setDate}
-                minutesStep={15}
+                minutesStep={DEFAULT_TIME_INCREMENT}
                 ampm={false}
                 disablePast
                 required

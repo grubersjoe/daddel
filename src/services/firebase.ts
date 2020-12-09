@@ -61,11 +61,8 @@ if (window.location.hostname === 'localhost') {
   functions.useEmulator('localhost', 5001);
 }
 
-function timestamp(date: Date = new Date()) {
-  return new firebase.firestore.Timestamp(
-    date.getTime() / 1000, // getTime() returns ms
-    0,
-  );
+function getTimestamp(date: Date = new Date()) {
+  return firebase.firestore.Timestamp.fromDate(date);
 }
 
 const exports = {
@@ -73,9 +70,9 @@ const exports = {
   auth,
   firestore,
   functions,
+  getTimestamp,
   googleAuthProvider,
   messaging,
-  timestamp,
 };
 
 export default exports;

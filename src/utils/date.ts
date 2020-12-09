@@ -9,7 +9,12 @@ import isYesterday from 'date-fns/isYesterday';
 import parse from 'date-fns/parse';
 import roundToNearestMinutes from 'date-fns/roundToNearestMinutes';
 
-import { TIME_FORMAT, DATE_FORMAT } from '../constants/date';
+import {
+  TIME_FORMAT,
+  DATE_FORMAT,
+  DEFAULT_TIME_INCREMENT,
+  MATCH_TIME_OPEN_END,
+} from '../constants/date';
 import { Timestamp, TimeLabel } from '../types';
 
 export function format<R extends string = string>(
@@ -70,10 +75,15 @@ export function parseTimeLabel(
 export function calcTimeLabelsBetweenDates(
   startDate: Date,
   endDate: Date,
-  stepInMinutes = 15,
+  stepInMinutes = DEFAULT_TIME_INCREMENT,
 ): TimeLabel[] {
-  let currentDate = roundToNearestMinutes(startDate, { nearestTo: 15 });
-  endDate = roundToNearestMinutes(endDate, { nearestTo: 15 });
+  let currentDate = roundToNearestMinutes(startDate, {
+    nearestTo: DEFAULT_TIME_INCREMENT,
+  });
+
+  endDate = roundToNearestMinutes(endDate, {
+    nearestTo: DEFAULT_TIME_INCREMENT,
+  });
 
   if (isBefore(endDate, currentDate)) {
     throw new RangeError('startDate must be before endDate');
@@ -88,4 +98,12 @@ export function calcTimeLabelsBetweenDates(
   }
 
   return options;
+}
+
+export function isOpenEndTimestamp(timestamp: Timestamp | number) {
+  const date = fromUnixTime(
+    typeof timestamp === 'number' ? timestamp : timestamp.seconds,
+  );
+
+  return format(date, TIME_FORMAT) === MATCH_TIME_OPEN_END;
 }
