@@ -45,7 +45,7 @@ export const useStyles = makeStyles(theme => ({
     },
   },
   media: {
-    height: '40vw',
+    height: '42vw',
     backgroundPosition: 'top',
     display: 'flex',
     flexDirection: 'column',
