@@ -199,7 +199,7 @@ const MatchesList: React.FC = () => {
                 userList && (
                   <Grid container spacing={5}>
                     {filteredFutureMatches.map(match => (
-                      <Grid item xs={12} md={4} lg={3} key={match.id}>
+                      <Grid item xs={12} sm={6} md={4} lg={3} key={match.id}>
                         <MatchCard match={match} userList={userList} />
                       </Grid>
                     ))}
@@ -239,7 +239,7 @@ const MatchesList: React.FC = () => {
                 userList && (
                   <Grid container spacing={5}>
                     {filteredPastMatches.map(match => (
-                      <Grid item xs={12} md={4} lg={3} key={match.id}>
+                      <Grid item xs={12} sm={6} md={4} lg={3} key={match.id}>
                         <MatchCard match={match} userList={userList} />
                       </Grid>
                     ))}

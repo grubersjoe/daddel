@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import endOfDay from 'date-fns/endOfDay';
 import isFuture from 'date-fns/isFuture';
@@ -51,12 +51,20 @@ export const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     justifyContent: 'flex-end',
 
+    [theme.breakpoints.up('sm')]: {
+      height: 170,
+    },
+
     [theme.breakpoints.up('md')]: {
-      height: 180,
+      height: 160,
     },
 
     [theme.breakpoints.up('lg')]: {
-      height: 220,
+      height: 200,
+    },
+
+    [theme.breakpoints.up('xl')]: {
+      height: 230,
     },
   },
   date: {
@@ -119,26 +127,19 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
   const [gameBanner, setGameBanner] = useState<string | null>();
 
   // Retrieve the game via reference
-  if (game === undefined) {
+  useEffect(() => {
     match.gameRef.get().then(game => {
       const data = game.data();
       setGame(data ? ({ ...data, id: game.id } as Game) : null);
     });
-  }
+  }, [match]);
 
   // Then retrieve game banner
-  if (game && gameBanner === undefined) {
-    getGameBanner(game).then(banner => {
-      if (banner === null) {
-        setGameBanner(null);
-      } else {
-        // Preload the image
-        const image = new Image();
-        image.src = banner;
-        image.onload = () => setGameBanner(banner);
-      }
-    });
-  }
+  useEffect(() => {
+    if (game) {
+      getGameBanner(game).then(setGameBanner);
+    }
+  }, [game]);
 
   const hasNoBanner = gameBanner === null;
 
@@ -157,7 +158,7 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
     <Card className={classes.card} raised>
       <CardMedia
         className={classes.media}
-        image={gameBanner || undefined}
+        image={gameBanner ?? undefined}
         style={{
           ...(hasNoBanner && {
             background:
