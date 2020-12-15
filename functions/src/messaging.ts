@@ -113,7 +113,7 @@ export const onCreateMatch = functions
               topic: DEFAULT_TOPIC,
               webpush: {
                 fcmOptions: {
-                  link: APP_URL,
+                  link: `${APP_URL}/matches/${match.id}`,
                 },
               },
             };
