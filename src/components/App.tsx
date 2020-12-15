@@ -4,8 +4,9 @@ import firebaseNS from 'firebase';
 import { ThemeProvider } from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
-import firebase from '../services/firebase';
+import { DOMAIN_PROD } from '../constants';
 import ROUTES from '../constants/routes';
+import firebase from '../services/firebase';
 import { theme } from '../styles/theme';
 
 import Layout from './Layout';
@@ -19,6 +20,8 @@ import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
 
 type AuthUserValue = [firebaseNS.User | null, boolean];
+
+const allowedHosts = [DOMAIN_PROD, 'localhost'];
 
 export const AuthUserContext = React.createContext<AuthUserValue>([null, true]);
 
@@ -36,6 +39,10 @@ const App: React.FC = () => {
 
     return unsubscribeFn; // Cleanup
   });
+
+  if (!allowedHosts.includes(window.location.hostname)) {
+    window.location.replace(`https://${DOMAIN_PROD}`);
+  }
 
   return (
     <AuthUserContext.Provider value={[authUser, authLoading]}>
