@@ -1,6 +1,7 @@
 import React, { useState, useContext, FormEventHandler } from 'react';
 import { Link as RouterLink, Redirect, useLocation } from 'react-router-dom';
 import History from 'history';
+import { useTheme } from '@material-ui/core/styles';
 import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -11,7 +12,6 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
 import ROUTES from '../constants/routes';
-import { theme } from '../styles/theme';
 
 import GoogleIcon from '../assets/icons/GoogleIcon';
 import { signInWithEmailAndPassword, signInWithGoogle } from '../services/auth';
@@ -22,6 +22,7 @@ import Spinner from '../components/Spinner';
 const SignIn: React.FC = () => {
   const location = useLocation<{ from: History.Location }>();
   const [authUser, authLoading] = useContext(AuthUserContext);
+  const theme = useTheme();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);

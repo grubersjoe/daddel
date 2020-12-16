@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import addHours from 'date-fns/addHours';
 import startOfToday from 'date-fns/startOfToday';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, useTheme } from '@material-ui/core/styles';
 import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -23,7 +23,6 @@ import {
   MATCH_TIME_END,
   MATCH_TIME_OPEN_END,
 } from '../../constants/date';
-import { theme } from '../../styles/theme';
 import { Match, Timestamp, TimeLabel } from '../../types';
 import {
   format,
@@ -44,18 +43,20 @@ type State = {
   availUntil: TimeLabel;
 };
 
-const LinearProgress = withStyles({
+const LinearProgress = withStyles(theme => ({
   root: {
     height: 6,
     backgroundColor: theme.palette.grey[700],
   },
-})(MuiLinearProgress);
+}))(MuiLinearProgress);
 
 const JoinMatchDialog: React.FC<Props> = ({
   match,
   initialFrom,
   initialUntil,
 }) => {
+  const theme = useTheme();
+
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);

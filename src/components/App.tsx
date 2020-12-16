@@ -3,11 +3,12 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import firebaseNS from 'firebase';
 import { ThemeProvider } from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import yellow from '@material-ui/core/colors/yellow';
 
 import { DOMAIN_PROD } from '../constants';
 import ROUTES from '../constants/routes';
 import firebase from '../services/firebase';
-import { theme } from '../styles/theme';
+import { createTheme } from '../styles/theme';
 
 import Layout from './Layout';
 import AddMatch from '../pages/AddMatch';
@@ -43,6 +44,8 @@ const App: React.FC = () => {
   if (!allowedHosts.includes(window.location.hostname)) {
     window.location.replace(`https://${DOMAIN_PROD}`);
   }
+
+  const theme = createTheme(yellow[700]);
 
   return (
     <AuthUserContext.Provider value={[authUser, authLoading]}>

@@ -1,11 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
+import Typography from '@material-ui/core/Typography';
 import GamingIcon from '@material-ui/icons/SportsEsports';
-import { Typography } from '@material-ui/core';
-
-import { theme } from '../styles/theme';
 
 const useStyles = makeStyles(theme => ({
   icon: {
@@ -21,6 +19,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Logo: React.FC = () => {
+  const theme = useTheme();
   const classes = useStyles();
 
   return (

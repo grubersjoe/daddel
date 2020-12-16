@@ -2,6 +2,7 @@ import React, { useState, useMemo, useContext } from 'react';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import SwipeableViews from 'react-swipeable-views';
 import { Link, useHistory, useParams } from 'react-router-dom';
+import { useTheme } from '@material-ui/core/styles';
 import Alert from '@material-ui/lab/Alert';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
@@ -14,7 +15,6 @@ import LinkIcon from '@material-ui/icons/Link';
 import { futureMatchesQuery, pastMatchesQuery } from '../queries/matches';
 import ROUTES from '../constants/routes';
 import useUserList from '../hooks/user-list';
-import { theme } from '../styles/theme';
 import { Match } from '../types';
 import { filterMatches, calcNumberOfEnabledFilters } from '../utils/filter';
 
@@ -66,6 +66,7 @@ const MatchesList: React.FC = () => {
   const isSingleView = Boolean(matchParam && matchParam.length > 0);
 
   const history = useHistory();
+  const theme = useTheme();
   const dispatchSnack = useContext(SnackbarContext);
 
   const [isRefetching, setIsRefetching] = useState(false);

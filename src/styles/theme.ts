@@ -1,16 +1,24 @@
 import { createMuiTheme } from '@material-ui/core/styles';
-import yellow from '@material-ui/core/colors/yellow';
+import { PaletteType } from '@material-ui/core';
 
-export const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: yellow[700],
+export const createTheme = (color: string, type: PaletteType = 'dark') =>
+  createMuiTheme({
+    palette: {
+      primary: {
+        main: color,
+      },
+      secondary: {
+        main: color,
+      },
+      type,
     },
-    secondary: {
-      main: yellow[700],
+    breakpoints: {
+      values: {
+        xs: 0,
+        sm: 600,
+        md: 960,
+        lg: 1500, // default 1280
+        xl: 1800, // default 1920
+      },
     },
-    type: 'dark',
-  },
-});
-
-export type Theme = typeof theme;
+  });

@@ -1,12 +1,12 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
+import { useTheme } from '@material-ui/core/styles';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 
 import firebase from '../../services/firebase';
 import { Game } from '../../types';
-import { theme } from '../../styles/theme';
 import { setStorageItem, STORAGE_KEYS } from '../../utils/local-storage';
 
 export type MatchFilter = {
@@ -19,6 +19,8 @@ type Props = {
 };
 
 const Filter: React.FC<Props> = ({ filter, setFilter }) => {
+  const theme = useTheme();
+
   const [games, gamesLoading, gamesError] = useCollectionData<Game>(
     firebase.firestore.collection('games').orderBy('name', 'asc'),
     { idField: 'id' },

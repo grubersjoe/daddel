@@ -6,6 +6,7 @@ import React, {
 } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
+import { useTheme } from '@material-ui/core/styles';
 import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
@@ -18,13 +19,13 @@ import Typography from '@material-ui/core/Typography';
 import { signOut } from '../services/auth';
 import firebase from '../services/firebase';
 import { User } from '../types';
-import { theme } from '../styles/theme';
 import AppBar from '../components/AppBar';
 import { SnackbarContext } from '../components/Layout';
 import NotificationSettings from '../components/Settings/NotificationSettings';
 import { supportsMessaging } from '../utils';
 
 const Settings: React.FC<RouteComponentProps> = ({ history }) => {
+  const theme = useTheme();
   const dispatchSnack = useContext(SnackbarContext);
 
   const { currentUser } = firebase.auth;

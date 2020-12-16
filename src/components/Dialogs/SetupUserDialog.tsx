@@ -6,6 +6,7 @@ import React, {
 } from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
+import useTheme from '@material-ui/core/styles/useTheme';
 import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -19,7 +20,6 @@ import TextField from '@material-ui/core/TextField';
 import { isValidInvitationCode } from '../../services/auth';
 import firebase from '../../services/firebase';
 import useOnlineStatus from '../../hooks/online-status';
-import { theme } from '../../styles/theme';
 import { User } from '../../types';
 import { AuthUserContext } from '../App';
 import { SnackbarContext } from '../Layout';
@@ -32,6 +32,8 @@ import { SnackbarContext } from '../Layout';
 const SetupUserDialog: React.FC<RouteComponentProps> = ({ history }) => {
   const [authUser] = useContext(AuthUserContext);
   const dispatchSnack = useContext(SnackbarContext);
+
+  const theme = useTheme();
   const isOnline = useOnlineStatus();
 
   const [error, setError] = useState<Error | null>(null);

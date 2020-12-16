@@ -1,14 +1,15 @@
 import React from 'react';
+import { useTheme } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Skeleton from '@material-ui/lab/Skeleton/Skeleton';
 
-import { theme } from '../../styles/theme';
 import { useStyles } from './MatchCard';
 
 const MatchCardSkeleton: React.FC = () => {
+  const theme = useTheme();
   const classes = useStyles();
 
   return (

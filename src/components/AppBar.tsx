@@ -1,6 +1,6 @@
 import React, { MouseEventHandler } from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 import Badge from '@material-ui/core/Badge';
 import FilterIcon from '@material-ui/icons/FilterListRounded';
 import IconButton from '@material-ui/core/IconButton';
@@ -18,7 +18,7 @@ type Props = RouteComponentProps & {
   title?: string;
 };
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(theme =>
   createStyles({
     menuButton: {
       marginRight: theme.spacing(2),
