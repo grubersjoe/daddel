@@ -1,5 +1,6 @@
 import React, { useState, FormEventHandler } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { useTheme } from '@material-ui/core/styles';
 import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -11,10 +12,11 @@ import Typography from '@material-ui/core/Typography';
 
 import { resetPassword } from '../services/auth';
 import ROUTES from '../constants/routes';
-import { theme } from '../styles/theme';
 import Logo from '../components/Logo';
 
 const ResetPassword: React.FC = () => {
+  const theme = useTheme();
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [success, setSuccess] = useState(false);

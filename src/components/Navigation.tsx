@@ -4,17 +4,19 @@ import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
+import { useTheme } from '@material-ui/core/styles';
 import MatchesIcon from '@material-ui/icons/SportsEsports';
 import SettingsIcon from '@material-ui/icons/Settings';
 
 import ROUTES from '../constants/routes';
-import { theme } from '../styles/theme';
 import { AuthUserContext } from './App';
 
 const Links = [ROUTES.MATCHES_LIST, ROUTES.ADD_MATCH, ROUTES.SETTINGS];
 
 const Navigation: React.FC<RouteComponentProps> = ({ history, location }) => {
   const [authUser] = useContext(AuthUserContext);
+  const theme = useTheme();
+
   const [selected, setSelected] = useState(0);
 
   useEffect(() => {

@@ -1,7 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-
-import { Theme } from '../styles/theme';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 
 type Props = {
   image: string;

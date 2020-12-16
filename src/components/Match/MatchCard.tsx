@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import endOfDay from 'date-fns/endOfDay';
 import isFuture from 'date-fns/isFuture';
 import fromUnixTime from 'date-fns/fromUnixTime';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -15,7 +15,6 @@ import Typography from '@material-ui/core/Typography';
 import firebase from '../../services/firebase';
 import { getGameBanner } from '../../assets/images/games';
 import { UNKNOWN_GAME_ID } from '../../constants';
-import { theme } from '../../styles/theme';
 import { Game, Match, UserMap } from '../../types';
 import { formatDate, formatTimestamp } from '../../utils/date';
 
@@ -55,16 +54,12 @@ export const useStyles = makeStyles(theme => ({
       height: 170,
     },
 
-    [theme.breakpoints.up('md')]: {
-      height: 160,
-    },
-
     [theme.breakpoints.up('lg')]: {
       height: 200,
     },
 
     [theme.breakpoints.up('xl')]: {
-      height: 230,
+      height: 220,
     },
   },
   date: {
@@ -121,6 +116,7 @@ const FallbackBanner: React.FC<{ game: Game }> = ({ game }) => {
 };
 
 const MatchCard: React.FC<Props> = ({ match, userList }) => {
+  const theme = useTheme();
   const classes = useStyles();
 
   const [game, setGame] = useState<Game | null>();

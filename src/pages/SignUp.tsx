@@ -4,6 +4,7 @@ import {
   RouteComponentProps,
   withRouter,
 } from 'react-router-dom';
+import { useTheme } from '@material-ui/core/styles';
 import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -16,10 +17,11 @@ import Typography from '@material-ui/core/Typography';
 import { createUser, isValidInvitationCode } from '../services/auth';
 import firebase from '../services/firebase';
 import ROUTES from '../constants/routes';
-import { theme } from '../styles/theme';
 import Logo from '../components/Logo';
 
 const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
+  const theme = useTheme();
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
