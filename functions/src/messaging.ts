@@ -37,7 +37,7 @@ export const subscribeToMessaging = functions
         admin
           .firestore()
           .doc(`users/${context.auth?.uid}`)
-          .set({ subscribed: true }, { merge: true }),
+          .update({ subscribed: true }),
       )
       .then(() => {
         functions.logger.info(
@@ -67,7 +67,7 @@ export const unsubscribeFromMessaging = functions
         admin
           .firestore()
           .doc(`users/${context.auth?.uid}`)
-          .set({ subscribed: false }, { merge: true }),
+          .update({ subscribed: false }),
       )
       .then(() => {
         functions.logger.info(

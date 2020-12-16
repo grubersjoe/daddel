@@ -60,7 +60,7 @@ const Settings: React.FC<RouteComponentProps> = ({ history }) => {
     firebase.firestore
       .collection('users')
       .doc(currentUser.uid)
-      .set({ nickname }, { merge: true })
+      .update({ nickname })
       .then(() => dispatchSnack('Name geändert'))
       .catch(setError)
       .finally(() => setLoading(false));
