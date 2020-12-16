@@ -97,7 +97,7 @@ export const onCreateMatch = functions
       .then(userSnap => {
         const user = userSnap.data() as User;
 
-        return match.gameRef
+        return match.game
           .get()
           .then(gameSnap => {
             const game = gameSnap.data() as Game;

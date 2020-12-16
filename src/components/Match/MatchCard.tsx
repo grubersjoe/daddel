@@ -124,7 +124,7 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
 
   // Retrieve the game via reference
   useEffect(() => {
-    match.gameRef.get().then(game => {
+    match.game.get().then(game => {
       const data = game.data();
       setGame(data ? ({ ...data, id: game.id } as Game) : null);
     });
