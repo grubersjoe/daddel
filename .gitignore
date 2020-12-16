@@ -10,6 +10,7 @@ public/firebase-messaging-sw.js
 .env
 !.env.dist
 
+*.tsbuildinfo
 *.log*
 
 .DS_Store
