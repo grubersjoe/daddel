@@ -86,8 +86,8 @@ export const unsubscribeFromMessaging = functions
 export const onCreateMatch = functions
   .region(FIREBASE_REGION)
   .firestore.document('matches/{matchId}')
-  .onCreate(snap => {
-    const match = snap.data() as Match;
+  .onCreate(matchSnap => {
+    const match = matchSnap.data() as Match;
 
     return admin
       .firestore()
@@ -113,7 +113,7 @@ export const onCreateMatch = functions
               topic: DEFAULT_TOPIC,
               webpush: {
                 fcmOptions: {
-                  link: `${APP_URL}/matches/${match.id}`,
+                  link: `${APP_URL}/matches/${matchSnap.id}`,
                 },
               },
             };
