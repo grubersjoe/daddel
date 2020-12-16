@@ -12,7 +12,7 @@ import { createTheme } from '../styles/theme';
 
 import Layout from './Layout';
 import AddMatch from '../pages/AddMatch';
-import EditMatch from '../pages/EditMatch';
+import UpdateMatch from '../pages/UpdateMatch';
 import MatchesList from '../pages/MatchesList';
 import PrivateRoute from './PrivateRoute';
 import Settings from '../pages/Settings';
@@ -58,7 +58,7 @@ const App: React.FC = () => {
                 <AddMatch />
               </PrivateRoute>
               <PrivateRoute path={ROUTES.EDIT_MATCH}>
-                <EditMatch />
+                <UpdateMatch />
               </PrivateRoute>
               <PrivateRoute path={ROUTES.MATCHES_LIST_DYNAMIC}>
                 <MatchesList />

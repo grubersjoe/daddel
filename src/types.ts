@@ -16,13 +16,12 @@ export type Game = {
 };
 
 export type Match = {
-  id?: string;
+  id: string;
   created: Timestamp;
   createdBy: Uid;
   date: Timestamp;
   description?: string;
-  game?: string; // introduced later, so might be undefined, deprecated
-  gameRef: DocumentReference;
+  game: DocumentReference;
   players: Array<Player>;
   maxPlayers?: number; // deprecated
 };

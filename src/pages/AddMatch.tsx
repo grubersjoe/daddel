@@ -78,12 +78,12 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
 
     setLoading(true);
 
-    const match: Match = {
+    const match: Omit<Match, 'id'> = {
       created: firebase.getTimestamp(),
       createdBy: currentUser.uid,
       date: firebase.getTimestamp(date),
       ...(description && { description }),
-      gameRef: firebase.firestore.doc(`games/${gameId}`),
+      game: firebase.firestore.doc(`games/${gameId}`),
       players: [],
     };
 

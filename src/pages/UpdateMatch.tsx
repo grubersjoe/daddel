@@ -27,7 +27,7 @@ import AppBar from '../components/AppBar';
 import { SnackbarContext } from '../components/Layout';
 
 type LocationState = {
-  game?: Omit<Game, 'gameRef'>;
+  game?: Omit<Game, 'game'>;
   match?: Match;
 };
 
@@ -63,7 +63,7 @@ const updatePlayerDates = (players: Player[], updatedDate: Date): Player[] =>
     };
   });
 
-const EditMatch: React.FC<
+const UpdateMatch: React.FC<
   RouteComponentProps<{}, StaticContext, LocationState>
 > = ({ location, history }) => {
   const dispatchSnack = useContext(SnackbarContext);
@@ -95,7 +95,7 @@ const EditMatch: React.FC<
     return <Redirect to={ROUTES.MATCHES_LIST} />;
   }
 
-  const editMatch = (event: FormEvent) => {
+  const handleUpdate = (event: FormEvent) => {
     event.preventDefault();
     setLoading(true);
 
@@ -103,17 +103,17 @@ const EditMatch: React.FC<
       return dispatchError();
     }
 
-    const updatedMatch = {
+    const updatedMatch: Omit<Match, 'id' | 'created' | 'createdBy'> = {
       date: firebase.getTimestamp(date),
       description,
-      gameRef: firebase.firestore.doc(`games/${gameId}`),
+      game: firebase.firestore.doc(`games/${gameId}`),
       players: updatePlayerDates(match.players, date),
     };
 
     firebase.firestore
       .collection('matches')
       .doc(match.id)
-      .set(updatedMatch, { merge: true })
+      .update(updatedMatch)
       .then(() => {
         dispatchSnack('Match aktualisiert');
         history.push(ROUTES.MATCHES_LIST);
@@ -145,7 +145,7 @@ const EditMatch: React.FC<
           </Select>
         </Box>
 
-        <form autoComplete="off" onSubmit={editMatch}>
+        <form autoComplete="off" onSubmit={handleUpdate}>
           <Box mb="1.5rem">
             <MuiPickersUtilsProvider utils={DateFnsUtils} locale={deLocale}>
               <DateTimePicker
@@ -214,4 +214,4 @@ const EditMatch: React.FC<
   );
 };
 
-export default withRouter(EditMatch);
+export default withRouter(UpdateMatch);

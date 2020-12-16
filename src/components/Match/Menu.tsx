@@ -31,7 +31,7 @@ const Menu: React.FC<Props> = ({ game, match }) => {
   const [anchorElement, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorElement);
 
-  const { gameRef, ...matchWithoutRefs } = match;
+  const { game: gameRef, ...matchWithoutRefs } = match;
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
