@@ -63,7 +63,7 @@ export function joinMatch(
     return firebase.firestore
       .collection('matches')
       .doc(match.id)
-      .set(matchData, { merge: true });
+      .update(matchData);
   } catch (error) {
     return Promise.reject(error);
   }

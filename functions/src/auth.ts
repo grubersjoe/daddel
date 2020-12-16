@@ -23,9 +23,7 @@ export const onUserCreate = functions
         .firestore()
         .collection('users')
         .doc(userRecord.uid)
-        .set({
-          invited: false,
-        })
+        .set({ invited: false }, { merge: true })
         .then(() => {
           functions.logger.info(
             `Set invitation status of users/${userRecord.uid}`,
