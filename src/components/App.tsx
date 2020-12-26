@@ -34,7 +34,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const unsubscribeFn = firebase.auth.onAuthStateChanged(authUser => {
-      authUser ? setAuthUser(authUser) : setAuthUser(null);
+      setAuthUser(authUser);
       setAuthLoading(false);
     });
 
