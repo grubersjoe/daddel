@@ -146,7 +146,7 @@ const Settings: React.FC<RouteComponentProps> = ({ history }) => {
             <Button
               variant="outlined"
               startIcon={<SignOutIcon />}
-              onClick={() => signOut(history)}
+              onClick={signOut}
               fullWidth
             >
               Abmelden

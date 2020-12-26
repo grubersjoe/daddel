@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import firebaseNS from 'firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { ThemeProvider } from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import yellow from '@material-ui/core/colors/yellow';
 
 import { DOMAIN_PROD } from '../constants';
 import ROUTES from '../constants/routes';
+import { signOut } from '../services/auth';
 import firebase from '../services/firebase';
 import { createTheme } from '../styles/theme';
 
@@ -27,20 +29,13 @@ const allowedHosts = [DOMAIN_PROD, 'localhost'];
 export const AuthUserContext = React.createContext<AuthUserValue>([null, true]);
 
 const App: React.FC = () => {
-  const [authLoading, setAuthLoading] = useState(true);
-  const [authUser, setAuthUser] = useState<firebaseNS.User | null>(
-    firebase.auth.currentUser,
-  );
+  const [authUser, authLoading, authError] = useAuthState(firebase.auth);
 
-  useEffect(() => {
-    const unsubscribeFn = firebase.auth.onAuthStateChanged(authUser => {
-      setAuthUser(authUser);
-      setAuthLoading(false);
-    });
+  if (authError) {
+    signOut();
+  }
 
-    return unsubscribeFn; // Cleanup
-  });
-
+  // Redirect if not on correct production host or localhost
   if (!allowedHosts.includes(window.location.hostname)) {
     window.location.replace(`https://${DOMAIN_PROD}`);
   }

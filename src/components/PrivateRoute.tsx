@@ -10,7 +10,7 @@ const PrivateRoute: React.FC<RouteProps> = ({ children, ...props }) => {
   return (
     <Route
       {...props}
-      render={props =>
+      render={routeProps =>
         authUser ? (
           children
         ) : (
@@ -18,7 +18,7 @@ const PrivateRoute: React.FC<RouteProps> = ({ children, ...props }) => {
             to={{
               pathname: ROUTES.ROOT,
               state: {
-                from: props.location,
+                from: routeProps.location,
               },
             }}
           />
