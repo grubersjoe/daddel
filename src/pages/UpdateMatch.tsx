@@ -79,9 +79,9 @@ const UpdateMatch: React.FC<
   const match = location.state?.match;
 
   const [gameId, setGameId] = useState<Maybe<Game['id']>>(game?.id);
-  const [date, setDate] = useState<Date | null>(match?.date.toDate() || null); // null required for MUI
+  const [date, setDate] = useState<Date | null>(match?.date.toDate() ?? null);
   const [description, setDescription] = useState<string>(
-    match?.description || '',
+    match?.description ?? '',
   );
 
   const [games, gamesLoading] = useCollectionData<Game>(

@@ -87,7 +87,7 @@ const JoinMatchDialog: React.FC<Props> = ({
   const availUntil =
     [...timeLabels, MATCH_TIME_OPEN_END as TimeLabel].find(
       option => option === timeInitialUntil,
-    ) || availUntilFallback;
+    ) ?? availUntilFallback;
 
   const [state, setState] = React.useState<State>({ availFrom, availUntil });
 

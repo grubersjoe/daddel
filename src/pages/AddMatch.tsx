@@ -53,7 +53,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
   );
 
   const [gameId, setGameId] = useState<Game['id']>();
-  const [date, setDate] = useState<Date | null>(defaultDate); // null required for MUI
+  const [date, setDate] = useState<Date | null>(defaultDate);
   const [description, setDescription] = useState<string>();
   const [selfJoinMatch, setSelfJoinMatch] = useState(true);
 
