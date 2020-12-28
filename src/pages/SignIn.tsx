@@ -20,7 +20,7 @@ import Logo from '../components/Logo';
 import Spinner from '../components/Spinner';
 
 const SignIn: React.FC = () => {
-  const location = useLocation<{ from: History.Location }>();
+  const location = useLocation<Maybe<{ from: History.Location }>>();
   const [authUser, authLoading] = useContext(AuthUserContext);
   const theme = useTheme();
 
@@ -31,7 +31,7 @@ const SignIn: React.FC = () => {
   const [password, setPassword] = useState('');
   const [googleLoading, setGoogleLoading] = useState(false);
 
-  const { from } = location.state || {
+  const { from } = location.state ?? {
     from: { pathname: ROUTES.MATCHES_LIST },
   };
 

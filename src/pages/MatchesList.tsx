@@ -93,11 +93,11 @@ const MatchesList: React.FC = () => {
   const [userList] = useUserList();
 
   const [showFilter, setShowFilter] = useState(
-    getStorageItem<boolean>(STORAGE_KEYS.matchFilterEnabled) || false,
+    getStorageItem<boolean>(STORAGE_KEYS.matchFilterEnabled) ?? false,
   );
 
   const [filter, setFilter] = useState<MatchFilter>(
-    getStorageItem<MatchFilter>(STORAGE_KEYS.matchFilter) || { games: [] },
+    getStorageItem<MatchFilter>(STORAGE_KEYS.matchFilter) ?? { games: [] },
   );
 
   const [tabIndex, setTabIndex] = useState(0);
