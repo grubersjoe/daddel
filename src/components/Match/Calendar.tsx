@@ -6,8 +6,8 @@ import fromUnixTime from 'date-fns/fromUnixTime';
 import { Player, UserMap } from '../../types';
 import {
   calcTimeLabelsBetweenDates,
-  formatTimestamp,
-  isOpenEndTimestamp,
+  formatTime,
+  isOpenEndDate,
 } from '../../utils/date';
 import {
   DEFAULT_TIME_INCREMENT,
@@ -15,7 +15,7 @@ import {
 } from '../../constants/date';
 
 type Props = {
-  players: Player[];
+  players: Array<Player>;
   userList: UserMap;
 };
 
@@ -87,7 +87,7 @@ const Calendar: React.FC<Props> = ({ players, userList }) => {
   const timeBounds = players.reduce(
     (bounds, player) => {
       // Do not enlarge time bounds for open end timestamps
-      if (isOpenEndTimestamp(player.until)) {
+      if (isOpenEndDate(player.until)) {
         return {
           min: Math.min(bounds.min, player.from.seconds),
           max: bounds.max,
@@ -123,14 +123,9 @@ const Calendar: React.FC<Props> = ({ players, userList }) => {
   );
 
   const playerTimeIntervals = players.map(player => ({
-    minuteStart: differenceInMinutes(
-      fromUnixTime(player.from.seconds),
-      minDate,
-    ),
+    minuteStart: differenceInMinutes(player.from.toDate(), minDate),
     minuteEnd: differenceInMinutes(
-      isOpenEndTimestamp(player.until)
-        ? maxDate
-        : fromUnixTime(player.until.seconds),
+      isOpenEndDate(player.until) ? maxDate : player.until.toDate(),
       minDate,
     ),
   }));
@@ -153,13 +148,13 @@ const Calendar: React.FC<Props> = ({ players, userList }) => {
         const width = ((minuteEnd - minuteStart) / totalMinutes) * 100;
         const left = (minuteStart / totalMinutes) * 100;
 
-        const untilLabel = formatTimestamp(player.until);
+        const untilLabel = formatTime(player.until);
 
         return (
           <Bar width={width} left={left} key={player.uid}>
             <span>{userList.get(player.uid)?.nickname}</span>
             <span className={classes.time}>
-              {formatTimestamp(player.from)} –{' '}
+              {formatTime(player.from)} –{' '}
               {untilLabel === MATCH_TIME_OPEN_END ? 'Open end' : untilLabel}
             </span>
           </Bar>
