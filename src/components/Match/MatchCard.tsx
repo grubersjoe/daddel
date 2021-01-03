@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import endOfDay from 'date-fns/endOfDay';
 import isFuture from 'date-fns/isFuture';
-import fromUnixTime from 'date-fns/fromUnixTime';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Card from '@material-ui/core/Card';
@@ -12,13 +11,12 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
-import firebase from '../../services/firebase';
 import { getGameBanner } from '../../assets/images/games';
 import { UNKNOWN_GAME_ID } from '../../constants';
 import { Game, Match, UserMap } from '../../types';
-import { formatDate, formatTimestamp } from '../../utils/date';
+import { formatDate, formatTime } from '../../utils/date';
 
-import JoinMatchDialog from '../Dialogs/JoinMatch';
+import JoinMatchDialog from '../Dialogs/JoinMatchDialog';
 import Calendar from './Calendar';
 import MatchCardSkeleton from './MatchCardSkeleton';
 import Menu from './Menu';
@@ -139,12 +137,8 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
 
   const hasNoBanner = gameBanner === null;
 
-  const currentPlayer = match.players.find(
-    player => player.uid === firebase.auth.currentUser?.uid,
-  );
-
   // It should be able to join a match until the end of its date
-  const isJoinable = isFuture(endOfDay(fromUnixTime(match.date.seconds)));
+  const isJoinable = isFuture(endOfDay(match.date.toDate()));
 
   if (!game || gameBanner === undefined) {
     return <MatchCardSkeleton />;
@@ -190,7 +184,7 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
               {formatDate(match.date)}
             </Typography>
             <Typography className={classes.date}>
-              {formatTimestamp(match.date)} Uhr
+              {formatTime(match.date)} Uhr
             </Typography>
           </Grid>
           {game.maxPlayers && (
@@ -211,7 +205,7 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
             color="textSecondary"
             style={{ marginBottom: theme.spacing(1.75) }}
           >
-            <TimeAgo date={fromUnixTime(match.date.seconds)} />
+            <TimeAgo date={match.date.toDate()} />
             <Separator />
             <Link to={`/matches/${match.id}`}>Permalink</Link>
           </Typography>
@@ -236,11 +230,7 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
         </CardContent>
         {isJoinable && (
           <CardActions className={classes.actions}>
-            <JoinMatchDialog
-              match={match}
-              initialFrom={currentPlayer?.from}
-              initialUntil={currentPlayer?.until}
-            />
+            <JoinMatchDialog match={match} />
           </CardActions>
         )}
       </Box>

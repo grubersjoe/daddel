@@ -37,10 +37,10 @@ const Settings: React.FC<RouteComponentProps> = ({ history }) => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const [nickname, setNickname] = useState('Lade …');
+  const [nickname, setNickname] = useState<string | null>(null);
 
   useEffect(() => {
-    if (user && nickname === 'Lade …') {
+    if (user && nickname === null) {
       setNickname(user.nickname);
     }
   }, [user, nickname]);
@@ -97,7 +97,7 @@ const Settings: React.FC<RouteComponentProps> = ({ history }) => {
               <TextField
                 variant="outlined"
                 placeholder="Nickname"
-                value={nickname}
+                value={nickname ?? 'Lade …'}
                 onChange={event => setNickname(event.target.value)}
                 disabled={userLoading || Boolean(userError)}
                 fullWidth

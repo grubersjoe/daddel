@@ -1,4 +1,3 @@
-import fromUnixTime from 'date-fns/fromUnixTime';
 import parse from 'date-fns/parse';
 
 import firebase from './firebase';
@@ -20,7 +19,7 @@ export function joinMatch(
     throw new Error('No current user');
   }
 
-  const matchDate = format(fromUnixTime(match.date.seconds), 'yyyy-MM-dd');
+  const matchDate = format(match.date.toDate(), 'yyyy-MM-dd');
 
   try {
     const updatedPlayer: Player = {

@@ -12,7 +12,7 @@ export default function useNotifications() {
     throw new Error('No current user');
   }
 
-  const [user, userLoading, userError] = useDocumentData<User>(
+  const [user, userLoading] = useDocumentData<User>(
     firebase.firestore.doc(`users/${currentUser.uid}`),
   );
 
@@ -24,7 +24,7 @@ export default function useNotifications() {
       setIsSubscribed(user.subscribed);
     }
     setLoading(userLoading);
-  }, [user, userLoading, userError]);
+  }, [user, userLoading]);
 
   function subscribe() {
     if (loading) {

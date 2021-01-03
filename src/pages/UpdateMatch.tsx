@@ -1,14 +1,14 @@
 import React, { useState, FormEvent, useContext } from 'react';
 import { Redirect, StaticContext } from 'react-router';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { useCollectionData } from 'react-firebase-hooks/firestore';
+import deLocale from 'date-fns/locale/de';
 import getDate from 'date-fns/getDate';
 import getMonth from 'date-fns/getMonth';
 import getYear from 'date-fns/getYear';
 import isSameDay from 'date-fns/isSameDay';
 import set from 'date-fns/set';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
 import DateFnsUtils from '@date-io/date-fns';
-import deLocale from 'date-fns/locale/de';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';

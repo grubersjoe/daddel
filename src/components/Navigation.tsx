@@ -13,7 +13,7 @@ import { AuthUserContext } from './App';
 
 const Links = [ROUTES.MATCHES_LIST, ROUTES.ADD_MATCH, ROUTES.SETTINGS];
 
-const Navigation: React.FC<RouteComponentProps> = ({ history, location }) => {
+const Navigation: React.FC<RouteComponentProps> = ({ location }) => {
   const [authUser] = useContext(AuthUserContext);
   const theme = useTheme();
 

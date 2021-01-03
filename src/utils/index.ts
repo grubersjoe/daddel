@@ -9,6 +9,7 @@ export function calcUserList(users: User[]): UserMap {
   return userMap;
 }
 
+// Move the "unknown game" entry to the end of the games list
 export function reorderGames(games: Game[]): Game[] {
   const unknownGame = games.find(game => game.id === UNKNOWN_GAME_ID);
 

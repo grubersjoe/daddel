@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import addHours from 'date-fns/addHours';
-import startOfToday from 'date-fns/startOfToday';
+import React, { useState } from 'react';
+import addMinutes from 'date-fns/addMinutes';
 import { withStyles, useTheme } from '@material-ui/core/styles';
 import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
@@ -17,25 +16,24 @@ import Select from '@material-ui/core/Select';
 import firebase from '../../services/firebase';
 import { joinMatch, leaveMatch } from '../../services/match';
 import {
-  TIME_FORMAT,
-  DEFAULT_MATCH_STARTTIME,
-  MATCH_TIME_START,
-  MATCH_TIME_END,
+  DEFAULT_MATCH_TIME,
+  MATCH_TIME_EARLIEST,
+  MATCH_TIME_LATEST,
   MATCH_TIME_OPEN_END,
+  DEFAULT_MATCH_LENGTH,
 } from '../../constants/date';
 import { Match, Timestamp, TimeLabel } from '../../types';
 import {
-  format,
   formatDate,
-  formatTimestamp,
+  formatTime,
   calcTimeLabelsBetweenDates,
   parseTimeLabel,
 } from '../../utils/date';
 
 type Props = {
   match: Match;
-  initialFrom?: Timestamp;
-  initialUntil?: Timestamp;
+  playerFrom?: Timestamp;
+  playerUntil?: Timestamp;
 };
 
 type State = {
@@ -50,50 +48,50 @@ const LinearProgress = withStyles(theme => ({
   },
 }))(MuiLinearProgress);
 
-const JoinMatchDialog: React.FC<Props> = ({
-  match,
-  initialFrom,
-  initialUntil,
-}) => {
+const JoinMatchDialog: React.FC<Props> = ({ match }) => {
   const theme = useTheme();
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const timeLabels = calcTimeLabelsBetweenDates(
-    parseTimeLabel(MATCH_TIME_START, startOfToday()),
-    parseTimeLabel(MATCH_TIME_END, startOfToday()),
+  const currentPlayer = match.players.find(
+    player => player.uid === firebase.auth.currentUser?.uid,
   );
 
-  const timeInitialFrom = initialFrom ? formatTimestamp(initialFrom) : null;
-  const timeMatchDate = formatTimestamp(match.date);
+  const timeLabels = calcTimeLabelsBetweenDates(
+    parseTimeLabel(MATCH_TIME_EARLIEST),
+    parseTimeLabel(MATCH_TIME_LATEST),
+  );
+
+  const currentFrom = currentPlayer
+    ? formatTime<TimeLabel>(currentPlayer.from)
+    : null;
+
+  const currentUntil = currentPlayer
+    ? formatTime<TimeLabel>(currentPlayer.until)
+    : null;
+
+  const matchTime = formatTime<TimeLabel>(match.date);
 
   const availFrom =
-    timeLabels.find(option => option === timeInitialFrom) ||
-    timeLabels.find(option => option === timeMatchDate) ||
-    DEFAULT_MATCH_STARTTIME;
+    timeLabels.find(time => time === currentFrom) ??
+    timeLabels.find(time => time === matchTime) ??
+    DEFAULT_MATCH_TIME;
 
-  const defaultAvailUntil = format<TimeLabel>(
-    addHours(parseTimeLabel(availFrom), 2),
-    TIME_FORMAT,
+  const defaultAvailUntil = formatTime<TimeLabel>(
+    addMinutes(parseTimeLabel(availFrom), DEFAULT_MATCH_LENGTH),
   );
 
-  const availUntilFallback = timeLabels.includes(defaultAvailUntil)
-    ? defaultAvailUntil
-    : timeLabels[timeLabels.length - 1];
-
-  const timeInitialUntil = initialUntil ? formatTimestamp(initialUntil) : null;
   const availUntil =
-    [...timeLabels, MATCH_TIME_OPEN_END as TimeLabel].find(
-      option => option === timeInitialUntil,
-    ) ?? availUntilFallback;
+    [...timeLabels, MATCH_TIME_OPEN_END].find(time => time === currentUntil) ??
+    timeLabels.find(time => time === defaultAvailUntil) ??
+    timeLabels[timeLabels.length - 1];
 
-  const [state, setState] = React.useState<State>({ availFrom, availUntil });
-
-  // Required to sync state with possibly recalculated
-  // values of availFrom and availUntilClamped
-  useEffect(() => setState({ availFrom, availUntil }), [availFrom, availUntil]);
+  const [state, setState] = React.useState<State>({
+    availFrom,
+    availUntil,
+  });
 
   const handleJoin = () => {
     setLoading(true);
@@ -127,7 +125,7 @@ const JoinMatchDialog: React.FC<Props> = ({
   ) => {
     setState({
       ...state,
-      [stateProp]: event.target.value,
+      [stateProp]: event.target.value as TimeLabel,
     });
   };
 
