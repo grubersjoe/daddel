@@ -1,6 +1,6 @@
 {
   "name": "daddel",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "private": true,
   "scripts": {
     "build": "react-scripts build",
@@ -8,7 +8,7 @@
     "dev": "npm run start",
     "eject": "react-scripts eject",
     "format": "prettier --write 'src/**/*' 'src/**/*' './*.{js,json,md}'",
-    "lint": "eslint .",
+    "lint": "eslint src/ functions/",
     "start:emulators": "firebase emulators:start --only functions",
     "start": "react-scripts start",
     "test": "jest"

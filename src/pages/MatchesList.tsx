@@ -18,6 +18,7 @@ import useUserList from '../hooks/user-list';
 import { Match } from '../types';
 import { filterMatches, calcNumberOfEnabledFilters } from '../utils/filter';
 
+import { MAX_SHOWN_PAST_MATCHES } from '../constants';
 import {
   getStorageItem,
   setStorageItem,
@@ -82,7 +83,7 @@ const MatchesList: React.FC = () => {
   );
 
   const [pastMatches, , pastMatchesError] = useCollectionData<Match>(
-    pastMatchesQuery(10),
+    pastMatchesQuery(MAX_SHOWN_PAST_MATCHES),
     { idField: 'id' },
   );
 

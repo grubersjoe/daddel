@@ -3,7 +3,7 @@ import * as functions from 'firebase-functions';
 
 import { APP_URL } from '.';
 import { Game, Match, User } from './types';
-import { formatDate, formatTimestamp } from './util/date';
+import { formatDate, formatTime } from './util/date';
 
 const FIREBASE_REGION = 'europe-west3'; // Frankfurt
 const DEFAULT_TOPIC = 'default';
@@ -101,7 +101,7 @@ export const onCreateMatch = functions
           .get()
           .then(gameSnap => {
             const game = gameSnap.data() as Game;
-            const date = `${formatDate(match.date)} um ${formatTimestamp(
+            const date = `${formatDate(match.date)} um ${formatTime(
               match.date,
             )} Uhr`;
 

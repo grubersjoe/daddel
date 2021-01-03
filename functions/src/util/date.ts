@@ -10,12 +10,10 @@ const TIME_FORMAT = 'HH:mm';
 const TIMEZONE = 'Europe/Berlin';
 
 export function formatDate(timestamp: Timestamp) {
-  const date = fromUnixTime(timestamp.seconds);
-
-  return format(date, `EEEE ${DATE_FORMAT}`, { locale: de });
+  return format(timestamp.toDate(), `EEEE ${DATE_FORMAT}`, { locale: de });
 }
 
-export function formatTimestamp(
+export function formatTime(
   timestamp: Timestamp | number,
   timeFormat = TIME_FORMAT,
 ): string {

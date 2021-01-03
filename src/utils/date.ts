@@ -32,7 +32,7 @@ export function format<R extends string = string>(
 }
 
 export function formatDate(timestamp: Timestamp, smartWeekday = true) {
-  const date = fromUnixTime(timestamp.seconds);
+  const date = timestamp.toDate();
 
   if (smartWeekday) {
     if (isYesterday(date)) {
@@ -51,20 +51,21 @@ export function formatDate(timestamp: Timestamp, smartWeekday = true) {
   return format(date, `EEEE ${DATE_FORMAT}`, { locale: de });
 }
 
-export function formatTimestamp(
-  timestamp: Timestamp | number,
+export function formatTime<R extends string = string>(
+  date: Date | Timestamp | number,
   timeFormat = TIME_FORMAT,
-): string {
-  if (typeof timestamp === 'number') {
-    return format(fromUnixTime(timestamp), timeFormat);
+): R {
+  if (date instanceof Date) {
+    return format<R>(date, timeFormat);
   }
 
-  return format(fromUnixTime(timestamp.seconds), timeFormat);
+  if (typeof date === 'number') {
+    return format<R>(fromUnixTime(date), timeFormat);
+  }
+
+  return format<R>(date.toDate(), timeFormat);
 }
 
-/**
- * @throws TypeError|RangeError
- */
 export function parseTimeLabel(
   timeLabel: TimeLabel,
   referenceDate = new Date(),
@@ -90,20 +91,16 @@ export function calcTimeLabelsBetweenDates(
   }
 
   // Initialize with first value
-  const options = [format(currentDate, TIME_FORMAT) as TimeLabel];
+  const options = [formatTime<TimeLabel>(currentDate)];
 
   while (isBefore(currentDate, endDate)) {
     currentDate = addMinutes(currentDate, stepInMinutes);
-    options.push(format(currentDate, TIME_FORMAT) as TimeLabel);
+    options.push(formatTime<TimeLabel>(currentDate));
   }
 
   return options;
 }
 
-export function isOpenEndTimestamp(timestamp: Timestamp | number) {
-  const date = fromUnixTime(
-    typeof timestamp === 'number' ? timestamp : timestamp.seconds,
-  );
-
-  return format(date, TIME_FORMAT) === MATCH_TIME_OPEN_END;
+export function isOpenEndDate(date: Date | Timestamp | number) {
+  return formatTime(date) === MATCH_TIME_OPEN_END;
 }

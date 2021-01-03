@@ -10,7 +10,7 @@ import { Game } from '../../types';
 import { setStorageItem, STORAGE_KEYS } from '../../utils/local-storage';
 
 export type MatchFilter = {
-  games: Game[];
+  games: Array<Game>;
 };
 
 type Props = {

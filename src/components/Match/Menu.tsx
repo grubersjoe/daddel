@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import endOfDay from 'date-fns/endOfDay';
-import fromUnixTime from 'date-fns/fromUnixTime';
 import isPast from 'date-fns/isPast';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
@@ -15,7 +14,7 @@ import ShareIcon from '@material-ui/icons/Share';
 import firebase from '../../services/firebase';
 import ROUTES from '../../constants/routes';
 import { Match, Game } from '../../types';
-import { formatDate, formatTimestamp } from '../../utils/date';
+import { formatDate, formatTime } from '../../utils/date';
 import { AuthUserContext } from '../App';
 import { SnackbarContext } from '../Layout';
 
@@ -72,7 +71,7 @@ const Menu: React.FC<Props> = ({ game, match }) => {
 
   const handleShare = (match: Match) => {
     if (navigator.share) {
-      const date = `${formatDate(match.date, false)} um ${formatTimestamp(
+      const date = `${formatDate(match.date, false)} um ${formatTime(
         match.date,
       )} Uhr`;
 
@@ -91,7 +90,7 @@ const Menu: React.FC<Props> = ({ game, match }) => {
   }
 
   const isOwnMatch = authUser.uid === match.createdBy;
-  const isPastMatch = isPast(endOfDay(fromUnixTime(match.date.seconds)));
+  const isPastMatch = isPast(endOfDay(match.date.toDate()));
 
   return (
     <>

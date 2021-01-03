@@ -49,7 +49,7 @@ const SetupUserDialog: React.FC<RouteComponentProps> = ({ history }) => {
     firebase.firestore.doc(`users/${authUser?.uid}`),
   );
 
-  // Skip first step is user is already invited
+  // Skip first step if user is already invited
   useEffect(() => {
     if (user && user.invited) {
       setStep(2);
