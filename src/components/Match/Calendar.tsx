@@ -30,8 +30,8 @@ const useStyles = makeStyles(theme => ({
     position: 'absolute',
     top: 0,
     height: '100%',
-    borderLeft: 'solid 1px rgba(255, 255, 255, 0.3)',
-    paddingLeft: '0.4em',
+    borderLeft: 'solid 1px rgba(255, 255, 255, 0.2)',
+    paddingLeft: '0.45em',
     lineHeight: 1,
   },
   bar: {
@@ -40,14 +40,15 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: '0.5em',
+    height: 28, // a round number is preferable here (Skeleton)
+    marginBottom: 7,
     padding: '0.25em 0.75em',
     color: theme.palette.getContrastText(theme.palette.grey[300]),
     backgroundColor: theme.palette.grey[300],
     borderRadius: 3,
 
     [theme.breakpoints.up('lg')]: {
-      marginBottom: '0.55em',
+      marginBottom: 8,
     },
   },
   time: {

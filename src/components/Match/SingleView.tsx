@@ -2,7 +2,7 @@ import React from 'react';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 import { useParams } from 'react-router-dom';
 import Alert from '@material-ui/lab/Alert';
-import Container from '@material-ui/core/Container';
+import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 
 import firebase from '../../services/firebase';
@@ -35,13 +35,13 @@ const SingleView: React.FC<Props> = ({ userList }) => {
   }
 
   return (
-    <Container maxWidth={false}>
+    <Box p={3} pt={0}>
       <Grid container spacing={5}>
         <Grid item xs={12} md={4} lg={3} key={match.id}>
           <MatchCard match={match} userList={userList} />
         </Grid>
       </Grid>
-    </Container>
+    </Box>
   );
 };
 

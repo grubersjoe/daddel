@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useContext } from 'react';
+import React, { useState, useMemo, useContext, ReactChild } from 'react';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import SwipeableViews from 'react-swipeable-views';
 import { Link, useParams } from 'react-router-dom';
@@ -33,34 +33,18 @@ import SingleView from '../components/Match/SingleView';
 import { SnackbarContext } from '../components/Layout';
 import MatchCardSkeleton from '../components/Match/MatchCardSkeleton';
 
-type TabPanelProps = {
-  children?: React.ReactNode;
-  dir?: string;
-  index: number;
-  value: number;
-};
-
 const loadingAnimation =
   'pulse 0.75s cubic-bezier(.46,.03,.52,.96) 0s infinite';
 
-const TabPanel: React.FC<TabPanelProps> = ({
-  children,
-  value,
-  index,
-  ...props
-}) => (
-  <Typography
-    component="div"
-    role="tabpanel"
-    hidden={value !== index}
-    {...props}
-  >
-    {value === index && (
-      <Box p={3} pt={0}>
-        {children}
-      </Box>
-    )}
-  </Typography>
+const TabPanel: React.FC<{
+  index: number;
+  value: number;
+}> = ({ children, value, index, ...props }) => (
+  <div role="tabpanel" hidden={value !== index} {...props}>
+    <Box p={3} pt={0}>
+      {children}
+    </Box>
+  </div>
 );
 
 const MatchesList: React.FC = () => {
