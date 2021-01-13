@@ -24,7 +24,6 @@ import {
 } from '../../constants/date';
 import { Match, Timestamp, TimeLabel } from '../../types';
 import {
-  formatDate,
   formatTime,
   calcTimeLabelsBetweenDates,
   parseTimeLabel,
@@ -184,8 +183,8 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
       </Grid>
       <Dialog open={open} onClose={handleClose}>
         {loading && <LinearProgress />}
-        <DialogTitle>{formatDate(match.date)}</DialogTitle>
-        <DialogContent>
+        <DialogTitle>Mitspielen</DialogTitle>
+        <DialogContent style={{ paddingTop: 0 }}>
           <DialogContentText>Von wann bis wann hast du Zeit?</DialogContentText>
           <Grid container style={{ margin: `${theme.spacing(2)}px 0` }}>
             <Grid item xs={6} style={{ paddingRight: theme.spacing(1.5) }}>
