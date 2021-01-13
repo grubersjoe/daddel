@@ -1,23 +1,34 @@
 import React from 'react';
-import { useTheme } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Skeleton from '@material-ui/lab/Skeleton/Skeleton';
 
-import { useStyles } from './MatchCard';
+import { useStyles as useCardStyles } from './MatchCard';
+
+const useStyles = makeStyles(theme => ({
+  bar: {
+    transform: 'none',
+    marginBottom: 7,
+    [theme.breakpoints.up('lg')]: {
+      marginBottom: 8,
+    },
+  },
+}));
 
 const MatchCardSkeleton: React.FC = () => {
-  const theme = useTheme();
+  const { spacing } = useTheme();
   const classes = useStyles();
+  const cardClasses = useCardStyles();
 
   return (
-    <Card className={classes.card} raised>
+    <Card className={cardClasses.card} raised>
       <CardMedia
-        className={classes.media}
+        className={cardClasses.media}
         style={{
-          background: `linear-gradient(to bottom, rgb(60, 60, 60) 0%, rgb(40, 40, 40) 100%)`,
+          background: `linear-gradient(to bottom, rgb(70, 70, 70) 0%, rgb(50, 50, 50) 100%)`,
         }}
       >
         {/* Lobby progress bar */}
@@ -29,46 +40,56 @@ const MatchCardSkeleton: React.FC = () => {
         flexDirection="column"
         justifyContent="space-between"
       >
-        <CardContent className={classes.cardContent}>
+        <CardContent className={cardClasses.cardContent}>
           {/* Date and permalink */}
           <Skeleton
             variant="text"
-            width="60%"
-            height={28}
+            width="65%"
+            height={22}
             animation="wave"
-            style={{ marginBottom: theme.spacing(0.5) }}
-          />
-
-          {/* Description */}
-          <Skeleton
-            variant="text"
-            width="40%"
-            height={28}
-            animation="wave"
-            style={{ marginBottom: theme.spacing(3) }}
+            style={{
+              transform: 'none',
+            }}
           />
 
           {/* Calendar bars */}
           <Skeleton
             variant="text"
             width="85%"
-            height={40}
+            height={28}
             animation="wave"
-            style={{ marginTop: theme.spacing(-1), marginLeft: '15%' }}
+            className={classes.bar}
+            style={{
+              marginTop: spacing(6.25),
+              marginLeft: '15%',
+            }}
           />
           <Skeleton
             variant="text"
             width="80%"
-            height={40}
+            height={28}
             animation="wave"
-            style={{ marginTop: theme.spacing(-1) }}
+            className={classes.bar}
           />
           <Skeleton
             variant="text"
             width="85%"
-            height={40}
+            height={28}
             animation="wave"
-            style={{ marginTop: theme.spacing(-1), marginLeft: '15%' }}
+            className={classes.bar}
+            style={{
+              marginLeft: '15%',
+            }}
+          />
+          <Skeleton
+            variant="text"
+            width="60%"
+            height={28}
+            animation="wave"
+            className={classes.bar}
+            style={{
+              marginLeft: '30%',
+            }}
           />
         </CardContent>
       </Box>
