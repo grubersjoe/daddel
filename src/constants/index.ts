@@ -10,6 +10,7 @@ if (!process.env.REACT_APP_DOMAIN_PROD) {
 
 export const FIREBASE_REGION = 'europe-west3'; // Frankfurt
 export const DOMAIN_PROD = process.env.REACT_APP_DOMAIN_PROD;
+export const REGEX_IPV4 = /^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\.(?!$)|$)){4}$/;
 
 export const UNKNOWN_GAME_ID = process.env.REACT_APP_UNKNOWN_GAME_FIRESTORE_ID;
 export const MATCH_NOTIFICATION_TIME = 30; // minutes before match

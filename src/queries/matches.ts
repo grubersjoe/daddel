@@ -1,15 +1,14 @@
-import startOfToday from 'date-fns/startOfToday';
-
 import firebase from '../services/firebase';
 
-export const futureMatchesQuery = firebase.firestore
-  .collection('matches')
-  .where('date', '>=', startOfToday())
-  .orderBy('date', 'asc');
-
-export const pastMatchesQuery = (limit: number) =>
+export const futureMatchesQuery = (referenceDate: Date) =>
   firebase.firestore
     .collection('matches')
-    .where('date', '<', startOfToday())
+    .where('date', '>=', referenceDate)
+    .orderBy('date', 'asc');
+
+export const pastMatchesQuery = (referenceDate: Date, limit: number) =>
+  firebase.firestore
+    .collection('matches')
+    .where('date', '<', referenceDate)
     .orderBy('date', 'desc')
     .limit(limit);

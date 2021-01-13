@@ -19,7 +19,7 @@ import TextField from '@material-ui/core/TextField';
 
 import { isValidInvitationCode } from '../../services/auth';
 import firebase from '../../services/firebase';
-import useOnlineStatus from '../../hooks/online-status';
+import useOnlineStatus from '../../hooks/useOnlineStatus';
 import { User } from '../../types';
 import { AuthUserContext } from '../App';
 import { SnackbarContext } from '../Layout';
