@@ -10,5 +10,7 @@ export default function useUserList(): [Maybe<UserMap>, boolean, Maybe<Error>] {
     { idField: 'uid' },
   );
 
-  return [users ? calcUserList(users) : undefined, usersLoading, usersError];
+  const userList = users ? calcUserList(users) : undefined;
+
+  return [userList, usersLoading, usersError];
 }

@@ -1,20 +1,21 @@
 import React, { useState, useMemo, useContext } from 'react';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import SwipeableViews from 'react-swipeable-views';
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useTheme } from '@material-ui/core/styles';
 import Alert from '@material-ui/lab/Alert';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import LinkIcon from '@material-ui/icons/Link';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
-import LinkIcon from '@material-ui/icons/Link';
 
 import { futureMatchesQuery, pastMatchesQuery } from '../queries/matches';
 import ROUTES from '../constants/routes';
-import useUserList from '../hooks/user-list';
+import useCurrentDate from '../hooks/useCurrentDate';
+import useUserList from '../hooks/useUserList';
 import { Match } from '../types';
 import { filterMatches, calcNumberOfEnabledFilters } from '../utils/filter';
 
@@ -66,14 +67,17 @@ const MatchesList: React.FC = () => {
   const { match: matchParam } = useParams<{ match: string }>();
   const isSingleView = Boolean(matchParam && matchParam.length > 0);
 
-  const history = useHistory();
   const theme = useTheme();
   const dispatchSnack = useContext(SnackbarContext);
 
+  const currentDate = useCurrentDate();
+  const [userList] = useUserList();
+
   const [isRefetching, setIsRefetching] = useState(false);
+  const [tabIndex, setTabIndex] = useState(0);
 
   const [futureMatches, , futureMatchesError] = useCollectionData<Match>(
-    futureMatchesQuery,
+    futureMatchesQuery(currentDate),
     {
       idField: 'id',
       snapshotListenOptions: {
@@ -83,15 +87,13 @@ const MatchesList: React.FC = () => {
   );
 
   const [pastMatches, , pastMatchesError] = useCollectionData<Match>(
-    pastMatchesQuery(MAX_SHOWN_PAST_MATCHES),
+    pastMatchesQuery(currentDate, MAX_SHOWN_PAST_MATCHES),
     { idField: 'id' },
   );
 
-  futureMatchesQuery.onSnapshot(doc =>
+  futureMatchesQuery(currentDate).onSnapshot(doc =>
     setIsRefetching(doc.metadata.fromCache || doc.metadata.hasPendingWrites),
   );
-
-  const [userList] = useUserList();
 
   const [showFilter, setShowFilter] = useState(
     getStorageItem<boolean>(STORAGE_KEYS.matchFilterEnabled) ?? false,
@@ -100,8 +102,6 @@ const MatchesList: React.FC = () => {
   const [filter, setFilter] = useState<MatchFilter>(
     getStorageItem<MatchFilter>(STORAGE_KEYS.matchFilter) ?? { games: [] },
   );
-
-  const [tabIndex, setTabIndex] = useState(0);
 
   const filteredFutureMatches = useMemo(
     () => (futureMatches ? filterMatches(futureMatches, filter) : null),
@@ -133,10 +133,7 @@ const MatchesList: React.FC = () => {
       <AppBar filter={isSingleView ? undefined : filterConfig}>
         {isSingleView && (
           <>
-            <Button
-              variant="text"
-              onClick={() => history.push(ROUTES.MATCHES_LIST)}
-            >
+            <Button variant="text" component={Link} to={ROUTES.MATCHES_LIST}>
               Alle Matches
             </Button>
             <Button
