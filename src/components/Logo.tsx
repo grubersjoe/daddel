@@ -32,7 +32,7 @@ const Logo: React.FC = () => {
         variant="subtitle1"
         style={{ marginBottom: theme.spacing(4) }}
       >
-        Plane Spieleabende mit deinen Freunden
+        Plane Spieleabende mit Deinen FreundInnen
       </Typography>
     </Link>
   );
