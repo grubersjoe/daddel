@@ -103,14 +103,13 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
 
           joinMatch(availFrom, availUntil, { id: doc.id, ...match })
             .then(() => history.push(ROUTES.MATCHES_LIST))
-            .catch(dispatchError)
-            .finally(() => setLoading(false));
+            .catch(dispatchError);
         } else {
           history.push(ROUTES.MATCHES_LIST);
-          setLoading(false);
         }
       })
-      .catch(dispatchError);
+      .catch(dispatchError)
+      .finally(() => setLoading(false));
   };
 
   return (

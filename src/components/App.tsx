@@ -1,12 +1,17 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch,
+} from 'react-router-dom';
 import firebaseNS from 'firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { ThemeProvider } from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import yellow from '@material-ui/core/colors/yellow';
 
-import { DOMAIN_PROD } from '../constants';
+import { DOMAIN_PROD, REGEX_IPV4 } from '../constants';
 import ROUTES from '../constants/routes';
 import { signOut } from '../services/auth';
 import firebase from '../services/firebase';
@@ -24,8 +29,6 @@ import SignUp from '../pages/SignUp';
 
 type AuthUserValue = [firebaseNS.User | null, boolean];
 
-const allowedHosts = [DOMAIN_PROD, 'localhost'];
-
 export const AuthUserContext = React.createContext<AuthUserValue>([null, true]);
 
 const App: React.FC = () => {
@@ -35,11 +38,15 @@ const App: React.FC = () => {
     signOut();
   }
 
-  // Redirect if not on correct production host or localhost
-  if (!allowedHosts.includes(window.location.hostname)) {
-    window.location.replace(`https://${DOMAIN_PROD}`);
+  const isAllowedHost =
+    [DOMAIN_PROD, 'localhost'].includes(window.location.hostname) ||
+    REGEX_IPV4.test(window.location.hostname);
+
+  if (!isAllowedHost) {
+    return <Redirect to={`https://${DOMAIN_PROD}`} />;
   }
 
+  // TODO: make this configurable
   const theme = createTheme(yellow[700]);
 
   return (
