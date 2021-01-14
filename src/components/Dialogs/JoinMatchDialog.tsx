@@ -106,16 +106,13 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
     }
 
     setLoading(true);
-    leaveMatch({
-      players: match.players,
-      matchId: match.id,
-    })
+    leaveMatch(match)
       .then(() => setOpen(false))
       .catch(setError)
       .finally(() => setLoading(false));
   };
 
-  const handleClose = () => {
+  const closeDialog = () => {
     setOpen(false);
   };
 
@@ -181,7 +178,7 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
           </Button>
         </Grid>
       </Grid>
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={open} onClose={closeDialog}>
         {loading && <LinearProgress />}
         <DialogTitle>Mitspielen</DialogTitle>
         <DialogContent style={{ paddingTop: 0 }}>
@@ -218,7 +215,7 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
           {error && <Alert severity="error">Fehler: {error.message}</Alert>}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} disabled={loading}>
+          <Button onClick={closeDialog} disabled={loading}>
             Abbrechen
           </Button>
           <Button onClick={handleJoin} color="primary" disabled={loading}>

@@ -6,7 +6,7 @@ import isBefore from 'date-fns/isBefore';
 import isToday from 'date-fns/isToday';
 import isTomorrow from 'date-fns/isTomorrow';
 import isYesterday from 'date-fns/isYesterday';
-import parse from 'date-fns/parse';
+import parseDate from 'date-fns/parse';
 import roundToNearestMinutes from 'date-fns/roundToNearestMinutes';
 
 import {
@@ -70,7 +70,7 @@ export function parseTimeLabel(
   timeLabel: TimeLabel,
   referenceDate = new Date(),
 ): Date {
-  return parse(timeLabel, TIME_FORMAT, referenceDate);
+  return parseDate(timeLabel, TIME_FORMAT, referenceDate);
 }
 
 export function calcTimeLabelsBetweenDates(

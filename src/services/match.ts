@@ -1,9 +1,7 @@
-import parse from 'date-fns/parse';
-
-import firebase from './firebase';
+import { EVENTS } from '../constants';
 import { TimeLabel, Match, Player } from '../types';
-import { TIME_FORMAT } from '../constants/date';
-import { format } from '../utils/date';
+import { parseTimeLabel } from '../utils/date';
+import firebase from './firebase';
 
 /**
  * @throws Error
@@ -19,24 +17,14 @@ export function joinMatch(
     throw new Error('No current user');
   }
 
-  const matchDate = format(match.date.toDate(), 'yyyy-MM-dd');
-
   try {
     const updatedPlayer: Player = {
       uid: currentUser.uid,
       from: firebase.getTimestamp(
-        parse(
-          `${matchDate} ${availFrom}`,
-          `yyyy-MM-dd ${TIME_FORMAT}`,
-          new Date(),
-        ),
+        parseTimeLabel(availFrom, match.date.toDate()),
       ),
       until: firebase.getTimestamp(
-        parse(
-          `${matchDate} ${availUntil}`,
-          `yyyy-MM-dd ${TIME_FORMAT}`,
-          new Date(),
-        ),
+        parseTimeLabel(availUntil, match.date.toDate()),
       ),
     };
 
@@ -62,28 +50,25 @@ export function joinMatch(
     return firebase.firestore
       .collection('matches')
       .doc(match.id)
-      .update(matchData);
+      .update(matchData)
+      .then(() => firebase.analytics.logEvent(EVENTS.JOIN_MATCH));
   } catch (error) {
     return Promise.reject(error);
   }
 }
 
-export function leaveMatch(args: {
-  players: Match['players'];
-  matchId: string;
-}) {
+export function leaveMatch(match: Match) {
   const { currentUser } = firebase.auth;
 
   if (!currentUser) {
     throw new Error('No current user');
   }
 
-  // Yes this is stupid, but Firebase does not seem to support deleting  array
-  // entries by nested object properties
   return firebase.firestore
     .collection('matches')
-    .doc(args.matchId)
+    .doc(match.id)
     .update({
-      players: args.players.filter(player => player.uid !== currentUser.uid),
-    });
+      players: match.players.filter(player => player.uid !== currentUser.uid),
+    })
+    .then(() => firebase.analytics.logEvent(EVENTS.LEAVE_MATCH));
 }
