@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useContext, ReactChild } from 'react';
+import React, { useState, useMemo, useContext } from 'react';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import SwipeableViews from 'react-swipeable-views';
 import { Link, useParams } from 'react-router-dom';
