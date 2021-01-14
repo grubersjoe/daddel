@@ -5,8 +5,7 @@ import { useCollectionData } from 'react-firebase-hooks/firestore';
 import addMinutes from 'date-fns/addMinutes';
 import deLocale from 'date-fns/locale/de';
 import isSameDay from 'date-fns/isSameDay';
-import setHours from 'date-fns/setHours';
-import setMinutes from 'date-fns/setMinutes';
+import parseDate from 'date-fns/parse';
 import DateFnsUtils from '@date-io/date-fns';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import Box from '@material-ui/core/Box';
@@ -21,20 +20,22 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 
-import firebase from '../services/firebase';
-import { joinMatch } from '../services/match';
-import ROUTES from '../constants/routes';
-import { Match, Game, TimeLabel } from '../types';
+import { EVENTS } from '../constants';
 import {
   DEFAULT_MATCH_LENGTH,
   DEFAULT_MATCH_TIME,
   DEFAULT_TIME_INCREMENT,
   MATCH_TIME_LATEST,
+  TIME_FORMAT,
 } from '../constants/date';
+import ROUTES from '../constants/routes';
+import firebase from '../services/firebase';
+import { joinMatch } from '../services/match';
+import { Match, Game, TimeLabel } from '../types';
 import { reorderGames } from '../utils';
 import { formatTime } from '../utils/date';
-import { AuthUserContext } from '../components/App';
 import AppBar from '../components/AppBar';
+import { AuthUserContext } from '../components/App';
 import { SnackbarContext } from '../components/Layout';
 
 const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
@@ -44,14 +45,9 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
   const dispatchError = () =>
     dispatchSnack('Match konnte nicht angelegt werden', 'error');
 
+  const defaultDate = parseDate(DEFAULT_MATCH_TIME, TIME_FORMAT, new Date());
+
   const [loading, setLoading] = useState(false);
-
-  const [defaultHour, defaultMinute] = DEFAULT_MATCH_TIME.split(':');
-  const defaultDate = setMinutes(
-    setHours(new Date(), Number(defaultHour)),
-    Number(defaultMinute),
-  );
-
   const [gameId, setGameId] = useState<Game['id']>();
   const [date, setDate] = useState<Date | null>(defaultDate);
   const [description, setDescription] = useState<string>();
@@ -82,9 +78,9 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
       created: firebase.getTimestamp(),
       createdBy: currentUser.uid,
       date: firebase.getTimestamp(date),
-      ...(description && { description }),
       game: firebase.firestore.doc(`games/${gameId}`),
       players: [],
+      ...(description && { description }),
     };
 
     firebase.firestore
@@ -101,12 +97,12 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
             ? formatTime<TimeLabel>(addMinutes(date, DEFAULT_MATCH_LENGTH))
             : MATCH_TIME_LATEST;
 
-          joinMatch(availFrom, availUntil, { id: doc.id, ...match })
-            .then(() => history.push(ROUTES.MATCHES_LIST))
-            .catch(dispatchError);
-        } else {
-          history.push(ROUTES.MATCHES_LIST);
+          return joinMatch(availFrom, availUntil, { id: doc.id, ...match });
         }
+      })
+      .then(() => {
+        firebase.analytics.logEvent(EVENTS.ADD_MATCH);
+        history.push(ROUTES.MATCHES_LIST);
       })
       .catch(dispatchError)
       .finally(() => setLoading(false));

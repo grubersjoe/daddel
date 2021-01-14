@@ -11,6 +11,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import MuiMenu from '@material-ui/core/Menu';
 import ShareIcon from '@material-ui/icons/Share';
 
+import { EVENTS } from '../../constants';
 import firebase from '../../services/firebase';
 import ROUTES from '../../constants/routes';
 import { Match, Game } from '../../types';
@@ -32,11 +33,11 @@ const Menu: React.FC<Props> = ({ game, match }) => {
 
   const { game: gameRef, ...matchWithoutRefs } = match;
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+  const openMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const closeMenu = () => {
     setAnchorEl(null);
   };
 
@@ -44,18 +45,19 @@ const Menu: React.FC<Props> = ({ game, match }) => {
     throw new Error('match.id is undefined');
   }
 
-  const handleDelete = () => {
+  const deleteMatch = () => {
     if (window.confirm('Sicher?')) {
       firebase.firestore
         .collection('matches')
         .doc(match.id)
         .delete()
+        .then(() => firebase.analytics.logEvent(EVENTS.DELETE_MATCH))
         .catch(() => dispatchSnack('Fehler', 'error'));
     }
-    handleClose();
+    closeMenu();
   };
 
-  const handlePermalink = (match: Match) => {
+  const copyPermalink = (match: Match) => {
     if (navigator.clipboard) {
       navigator.clipboard
         .writeText(`${window.location.href}/${match.id}`)
@@ -66,10 +68,10 @@ const Menu: React.FC<Props> = ({ game, match }) => {
       dispatchSnack('Aktion nicht unterstützt', 'error');
     }
 
-    handleClose();
+    closeMenu();
   };
 
-  const handleShare = (match: Match) => {
+  const shareMatch = (match: Match) => {
     if (navigator.share) {
       const date = `${formatDate(match.date, false)} um ${formatTime(
         match.date,
@@ -82,7 +84,7 @@ const Menu: React.FC<Props> = ({ game, match }) => {
       });
     }
 
-    handleClose();
+    closeMenu();
   };
 
   if (!authUser) {
@@ -94,10 +96,10 @@ const Menu: React.FC<Props> = ({ game, match }) => {
 
   return (
     <>
-      <IconButton onClick={handleClick} style={{ zIndex: 1 }}>
+      <IconButton onClick={openMenu} style={{ zIndex: 1 }}>
         <MoreVertIcon />
       </IconButton>
-      <MuiMenu anchorEl={anchorElement} open={open} onClose={handleClose}>
+      <MuiMenu anchorEl={anchorElement} open={open} onClose={closeMenu}>
         {isOwnMatch && !isPastMatch && (
           <Link
             to={{
@@ -113,16 +115,16 @@ const Menu: React.FC<Props> = ({ game, match }) => {
           </Link>
         )}
         {isOwnMatch && (
-          <MenuItem onClick={handleDelete}>
+          <MenuItem onClick={deleteMatch}>
             <DeleteIcon fontSize="small" style={{ marginRight: 8 }} />
             Löschen
           </MenuItem>
         )}
-        <MenuItem onClick={() => handlePermalink(match)}>
+        <MenuItem onClick={() => copyPermalink(match)}>
           <LinkIcon fontSize="small" style={{ marginRight: 8 }} />
           Permalink
         </MenuItem>
-        <MenuItem onClick={() => handleShare(match)}>
+        <MenuItem onClick={() => shareMatch(match)}>
           <ShareIcon fontSize="small" style={{ marginRight: 8 }} />
           Teilen
         </MenuItem>
