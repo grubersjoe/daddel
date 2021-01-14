@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  BrowserRouter as Router,
-  Redirect,
-  Route,
-  Switch,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import firebaseNS from 'firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { ThemeProvider } from '@material-ui/core';
@@ -43,7 +38,7 @@ const App: React.FC = () => {
     REGEX_IPV4.test(window.location.hostname);
 
   if (!isAllowedHost) {
-    return <Redirect to={`https://${DOMAIN_PROD}`} />;
+    window.location.replace(`https://${DOMAIN_PROD}`);
   }
 
   // TODO: make this configurable
