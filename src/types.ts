@@ -41,8 +41,8 @@ export type User = {
 
 export type UserMap = Map<User['uid'], User>;
 
-// Yes, this is very specific
-export type TimeLabel =
+// Unfortuately, TypeScript is not able to dynamically generate this type
+export type TimeString =
   | '09:00'
   | '09:15'
   | '09:30'
@@ -103,4 +103,4 @@ export type TimeLabel =
   | '23:15'
   | '23:30'
   | '23:45'
-  | '23:59'; // open end
+  | '23:59'; // = Open end

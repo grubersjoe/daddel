@@ -33,7 +33,7 @@ import firebase from '../services/firebase';
 import { joinMatch } from '../services/match';
 import { Match, Game } from '../types';
 import { reorderGames } from '../utils';
-import { parseTimeLabel } from '../utils/date';
+import { parseTime } from '../utils/date';
 import AppBar from '../components/AppBar';
 import { AuthUserContext } from '../components/App';
 import { SnackbarContext } from '../components/Layout';
@@ -91,7 +91,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
           const defaultAvailUntil = addMinutes(date, DEFAULT_MATCH_LENGTH);
           const availUntil = isSameDay(defaultAvailUntil, date)
             ? defaultAvailUntil
-            : parseTimeLabel(MATCH_TIME_LATEST);
+            : parseTime(MATCH_TIME_LATEST);
 
           return joinMatch(date, availUntil, { id: doc.id, ...match });
         }

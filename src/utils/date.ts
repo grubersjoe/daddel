@@ -15,7 +15,7 @@ import {
   DEFAULT_TIME_INCREMENT,
   MATCH_TIME_OPEN_END,
 } from '../constants/date';
-import { Timestamp, TimeLabel } from '../types';
+import { Timestamp, TimeString } from '../types';
 
 export function format<R extends string = string>(
   date: Date | number,
@@ -66,18 +66,15 @@ export function formatTime<R extends string = string>(
   return format<R>(date.toDate(), timeFormat);
 }
 
-export function parseTimeLabel(
-  timeLabel: TimeLabel,
-  referenceDate = new Date(),
-): Date {
-  return parseDate(timeLabel, TIME_FORMAT, referenceDate);
+export function parseTime(time: TimeString, referenceDate = new Date()): Date {
+  return parseDate(time, TIME_FORMAT, referenceDate);
 }
 
-export function calcTimeLabelsBetweenDates(
+export function calcTimeStringsBetweenDates(
   startDate: Date,
   endDate: Date,
   stepInMinutes = DEFAULT_TIME_INCREMENT,
-): TimeLabel[] {
+): TimeString[] {
   let currentDate = roundToNearestMinutes(startDate, {
     nearestTo: DEFAULT_TIME_INCREMENT,
   });
@@ -91,11 +88,11 @@ export function calcTimeLabelsBetweenDates(
   }
 
   // Initialize with first value
-  const options = [formatTime<TimeLabel>(currentDate)];
+  const options = [formatTime<TimeString>(currentDate)];
 
   while (isBefore(currentDate, endDate)) {
     currentDate = addMinutes(currentDate, stepInMinutes);
-    options.push(formatTime<TimeLabel>(currentDate));
+    options.push(formatTime<TimeString>(currentDate));
   }
 
   return options;
