@@ -12,12 +12,12 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
 import { getGameBanner } from '../../assets/images/games';
-import { UNKNOWN_GAME_ID } from '../../constants';
 import { Game, Match, UserMap } from '../../types';
 import { formatDate, formatTime } from '../../utils/date';
 
 import JoinMatchDialog from '../Dialogs/JoinMatchDialog';
 import Calendar from './Calendar';
+import FallbackBanner from './FallbackBanner';
 import MatchCardSkeleton from './MatchCardSkeleton';
 import Menu from './Menu';
 import ProgressBar from './ProgressBar';
@@ -83,36 +83,6 @@ export const useStyles = makeStyles(theme => ({
 
 const Separator: React.FC = () => <span style={{ margin: '0 0.4em' }}>•</span>;
 
-const FallbackBanner: React.FC<{ game: Game }> = ({ game }) => {
-  const isUnknownGame = game.id === UNKNOWN_GAME_ID;
-
-  return (
-    <Box
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      width="100%"
-      height="100%"
-      position="absolute"
-    >
-      <span
-        style={{
-          margin: '-28px 1em 0 1em',
-          textAlign: 'center',
-          fontWeight: 'bold',
-          fontSize: isUnknownGame
-            ? 'clamp(1rem, 20vw, 120px)'
-            : 'clamp(1.25rem, 2vw, 1.5rem)',
-          lineHeight: 1.4,
-          userSelect: 'none',
-        }}
-      >
-        {isUnknownGame ? '?' : game.name}
-      </span>
-    </Box>
-  );
-};
-
 const MatchCard: React.FC<Props> = ({ match, userList }) => {
   const theme = useTheme();
   const classes = useStyles();
@@ -135,7 +105,7 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
     }
   }, [game]);
 
-  const hasNoBanner = gameBanner === null;
+  const hasBanner = Boolean(gameBanner);
 
   // It should be able to join a match until the end of its date
   const isJoinable = isFuture(endOfDay(match.date.toDate()));
@@ -150,9 +120,9 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
         className={classes.media}
         image={gameBanner ?? undefined}
         style={{
-          ...(hasNoBanner && {
+          ...(!hasBanner && {
             background:
-              'linear-gradient(to bottom, rgb(60, 60, 60) 0%, rgb(40, 40, 40) 100%)',
+              'linear-gradient(to bottom, rgb(36, 36, 36) 0%, rgb(30, 30, 30) 100%)',
           }),
         }}
       >
@@ -166,7 +136,7 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
             <Menu game={game} match={match} />
           </Box>
 
-          {hasNoBanner && <FallbackBanner game={game} />}
+          {!hasBanner && <FallbackBanner game={game} />}
 
           <Grid
             container
@@ -175,9 +145,9 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
             justify="space-between"
             alignItems="flex-end"
             style={{
-              background: hasNoBanner
-                ? 'linear-gradient(transparent, rgba(0, 0, 0, 0.3))'
-                : 'linear-gradient(transparent, rgba(0, 0, 0, 0.95))',
+              ...(hasBanner && {
+                background: 'linear-gradient(transparent, rgba(0, 0, 0, 0.95))',
+              }),
             }}
           >
             <Typography className={classes.date}>
@@ -209,24 +179,17 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
             <Separator />
             <Link to={`/matches/${match.id}`}>Permalink</Link>
           </Typography>
-
           {match.description && (
             <Typography
-              style={{ marginBottom: theme.spacing(2), lineHeight: 1.25 }}
+              style={{
+                marginBottom: theme.spacing(2),
+                lineHeight: 1.25,
+              }}
             >
               <Link to={`/matches/${match.id}`}>{match.description}</Link>
             </Typography>
           )}
-          {match.players.length === 0 ? (
-            <Typography
-              color="textSecondary"
-              style={{ marginBottom: theme.spacing(1) }}
-            >
-              Keine Mitspieler bisher
-            </Typography>
-          ) : (
-            <Calendar players={match.players} userList={userList} />
-          )}
+          <Calendar players={match.players} userList={userList} />
         </CardContent>
         {isJoinable && (
           <CardActions className={classes.actions}>
