@@ -21,11 +21,11 @@ import {
   MATCH_TIME_OPEN_END,
   DEFAULT_MATCH_LENGTH,
 } from '../../constants/date';
-import { Match, Timestamp, TimeLabel } from '../../types';
+import { Match, Timestamp, TimeString } from '../../types';
 import {
   formatTime,
-  calcTimeLabelsBetweenDates,
-  parseTimeLabel,
+  calcTimeStringsBetweenDates,
+  parseTime,
 } from '../../utils/date';
 
 type Props = {
@@ -35,26 +35,26 @@ type Props = {
 };
 
 type State = {
-  availFrom: TimeLabel;
-  availUntil: TimeLabel;
+  availFrom: TimeString;
+  availUntil: TimeString;
 };
 
-const timeLabels = calcTimeLabelsBetweenDates(
-  parseTimeLabel(MATCH_TIME_EARLIEST),
-  parseTimeLabel(MATCH_TIME_LATEST),
+const timeOptions = calcTimeStringsBetweenDates(
+  parseTime(MATCH_TIME_EARLIEST),
+  parseTime(MATCH_TIME_LATEST),
 );
 
-const timeLabelsWithOpenEnd = [...timeLabels, MATCH_TIME_OPEN_END];
+const timeOptionsWithOpenEnd = [...timeOptions, MATCH_TIME_OPEN_END];
 
 const renderSelectOptions = (
-  timeLabels: TimeLabel[],
+  times: TimeString[],
   optionsArg = {
     includeOpenEnd: false,
   },
 ) => {
-  let options = timeLabels.map(label => (
-    <option key={label} value={label}>
-      {label}
+  let options = times.map(time => (
+    <option key={time} value={time}>
+      {time}
     </option>
   ));
 
@@ -81,28 +81,28 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
   );
 
   const currentFrom = currentPlayer
-    ? formatTime<TimeLabel>(currentPlayer.from)
+    ? formatTime<TimeString>(currentPlayer.from)
     : null;
 
   const currentUntil = currentPlayer
-    ? formatTime<TimeLabel>(currentPlayer.until)
+    ? formatTime<TimeString>(currentPlayer.until)
     : null;
 
-  const matchTime = formatTime<TimeLabel>(match.date);
+  const matchTime = formatTime<TimeString>(match.date);
 
   const availFrom =
-    timeLabels.find(time => time === currentFrom) ??
-    timeLabels.find(time => time === matchTime) ??
+    timeOptions.find(time => time === currentFrom) ??
+    timeOptions.find(time => time === matchTime) ??
     DEFAULT_MATCH_TIME;
 
-  const defaultAvailUntil = formatTime<TimeLabel>(
-    addMinutes(parseTimeLabel(availFrom), DEFAULT_MATCH_LENGTH),
+  const defaultAvailUntil = formatTime<TimeString>(
+    addMinutes(parseTime(availFrom), DEFAULT_MATCH_LENGTH),
   );
 
   const availUntil =
-    timeLabelsWithOpenEnd.find(time => time === currentUntil) ??
-    timeLabels.find(time => time === defaultAvailUntil) ??
-    timeLabels[timeLabels.length - 1];
+    timeOptionsWithOpenEnd.find(time => time === currentUntil) ??
+    timeOptions.find(time => time === defaultAvailUntil) ??
+    timeOptions[timeOptions.length - 1];
 
   const [state, setState] = useState<State>({
     availFrom,
@@ -112,15 +112,15 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
   // availUntil time must not be before the availFrom.
   // Automatically select a later time if availFrom changes.
   useEffect(() => {
-    const indexAvailFrom = timeLabels.indexOf(state.availFrom);
+    const indexAvailFrom = timeOptions.indexOf(state.availFrom);
 
     if (
       state.availUntil !== MATCH_TIME_OPEN_END &&
-      indexAvailFrom >= timeLabels.indexOf(state.availUntil)
+      indexAvailFrom >= timeOptions.indexOf(state.availUntil)
     ) {
       const availUntil =
-        indexAvailFrom + 2 < timeLabels.length
-          ? timeLabels[indexAvailFrom + 2]
+        indexAvailFrom + 2 < timeOptions.length
+          ? timeOptions[indexAvailFrom + 2]
           : MATCH_TIME_OPEN_END;
 
       setState(state => ({
@@ -134,11 +134,7 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
     setLoading(true);
     setError(null);
 
-    joinMatch(
-      parseTimeLabel(state.availFrom),
-      parseTimeLabel(state.availUntil),
-      match,
-    )
+    joinMatch(parseTime(state.availFrom), parseTime(state.availUntil), match)
       .then(() => setOpen(false))
       .catch(setError)
       .finally(() => {
@@ -165,7 +161,7 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
   ) => {
     setState({
       ...state,
-      [prop]: event.target.value as TimeLabel,
+      [prop]: event.target.value as TimeString,
     });
   };
 
@@ -213,7 +209,7 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
                 fullWidth
                 native
               >
-                {renderSelectOptions(timeLabels)}
+                {renderSelectOptions(timeOptions)}
               </Select>
             </Grid>
             <Grid item xs={6} style={{ paddingLeft: theme.spacing(1.5) }}>
@@ -227,7 +223,7 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
               >
                 {renderSelectOptions(
                   // Let the user select only times past current availFrom time
-                  timeLabels.slice(timeLabels.indexOf(state.availFrom) + 1),
+                  timeOptions.slice(timeOptions.indexOf(state.availFrom) + 1),
                   { includeOpenEnd: true },
                 )}
               </Select>

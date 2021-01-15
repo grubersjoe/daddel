@@ -1,14 +1,16 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import differenceInMinutes from 'date-fns/differenceInMinutes';
 import fromUnixTime from 'date-fns/fromUnixTime';
+import Typography from '@material-ui/core/Typography';
 
 import { Player, UserMap } from '../../types';
 import {
-  calcTimeLabelsBetweenDates,
+  calcTimeStringsBetweenDates,
   formatTime,
   isOpenEndDate,
 } from '../../utils/date';
+import { calcPlayerTimeBounds } from '../../utils/match';
 import {
   DEFAULT_TIME_INCREMENT,
   MATCH_TIME_OPEN_END,
@@ -84,34 +86,24 @@ const Bar: React.FC<{ left: number; width: number }> = ({
 
 const Calendar: React.FC<Props> = ({ players, userList }) => {
   const classes = useStyles();
+  const theme = useTheme();
 
-  // Unit: seconds
-  const timeBounds = players.reduce(
-    (bounds, player) => {
-      // Do not enlarge time bounds for open end timestamps
-      if (isOpenEndDate(player.until)) {
-        return {
-          min: Math.min(bounds.min, player.from.seconds),
-          max: bounds.max,
-          withOpenEnd: true,
-        };
-      }
+  if (players.length === 0) {
+    return (
+      <Typography
+        color="textSecondary"
+        style={{ marginBottom: theme.spacing(1) }}
+      >
+        Keine Mitspieler bisher
+      </Typography>
+    );
+  }
 
-      return {
-        min: Math.min(bounds.min, player.from.seconds),
-        max: Math.max(bounds.max, player.until.seconds),
-        withOpenEnd: bounds.withOpenEnd,
-      };
-    },
-    { min: Infinity, max: -Infinity, withOpenEnd: false },
-  );
-
+  const timeBounds = calcPlayerTimeBounds(players);
   const minDate = fromUnixTime(timeBounds.min);
   const maxDate = fromUnixTime(
     timeBounds.withOpenEnd
-      ? isFinite(timeBounds.max)
-        ? timeBounds.max + DEFAULT_TIME_INCREMENT * 60
-        : timeBounds.min + DEFAULT_TIME_INCREMENT * 60 * 4 // Only *one* player with open end time
+      ? timeBounds.max + DEFAULT_TIME_INCREMENT * 60
       : timeBounds.max,
   );
   const totalMinutes = differenceInMinutes(maxDate, minDate);
@@ -120,7 +112,7 @@ const Calendar: React.FC<Props> = ({ players, userList }) => {
     Math.round(totalMinutes / 4 / DEFAULT_TIME_INCREMENT) *
     DEFAULT_TIME_INCREMENT;
 
-  const timeLabels = calcTimeLabelsBetweenDates(
+  const timeLabels = calcTimeStringsBetweenDates(
     minDate,
     maxDate,
     labelStepSize,
@@ -136,13 +128,13 @@ const Calendar: React.FC<Props> = ({ players, userList }) => {
 
   return (
     <div className={classes.root}>
-      {timeLabels.map((timeLabel, index) => {
+      {timeLabels.map((label, index) => {
         const left = ((index * labelStepSize) / totalMinutes) * 100;
         return (
           // More than about 88% left will run outside of container
           left <= 88 && (
             <Label left={left} key={left}>
-              {timeLabel}
+              {label}
             </Label>
           )
         );
