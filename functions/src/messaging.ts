@@ -7,6 +7,7 @@ import { formatDate, formatTime } from './util/date';
 
 const FIREBASE_REGION = 'europe-west3'; // Frankfurt
 const DEFAULT_TOPIC = 'default';
+const MESSAGING_ENABLED = true; // Useful while developing
 
 /**
  * @throws functions.https.HttpsError
@@ -88,6 +89,14 @@ export const onCreateMatch = functions
   .firestore.document('matches/{matchId}')
   .onCreate(matchSnap => {
     const match = matchSnap.data() as Match;
+
+    if (!MESSAGING_ENABLED) {
+      functions.logger.warn(
+        'No messages have been sent, because the feature is disabled.',
+      );
+
+      return Promise.resolve();
+    }
 
     return admin
       .firestore()
