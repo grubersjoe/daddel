@@ -1,14 +1,13 @@
 import { EVENTS } from '../constants';
-import { TimeLabel, Match, Player } from '../types';
-import { parseTimeLabel } from '../utils/date';
+import { Match, Player } from '../types';
 import firebase from './firebase';
 
 /**
  * @throws Error
  */
 export function joinMatch(
-  availFrom: TimeLabel,
-  availUntil: TimeLabel,
+  availFrom: Date,
+  availUntil: Date,
   match: Match,
 ): Promise<void> {
   const { currentUser } = firebase.auth;
@@ -20,12 +19,8 @@ export function joinMatch(
   try {
     const updatedPlayer: Player = {
       uid: currentUser.uid,
-      from: firebase.getTimestamp(
-        parseTimeLabel(availFrom, match.date.toDate()),
-      ),
-      until: firebase.getTimestamp(
-        parseTimeLabel(availUntil, match.date.toDate()),
-      ),
+      from: firebase.getTimestamp(availFrom),
+      until: firebase.getTimestamp(availUntil),
     };
 
     // Check if player is already in lobby
