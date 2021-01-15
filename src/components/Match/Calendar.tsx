@@ -85,6 +85,7 @@ const Bar: React.FC<{ left: number; width: number }> = ({
 const Calendar: React.FC<Props> = ({ players, userList }) => {
   const classes = useStyles();
 
+  // Unit: seconds
   const timeBounds = players.reduce(
     (bounds, player) => {
       // Do not enlarge time bounds for open end timestamps
@@ -108,7 +109,9 @@ const Calendar: React.FC<Props> = ({ players, userList }) => {
   const minDate = fromUnixTime(timeBounds.min);
   const maxDate = fromUnixTime(
     timeBounds.withOpenEnd
-      ? timeBounds.max + DEFAULT_TIME_INCREMENT * 60
+      ? isFinite(timeBounds.max)
+        ? timeBounds.max + DEFAULT_TIME_INCREMENT * 60
+        : timeBounds.min + DEFAULT_TIME_INCREMENT * 60 * 4 // Only *one* player with open end time
       : timeBounds.max,
   );
   const totalMinutes = differenceInMinutes(maxDate, minDate);

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import addMinutes from 'date-fns/addMinutes';
-import { withStyles, useTheme } from '@material-ui/core/styles';
+import { useTheme } from '@material-ui/core/styles';
 import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -10,7 +10,6 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Grid from '@material-ui/core/Grid';
 import InputLabel from '@material-ui/core/InputLabel';
-import MuiLinearProgress from '@material-ui/core/LinearProgress';
 import Select from '@material-ui/core/Select';
 
 import firebase from '../../services/firebase';
@@ -40,12 +39,35 @@ type State = {
   availUntil: TimeLabel;
 };
 
-const LinearProgress = withStyles(theme => ({
-  root: {
-    height: 6,
-    backgroundColor: theme.palette.grey[700],
+const timeLabels = calcTimeLabelsBetweenDates(
+  parseTimeLabel(MATCH_TIME_EARLIEST),
+  parseTimeLabel(MATCH_TIME_LATEST),
+);
+
+const timeLabelsWithOpenEnd = [...timeLabels, MATCH_TIME_OPEN_END];
+
+const renderSelectOptions = (
+  timeLabels: TimeLabel[],
+  optionsArg = {
+    includeOpenEnd: false,
   },
-}))(MuiLinearProgress);
+) => {
+  let options = timeLabels.map(label => (
+    <option key={label} value={label}>
+      {label}
+    </option>
+  ));
+
+  if (optionsArg.includeOpenEnd) {
+    options.push(
+      <option key={MATCH_TIME_OPEN_END} value={MATCH_TIME_OPEN_END}>
+        Open end
+      </option>,
+    );
+  }
+
+  return options;
+};
 
 const JoinMatchDialog: React.FC<Props> = ({ match }) => {
   const theme = useTheme();
@@ -56,11 +78,6 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
 
   const currentPlayer = match.players.find(
     player => player.uid === firebase.auth.currentUser?.uid,
-  );
-
-  const timeLabels = calcTimeLabelsBetweenDates(
-    parseTimeLabel(MATCH_TIME_EARLIEST),
-    parseTimeLabel(MATCH_TIME_LATEST),
   );
 
   const currentFrom = currentPlayer
@@ -83,29 +100,56 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
   );
 
   const availUntil =
-    [...timeLabels, MATCH_TIME_OPEN_END].find(time => time === currentUntil) ??
+    timeLabelsWithOpenEnd.find(time => time === currentUntil) ??
     timeLabels.find(time => time === defaultAvailUntil) ??
     timeLabels[timeLabels.length - 1];
 
-  const [state, setState] = React.useState<State>({
+  const [state, setState] = useState<State>({
     availFrom,
     availUntil,
   });
 
+  // availUntil time must not be before the availFrom.
+  // Automatically select a later time if availFrom changes.
+  useEffect(() => {
+    const indexAvailFrom = timeLabels.indexOf(state.availFrom);
+
+    if (
+      state.availUntil !== MATCH_TIME_OPEN_END &&
+      indexAvailFrom >= timeLabels.indexOf(state.availUntil)
+    ) {
+      const availUntil =
+        indexAvailFrom + 2 < timeLabels.length
+          ? timeLabels[indexAvailFrom + 2]
+          : MATCH_TIME_OPEN_END;
+
+      setState(state => ({
+        ...state,
+        availUntil,
+      }));
+    }
+  }, [state.availFrom, state.availUntil]);
+
   const handleJoin = () => {
     setLoading(true);
-    joinMatch(state.availFrom, state.availUntil, match)
+    setError(null);
+
+    joinMatch(
+      parseTimeLabel(state.availFrom),
+      parseTimeLabel(state.availUntil),
+      match,
+    )
       .then(() => setOpen(false))
       .catch(setError)
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const handleLeave = () => {
-    if (!match.id) {
-      throw new Error('No match ID given');
-    }
-
     setLoading(true);
+    setError(null);
+
     leaveMatch(match)
       .then(() => setOpen(false))
       .catch(setError)
@@ -116,41 +160,18 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
     setOpen(false);
   };
 
-  const handleChange = (stateProp: keyof typeof state) => (
+  const handleTimeChange = (prop: keyof typeof state) => (
     event: React.ChangeEvent<{ value: unknown }>,
   ) => {
     setState({
       ...state,
-      [stateProp]: event.target.value as TimeLabel,
+      [prop]: event.target.value as TimeLabel,
     });
   };
 
   const userInLobby = match.players.find(
     player => player.uid === firebase.auth.currentUser?.uid,
   );
-
-  const getSelectOptions = (
-    timeLabels: string[],
-    optionsArg = {
-      includeOpenEnd: false,
-    },
-  ) => {
-    let options = timeLabels.map(label => (
-      <option key={label} value={label}>
-        {label}
-      </option>
-    ));
-
-    if (optionsArg.includeOpenEnd) {
-      options.push(
-        <option key={MATCH_TIME_OPEN_END} value={MATCH_TIME_OPEN_END}>
-          Open end
-        </option>,
-      );
-    }
-
-    return options;
-  };
 
   return (
     <>
@@ -179,7 +200,6 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
         </Grid>
       </Grid>
       <Dialog open={open} onClose={closeDialog}>
-        {loading && <LinearProgress />}
         <DialogTitle>Mitspielen</DialogTitle>
         <DialogContent style={{ paddingTop: 0 }}>
           <DialogContentText>Von wann bis wann hast du Zeit?</DialogContentText>
@@ -188,24 +208,25 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
               <InputLabel htmlFor="select-from">Ab</InputLabel>
               <Select
                 value={state.availFrom}
-                onChange={handleChange('availFrom')}
+                onChange={handleTimeChange('availFrom')}
                 inputProps={{ id: 'select-from' }}
                 fullWidth
                 native
               >
-                {getSelectOptions(timeLabels)}
+                {renderSelectOptions(timeLabels)}
               </Select>
             </Grid>
             <Grid item xs={6} style={{ paddingLeft: theme.spacing(1.5) }}>
               <InputLabel htmlFor="select-until">Bis</InputLabel>
               <Select
                 value={state.availUntil}
-                onChange={handleChange('availUntil')}
+                onChange={handleTimeChange('availUntil')}
                 inputProps={{ id: 'select-until' }}
                 fullWidth
                 native
               >
-                {getSelectOptions(
+                {renderSelectOptions(
+                  // Let the user select only times past current availFrom time
                   timeLabels.slice(timeLabels.indexOf(state.availFrom) + 1),
                   { includeOpenEnd: true },
                 )}
