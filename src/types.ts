@@ -103,4 +103,4 @@ export type TimeString =
   | '23:15'
   | '23:30'
   | '23:45'
-  | '23:59'; // = Open end
+  | '23:59'; // Open end
