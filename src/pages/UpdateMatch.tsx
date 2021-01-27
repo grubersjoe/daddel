@@ -3,10 +3,6 @@ import { Redirect, StaticContext } from 'react-router';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import deLocale from 'date-fns/locale/de';
-import getDate from 'date-fns/getDate';
-import getMonth from 'date-fns/getMonth';
-import getYear from 'date-fns/getYear';
-import isSameDay from 'date-fns/isSameDay';
 import set from 'date-fns/set';
 import DateFnsUtils from '@date-io/date-fns';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
@@ -31,35 +27,18 @@ type LocationState = {
   match?: Match;
 };
 
-const updatePlayerDates = (players: Player[], updatedDate: Date): Player[] =>
+const updatePlayerList = (players: Player[], updatedDate: Date): Player[] =>
   players.map(player => {
-    const fromDate = player.from.toDate();
-    const untilDate = player.until.toDate();
-
-    const from = isSameDay(fromDate, updatedDate)
-      ? player.from
-      : firebase.getTimestamp(
-          set(fromDate, {
-            year: getYear(updatedDate),
-            month: getMonth(updatedDate),
-            date: getDate(updatedDate),
-          }),
-        );
-
-    const until = isSameDay(untilDate, updatedDate)
-      ? player.until
-      : firebase.getTimestamp(
-          set(untilDate, {
-            year: getYear(updatedDate),
-            month: getMonth(updatedDate),
-            date: getDate(updatedDate),
-          }),
-        );
+    const updatedValues = {
+      year: updatedDate.getFullYear(),
+      month: updatedDate.getMonth(),
+      date: updatedDate.getDate(),
+    };
 
     return {
       uid: player.uid,
-      from,
-      until,
+      from: firebase.getTimestamp(set(player.from.toDate(), updatedValues)),
+      until: firebase.getTimestamp(set(player.until.toDate(), updatedValues)),
     };
   });
 
@@ -107,7 +86,7 @@ const UpdateMatch: React.FC<
       date: firebase.getTimestamp(date),
       description,
       game: firebase.firestore.doc(`games/${gameId}`),
-      players: updatePlayerDates(match.players, date),
+      players: updatePlayerList(match.players, date),
     };
 
     firebase.firestore
