@@ -134,7 +134,10 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
     setLoading(true);
     setError(null);
 
-    joinMatch(parseTime(state.availFrom), parseTime(state.availUntil), match)
+    const availFrom = parseTime(state.availFrom, match.date.toDate());
+    const availUntil = parseTime(state.availUntil, match.date.toDate());
+
+    joinMatch(availFrom, availUntil, match)
       .then(() => setOpen(false))
       .catch(setError)
       .finally(() => {

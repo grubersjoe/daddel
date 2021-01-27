@@ -91,7 +91,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
           const defaultAvailUntil = addMinutes(date, DEFAULT_MATCH_LENGTH);
           const availUntil = isSameDay(defaultAvailUntil, date)
             ? defaultAvailUntil
-            : parseTime(MATCH_TIME_LATEST);
+            : parseTime(MATCH_TIME_LATEST, date);
 
           return joinMatch(date, availUntil, { id: doc.id, ...match });
         }
