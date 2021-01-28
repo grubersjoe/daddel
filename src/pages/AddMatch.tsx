@@ -34,9 +34,10 @@ import { joinMatch } from '../services/match';
 import { Match, Game } from '../types';
 import { reorderGames } from '../utils';
 import { parseTime } from '../utils/date';
-import AppBar from '../components/AppBar';
 import { AuthUserContext } from '../components/App';
 import { SnackbarContext } from '../components/Layout';
+import AppBar from '../components/AppBar';
+import PageMetadata from '../components/PageMetadata';
 
 const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
   const [authUser] = useContext(AuthUserContext);
@@ -106,6 +107,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
 
   return (
     <>
+      <PageMetadata title="Neues Match – Daddel" />
       <AppBar title="Neues Match" />
       <Container>
         <Box mb="1.5rem">

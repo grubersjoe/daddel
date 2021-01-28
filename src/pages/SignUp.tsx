@@ -18,6 +18,7 @@ import { createUser, isValidInvitationCode } from '../services/auth';
 import firebase from '../services/firebase';
 import ROUTES from '../constants/routes';
 import Logo from '../components/Logo';
+import PageMetadata from '../components/PageMetadata';
 
 const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
   const theme = useTheme();
@@ -58,6 +59,7 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
 
   return (
     <Container style={{ marginTop: -theme.spacing(9) }}>
+      <PageMetadata title="Registrieren – Daddel" />
       <Logo />
       <Typography variant="h6">Registrieren</Typography>
       <form
