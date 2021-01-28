@@ -60,7 +60,7 @@ const Menu: React.FC<Props> = ({ game, match }) => {
   const copyPermalink = (match: Match) => {
     if (navigator.clipboard) {
       navigator.clipboard
-        .writeText(`${window.location.href}/${match.id}`)
+        .writeText(`${window.location.origin}/matches/${match.id}`)
         .then(() => {
           dispatchSnack('In Zwischenablage kopiert');
         });

@@ -19,10 +19,11 @@ import Typography from '@material-ui/core/Typography';
 import { signOut } from '../services/auth';
 import firebase from '../services/firebase';
 import { User } from '../types';
-import AppBar from '../components/AppBar';
-import { SnackbarContext } from '../components/Layout';
-import NotificationSettings from '../components/Settings/NotificationSettings';
 import { supportsMessaging } from '../utils';
+import { SnackbarContext } from '../components/Layout';
+import AppBar from '../components/AppBar';
+import NotificationSettings from '../components/Settings/NotificationSettings';
+import PageMetadata from '../components/PageMetadata';
 
 const Settings: React.FC<RouteComponentProps> = ({ history }) => {
   const theme = useTheme();
@@ -84,6 +85,7 @@ const Settings: React.FC<RouteComponentProps> = ({ history }) => {
 
   return (
     <>
+      <PageMetadata title="Einstellungen – Daddel" />
       <AppBar title="Einstellungen" />
       <Container style={{ marginTop: -theme.spacing(2) }}>
         <form

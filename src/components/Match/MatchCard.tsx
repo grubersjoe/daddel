@@ -15,17 +15,19 @@ import { getGameBanner } from '../../assets/images/games';
 import { Game, Match, UserMap } from '../../types';
 import { formatDate, formatTime } from '../../utils/date';
 
-import JoinMatchDialog from '../Dialogs/JoinMatchDialog';
 import Calendar from './Calendar';
 import FallbackBanner from './FallbackBanner';
+import JoinMatchDialog from '../Dialogs/JoinMatchDialog';
 import MatchCardSkeleton from './MatchCardSkeleton';
 import Menu from './Menu';
+import PageMetadata from '../PageMetadata';
 import ProgressBar from './ProgressBar';
 import TimeAgo from '../TimeAgo';
 
 type Props = {
   match: Match;
   userList: UserMap;
+  setPageMetadata?: boolean;
 };
 
 export const useStyles = makeStyles(theme => ({
@@ -83,7 +85,7 @@ export const useStyles = makeStyles(theme => ({
 
 const Separator: React.FC = () => <span style={{ margin: '0 0.4em' }}>•</span>;
 
-const MatchCard: React.FC<Props> = ({ match, userList }) => {
+const MatchCard: React.FC<Props> = ({ match, userList, setPageMetadata }) => {
   const theme = useTheme();
   const classes = useStyles();
 
@@ -115,89 +117,97 @@ const MatchCard: React.FC<Props> = ({ match, userList }) => {
   }
 
   return (
-    <Card className={classes.card} raised>
-      <CardMedia
-        className={classes.media}
-        image={gameBanner ?? undefined}
-        style={{
-          ...(!hasBanner && {
-            background:
-              'linear-gradient(to bottom, rgb(36, 36, 36) 0%, rgb(30, 30, 30) 100%)',
-          }),
-        }}
-      >
-        <Grid
-          container
-          direction="column"
-          alignItems="flex-end"
-          style={{ position: 'relative', height: '100%' }}
+    <>
+      {setPageMetadata && <PageMetadata title={`${game.name} – Daddel`} />}
+
+      <Card className={classes.card} raised>
+        <CardMedia
+          className={classes.media}
+          image={gameBanner ?? undefined}
+          style={{
+            ...(!hasBanner && {
+              background:
+                'linear-gradient(to bottom, rgb(36, 36, 36) 0%, rgb(30, 30, 30) 100%)',
+            }),
+          }}
         >
-          <Box flexGrow={1}>
-            <Menu game={game} match={match} />
-          </Box>
-
-          {!hasBanner && <FallbackBanner game={game} />}
-
           <Grid
             container
-            item
-            direction="row"
-            justify="space-between"
+            direction="column"
             alignItems="flex-end"
-            style={{
-              ...(hasBanner && {
-                background: 'linear-gradient(transparent, rgba(0, 0, 0, 0.95))',
-              }),
-            }}
+            style={{ position: 'relative', height: '100%' }}
           >
-            <Typography className={classes.date}>
-              {formatDate(match.date)}
-            </Typography>
-            <Typography className={classes.date}>
-              {formatTime(match.date)} Uhr
-            </Typography>
-          </Grid>
-          {game.maxPlayers && (
-            <Grid container item>
-              <ProgressBar value={match.players.length} max={game.maxPlayers} />
-            </Grid>
-          )}
-        </Grid>
-      </CardMedia>
-      <Box
-        display="flex"
-        flexGrow={1}
-        flexDirection="column"
-        justifyContent="space-between"
-      >
-        <CardContent className={classes.cardContent}>
-          <Typography
-            color="textSecondary"
-            style={{ marginBottom: theme.spacing(1.75) }}
-          >
-            <TimeAgo date={match.date.toDate()} />
-            <Separator />
-            <Link to={`/matches/${match.id}`}>Permalink</Link>
-          </Typography>
-          {match.description && (
-            <Typography
+            <Box flexGrow={1}>
+              <Menu game={game} match={match} />
+            </Box>
+
+            {!hasBanner && <FallbackBanner game={game} />}
+
+            <Grid
+              container
+              item
+              direction="row"
+              justify="space-between"
+              alignItems="flex-end"
               style={{
-                marginBottom: theme.spacing(2),
-                lineHeight: 1.25,
+                ...(hasBanner && {
+                  background:
+                    'linear-gradient(transparent, rgba(0, 0, 0, 0.95))',
+                }),
               }}
             >
-              <Link to={`/matches/${match.id}`}>{match.description}</Link>
+              <Typography className={classes.date}>
+                {formatDate(match.date)}
+              </Typography>
+              <Typography className={classes.date}>
+                {formatTime(match.date)} Uhr
+              </Typography>
+            </Grid>
+            {game.maxPlayers && (
+              <Grid container item>
+                <ProgressBar
+                  value={match.players.length}
+                  max={game.maxPlayers}
+                />
+              </Grid>
+            )}
+          </Grid>
+        </CardMedia>
+        <Box
+          display="flex"
+          flexGrow={1}
+          flexDirection="column"
+          justifyContent="space-between"
+        >
+          <CardContent className={classes.cardContent}>
+            <Typography
+              color="textSecondary"
+              style={{ marginBottom: theme.spacing(1.75) }}
+            >
+              <TimeAgo date={match.date.toDate()} />
+              <Separator />
+              <Link to={`/matches/${match.id}`}>Permalink</Link>
             </Typography>
+            {match.description && (
+              <Typography
+                style={{
+                  marginBottom: theme.spacing(2),
+                  lineHeight: 1.25,
+                }}
+              >
+                <Link to={`/matches/${match.id}`}>{match.description}</Link>
+              </Typography>
+            )}
+            <Calendar players={match.players} userList={userList} />
+          </CardContent>
+          {isJoinable && (
+            <CardActions className={classes.actions}>
+              <JoinMatchDialog match={match} />
+            </CardActions>
           )}
-          <Calendar players={match.players} userList={userList} />
-        </CardContent>
-        {isJoinable && (
-          <CardActions className={classes.actions}>
-            <JoinMatchDialog match={match} />
-          </CardActions>
-        )}
-      </Box>
-    </Card>
+        </Box>
+      </Card>
+    </>
   );
 };
 

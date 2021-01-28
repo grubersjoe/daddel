@@ -19,8 +19,9 @@ import { DEFAULT_TIME_INCREMENT } from '../constants/date';
 import firebase from '../services/firebase';
 import { reorderGames } from '../utils';
 import { Match, Game, Player } from '../types';
-import AppBar from '../components/AppBar';
 import { SnackbarContext } from '../components/Layout';
+import AppBar from '../components/AppBar';
+import PageMetadata from '../components/PageMetadata';
 
 type LocationState = {
   game?: Omit<Game, 'game'>;
@@ -103,6 +104,7 @@ const UpdateMatch: React.FC<
 
   return (
     <>
+      <PageMetadata title="Match bearbeiten – Daddel" />
       <AppBar title="Match bearbeiten" />
       <Container>
         <Box mb="1.5rem">

@@ -17,6 +17,7 @@ import GoogleIcon from '../assets/icons/GoogleIcon';
 import { signInWithEmailAndPassword, signInWithGoogle } from '../services/auth';
 import { AuthUserContext } from '../components/App';
 import Logo from '../components/Logo';
+import PageMetadata from '../components/PageMetadata';
 import Spinner from '../components/Spinner';
 
 const SignIn: React.FC = () => {
@@ -59,6 +60,7 @@ const SignIn: React.FC = () => {
     <Spinner />
   ) : (
     <Container style={{ marginTop: -theme.spacing(9) }}>
+      <PageMetadata title="Anmelden – Daddel" />
       <Logo />
       <Typography variant="h6">Anmelden</Typography>
       <form

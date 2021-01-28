@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import { resetPassword } from '../services/auth';
 import ROUTES from '../constants/routes';
 import Logo from '../components/Logo';
+import PageMetadata from '../components/PageMetadata';
 
 const ResetPassword: React.FC = () => {
   const theme = useTheme();
@@ -33,6 +34,7 @@ const ResetPassword: React.FC = () => {
 
   return (
     <Container style={{ marginTop: -theme.spacing(9) }}>
+      <PageMetadata title="Passwort zurücksetzen – Daddel" />
       <Logo />
       <Typography variant="h6">Passwort zurücksetzen</Typography>
       <form

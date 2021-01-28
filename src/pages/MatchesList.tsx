@@ -1,13 +1,12 @@
-import React, { useState, useMemo, useContext } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import SwipeableViews from 'react-swipeable-views';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useTheme } from '@material-ui/core/styles';
 import Alert from '@material-ui/lab/Alert';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import LinkIcon from '@material-ui/icons/Link';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
@@ -28,10 +27,9 @@ import {
 import AppBar from '../components/AppBar';
 import Filter, { MatchFilter } from '../components/Match/Filter';
 import MatchCard from '../components/Match/MatchCard';
-import SetupUserDialog from '../components/Dialogs/SetupUserDialog';
-import SingleView from '../components/Match/SingleView';
-import { SnackbarContext } from '../components/Layout';
 import MatchCardSkeleton from '../components/Match/MatchCardSkeleton';
+import PageMetadata from '../components/PageMetadata';
+import SetupUserDialog from '../components/Dialogs/SetupUserDialog';
 
 const loadingAnimation =
   'pulse 0.75s cubic-bezier(.46,.03,.52,.96) 0s infinite';
@@ -48,17 +46,14 @@ const TabPanel: React.FC<{
 );
 
 const MatchesList: React.FC = () => {
-  const { match: matchParam } = useParams<{ match: string }>();
-  const isSingleView = Boolean(matchParam && matchParam.length > 0);
-
   const theme = useTheme();
-  const dispatchSnack = useContext(SnackbarContext);
 
-  const currentDate = useCurrentDate();
   const [userList] = useUserList();
 
   const [isRefetching, setIsRefetching] = useState(false);
   const [tabIndex, setTabIndex] = useState(0);
+
+  const currentDate = useCurrentDate();
 
   const [futureMatches, , futureMatchesError] = useCollectionData<Match>(
     futureMatchesQuery(currentDate),
@@ -112,49 +107,23 @@ const MatchesList: React.FC = () => {
 
   return (
     <>
+      <PageMetadata title="Matches – Daddel" />
       <SetupUserDialog />
 
-      <AppBar filter={isSingleView ? undefined : filterConfig}>
-        {isSingleView && (
-          <>
-            <Button variant="text" component={Link} to={ROUTES.MATCHES_LIST}>
-              Alle Matches
-            </Button>
-            <Button
-              variant="text"
-              startIcon={<LinkIcon />}
-              onClick={() => {
-                if (navigator.clipboard) {
-                  navigator.clipboard
-                    .writeText(window.location.href)
-                    .then(() => {
-                      dispatchSnack('In Zwischenablage kopiert');
-                    });
-                } else {
-                  dispatchSnack('Aktion nicht unterstützt', 'error');
-                }
-              }}
-              style={{ marginLeft: '1rem' }}
-            >
-              Link kopieren
-            </Button>
-          </>
-        )}
-        {!isSingleView && (
-          <Tabs
-            value={tabIndex}
-            onChange={(_event, index) => setTabIndex(index)}
-            variant="fullWidth"
-          >
-            <Tab
-              label="Anstehende"
-              style={{
-                ...(isRefetching && { animation: loadingAnimation }),
-              }}
-            />
-            <Tab label="Vergangene" />
-          </Tabs>
-        )}
+      <AppBar filter={filterConfig}>
+        <Tabs
+          value={tabIndex}
+          onChange={(_event, index) => setTabIndex(index)}
+          variant="fullWidth"
+        >
+          <Tab
+            label="Anstehende"
+            style={{
+              ...(isRefetching && { animation: loadingAnimation }),
+            }}
+          />
+          <Tab label="Vergangene" />
+        </Tabs>
       </AppBar>
 
       {showFilter && (
@@ -163,84 +132,72 @@ const MatchesList: React.FC = () => {
         </Box>
       )}
 
-      {isSingleView ? (
-        <SingleView userList={userList} />
-      ) : (
-        <>
-          <SwipeableViews index={tabIndex} onChangeIndex={setTabIndex}>
-            <TabPanel value={tabIndex} index={0}>
-              {futureMatchesError && (
-                <Alert severity="error">
-                  Fehler: {futureMatchesError.message}
-                </Alert>
-              )}
+      <SwipeableViews index={tabIndex} onChangeIndex={setTabIndex}>
+        <TabPanel value={tabIndex} index={0}>
+          {futureMatchesError && (
+            <Alert severity="error">Fehler: {futureMatchesError.message}</Alert>
+          )}
 
-              {!filteredFutureMatches && <p>Lade …</p>}
+          {!filteredFutureMatches && <p>Lade …</p>}
 
-              {filteredFutureMatches &&
-                filteredFutureMatches.length > 0 &&
-                userList && (
-                  <Grid container spacing={5}>
-                    {filteredFutureMatches.map(match => (
-                      <Grid item xs={12} sm={6} md={4} lg={3} key={match.id}>
-                        <MatchCard match={match} userList={userList} />
-                      </Grid>
-                    ))}
+          {filteredFutureMatches &&
+            filteredFutureMatches.length > 0 &&
+            userList && (
+              <Grid container spacing={5}>
+                {filteredFutureMatches.map(match => (
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={match.id}>
+                    <MatchCard match={match} userList={userList} />
                   </Grid>
-                )}
+                ))}
+              </Grid>
+            )}
 
-              {filteredFutureMatches && filteredFutureMatches.length === 0 && (
-                <div>
-                  <Typography paragraph>Wow. Much empty. </Typography>
-                  {numberOfEnabledFilters > 0 && (
-                    <Typography paragraph>Obacht! Filter ist aktiv.</Typography>
-                  )}
-
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    component={Link}
-                    to={ROUTES.ADD_MATCH}
-                    style={{ marginTop: theme.spacing(1) }}
-                  >
-                    Neues Match
-                  </Button>
-                </div>
-              )}
-            </TabPanel>
-            <TabPanel value={tabIndex} index={1}>
-              {pastMatchesError && (
-                <Alert severity="error">
-                  Fehler: {pastMatchesError.message}
-                </Alert>
+          {filteredFutureMatches && filteredFutureMatches.length === 0 && (
+            <div>
+              <Typography paragraph>Wow. Much empty. </Typography>
+              {numberOfEnabledFilters > 0 && (
+                <Typography paragraph>Obacht! Filter ist aktiv.</Typography>
               )}
 
-              {!filteredPastMatches && <MatchCardSkeleton />}
+              <Button
+                variant="outlined"
+                color="primary"
+                component={Link}
+                to={ROUTES.ADD_MATCH}
+                style={{ marginTop: theme.spacing(1) }}
+              >
+                Neues Match
+              </Button>
+            </div>
+          )}
+        </TabPanel>
+        <TabPanel value={tabIndex} index={1}>
+          {pastMatchesError && (
+            <Alert severity="error">Fehler: {pastMatchesError.message}</Alert>
+          )}
 
-              {filteredPastMatches &&
-                filteredPastMatches.length > 0 &&
-                userList && (
-                  <Grid container spacing={5}>
-                    {filteredPastMatches.map(match => (
-                      <Grid item xs={12} sm={6} md={4} lg={3} key={match.id}>
-                        <MatchCard match={match} userList={userList} />
-                      </Grid>
-                    ))}
-                  </Grid>
-                )}
+          {!filteredPastMatches && <MatchCardSkeleton />}
 
-              {filteredPastMatches && filteredPastMatches.length === 0 && (
-                <>
-                  <Typography paragraph>Wow. Much empty.</Typography>
-                  {numberOfEnabledFilters > 0 && (
-                    <Typography paragraph>Obacht! Filter ist aktiv.</Typography>
-                  )}
-                </>
+          {filteredPastMatches && filteredPastMatches.length > 0 && userList && (
+            <Grid container spacing={5}>
+              {filteredPastMatches.map(match => (
+                <Grid item xs={12} sm={6} md={4} lg={3} key={match.id}>
+                  <MatchCard match={match} userList={userList} />
+                </Grid>
+              ))}
+            </Grid>
+          )}
+
+          {filteredPastMatches && filteredPastMatches.length === 0 && (
+            <>
+              <Typography paragraph>Wow. Much empty.</Typography>``
+              {numberOfEnabledFilters > 0 && (
+                <Typography paragraph>Obacht! Filter ist aktiv.</Typography>
               )}
-            </TabPanel>
-          </SwipeableViews>
-        </>
-      )}
+            </>
+          )}
+        </TabPanel>
+      </SwipeableViews>
     </>
   );
 };
