@@ -3,12 +3,13 @@ import { Link } from 'react-router-dom';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import GamingIcon from '@material-ui/icons/SportsEsports';
+
+import DaddelIcon from '../assets/icons/DaddelIcon';
 
 const useStyles = makeStyles(theme => ({
   icon: {
-    fontSize: '700%',
-    marginRight: theme.spacing(2),
+    fontSize: '5rem',
+    marginRight: theme.spacing(3),
   },
   heading: {
     margin: 0,
@@ -25,7 +26,7 @@ const Logo: React.FC = () => {
   return (
     <Link to="/">
       <Box display="flex" alignItems="center">
-        <GamingIcon color="primary" className={classes.icon} />
+        <DaddelIcon color="primary" className={classes.icon} />
         <h1 className={classes.heading}>Daddel</h1>
       </Box>
       <Typography
