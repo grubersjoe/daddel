@@ -14,7 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import ROUTES from '../constants/routes';
 
 import GoogleIcon from '../assets/icons/GoogleIcon';
-import { signInWithEmailAndPassword, signInWithGoogle } from '../services/auth';
+import firebase from '../services/firebase';
 import { AuthUserContext } from '../components/App';
 import Logo from '../components/Logo';
 import PageMetadata from '../components/PageMetadata';
@@ -43,7 +43,8 @@ const SignIn: React.FC = () => {
   const handleEmailLogin: FormEventHandler = event => {
     event.preventDefault();
     setLoading(true);
-    signInWithEmailAndPassword(email, password)
+    firebase.auth
+      .signInWithEmailAndPassword(email, password)
       .then()
       .catch(setError)
       .finally(() => setLoading(false));
@@ -51,7 +52,8 @@ const SignIn: React.FC = () => {
 
   const handleGoogleLogin = () => {
     setGoogleLoading(true);
-    signInWithGoogle()
+    firebase.auth
+      .signInWithRedirect(firebase.googleAuthProvider)
       .catch(setError)
       .finally(() => setGoogleLoading(false));
   };

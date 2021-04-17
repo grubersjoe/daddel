@@ -14,7 +14,7 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
-import { createUser, isValidInvitationCode } from '../services/auth';
+import { isValidInvitationCode } from '../services/auth';
 import firebase from '../services/firebase';
 import ROUTES from '../constants/routes';
 import Logo from '../components/Logo';
@@ -36,7 +36,8 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
     setLoading(true);
 
     if (await isValidInvitationCode(invitationCode)) {
-      createUser(email, password)
+      firebase.auth
+        .createUserWithEmailAndPassword(email, password)
         .then(data => {
           if (!data?.user?.uid) {
             throw new Error('Unable to create user');

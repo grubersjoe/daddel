@@ -8,7 +8,6 @@ import yellow from '@material-ui/core/colors/yellow';
 
 import { DOMAIN_PROD, REGEX_IPV4 } from '../constants';
 import ROUTES from '../constants/routes';
-import { signOut } from '../services/auth';
 import firebase from '../services/firebase';
 import { createTheme } from '../styles/theme';
 
@@ -32,7 +31,7 @@ const App: React.FC = () => {
   const [authUser, authLoading, authError] = useAuthState(firebase.auth);
 
   if (authError) {
-    signOut();
+    firebase.auth.signOut();
   }
 
   const isAllowedHost =
