@@ -23,7 +23,7 @@ import PageMetadata from './PageMetadata';
 import MatchDetail from '../pages/MatchDetail';
 import MatchesList from '../pages/MatchesList';
 
-type AuthUserValue = [firebaseNS.User | null, boolean];
+type AuthUserValue = [Maybe<firebaseNS.User> | null, boolean];
 
 export const AuthUserContext = React.createContext<AuthUserValue>([null, true]);
 
