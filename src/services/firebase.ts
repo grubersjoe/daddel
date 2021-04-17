@@ -44,10 +44,9 @@ const functions = app.functions(FIREBASE_REGION);
 
 let messaging;
 try {
+  // This will throw an error on iOS (unsupported)
   messaging = app.messaging();
-} catch {
-  messaging = undefined;
-}
+} catch {}
 
 // Emulators
 if (window.location.hostname === 'localhost') {
@@ -65,7 +64,7 @@ function getTimestamp(date: Date = new Date()) {
   return firebase.firestore.Timestamp.fromDate(date);
 }
 
-const exports = {
+export default {
   analytics,
   auth,
   firestore,
@@ -74,5 +73,3 @@ const exports = {
   googleAuthProvider,
   messaging,
 };
-
-export default exports;

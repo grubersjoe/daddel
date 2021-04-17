@@ -10,7 +10,7 @@ import Link from '@material-ui/core/Link';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
-import { resetPassword } from '../services/auth';
+import firebase from '../services/firebase';
 import ROUTES from '../constants/routes';
 import Logo from '../components/Logo';
 import PageMetadata from '../components/PageMetadata';
@@ -26,7 +26,8 @@ const ResetPassword: React.FC = () => {
   const resetAccount: FormEventHandler = event => {
     event.preventDefault();
     setLoading(true);
-    resetPassword(email)
+    firebase.auth
+      .sendPasswordResetEmail(email)
       .then(() => setSuccess(true))
       .catch(setError)
       .finally(() => setLoading(false));

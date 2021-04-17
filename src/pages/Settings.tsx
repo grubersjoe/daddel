@@ -16,7 +16,6 @@ import SignOutIcon from '@material-ui/icons/ExitToApp';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
-import { signOut } from '../services/auth';
 import firebase from '../services/firebase';
 import { User } from '../types';
 import { supportsMessaging } from '../utils';
@@ -148,7 +147,7 @@ const Settings: React.FC<RouteComponentProps> = ({ history }) => {
             <Button
               variant="outlined"
               startIcon={<SignOutIcon />}
-              onClick={signOut}
+              onClick={() => firebase.auth.signOut()}
               fullWidth
             >
               Abmelden
