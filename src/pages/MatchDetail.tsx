@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, Redirect, useParams } from 'react-router-dom';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
-import Alert from '@material-ui/lab/Alert';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -34,7 +33,9 @@ const MatchDetail: React.FC = () => {
   }
 
   if ((!loading && !match) || error) {
-    return <Alert severity="error">Match konnte nicht geladen werden :(</Alert>;
+    dispatchSnack(`Angefragtes Match nicht gefunden`, 'error');
+
+    return <Redirect to={ROUTES.MATCHES_LIST} />;
   }
 
   if (!match) {
