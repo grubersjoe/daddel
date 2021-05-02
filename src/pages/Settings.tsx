@@ -16,6 +16,7 @@ import SignOutIcon from '@material-ui/icons/ExitToApp';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
+import packageJson from '../../package.json';
 import firebase from '../services/firebase';
 import { User } from '../types';
 import { supportsMessaging } from '../utils';
@@ -141,7 +142,7 @@ const Settings: React.FC<RouteComponentProps> = ({ history }) => {
           container
           spacing={2}
           direction="column"
-          style={{ marginTop: theme.spacing(6) }}
+          style={{ marginTop: theme.spacing(5) }}
         >
           <Grid item md={7}>
             <Button
@@ -162,6 +163,14 @@ const Settings: React.FC<RouteComponentProps> = ({ history }) => {
             >
               Konto löschen
             </Button>
+          </Grid>
+        </Grid>
+
+        <Grid container spacing={2} style={{ marginTop: theme.spacing(5) }}>
+          <Grid item md={7}>
+            <Typography style={{ color: theme.palette.grey[500] }}>
+              Daddel {packageJson.version}
+            </Typography>
           </Grid>
         </Grid>
       </Container>
