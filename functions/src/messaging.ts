@@ -13,13 +13,10 @@ const MESSAGING_ENABLED = true; // Useful while developing
  * @throws functions.https.HttpsError
  */
 function validationMessagingArgs(data: Record<string, any>) {
-  if (
-    typeof data.registrationToken !== 'string' ||
-    data.registrationToken.length === 0
-  ) {
+  if (typeof data.fcmToken !== 'string' || data.fcmToken.length === 0) {
     throw new functions.https.HttpsError(
       'invalid-argument',
-      'Missing argument `data.registrationToken`',
+      'Missing argument `data.fcmToken`',
     );
   }
 }
@@ -33,22 +30,24 @@ export const subscribeToMessaging = functions
 
     return admin
       .messaging()
-      .subscribeToTopic(data.registrationToken, topic)
+      .subscribeToTopic(data.fcmToken, topic)
       .then(() =>
         admin
           .firestore()
           .doc(`users/${context.auth?.uid}`)
-          .update({ subscribed: true }),
+          .update({
+            fcmTokens: admin.firestore.FieldValue.arrayUnion(data.fcmToken),
+          }),
       )
       .then(() => {
         functions.logger.info(
-          `Successfully subscribed ${data.registrationToken} to topic ${topic}`,
+          `Successfully subscribed ${data.fcmToken} to topic ${topic}`,
         );
 
         return { success: true };
       })
       .catch(() => {
-        const message = `Error subscribing ${data.registrationToken} to topic ${topic}`;
+        const message = `Error subscribing ${data.fcmToken} to topic ${topic}`;
         functions.logger.error(message);
         throw new functions.https.HttpsError('unknown', message);
       });
@@ -63,22 +62,24 @@ export const unsubscribeFromMessaging = functions
 
     return admin
       .messaging()
-      .unsubscribeFromTopic(data.registrationToken, topic)
+      .unsubscribeFromTopic(data.fcmToken, topic)
       .then(() =>
         admin
           .firestore()
           .doc(`users/${context.auth?.uid}`)
-          .update({ subscribed: false }),
+          .update({
+            fcmTokens: admin.firestore.FieldValue.arrayRemove(data.fcmToken),
+          }),
       )
       .then(() => {
         functions.logger.info(
-          `Successfully unsubscribed ${data.registrationToken} from topic ${topic}`,
+          `Successfully unsubscribed ${data.fcmToken} from topic ${topic}`,
         );
 
         return { success: true };
       })
       .catch(() => {
-        const message = `Error unsubscribing ${data.registrationToken} from topic ${topic}`;
+        const message = `Error unsubscribing ${data.fcmToken} from topic ${topic}`;
         functions.logger.error(message);
         throw new functions.https.HttpsError('unknown', message);
       });

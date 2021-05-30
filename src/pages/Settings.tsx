@@ -4,7 +4,6 @@ import React, {
   useState,
   FormEventHandler,
 } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
 import { useTheme } from '@material-ui/core/styles';
 import Alert from '@material-ui/lab/Alert';
@@ -22,10 +21,10 @@ import { User } from '../types';
 import { supportsMessaging } from '../utils';
 import { SnackbarContext } from '../components/Layout';
 import AppBar from '../components/AppBar';
-import NotificationSettings from '../components/Settings/NotificationSettings';
+import NotificationsSettings from '../components/Settings/NotificationsSettings';
 import PageMetadata from '../components/PageMetadata';
 
-const Settings: React.FC<RouteComponentProps> = ({ history }) => {
+const Settings: React.FC = () => {
   const theme = useTheme();
   const dispatchSnack = useContext(SnackbarContext);
 
@@ -118,7 +117,6 @@ const Settings: React.FC<RouteComponentProps> = ({ history }) => {
             </Grid>
           </Grid>
         </form>
-
         {error && (
           <Alert severity="error" style={{ marginTop: theme.spacing(2) }}>
             Fehler: {error.message}
@@ -126,14 +124,9 @@ const Settings: React.FC<RouteComponentProps> = ({ history }) => {
         )}
 
         {supportsMessaging() && (
-          <Grid
-            container
-            spacing={2}
-            direction="column"
-            style={{ marginTop: theme.spacing(4) }}
-          >
+          <Grid container style={{ marginTop: theme.spacing(4) }}>
             <Grid item md={7}>
-              <NotificationSettings />
+              <NotificationsSettings />
             </Grid>
           </Grid>
         )}
@@ -165,7 +158,6 @@ const Settings: React.FC<RouteComponentProps> = ({ history }) => {
             </Button>
           </Grid>
         </Grid>
-
         <Grid container spacing={2} style={{ marginTop: theme.spacing(5) }}>
           <Grid item md={7}>
             <Typography style={{ color: theme.palette.grey[500] }}>
@@ -178,4 +170,4 @@ const Settings: React.FC<RouteComponentProps> = ({ history }) => {
   );
 };
 
-export default withRouter(Settings);
+export default Settings;

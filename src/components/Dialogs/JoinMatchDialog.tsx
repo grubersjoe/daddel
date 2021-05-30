@@ -155,10 +155,6 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
       .finally(() => setLoading(false));
   };
 
-  const closeDialog = () => {
-    setOpen(false);
-  };
-
   const handleTimeChange = (prop: keyof typeof state) => (
     event: React.ChangeEvent<{ value: unknown }>,
   ) => {
@@ -198,7 +194,7 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
           </Button>
         </Grid>
       </Grid>
-      <Dialog open={open} onClose={closeDialog}>
+      <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>Mitspielen</DialogTitle>
         <DialogContent style={{ paddingTop: 0 }}>
           <DialogContentText>Von wann bis wann hast du Zeit?</DialogContentText>
@@ -235,7 +231,7 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
           {error && <Alert severity="error">Fehler: {error.message}</Alert>}
         </DialogContent>
         <DialogActions>
-          <Button onClick={closeDialog} disabled={loading}>
+          <Button onClick={() => setOpen(false)} disabled={loading}>
             Abbrechen
           </Button>
           <Button onClick={handleJoin} color="primary" disabled={loading}>
