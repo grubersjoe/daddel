@@ -1,6 +1,6 @@
 # Daddel
 
-![CI](https://github.com/grubersjoe/daddel/actions/workflows/test.yml/badge.svg)
+[![CI](https://github.com/grubersjoe/daddel/actions/workflows/test.yml/badge.svg)](https://github.com/grubersjoe/daddel/actions/workflows/test.yml)
 
 Daddel (from German _dad·deln_, meaning _to play_) is a Progressive Web App
 (PWA) to organize game nights with your friends. Daddel solves the problem of
