@@ -6,6 +6,10 @@ import { User } from '../types';
 import { supportsMessaging } from '../utils';
 
 export default function useNotifications() {
+  if (!supportsMessaging() || !firebase.messaging) {
+    throw new Error('Firebase Messaging not supported on this platform');
+  }
+
   const { currentUser } = firebase.auth;
 
   if (!currentUser) {
@@ -16,33 +20,47 @@ export default function useNotifications() {
     firebase.firestore.doc(`users/${currentUser.uid}`),
   );
 
-  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [deviceRegistered, setDeviceRegistered] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (user) {
-      setIsSubscribed(user.subscribed);
+    if (user && firebase.messaging) {
+      firebase.messaging
+        .getToken({
+          vapidKey: process.env.REACT_APP_VAPID_KEY,
+        })
+        .then(fcmToken => {
+          setDeviceRegistered(
+            user.fcmTokens ? user.fcmTokens.includes(fcmToken) : false,
+          );
+        })
+        .catch(error => {
+          // Blocked permissions are not an error
+          if (error.code !== 'messaging/permission-blocked') {
+            throw error;
+          }
+        });
     }
     setLoading(userLoading);
   }, [user, userLoading]);
 
   function subscribe() {
     if (loading) {
-      return Promise.reject('Loading');
+      return Promise.reject('Request pending');
     }
 
-    if (!supportsMessaging() || !firebase.messaging) {
-      return Promise.reject('Platform is not supported');
+    if (!firebase.messaging) {
+      throw new Error('Platform not supported');
     }
 
     setLoading(true);
 
     return firebase.messaging
-      .getToken({ vapidKey: process.env.REACT_APP_VAPID_KEY })
-      .then(registrationToken =>
-        firebase.functions.httpsCallable('subscribeToMessaging')({
-          registrationToken,
-        }),
+      .getToken({
+        vapidKey: process.env.REACT_APP_VAPID_KEY,
+      })
+      .then(fcmToken =>
+        firebase.functions.httpsCallable('subscribeToMessaging')({ fcmToken }),
       )
       .catch(error => Promise.reject(error))
       .finally(() => setLoading(false));
@@ -50,30 +68,27 @@ export default function useNotifications() {
 
   const unsubscribe = () => {
     if (loading) {
-      return Promise.reject('Loading');
+      return Promise.reject('Request pending');
     }
 
-    if (!supportsMessaging() || !firebase.messaging) {
-      return Promise.reject('Platform is not supported');
+    if (!firebase.messaging) {
+      throw new Error('Platform not supported');
     }
 
     setLoading(true);
 
     return firebase.messaging
-      .getToken({ vapidKey: process.env.REACT_APP_VAPID_KEY })
-      .then(registrationToken =>
+      .getToken({
+        vapidKey: process.env.REACT_APP_VAPID_KEY,
+      })
+      .then(fcmToken =>
         firebase.functions.httpsCallable('unsubscribeFromMessaging')({
-          registrationToken,
+          fcmToken,
         }),
       )
       .catch(error => Promise.reject(error))
       .finally(() => setLoading(false));
   };
 
-  return {
-    subscribe,
-    unsubscribe,
-    isSubscribed,
-    loading,
-  };
+  return { subscribe, unsubscribe, deviceRegistered, loading };
 }

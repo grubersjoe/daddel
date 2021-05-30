@@ -42,7 +42,7 @@ const analytics = app.analytics();
 const firestore = app.firestore();
 const functions = app.functions(FIREBASE_REGION);
 
-let messaging;
+let messaging: firebase.messaging.Messaging | undefined;
 try {
   // This will throw an error on iOS (unsupported)
   messaging = app.messaging();
@@ -65,11 +65,11 @@ function getTimestamp(date: Date = new Date()) {
 }
 
 export default {
-  analytics,
   auth,
+  googleAuthProvider,
+  analytics,
   firestore,
   functions,
-  getTimestamp,
-  googleAuthProvider,
   messaging,
+  getTimestamp,
 };

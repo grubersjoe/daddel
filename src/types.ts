@@ -36,7 +36,7 @@ export type User = {
   uid: Uid;
   nickname: string;
   invited: boolean;
-  subscribed: boolean;
+  fcmTokens?: Array<string>;
 };
 
 export type UserMap = Map<User['uid'], User>;
