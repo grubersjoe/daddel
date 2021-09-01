@@ -1,5 +1,10 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  useLocation,
+} from 'react-router-dom';
 import firebaseNS from 'firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { ThemeProvider } from '@material-ui/core';
@@ -22,6 +27,7 @@ import SignUp from '../pages/SignUp';
 import PageMetadata from './PageMetadata';
 import MatchDetail from '../pages/MatchDetail';
 import MatchesList from '../pages/MatchesList';
+import { updateServiceWorker } from '../utils';
 
 type AuthUserValue = [Maybe<firebaseNS.User> | null, boolean];
 
@@ -51,6 +57,7 @@ const App: React.FC = () => {
         <CSSBaseline />
         <PageMetadata />
         <Router>
+          <OnRouteChange />
           <Layout>
             <Switch>
               <PrivateRoute path={ROUTES.ADD_MATCH}>
@@ -83,6 +90,13 @@ const App: React.FC = () => {
       </ThemeProvider>
     </AuthUserContext.Provider>
   );
+};
+
+const OnRouteChange: React.FC = () => {
+  const location = useLocation();
+  useEffect(updateServiceWorker, [location.pathname]);
+
+  return null;
 };
 
 export default App;

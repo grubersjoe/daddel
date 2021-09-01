@@ -1,6 +1,6 @@
 {
   "name": "daddel",
-  "version": "0.8.5",
+  "version": "0.9.0",
   "private": true,
   "scripts": {
     "build": "react-scripts build",
@@ -11,6 +11,7 @@
     "lint": "eslint src/ functions/",
     "start:emulators": "firebase emulators:start --only functions",
     "start": "react-scripts start",
+    "start:prod": "npm run build && serve -s build",
     "test": "jest"
   },
   "browserslist": {
@@ -57,5 +58,8 @@
     "react-timeago": "^6.2.1",
     "typeface-roboto": "^1.1.13",
     "typescript": "~4.3.2"
+  },
+  "devDependencies": {
+    "serve": "^12.0.0"
   }
 }

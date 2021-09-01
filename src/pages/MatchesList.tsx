@@ -190,7 +190,7 @@ const MatchesList: React.FC = () => {
 
           {filteredPastMatches && filteredPastMatches.length === 0 && (
             <>
-              <Typography paragraph>Wow. Much empty.</Typography>``
+              <Typography paragraph>Wow. Much empty.</Typography>
               {numberOfEnabledFilters > 0 && (
                 <Typography paragraph>Obacht! Filter ist aktiv.</Typography>
               )}
