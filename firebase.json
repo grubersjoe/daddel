@@ -6,22 +6,23 @@
     "target": "daddel",
     "public": "build",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "trailingSlash": false,
     "headers": [
       {
-        "source": "/",
+        "source": "*",
         "headers": [
           {
             "key": "Cache-Control",
-            "value": "public, max-age=0, must-revalidate"
+            "value": "no-cache"
           }
         ]
       },
       {
-        "source": "/matches",
+        "source": "*.@(ico|png)",
         "headers": [
           {
-            "key": "Cache-Control",
-            "value": "public, max-age=0, must-revalidate"
+            "key": "cache-control",
+            "value": "public, max-age=3600"
           }
         ]
       },
@@ -29,7 +30,7 @@
         "source": "static/**/*",
         "headers": [
           {
-            "key": "Cache-Control",
+            "key": "cache-control",
             "value": "public, max-age=31536000, immutable"
           }
         ]
