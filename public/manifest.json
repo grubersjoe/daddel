@@ -1,10 +1,17 @@
 {
   "short_name": "Daddel",
   "name": "Daddel",
+  "display": "standalone",
+  "start_url": ".",
+  "url_handlers": [
+    {
+      "origin": "https://daddel.jogruber.de"
+    }
+  ],
   "icons": [
     {
       "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
+      "sizes": "64x64",
       "type": "image/x-icon"
     },
     {
@@ -18,8 +25,6 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
-  "display": "standalone",
   "theme_color": "#fbc02d",
   "background_color": "#303030"
 }

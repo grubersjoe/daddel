@@ -1,0 +1,7 @@
+{
+  "web_apps": [
+    {
+      "manifest": "https://daddel.jogruber.de/manifest.json"
+    }
+  ]
+}
