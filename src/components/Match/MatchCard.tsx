@@ -147,7 +147,7 @@ const MatchCard: React.FC<Props> = ({ match, userList, setPageMetadata }) => {
               container
               item
               direction="row"
-              justify="space-between"
+              justifyContent="space-between"
               alignItems="flex-end"
               style={{
                 ...(hasBanner && {

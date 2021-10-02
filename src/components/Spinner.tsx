@@ -6,7 +6,7 @@ const Spinner: React.FC = () => (
   <Grid
     container
     alignItems="center"
-    justify="center"
+    justifyContent="center"
     style={{ paddingTop: '2rem' }}
   >
     <CircularProgress />
