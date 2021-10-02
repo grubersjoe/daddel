@@ -18,7 +18,6 @@ body {
   font-family: Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica,
     Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   margin: 0;
-  background: #f5f5f5;
 }
 
 h1 {
@@ -48,9 +47,13 @@ h6.MuiTypography-h6 {
   margin-bottom: 1rem;
 }
 
+.MuiButton-colorInherit {
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
 .MuiAlert-root {
   // elevation8
-  box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2),
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
     0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12) !important;
 }
 
@@ -83,4 +86,9 @@ h6.MuiTypography-h6 {
   100% {
     opacity: 0.5;
   }
+}
+
+// iOS shows weird outlines
+.MuiDialogContent-root div {
+  outline: none !important;
 }

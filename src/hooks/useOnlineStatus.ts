@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-export default function useOnlineStatus() {
+export default function useOnlineStatus(): boolean {
   const [isOnline, setIsOnline] = useState<boolean>(navigator.onLine);
 
   const goOnline = () => setIsOnline(true);

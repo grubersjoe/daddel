@@ -1,12 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
-
-import AddIcon from '@material-ui/icons/Add';
-import BottomNavigation from '@material-ui/core/BottomNavigation';
-import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import { useTheme } from '@material-ui/core/styles';
-import MatchesIcon from '@material-ui/icons/SportsEsports';
-import SettingsIcon from '@material-ui/icons/Settings';
+import { BottomNavigation, BottomNavigationAction } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import MatchesIcon from '@mui/icons-material/SportsEsports';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 import ROUTES from '../constants/routes';
 import { AuthUserContext } from './App';
@@ -15,8 +12,6 @@ const Links = [ROUTES.MATCHES_LIST, ROUTES.ADD_MATCH, ROUTES.SETTINGS];
 
 const Navigation: React.FC<RouteComponentProps> = ({ location }) => {
   const [authUser] = useContext(AuthUserContext);
-  const theme = useTheme();
-
   const [selected, setSelected] = useState(0);
 
   useEffect(() => {
@@ -29,8 +24,11 @@ const Navigation: React.FC<RouteComponentProps> = ({ location }) => {
     <BottomNavigation
       value={selected}
       onChange={(_, clickedLink) => setSelected(clickedLink)}
-      style={{
-        boxShadow: `0 0 3px ${theme.palette.grey[900]}`,
+      sx={{
+        borderTop: 'solid 1px',
+        borderTopColor: 'rgba(0, 0, 0, 0.2)',
+        backgroundImage:
+          'linear-gradient(rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.09))',
       }}
     >
       <BottomNavigationAction

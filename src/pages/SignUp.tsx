@@ -1,18 +1,19 @@
-import React, { useState, FormEventHandler } from 'react';
+import React, { FormEventHandler, useState } from 'react';
 import {
   Link as RouterLink,
   RouteComponentProps,
   withRouter,
 } from 'react-router-dom';
-import { useTheme } from '@material-ui/core/styles';
-import Alert from '@material-ui/lab/Alert';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Container from '@material-ui/core/Container';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
+import {
+  Alert,
+  Button,
+  CircularProgress,
+  Container,
+  Grid,
+  Link,
+  TextField,
+  Typography,
+} from '@mui/material';
 
 import { isValidInvitationCode } from '../services/auth';
 import firebase from '../services/firebase';
@@ -21,8 +22,6 @@ import Logo from '../components/Logo';
 import PageMetadata from '../components/PageMetadata';
 
 const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
-  const theme = useTheme();
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -59,7 +58,7 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
   };
 
   return (
-    <Container style={{ marginTop: -theme.spacing(9) }}>
+    <Container sx={{ mt: -9 }}>
       <PageMetadata title="Registrieren – Daddel" />
       <Logo />
       <Typography variant="h6">Registrieren</Typography>
@@ -67,9 +66,8 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
         autoComplete="off"
         onSubmit={register}
         onChange={() => setError(null)}
-        style={{ marginBottom: theme.spacing(4) }}
       >
-        <Grid container spacing={2} direction="column">
+        <Grid container spacing={2} flexDirection="column">
           <Grid item md={9}>
             <TextField
               label="Einladungscode"
@@ -83,11 +81,11 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
             />
           </Grid>
           {error && (
-            <Grid item md={9} style={{ marginBottom: theme.spacing(2) }}>
+            <Grid item md={9} sx={{ mb: 2 }}>
               <Alert severity="error">Fehler: {error.message}</Alert>
             </Grid>
           )}
-          <Grid item md={9} style={{ marginTop: theme.spacing(1) }}>
+          <Grid item md={9} sx={{ mt: 1 }}>
             <TextField
               label="E-Mail-Adresse"
               type="email"
@@ -121,9 +119,8 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
           </Grid>
           <Grid item md={9}>
             <Button
-              variant="outlined"
-              color="primary"
               type="submit"
+              color="primary"
               size="large"
               disabled={loading}
               startIcon={
@@ -139,7 +136,7 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
         </Grid>
       </form>
 
-      <Typography>
+      <Typography sx={{ mt: 4 }}>
         <Link component={RouterLink} to={ROUTES.ROOT} color="textPrimary">
           Zurück zur Anmeldung
         </Link>

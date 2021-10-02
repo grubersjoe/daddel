@@ -1,9 +1,6 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
-import { useTheme } from '@material-ui/core/styles';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
+import { Autocomplete, Grid, TextField } from '@mui/material';
 
 import firebase from '../../services/firebase';
 import { Game } from '../../types';
@@ -19,8 +16,6 @@ type Props = {
 };
 
 const Filter: React.FC<Props> = ({ filter, setFilter }) => {
-  const theme = useTheme();
-
   const [games, gamesLoading, gamesError] = useCollectionData<Game>(
     firebase.firestore.collection('games').orderBy('name', 'asc'),
     { idField: 'id' },
@@ -33,14 +28,14 @@ const Filter: React.FC<Props> = ({ filter, setFilter }) => {
   }
 
   return (
-    <Grid container spacing={5} style={{ marginBottom: theme.spacing(1) }}>
+    <Grid container spacing={5} sx={{ mb: 5 }}>
       <Grid item xs={12} lg={4}>
         <Autocomplete<Game, true>
           clearOnEscape
           disabled={gamesLoading}
           filterSelectedOptions
           getOptionLabel={option => option.name}
-          getOptionSelected={(a, b) => a.id === b.id}
+          isOptionEqualToValue={(a, b) => a.id === b.id}
           multiple
           loading={gamesLoading}
           onChange={(_event, games) => {

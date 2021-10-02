@@ -1,5 +1,5 @@
 import React from 'react';
-import Box from '@material-ui/core/Box';
+import { Box } from '@mui/material';
 
 import { UNKNOWN_GAME_ID } from '../../constants';
 import { Game } from '../../types';
@@ -16,8 +16,8 @@ const FallbackBanner: React.FC<{ game: Game }> = ({ game }) => {
       height="100%"
       position="absolute"
     >
-      <span
-        style={{
+      <Box
+        sx={{
           margin: '-28px 1em 0 1em',
           textAlign: 'center',
           fontWeight: 'bold',
@@ -29,7 +29,7 @@ const FallbackBanner: React.FC<{ game: Game }> = ({ game }) => {
         }}
       >
         {isUnknownGame ? <span title="Unbekanntes Spiel">?</span> : game.name}
-      </span>
+      </Box>
     </Box>
   );
 };

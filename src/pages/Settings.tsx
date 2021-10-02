@@ -1,19 +1,20 @@
 import React, {
+  FormEventHandler,
   useContext,
   useEffect,
   useState,
-  FormEventHandler,
 } from 'react';
 import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
-import { useTheme } from '@material-ui/core/styles';
-import Alert from '@material-ui/lab/Alert';
-import Button from '@material-ui/core/Button';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-import DeleteIcon from '@material-ui/icons/Delete';
-import SignOutIcon from '@material-ui/icons/ExitToApp';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
+import {
+  Alert,
+  Button,
+  Container,
+  Grid,
+  TextField,
+  Typography,
+} from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SignOutIcon from '@mui/icons-material/ExitToApp';
 
 import packageJson from '../../package.json';
 import firebase from '../services/firebase';
@@ -21,11 +22,11 @@ import { User } from '../types';
 import { supportsMessaging } from '../utils';
 import { SnackbarContext } from '../components/Layout';
 import AppBar from '../components/AppBar';
-import NotificationsSettings from '../components/Settings/NotificationsSettings';
 import PageMetadata from '../components/PageMetadata';
+import NotificationsSettings from '../components/Settings/NotificationsSettings';
+import { grey } from '@mui/material/colors';
 
 const Settings: React.FC = () => {
-  const theme = useTheme();
   const dispatchSnack = useContext(SnackbarContext);
 
   const { currentUser } = firebase.auth;
@@ -86,13 +87,13 @@ const Settings: React.FC = () => {
     <>
       <PageMetadata title="Einstellungen – Daddel" />
       <AppBar title="Einstellungen" />
-      <Container style={{ marginTop: -theme.spacing(2) }}>
+      <Container sx={{ mt: -3 }}>
         <form
           autoComplete="off"
           onSubmit={submitNickname}
           onChange={() => setError(null)}
         >
-          <Grid container spacing={2} direction="column">
+          <Grid container spacing={2} flexDirection="column">
             <Grid item md={7}>
               <Typography variant="h6">Nickname</Typography>
               <TextField
@@ -106,40 +107,29 @@ const Settings: React.FC = () => {
               />
             </Grid>
             <Grid item md={7}>
-              <Button
-                type="submit"
-                variant="outlined"
-                disabled={userLoading || loading}
-                fullWidth
-              >
+              <Button type="submit" disabled={userLoading || loading} fullWidth>
                 Name ändern
               </Button>
             </Grid>
           </Grid>
         </form>
         {error && (
-          <Alert severity="error" style={{ marginTop: theme.spacing(2) }}>
+          <Alert severity="error" sx={{ mt: 2 }}>
             Fehler: {error.message}
           </Alert>
         )}
 
         {supportsMessaging() && (
-          <Grid container style={{ marginTop: theme.spacing(4) }}>
+          <Grid container sx={{ mt: 4 }}>
             <Grid item md={7}>
               <NotificationsSettings />
             </Grid>
           </Grid>
         )}
 
-        <Grid
-          container
-          spacing={2}
-          direction="column"
-          style={{ marginTop: theme.spacing(5) }}
-        >
+        <Grid container spacing={2} flexDirection="column" sx={{ mt: 5 }}>
           <Grid item md={7}>
             <Button
-              variant="outlined"
               startIcon={<SignOutIcon />}
               onClick={() => firebase.auth.signOut()}
               fullWidth
@@ -149,7 +139,6 @@ const Settings: React.FC = () => {
           </Grid>
           <Grid item md={7}>
             <Button
-              variant="outlined"
               startIcon={<DeleteIcon />}
               onClick={deleteAccount}
               fullWidth
@@ -158,9 +147,9 @@ const Settings: React.FC = () => {
             </Button>
           </Grid>
         </Grid>
-        <Grid container spacing={2} style={{ marginTop: theme.spacing(5) }}>
+        <Grid container spacing={2} sx={{ mt: 5 }}>
           <Grid item md={7}>
-            <Typography style={{ color: theme.palette.grey[500] }}>
+            <Typography sx={{ color: grey[500] }}>
               Daddel {packageJson.version}
             </Typography>
           </Grid>

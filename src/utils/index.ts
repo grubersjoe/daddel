@@ -33,9 +33,12 @@ export function supportsWebp(): Promise<boolean> {
 }
 
 export function updateServiceWorker(): void {
-  navigator.serviceWorker
-    .getRegistration(`${process.env.PUBLIC_URL}/service-worker.js`)
-    .then(registration => registration && registration.update());
+  // Required for iOS
+  if (typeof navigator.serviceWorker !== 'undefined') {
+    navigator.serviceWorker
+      .getRegistration(`${process.env.PUBLIC_URL}/service-worker.js`)
+      .then(registration => registration && registration.update());
+  }
 }
 
 export function supportsMessaging(): boolean {

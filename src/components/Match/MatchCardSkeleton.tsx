@@ -1,38 +1,43 @@
 import React from 'react';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Box from '@material-ui/core/Box';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Skeleton from '@material-ui/lab/Skeleton/Skeleton';
+import { useTheme } from '@mui/material/styles';
+import { Box, Card, CardContent, CardMedia, Skeleton } from '@mui/material';
+import { Theme } from '@mui/system';
 
-import { useStyles as useCardStyles } from './MatchCard';
+import { styles as cardStyles } from './MatchCard';
 
-const useStyles = makeStyles(theme => ({
-  bar: {
-    transform: 'none',
-    marginBottom: 7,
-    [theme.breakpoints.up('lg')]: {
-      marginBottom: 8,
+const styles = (theme: Theme) =>
+  ({
+    bar: {
+      transform: 'none',
+      marginBottom: '7px',
+      [theme.breakpoints.up('lg')]: {
+        marginBottom: '8px',
+      },
     },
-  },
-}));
+  } as const);
 
 const MatchCardSkeleton: React.FC = () => {
-  const { spacing } = useTheme();
-  const classes = useStyles();
-  const cardClasses = useCardStyles();
+  const theme = useTheme();
+  const sx = styles(theme);
+  const cardSx = cardStyles(theme);
 
   return (
-    <Card className={cardClasses.card} raised>
+    <Card sx={cardSx.card} raised>
       <CardMedia
-        className={cardClasses.media}
-        style={{
-          background: `linear-gradient(to bottom, rgb(70, 70, 70) 0%, rgb(50, 50, 50) 100%)`,
+        sx={{
+          ...cardSx.media,
+          ...{
+            background: `linear-gradient(to bottom, rgb(70, 70, 70) 0%, rgb(50, 50, 50) 100%)`,
+          },
         }}
       >
         {/* Lobby progress bar */}
-        <Skeleton variant="rect" width="100%" height={8} animation="wave" />
+        <Skeleton
+          variant="rectangular"
+          width="100%"
+          height={8}
+          animation="wave"
+        />
       </CardMedia>
       <Box
         display="flex"
@@ -40,14 +45,14 @@ const MatchCardSkeleton: React.FC = () => {
         flexDirection="column"
         justifyContent="space-between"
       >
-        <CardContent className={cardClasses.cardContent}>
+        <CardContent sx={cardSx.cardContent}>
           {/* Date and permalink */}
           <Skeleton
             variant="text"
             width="65%"
             height={22}
             animation="wave"
-            style={{
+            sx={{
               transform: 'none',
             }}
           />
@@ -58,10 +63,10 @@ const MatchCardSkeleton: React.FC = () => {
             width="85%"
             height={28}
             animation="wave"
-            className={classes.bar}
-            style={{
-              marginTop: spacing(6.25),
-              marginLeft: '15%',
+            sx={{
+              ...sx.bar,
+              mt: 6.25,
+              ml: '15%',
             }}
           />
           <Skeleton
@@ -69,16 +74,18 @@ const MatchCardSkeleton: React.FC = () => {
             width="80%"
             height={28}
             animation="wave"
-            className={classes.bar}
+            sx={sx.bar}
           />
           <Skeleton
             variant="text"
             width="85%"
             height={28}
             animation="wave"
-            className={classes.bar}
-            style={{
-              marginLeft: '15%',
+            sx={{
+              ...sx.bar,
+              ...{
+                ml: '15%',
+              },
             }}
           />
           <Skeleton
@@ -86,9 +93,11 @@ const MatchCardSkeleton: React.FC = () => {
             width="60%"
             height={28}
             animation="wave"
-            className={classes.bar}
-            style={{
-              marginLeft: '30%',
+            sx={{
+              ...sx.bar,
+              ...{
+                ml: '30%',
+              },
             }}
           />
         </CardContent>

@@ -1,28 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import {
+  Box,
+  Card,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Grid,
+  Typography,
+} from '@mui/material';
+import { Theme } from '@mui/system';
+import { useTheme } from '@mui/material/styles';
 import endOfDay from 'date-fns/endOfDay';
 import isFuture from 'date-fns/isFuture';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Box from '@material-ui/core/Box';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
 
 import { getGameBanner } from '../../assets/images/games';
 import { Game, Match, UserMap } from '../../types';
 import { formatDate, formatTime } from '../../utils/date';
 
+import JoinMatchDialog from '../Dialogs/JoinMatchDialog';
+import PageMetadata from '../PageMetadata';
+import TimeAgo from '../TimeAgo';
 import Calendar from './Calendar';
 import FallbackBanner from './FallbackBanner';
-import JoinMatchDialog from '../Dialogs/JoinMatchDialog';
 import MatchCardSkeleton from './MatchCardSkeleton';
 import Menu from './Menu';
-import PageMetadata from '../PageMetadata';
 import ProgressBar from './ProgressBar';
-import TimeAgo from '../TimeAgo';
+import { common } from '@mui/material/colors';
 
 type Props = {
   match: Match;
@@ -30,64 +34,68 @@ type Props = {
   setPageMetadata?: boolean;
 };
 
-export const useStyles = makeStyles(theme => ({
-  card: {
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  cardContent: {
-    padding: theme.spacing(2),
-
-    [theme.breakpoints.up('lg')]: {
-      padding: `${theme.spacing(2.5)}px ${theme.spacing(2.5)}px 0`,
+export const styles = (theme: Theme) =>
+  ({
+    card: {
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
     },
-  },
-  media: {
-    height: '42vw',
-    backgroundPosition: 'top',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'flex-end',
+    cardContent: {
+      padding: theme.spacing(2),
 
-    [theme.breakpoints.up('sm')]: {
-      height: 170,
+      [theme.breakpoints.up('lg')]: {
+        padding: `${theme.spacing(2.5)} ${theme.spacing(2.5)} 0`,
+      },
     },
+    media: {
+      height: '42vw',
+      backgroundPosition: 'top',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'flex-end',
 
-    [theme.breakpoints.up('lg')]: {
-      height: 200,
+      [theme.breakpoints.up('sm')]: {
+        height: 170,
+      },
+
+      [theme.breakpoints.up('lg')]: {
+        height: 200,
+      },
+
+      [theme.breakpoints.up('xl')]: {
+        height: 220,
+      },
     },
-
-    [theme.breakpoints.up('xl')]: {
-      height: 220,
+    date: {
+      padding: '24px 16px 8px 16px',
+      color: common.white,
+      fontWeight: 500,
+      zIndex: 1,
     },
-  },
-  date: {
-    padding: '24px 16px 8px 16px',
-    color: '#fff',
-    fontWeight: 500,
-    zIndex: 1,
-  },
-  list: {
-    margin: '1rem 0 0',
-    paddingLeft: '2em',
-    lineHeight: 1.75,
-  },
-  actions: {
-    padding: theme.spacing(2),
-    paddingTop: 0,
-
-    [theme.breakpoints.up('lg')]: {
-      padding: theme.spacing(2.5),
+    list: {
+      margin: '1rem 0 0',
+      paddingLeft: '2em',
+      lineHeight: 1.75,
     },
-  },
-}));
+    actions: {
+      padding: theme.spacing(2),
+      paddingTop: 0,
 
-const Separator: React.FC = () => <span style={{ margin: '0 0.4em' }}>•</span>;
+      [theme.breakpoints.up('lg')]: {
+        padding: theme.spacing(2.5),
+      },
+    },
+  } as const);
+
+const Separator: React.FC = () => (
+  <Box component="span" sx={{ mx: '0.4em' }}>
+    •
+  </Box>
+);
 
 const MatchCard: React.FC<Props> = ({ match, userList, setPageMetadata }) => {
-  const theme = useTheme();
-  const classes = useStyles();
+  const sx = styles(useTheme());
 
   const [game, setGame] = useState<Game | null>();
   const [gameBanner, setGameBanner] = useState<string | null>();
@@ -120,11 +128,11 @@ const MatchCard: React.FC<Props> = ({ match, userList, setPageMetadata }) => {
     <>
       {setPageMetadata && <PageMetadata title={`${game.name} – Daddel`} />}
 
-      <Card className={classes.card} raised>
+      <Card sx={sx.card} raised>
         <CardMedia
-          className={classes.media}
           image={gameBanner ?? undefined}
-          style={{
+          sx={{
+            ...sx.media,
             ...(!hasBanner && {
               background:
                 'linear-gradient(to bottom, rgb(36, 36, 36) 0%, rgb(30, 30, 30) 100%)',
@@ -133,9 +141,12 @@ const MatchCard: React.FC<Props> = ({ match, userList, setPageMetadata }) => {
         >
           <Grid
             container
-            direction="column"
+            flexDirection="column"
             alignItems="flex-end"
-            style={{ position: 'relative', height: '100%' }}
+            sx={{
+              position: 'relative',
+              height: '100%',
+            }}
           >
             <Box flexGrow={1}>
               <Menu game={game} match={match} />
@@ -149,19 +160,15 @@ const MatchCard: React.FC<Props> = ({ match, userList, setPageMetadata }) => {
               direction="row"
               justifyContent="space-between"
               alignItems="flex-end"
-              style={{
+              sx={{
                 ...(hasBanner && {
                   background:
                     'linear-gradient(transparent, rgba(0, 0, 0, 0.95))',
                 }),
               }}
             >
-              <Typography className={classes.date}>
-                {formatDate(match.date)}
-              </Typography>
-              <Typography className={classes.date}>
-                {formatTime(match.date)} Uhr
-              </Typography>
+              <Typography sx={sx.date}>{formatDate(match.date)}</Typography>
+              <Typography sx={sx.date}>{formatTime(match.date)} Uhr</Typography>
             </Grid>
             {game.maxPlayers && (
               <Grid container item>
@@ -179,19 +186,16 @@ const MatchCard: React.FC<Props> = ({ match, userList, setPageMetadata }) => {
           flexDirection="column"
           justifyContent="space-between"
         >
-          <CardContent className={classes.cardContent}>
-            <Typography
-              color="textSecondary"
-              style={{ marginBottom: theme.spacing(1.75) }}
-            >
+          <CardContent sx={sx.cardContent}>
+            <Typography color="textSecondary" sx={{ mb: 1.75 }}>
               <TimeAgo date={match.date.toDate()} />
               <Separator />
               <Link to={`/matches/${match.id}`}>Permalink</Link>
             </Typography>
             {match.description && (
               <Typography
-                style={{
-                  marginBottom: theme.spacing(2),
+                sx={{
+                  mb: 2,
                   lineHeight: 1.25,
                 }}
               >
@@ -201,7 +205,7 @@ const MatchCard: React.FC<Props> = ({ match, userList, setPageMetadata }) => {
             <Calendar players={match.players} userList={userList} />
           </CardContent>
           {isJoinable && (
-            <CardActions className={classes.actions}>
+            <CardActions sx={sx.actions}>
               <JoinMatchDialog match={match} />
             </CardActions>
           )}

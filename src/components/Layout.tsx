@@ -1,8 +1,7 @@
-import React, { useState, CSSProperties } from 'react';
+import React, { useState } from 'react';
 
-import Box from '@material-ui/core/Box';
-import Alert, { AlertProps } from '@material-ui/lab/Alert';
-import Snackbar from '@material-ui/core/Snackbar';
+import Box from '@mui/material/Box';
+import { Alert, AlertProps, Snackbar } from '@mui/material';
 
 import Navigation from './Navigation';
 
@@ -14,13 +13,6 @@ type DispatchSnack = (
 export const SnackbarContext = React.createContext<DispatchSnack>(
   _ => undefined,
 );
-
-const footerStyle: CSSProperties = {
-  position: 'fixed',
-  left: 0,
-  bottom: 0,
-  width: '100%',
-};
 
 const Layout: React.FC = ({ children }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -57,9 +49,17 @@ const Layout: React.FC = ({ children }) => {
           </Alert>
         </Snackbar>
       </main>
-      <footer style={footerStyle}>
+      <Box
+        component="footer"
+        sx={{
+          position: 'fixed',
+          left: 0,
+          bottom: 0,
+          width: '100%',
+        }}
+      >
         <Navigation />
-      </footer>
+      </Box>
     </Box>
   );
 };

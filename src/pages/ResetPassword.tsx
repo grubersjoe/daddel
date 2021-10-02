@@ -1,14 +1,13 @@
-import React, { useState, FormEventHandler } from 'react';
+import React, { FormEventHandler, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { useTheme } from '@material-ui/core/styles';
-import Alert from '@material-ui/lab/Alert';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-import Link from '@material-ui/core/Link';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
+import Alert from '@mui/material/Alert';
+import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 
 import firebase from '../services/firebase';
 import ROUTES from '../constants/routes';
@@ -16,8 +15,6 @@ import Logo from '../components/Logo';
 import PageMetadata from '../components/PageMetadata';
 
 const ResetPassword: React.FC = () => {
-  const theme = useTheme();
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [success, setSuccess] = useState(false);
@@ -34,7 +31,7 @@ const ResetPassword: React.FC = () => {
   };
 
   return (
-    <Container style={{ marginTop: -theme.spacing(9) }}>
+    <Container sx={{ mt: -9 }}>
       <PageMetadata title="Passwort zurücksetzen – Daddel" />
       <Logo />
       <Typography variant="h6">Passwort zurücksetzen</Typography>
@@ -42,9 +39,8 @@ const ResetPassword: React.FC = () => {
         autoComplete="off"
         onSubmit={resetAccount}
         onChange={() => setError(null)}
-        style={{ marginBottom: theme.spacing(2) }}
       >
-        <Grid container spacing={2} direction="column">
+        <Grid container spacing={2} flexDirection="column">
           <Grid item md={9}>
             <TextField
               label="E-Mail-Adresse"
@@ -57,9 +53,8 @@ const ResetPassword: React.FC = () => {
             />
           </Grid>
 
-          <Grid item md={9} style={{ marginBottom: theme.spacing(4) }}>
+          <Grid item md={9} sx={{ mb: 4 }}>
             <Button
-              variant="outlined"
               color="primary"
               type="submit"
               size="large"
@@ -91,7 +86,7 @@ const ResetPassword: React.FC = () => {
         </Grid>
       </form>
 
-      <Typography>
+      <Typography sx={{ mt: 2 }}>
         <Link component={RouterLink} to={ROUTES.ROOT} color="textPrimary">
           Zurück zur Anmeldung
         </Link>

@@ -60,11 +60,11 @@ if (window.location.hostname === 'localhost') {
   functions.useEmulator('localhost', 5001);
 }
 
-function getTimestamp(date: Date = new Date()) {
+function getTimestamp(date: Date = new Date()): firebase.firestore.Timestamp {
   return firebase.firestore.Timestamp.fromDate(date);
 }
 
-export default {
+const exports = {
   auth,
   googleAuthProvider,
   analytics,
@@ -73,3 +73,5 @@ export default {
   messaging,
   getTimestamp,
 };
+
+export default exports;

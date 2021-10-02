@@ -1,18 +1,18 @@
-import React, { useState, useContext, FormEventHandler } from 'react';
+import React, { FormEventHandler, useContext, useState } from 'react';
 import { Link as RouterLink, Redirect, useLocation } from 'react-router-dom';
 import History from 'history';
-import { useTheme } from '@material-ui/core/styles';
-import Alert from '@material-ui/lab/Alert';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-import Link from '@material-ui/core/Link';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
+import {
+  Alert,
+  Button,
+  CircularProgress,
+  Container,
+  Grid,
+  Link,
+  TextField,
+  Typography,
+} from '@mui/material';
 
 import ROUTES from '../constants/routes';
-
 import GoogleIcon from '../assets/icons/GoogleIcon';
 import firebase from '../services/firebase';
 import { AuthUserContext } from '../components/App';
@@ -23,7 +23,6 @@ import Spinner from '../components/Spinner';
 const SignIn: React.FC = () => {
   const location = useLocation<Maybe<{ from: History.Location }>>();
   const [authUser, authLoading] = useContext(AuthUserContext);
-  const theme = useTheme();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -61,7 +60,7 @@ const SignIn: React.FC = () => {
   return authLoading ? (
     <Spinner />
   ) : (
-    <Container style={{ marginTop: -theme.spacing(9) }}>
+    <Container sx={{ mt: -9 }}>
       <PageMetadata title="Anmelden – Daddel" />
       <Logo />
       <Typography variant="h6">Anmelden</Typography>
@@ -70,7 +69,7 @@ const SignIn: React.FC = () => {
         onSubmit={handleEmailLogin}
         onChange={() => setError(null)}
       >
-        <Grid container spacing={2} direction="column">
+        <Grid container spacing={2} flexDirection="column">
           <Grid item md={9}>
             <TextField
               label="E-Mail-Adresse"
@@ -96,8 +95,6 @@ const SignIn: React.FC = () => {
 
           <Grid item md={9}>
             <Button
-              variant="outlined"
-              color="primary"
               type="submit"
               size="large"
               disabled={loading}
@@ -116,9 +113,8 @@ const SignIn: React.FC = () => {
               <Alert severity="error">Fehler: {error.message}</Alert>
             </Grid>
           )}
-          <Grid item md={9} style={{ marginTop: theme.spacing(3) }}>
+          <Grid item md={9} sx={{ mt: 3 }}>
             <Button
-              variant="outlined"
               size="large"
               onClick={handleGoogleLogin}
               disabled={googleLoading}
@@ -130,7 +126,7 @@ const SignIn: React.FC = () => {
                 )
               }
               fullWidth
-              style={{ marginBottom: theme.spacing(6) }}
+              sx={{ mb: 6 }}
             >
               Mit Google anmelden
             </Button>
@@ -138,15 +134,8 @@ const SignIn: React.FC = () => {
         </Grid>
       </form>
 
-      <Typography style={{ marginBottom: theme.spacing(1) }}>
-        Noch kein Konto?
-      </Typography>
-      <Button
-        variant="outlined"
-        component={RouterLink}
-        to={ROUTES.REGISTER}
-        style={{ marginBottom: theme.spacing(4) }}
-      >
+      <Typography sx={{ mb: 1 }}>Noch kein Konto?</Typography>
+      <Button component={RouterLink} to={ROUTES.REGISTER} sx={{ mb: 4 }}>
         Registrieren
       </Button>
 

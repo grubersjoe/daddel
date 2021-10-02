@@ -2,7 +2,11 @@ import { EVENTS } from '../constants';
 import { Match, Player } from '../types';
 import firebase from './firebase';
 
-export function joinMatch(availFrom: Date, availUntil: Date, match: Match) {
+export function joinMatch(
+  availFrom: Date,
+  availUntil: Date,
+  match: Match,
+): Promise<void> {
   const { currentUser } = firebase.auth;
 
   if (!currentUser) {
@@ -36,7 +40,7 @@ export function joinMatch(availFrom: Date, availUntil: Date, match: Match) {
     .then(() => firebase.analytics.logEvent(EVENTS.JOIN_MATCH));
 }
 
-export function leaveMatch(match: Match) {
+export function leaveMatch(match: Match): Promise<void> {
   const { currentUser } = firebase.auth;
 
   if (!currentUser) {

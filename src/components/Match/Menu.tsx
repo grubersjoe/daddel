@@ -2,19 +2,18 @@ import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import endOfDay from 'date-fns/endOfDay';
 import isPast from 'date-fns/isPast';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import IconButton from '@material-ui/core/IconButton';
-import LinkIcon from '@material-ui/icons/Link';
-import MenuItem from '@material-ui/core/MenuItem';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import MuiMenu from '@material-ui/core/Menu';
-import ShareIcon from '@material-ui/icons/Share';
+import { Menu as MuiMenu, MenuItem } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import IconButton from '@mui/material/IconButton';
+import LinkIcon from '@mui/icons-material/Link';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ShareIcon from '@mui/icons-material/Share';
 
 import { EVENTS } from '../../constants';
 import firebase from '../../services/firebase';
 import ROUTES from '../../constants/routes';
-import { Match, Game } from '../../types';
+import { Game, Match } from '../../types';
 import { formatDate, formatTime } from '../../utils/date';
 import { AuthUserContext } from '../App';
 import { SnackbarContext } from '../Layout';
@@ -96,7 +95,7 @@ const Menu: React.FC<Props> = ({ game, match }) => {
 
   return (
     <>
-      <IconButton onClick={openMenu} style={{ zIndex: 1 }}>
+      <IconButton onClick={openMenu} size="large" sx={{ zIndex: 1 }}>
         <MoreVertIcon />
       </IconButton>
       <MuiMenu anchorEl={anchorElement} open={open} onClose={closeMenu}>
@@ -109,23 +108,22 @@ const Menu: React.FC<Props> = ({ game, match }) => {
             style={{ display: 'flex' }}
           >
             <MenuItem>
-              <EditIcon fontSize="small" style={{ marginRight: 8 }} />{' '}
-              Bearbeiten
+              <EditIcon fontSize="small" sx={{ mr: 1 }} /> Bearbeiten
             </MenuItem>
           </Link>
         )}
         {isOwnMatch && (
           <MenuItem onClick={deleteMatch}>
-            <DeleteIcon fontSize="small" style={{ marginRight: 8 }} />
+            <DeleteIcon fontSize="small" sx={{ mr: 1 }} />
             Löschen
           </MenuItem>
         )}
         <MenuItem onClick={() => copyPermalink(match)}>
-          <LinkIcon fontSize="small" style={{ marginRight: 8 }} />
+          <LinkIcon fontSize="small" sx={{ mr: 1 }} />
           Permalink
         </MenuItem>
         <MenuItem onClick={() => shareMatch(match)}>
-          <ShareIcon fontSize="small" style={{ marginRight: 8 }} />
+          <ShareIcon fontSize="small" sx={{ mr: 1 }} />
           Teilen
         </MenuItem>
       </MuiMenu>

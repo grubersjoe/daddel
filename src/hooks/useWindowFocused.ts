@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-export default function useWindowFocused() {
+export default function useWindowFocused(): boolean {
   const [focused, setFocused] = useState(false);
 
   useEffect(() => {

@@ -1,12 +1,8 @@
 import React from 'react';
-import { makeStyles, Theme } from '@material-ui/core/styles';
 
-import LinearProgress from '@material-ui/core/LinearProgress';
+import LinearProgress from '@mui/material/LinearProgress';
 
-import green from '@material-ui/core/colors/green';
-import yellow from '@material-ui/core/colors/yellow';
-import orange from '@material-ui/core/colors/orange';
-import red from '@material-ui/core/colors/red';
+import { green, grey, orange, red, yellow } from '@mui/material/colors';
 
 type Props = {
   value: number;
@@ -36,30 +32,18 @@ function calcBarColor(value: number, max: number) {
   }
 }
 
-const useStyles = makeStyles<Theme, Props>(theme => ({
-  root: {
-    width: '100%',
-    height: 8,
-  },
-  colorPrimary: {
-    backgroundColor: theme.palette.grey[700],
-  },
-  barColorPrimary: {
-    backgroundColor: ({ value, max }) => calcBarColor(value, max),
-  },
-}));
-
 export const ProgressBar: React.FC<Props> = ({ value, max }) => {
   value = Math.min(value, max);
 
-  const classes = useStyles({ value, max });
-
   return (
     <LinearProgress
-      classes={{
-        root: classes.root,
-        colorPrimary: classes.colorPrimary,
-        barColorPrimary: classes.barColorPrimary,
+      sx={{
+        width: '100%',
+        height: 8,
+        backgroundColor: grey[700],
+        '& .MuiLinearProgress-bar': {
+          backgroundColor: calcBarColor(value, max),
+        },
       }}
       variant="determinate"
       value={(value / max) * 100}

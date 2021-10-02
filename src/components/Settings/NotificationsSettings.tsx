@@ -1,9 +1,11 @@
-import React, { useContext, useState, MouseEventHandler } from 'react';
-import Alert from '@material-ui/lab/Alert';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
+import React, { MouseEventHandler, useContext, useState } from 'react';
+import {
+  Alert,
+  Button,
+  CircularProgress,
+  Grid,
+  Typography,
+} from '@mui/material';
 
 import useNotifications from '../../hooks/useNotifications';
 import { SnackbarContext } from '../Layout';
@@ -58,7 +60,7 @@ const NotificationsSettings: React.FC = () => {
       );
 
   return (
-    <Grid container spacing={2} direction="column">
+    <Grid container spacing={2} flexDirection="column">
       <Grid item>
         <Typography variant="h6">Push-Notifications</Typography>
         <Typography variant="body1" color="textSecondary" gutterBottom>
@@ -72,7 +74,6 @@ const NotificationsSettings: React.FC = () => {
         <>
           <Grid item>
             <Button
-              variant="outlined"
               onClick={handleSubscribe}
               disabled={loading || permissionState === 'denied'}
               startIcon={
@@ -107,7 +108,6 @@ const NotificationsSettings: React.FC = () => {
           )}
           <Grid item>
             <Button
-              variant="outlined"
               onClick={handleUnsubscribe}
               disabled={loading}
               startIcon={

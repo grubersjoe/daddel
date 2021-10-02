@@ -1,27 +1,27 @@
-import React, { useState, FormEvent, useContext } from 'react';
+import React, { FormEvent, useContext, useState } from 'react';
 import { Redirect, StaticContext } from 'react-router';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
-import deLocale from 'date-fns/locale/de';
 import set from 'date-fns/set';
-import DateFnsUtils from '@date-io/date-fns';
-import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-import Select from '@material-ui/core/Select';
-import TextField from '@material-ui/core/TextField';
+import isValid from 'date-fns/isValid';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Grid,
+  Select,
+  TextField,
+} from '@mui/material';
 
 import ROUTES from '../constants/routes';
-import { DEFAULT_TIME_INCREMENT } from '../constants/date';
 import firebase from '../services/firebase';
 import { reorderGames } from '../utils';
-import { Match, Game, Player } from '../types';
+import { Game, Match, Player } from '../types';
 import { SnackbarContext } from '../components/Layout';
 import AppBar from '../components/AppBar';
 import PageMetadata from '../components/PageMetadata';
+import DateTimePicker from '../components/DateTimePicker';
 
 type LocationState = {
   game?: Omit<Game, 'game'>;
@@ -44,7 +44,7 @@ const updatePlayerList = (players: Player[], updatedDate: Date): Player[] =>
   });
 
 const UpdateMatch: React.FC<
-  RouteComponentProps<{}, StaticContext, LocationState>
+  RouteComponentProps<Record<string, string>, StaticContext, LocationState>
 > = ({ location, history }) => {
   const dispatchSnack = useContext(SnackbarContext);
 
@@ -128,20 +128,7 @@ const UpdateMatch: React.FC<
 
         <form autoComplete="off" onSubmit={handleUpdate}>
           <Box mb="1.5rem">
-            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={deLocale}>
-              <DateTimePicker
-                label="Datum und Uhrzeit"
-                variant="dialog"
-                inputVariant="outlined"
-                value={date}
-                onChange={setDate}
-                minutesStep={DEFAULT_TIME_INCREMENT}
-                ampm={false}
-                disablePast
-                required
-                fullWidth
-              />
-            </MuiPickersUtilsProvider>
+            <DateTimePicker date={date} setDate={setDate} />
           </Box>
           <Box mb="1rem">
             <TextField
@@ -157,22 +144,17 @@ const UpdateMatch: React.FC<
           <Box my="1.5rem">
             <Grid container direction="row" spacing={2}>
               <Grid item xs>
-                <Button
-                  variant="outlined"
-                  color="default"
-                  onClick={history.goBack}
-                  disabled={loading}
-                  fullWidth
-                >
+                <Button onClick={history.goBack} disabled={loading} fullWidth>
                   Abbrechen
                 </Button>
               </Grid>
               <Grid item xs>
                 <Button
                   type="submit"
-                  variant="outlined"
                   color="primary"
-                  disabled={!games || loading}
+                  disabled={
+                    !games || games.length === 0 || !isValid(date) || loading
+                  }
                   startIcon={
                     loading ? (
                       <CircularProgress

@@ -1,5 +1,5 @@
 import React from 'react';
-import SvgIcon, { SvgIconProps } from '@material-ui/core/SvgIcon';
+import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
 
 // See daddel-cropped.svg
 const DaddelIcon: React.FC<SvgIconProps> = props => (

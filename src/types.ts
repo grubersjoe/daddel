@@ -41,7 +41,7 @@ export type User = {
 
 export type UserMap = Map<User['uid'], User>;
 
-// Unfortuately, TypeScript is not able to dynamically generate this type
+// Unfortunately, TypeScript is not able to dynamically generate this type
 export type TimeString =
   | '09:00'
   | '09:15'

@@ -1,43 +1,43 @@
-import React, { useState, FormEvent, useEffect, useContext } from 'react';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
+import React, { FormEvent, useContext, useEffect, useState } from 'react';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 import firebaseNS from 'firebase';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
+import {
+  Box,
+  Button,
+  Checkbox,
+  CircularProgress,
+  Container,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  InputLabel,
+  Select,
+  TextField,
+} from '@mui/material';
 import addMinutes from 'date-fns/addMinutes';
-import deLocale from 'date-fns/locale/de';
 import isSameDay from 'date-fns/isSameDay';
+import isValid from 'date-fns/isValid';
 import parseDate from 'date-fns/parse';
-import DateFnsUtils from '@date-io/date-fns';
-import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
-import Checkbox from '@material-ui/core/Checkbox';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Container from '@material-ui/core/Container';
-import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Grid from '@material-ui/core/Grid';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import TextField from '@material-ui/core/TextField';
 
 import { EVENTS } from '../constants';
 import {
   DEFAULT_MATCH_LENGTH,
   DEFAULT_MATCH_TIME,
-  DEFAULT_TIME_INCREMENT,
   MATCH_TIME_LATEST,
   TIME_FORMAT,
 } from '../constants/date';
 import ROUTES from '../constants/routes';
 import firebase from '../services/firebase';
 import { joinMatch } from '../services/match';
-import { Match, Game } from '../types';
+import { Game, Match } from '../types';
 import { reorderGames } from '../utils';
 import { parseTime } from '../utils/date';
 import { AuthUserContext } from '../components/App';
 import { SnackbarContext } from '../components/Layout';
 import AppBar from '../components/AppBar';
 import PageMetadata from '../components/PageMetadata';
+import DateTimePicker from '../components/DateTimePicker';
 
 const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
   const [authUser] = useContext(AuthUserContext);
@@ -138,20 +138,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
             onSubmit={event => addMatch(event, authUser)}
           >
             <Box mb="1.5rem">
-              <MuiPickersUtilsProvider utils={DateFnsUtils} locale={deLocale}>
-                <DateTimePicker
-                  label="Datum und Uhrzeit"
-                  variant="dialog"
-                  inputVariant="outlined"
-                  value={date}
-                  onChange={setDate}
-                  minutesStep={DEFAULT_TIME_INCREMENT}
-                  ampm={false}
-                  disablePast
-                  required
-                  fullWidth
-                />
-              </MuiPickersUtilsProvider>
+              <DateTimePicker date={date} setDate={setDate} />
             </Box>
             <Box mb="1rem">
               <TextField
@@ -176,22 +163,17 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
             <Box my="1.5rem">
               <Grid container direction="row" spacing={2}>
                 <Grid item xs>
-                  <Button
-                    variant="outlined"
-                    color="default"
-                    onClick={history.goBack}
-                    disabled={loading}
-                    fullWidth
-                  >
+                  <Button onClick={history.goBack} disabled={loading} fullWidth>
                     Abbrechen
                   </Button>
                 </Grid>
                 <Grid item xs>
                   <Button
                     type="submit"
-                    variant="outlined"
                     color="primary"
-                    disabled={!games || games.length === 0 || loading}
+                    disabled={
+                      !games || games.length === 0 || !isValid(date) || loading
+                    }
                     startIcon={
                       loading ? (
                         <CircularProgress

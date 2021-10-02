@@ -1,30 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import addMinutes from 'date-fns/addMinutes';
-import { useTheme } from '@material-ui/core/styles';
-import Alert from '@material-ui/lab/Alert';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Grid from '@material-ui/core/Grid';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
+import {
+  Alert,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Grid,
+  InputLabel,
+  Select,
+} from '@mui/material';
+
+import { SelectChangeEvent } from '@mui/material/Select/SelectInput';
 
 import firebase from '../../services/firebase';
 import { joinMatch, leaveMatch } from '../../services/match';
 import {
+  DEFAULT_MATCH_LENGTH,
   DEFAULT_MATCH_TIME,
   MATCH_TIME_EARLIEST,
   MATCH_TIME_LATEST,
   MATCH_TIME_OPEN_END,
-  DEFAULT_MATCH_LENGTH,
 } from '../../constants/date';
 import { Match, Timestamp, TimeString } from '../../types';
 import {
-  formatTime,
   calcTimeStringsBetweenDates,
+  formatTime,
   parseTime,
 } from '../../utils/date';
 
@@ -52,7 +55,7 @@ const renderSelectOptions = (
     includeOpenEnd: false,
   },
 ) => {
-  let options = times.map(time => (
+  const options = times.map(time => (
     <option key={time} value={time}>
       {time}
     </option>
@@ -70,8 +73,6 @@ const renderSelectOptions = (
 };
 
 const JoinMatchDialog: React.FC<Props> = ({ match }) => {
-  const theme = useTheme();
-
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -155,14 +156,13 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
       .finally(() => setLoading(false));
   };
 
-  const handleTimeChange = (prop: keyof typeof state) => (
-    event: React.ChangeEvent<{ value: unknown }>,
-  ) => {
-    setState({
-      ...state,
-      [prop]: event.target.value as TimeString,
-    });
-  };
+  const handleTimeChange =
+    (prop: keyof typeof state) => (event: SelectChangeEvent<TimeString>) => {
+      setState({
+        ...state,
+        [prop]: event.target.value,
+      });
+    };
 
   const userInLobby = match.players.find(
     player => player.uid === firebase.auth.currentUser?.uid,
@@ -173,50 +173,42 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
       <Grid container spacing={2}>
         {userInLobby && (
           <Grid item xs={6}>
-            <Button
-              variant="outlined"
-              onClick={handleLeave}
-              disableElevation
-              fullWidth
-            >
+            <Button onClick={handleLeave} disableElevation fullWidth>
               Doch nicht
             </Button>
           </Grid>
         )}
         <Grid item xs={userInLobby ? 6 : 12}>
-          <Button
-            color="primary"
-            variant="outlined"
-            onClick={() => setOpen(true)}
-            fullWidth
-          >
+          <Button color="primary" onClick={() => setOpen(true)} fullWidth>
             {userInLobby ? 'Zeit ändern' : 'Mitspielen'}
           </Button>
         </Grid>
       </Grid>
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>Mitspielen</DialogTitle>
-        <DialogContent style={{ paddingTop: 0 }}>
+        <DialogContent sx={{ pt: 0 }}>
           <DialogContentText>Von wann bis wann hast du Zeit?</DialogContentText>
-          <Grid container style={{ margin: `${theme.spacing(2)}px 0` }}>
-            <Grid item xs={6} style={{ paddingRight: theme.spacing(1.5) }}>
+          <Grid container sx={{ my: 2 }}>
+            <Grid item xs={6} sx={{ pr: 1.5 }}>
               <InputLabel htmlFor="select-from">Ab</InputLabel>
               <Select
                 value={state.availFrom}
                 onChange={handleTimeChange('availFrom')}
                 inputProps={{ id: 'select-from' }}
+                size="small"
                 fullWidth
                 native
               >
                 {renderSelectOptions(timeOptions)}
               </Select>
             </Grid>
-            <Grid item xs={6} style={{ paddingLeft: theme.spacing(1.5) }}>
+            <Grid item xs={6} sx={{ pl: 1.5 }}>
               <InputLabel htmlFor="select-until">Bis</InputLabel>
               <Select
                 value={state.availUntil}
                 onChange={handleTimeChange('availUntil')}
                 inputProps={{ id: 'select-until' }}
+                size="small"
                 fullWidth
                 native
               >
@@ -231,10 +223,19 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
           {error && <Alert severity="error">Fehler: {error.message}</Alert>}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)} disabled={loading}>
+          <Button
+            onClick={() => setOpen(false)}
+            disabled={loading}
+            variant="text"
+          >
             Abbrechen
           </Button>
-          <Button onClick={handleJoin} color="primary" disabled={loading}>
+          <Button
+            onClick={handleJoin}
+            color="primary"
+            disabled={loading}
+            variant="text"
+          >
             Mitspielen
           </Button>
         </DialogActions>

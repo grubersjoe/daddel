@@ -1,10 +1,8 @@
 import React, { useContext } from 'react';
 import { Link, Redirect, useParams } from 'react-router-dom';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import LinkIcon from '@material-ui/icons/Link';
+import { Box, Button, Grid } from '@mui/material';
+import LinkIcon from '@mui/icons-material/Link';
 
 import ROUTES from '../constants/routes';
 import useUserList from '../hooks/useUserList';
@@ -53,6 +51,7 @@ const MatchDetail: React.FC = () => {
           <Button
             variant="text"
             startIcon={<LinkIcon />}
+            sx={{ ml: '1rem' }}
             onClick={() => {
               if (navigator.clipboard) {
                 navigator.clipboard
@@ -64,7 +63,6 @@ const MatchDetail: React.FC = () => {
                 dispatchSnack('Aktion nicht unterstützt', 'error');
               }
             }}
-            style={{ marginLeft: '1rem' }}
           >
             Link kopieren
           </Button>

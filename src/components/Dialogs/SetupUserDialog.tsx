@@ -1,21 +1,21 @@
 import React, {
-  useState,
-  useEffect,
   FormEventHandler,
   useContext,
+  useEffect,
+  useState,
 } from 'react';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
-import useTheme from '@material-ui/core/styles/useTheme';
-import Alert from '@material-ui/lab/Alert';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import TextField from '@material-ui/core/TextField';
+import {
+  Alert,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
+} from '@mui/material';
 
 import { isValidInvitationCode } from '../../services/auth';
 import firebase from '../../services/firebase';
@@ -29,11 +29,10 @@ import { SnackbarContext } from '../Layout';
  * 1. Validate invitation code
  * 2. Set the user nickname
  */
-const SetupUserDialog: React.FC<RouteComponentProps> = ({ history }) => {
+const SetupUserDialog: React.FC = () => {
   const [authUser] = useContext(AuthUserContext);
   const dispatchSnack = useContext(SnackbarContext);
 
-  const theme = useTheme();
   const isOnline = useOnlineStatus();
 
   const [error, setError] = useState<Error | null>(null);
@@ -148,7 +147,7 @@ const SetupUserDialog: React.FC<RouteComponentProps> = ({ history }) => {
                 required
               />
               {error && (
-                <Alert severity="error" style={{ marginTop: theme.spacing(2) }}>
+                <Alert severity="error" sx={{ mt: 2 }}>
                   Fehler: {error.message}
                 </Alert>
               )}
@@ -156,6 +155,7 @@ const SetupUserDialog: React.FC<RouteComponentProps> = ({ history }) => {
             <DialogActions>
               <Button
                 type="submit"
+                variant="text"
                 color="primary"
                 disabled={loading}
                 startIcon={
@@ -189,7 +189,7 @@ const SetupUserDialog: React.FC<RouteComponentProps> = ({ history }) => {
                 required
               />
               {error && (
-                <Alert severity="error" style={{ marginTop: theme.spacing(2) }}>
+                <Alert severity="error" sx={{ mt: 2 }}>
                   Fehler: {error.message}
                 </Alert>
               )}
@@ -197,6 +197,7 @@ const SetupUserDialog: React.FC<RouteComponentProps> = ({ history }) => {
             <DialogActions>
               <Button
                 type="submit"
+                variant="text"
                 color="primary"
                 disabled={loading}
                 startIcon={
@@ -214,4 +215,4 @@ const SetupUserDialog: React.FC<RouteComponentProps> = ({ history }) => {
   }
 };
 
-export default withRouter(SetupUserDialog);
+export default SetupUserDialog;

@@ -10,10 +10,10 @@ import parseDate from 'date-fns/parse';
 import roundToNearestMinutes from 'date-fns/roundToNearestMinutes';
 
 import {
-  TIME_FORMAT,
   DATE_FORMAT,
   DEFAULT_TIME_INCREMENT,
   MATCH_TIME_OPEN_END,
+  TIME_FORMAT,
 } from '../constants/date';
 import { Timestamp, TimeString } from '../types';
 
@@ -31,7 +31,7 @@ export function format<R extends string = string>(
   return formatDateFns(date, format, options) as R;
 }
 
-export function formatDate(timestamp: Timestamp, smartWeekday = true) {
+export function formatDate(timestamp: Timestamp, smartWeekday = true): string {
   const date = timestamp.toDate();
 
   if (smartWeekday) {
@@ -98,6 +98,6 @@ export function calcTimeStringsBetweenDates(
   return options;
 }
 
-export function isOpenEndDate(date: Date | Timestamp | number) {
+export function isOpenEndDate(date: Date | Timestamp | number): boolean {
   return formatTime(date) === MATCH_TIME_OPEN_END;
 }

@@ -7,27 +7,27 @@ import {
 } from 'react-router-dom';
 import firebaseNS from 'firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { ThemeProvider } from '@material-ui/core';
-import CSSBaseline from '@material-ui/core/CssBaseline';
-import yellow from '@material-ui/core/colors/yellow';
+import { StyledEngineProvider, ThemeProvider } from '@mui/material';
+import CSSBaseline from '@mui/material/CssBaseline';
+import yellow from '@mui/material/colors/yellow';
 
 import { DOMAIN_PROD, REGEX_IPV4 } from '../constants';
 import ROUTES from '../constants/routes';
 import firebase from '../services/firebase';
 import { createTheme } from '../styles/theme';
 
-import Layout from './Layout';
-import AddMatch from '../pages/AddMatch';
-import UpdateMatch from '../pages/UpdateMatch';
-import PrivateRoute from './PrivateRoute';
 import Settings from '../pages/Settings';
+import AddMatch from '../pages/AddMatch';
 import ResetPassword from '../pages/ResetPassword';
 import SignIn from '../pages/SignIn';
+import UpdateMatch from '../pages/UpdateMatch';
 import SignUp from '../pages/SignUp';
-import PageMetadata from './PageMetadata';
 import MatchDetail from '../pages/MatchDetail';
 import MatchesList from '../pages/MatchesList';
 import { updateServiceWorker } from '../utils';
+import PageMetadata from './PageMetadata';
+import PrivateRoute from './PrivateRoute';
+import Layout from './Layout';
 
 type AuthUserValue = [Maybe<firebaseNS.User> | null, boolean];
 
@@ -53,41 +53,43 @@ const App: React.FC = () => {
 
   return (
     <AuthUserContext.Provider value={[authUser, authLoading]}>
-      <ThemeProvider theme={theme}>
-        <CSSBaseline />
-        <PageMetadata />
-        <Router>
-          <OnRouteChange />
-          <Layout>
-            <Switch>
-              <PrivateRoute path={ROUTES.ADD_MATCH}>
-                <AddMatch />
-              </PrivateRoute>
-              <PrivateRoute path={ROUTES.EDIT_MATCH}>
-                <UpdateMatch />
-              </PrivateRoute>
-              <PrivateRoute path={ROUTES.MATCH_DETAIL}>
-                <MatchDetail />
-              </PrivateRoute>
-              <PrivateRoute path={ROUTES.MATCHES_LIST} exact>
-                <MatchesList />
-              </PrivateRoute>
-              <PrivateRoute path={ROUTES.SETTINGS}>
-                <Settings />
-              </PrivateRoute>
-              <Route path={ROUTES.REGISTER}>
-                <SignUp />
-              </Route>
-              <Route path={ROUTES.RESET}>
-                <ResetPassword />
-              </Route>
-              <Route path={ROUTES.ROOT}>
-                <SignIn />
-              </Route>
-            </Switch>
-          </Layout>
-        </Router>
-      </ThemeProvider>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={theme}>
+          <CSSBaseline />
+          <PageMetadata />
+          <Router>
+            <OnRouteChange />
+            <Layout>
+              <Switch>
+                <PrivateRoute path={ROUTES.ADD_MATCH}>
+                  <AddMatch />
+                </PrivateRoute>
+                <PrivateRoute path={ROUTES.EDIT_MATCH}>
+                  <UpdateMatch />
+                </PrivateRoute>
+                <PrivateRoute path={ROUTES.MATCH_DETAIL}>
+                  <MatchDetail />
+                </PrivateRoute>
+                <PrivateRoute path={ROUTES.MATCHES_LIST} exact>
+                  <MatchesList />
+                </PrivateRoute>
+                <PrivateRoute path={ROUTES.SETTINGS}>
+                  <Settings />
+                </PrivateRoute>
+                <Route path={ROUTES.REGISTER}>
+                  <SignUp />
+                </Route>
+                <Route path={ROUTES.RESET}>
+                  <ResetPassword />
+                </Route>
+                <Route path={ROUTES.ROOT}>
+                  <SignIn />
+                </Route>
+              </Switch>
+            </Layout>
+          </Router>
+        </ThemeProvider>
+      </StyledEngineProvider>
     </AuthUserContext.Provider>
   );
 };

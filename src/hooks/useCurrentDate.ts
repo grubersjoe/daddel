@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { startOfToday, isSameDay } from 'date-fns';
+import { useEffect, useState } from 'react';
+import { isSameDay, startOfToday } from 'date-fns';
 
 import useWindowFocused from './useWindowFocused';
 

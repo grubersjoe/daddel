@@ -1,22 +1,15 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import SwipeableViews from 'react-swipeable-views';
 import { Link } from 'react-router-dom';
-import { useTheme } from '@material-ui/core/styles';
-import Alert from '@material-ui/lab/Alert';
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import Tab from '@material-ui/core/Tab';
-import Tabs from '@material-ui/core/Tabs';
-import Typography from '@material-ui/core/Typography';
+import { Alert, Box, Button, Grid, Tab, Tabs, Typography } from '@mui/material';
 
 import { futureMatchesQuery, pastMatchesQuery } from '../queries/matches';
 import ROUTES from '../constants/routes';
 import useCurrentDate from '../hooks/useCurrentDate';
 import useUserList from '../hooks/useUserList';
 import { Match } from '../types';
-import { filterMatches, calcNumberOfEnabledFilters } from '../utils/filter';
+import { calcNumberOfEnabledFilters, filterMatches } from '../utils/filter';
 
 import { MAX_SHOWN_PAST_MATCHES } from '../constants';
 import {
@@ -38,16 +31,12 @@ const TabPanel: React.FC<{
   index: number;
   value: number;
 }> = ({ children, value, index, ...props }) => (
-  <div role="tabpanel" hidden={value !== index} {...props}>
-    <Box p={3} pt={0}>
-      {children}
-    </Box>
-  </div>
+  <Box role="tabpanel" hidden={value !== index} p={3} pt={0} {...props}>
+    {children}
+  </Box>
 );
 
 const MatchesList: React.FC = () => {
-  const theme = useTheme();
-
   const [userList] = useUserList();
 
   const [isRefetching, setIsRefetching] = useState(false);
@@ -118,7 +107,7 @@ const MatchesList: React.FC = () => {
         >
           <Tab
             label="Anstehende"
-            style={{
+            sx={{
               ...(isRefetching && { animation: loadingAnimation }),
             }}
           />
@@ -160,11 +149,10 @@ const MatchesList: React.FC = () => {
               )}
 
               <Button
-                variant="outlined"
                 color="primary"
                 component={Link}
                 to={ROUTES.ADD_MATCH}
-                style={{ marginTop: theme.spacing(1) }}
+                sx={{ mt: 1 }}
               >
                 Neues Match
               </Button>

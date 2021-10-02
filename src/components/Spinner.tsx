@@ -1,13 +1,12 @@
 import React from 'react';
-import Grid from '@material-ui/core/Grid';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { CircularProgress, Grid } from '@mui/material';
 
 const Spinner: React.FC = () => (
   <Grid
     container
     alignItems="center"
     justifyContent="center"
-    style={{ paddingTop: '2rem' }}
+    sx={{ pt: '2rem' }}
   >
     <CircularProgress />
   </Grid>

@@ -11,7 +11,7 @@ type Config = {
   onUpdate?: (registration: ServiceWorkerRegistration) => void;
 };
 
-export function register(config?: Config) {
+export function register(config?: Config): void {
   if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
     const publicUrl = new URL(process.env.PUBLIC_URL, window.location.href);
     if (publicUrl.origin !== window.location.origin) {
@@ -101,7 +101,8 @@ function checkValidServiceWorker(swUrl: string, config?: Config) {
     });
 }
 
-export function unregister() {
+// noinspection JSUnusedGlobalSymbols
+export function unregister(): void {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.ready
       .then(registration => registration.unregister())

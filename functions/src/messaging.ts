@@ -1,9 +1,9 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 
-import { APP_URL } from '.';
 import { Game, Match, User } from './types';
 import { formatDate, formatTime } from './util/date';
+import { APP_URL } from '.';
 
 const FIREBASE_REGION = 'europe-west3'; // Frankfurt
 const DEFAULT_TOPIC = 'default';
@@ -12,7 +12,7 @@ const MESSAGING_ENABLED = true; // Useful while developing
 /**
  * @throws functions.https.HttpsError
  */
-function validationMessagingArgs(data: Record<string, any>) {
+function validationMessagingArgs(data: Record<string, unknown>) {
   if (typeof data.fcmToken !== 'string' || data.fcmToken.length === 0) {
     throw new functions.https.HttpsError(
       'invalid-argument',
