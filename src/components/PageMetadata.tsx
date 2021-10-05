@@ -6,7 +6,7 @@ type Props = {
   description?: string;
 };
 
-const DEFAULT_DESCRIPTION = 'Plane Spieleabende mit Deinen FreundInnen';
+const DEFAULT_DESCRIPTION = 'Plane Spieleabende mit Deinen Freunden';
 
 const PageMetadata: React.FC<Props> = ({ title, description }) => (
   <Helmet

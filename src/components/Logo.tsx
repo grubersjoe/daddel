@@ -19,7 +19,7 @@ const Logo: React.FC = () => (
       </Typography>
     </Box>
     <Typography variant="subtitle1" sx={{ mb: 4 }}>
-      Plane Spieleabende mit Deinen FreundInnen
+      Plane Spieleabende mit Deinen Freunden
     </Typography>
   </Link>
 );
