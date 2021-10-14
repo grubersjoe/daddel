@@ -135,7 +135,7 @@ const MatchCard: React.FC<Props> = ({ match, userList, setPageMetadata }) => {
             ...sx.media,
             ...(!hasBanner && {
               background:
-                'linear-gradient(to bottom, rgb(36, 36, 36) 0%, rgb(30, 30, 30) 100%)',
+                'linear-gradient(hsl(0deg 0% 28%) 0%, hsl(0deg 0% 24%) 100%)',
             }),
           }}
         >
