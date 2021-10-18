@@ -1,5 +1,8 @@
-import { UNKNOWN_GAME_ID } from '../constants';
-import { Game, User, UserMap } from '../types';
+import { User, UserMap } from '../types';
+
+export function capitalizeFirstLetter(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
 
 export function calcUserList(users: User[]): UserMap {
   const userMap = new Map<string, User>();
@@ -11,15 +14,6 @@ export function calcUserList(users: User[]): UserMap {
   });
 
   return userMap;
-}
-
-// Move the "unknown game" entry to the end of the games list
-export function reorderGames(games: Game[]): Game[] {
-  const unknownGame = games.find(game => game.id === UNKNOWN_GAME_ID);
-
-  return unknownGame
-    ? games.filter(game => game.id !== UNKNOWN_GAME_ID).concat(unknownGame)
-    : games;
 }
 
 // See https://developers.google.com/speed/webp/faq#in_your_own_javascript

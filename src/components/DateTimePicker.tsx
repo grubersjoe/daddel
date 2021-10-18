@@ -1,4 +1,4 @@
-import React, { Dispatch, FunctionComponent, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import MuiDateTimePicker from '@mui/lab/DateTimePicker';
@@ -13,7 +13,7 @@ type Props = {
 };
 
 // noinspection RequiredAttributes
-const DateTimePicker: FunctionComponent<Props> = ({ date, setDate }) => (
+const DateTimePicker: React.FC<Props> = ({ date, setDate }) => (
   <LocalizationProvider dateAdapter={AdapterDateFns} locale={deLocale}>
     <MuiDateTimePicker
       label="Datum und Uhrzeit"

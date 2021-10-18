@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 
 import ROUTES from '../constants/routes';
-import { reorderGames } from '../utils';
+import { reorderGames } from '../utils/games';
 import { Game, Match, Player } from '../types';
 import { SnackbarContext } from '../components/Layout';
 import AppBar from '../components/AppBar';

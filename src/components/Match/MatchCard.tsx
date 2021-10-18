@@ -27,6 +27,7 @@ import FallbackBanner from './FallbackBanner';
 import MatchCardSkeleton from './MatchCardSkeleton';
 import Menu from './Menu';
 import ProgressBar from './ProgressBar';
+import EmojiPicker from '../EmojiPicker';
 
 type Props = {
   match: Match;
@@ -187,7 +188,7 @@ const MatchCard: React.FC<Props> = ({ match, userList, setPageMetadata }) => {
           justifyContent="space-between"
         >
           <CardContent sx={sx.cardContent}>
-            <Typography color="textSecondary" sx={{ mb: 1.75 }}>
+            <Typography color="textSecondary" sx={{ mb: 2 }}>
               <TimeAgo date={match.date.toDate()} />
               <Separator />
               <Link to={`/matches/${match.id}`}>Permalink</Link>
@@ -195,14 +196,21 @@ const MatchCard: React.FC<Props> = ({ match, userList, setPageMetadata }) => {
             {match.description && (
               <Typography
                 sx={{
-                  mb: 2,
-                  lineHeight: 1.25,
+                  lineHeight: 1.3,
                 }}
               >
                 <Link to={`/matches/${match.id}`}>{match.description}</Link>
               </Typography>
             )}
-            <Calendar players={match.players} userList={userList} />
+
+            <Box mt={2.5}>
+              <Calendar players={match.players} userList={userList} />
+            </Box>
+            {isJoinable && (
+              <Box mt={3}>
+                <EmojiPicker onEmojiClick={emoji => console.log({ emoji })} />
+              </Box>
+            )}
           </CardContent>
           {isJoinable && (
             <CardActions sx={sx.actions}>

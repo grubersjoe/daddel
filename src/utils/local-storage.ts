@@ -1,10 +1,11 @@
-export const STORAGE_KEYS = {
-  matchFilter: 'daddel-match-filter',
-  matchFilterEnabled: 'daddel-match-filter-enabled',
-};
+export enum STORAGE_KEY {
+  MATCH_FILTER = 'daddel-match-filter',
+  MATCH_FILTER_ENABLED = 'daddel-match-filter-enabled',
+  FREQUENTLY_USED_EMOJIS = 'daddel-frequently-used-emojis',
+}
 
 export function getStorageItem<T>(
-  key: string,
+  key: STORAGE_KEY,
   storage: Storage = localStorage,
 ): T | null {
   try {
@@ -16,7 +17,7 @@ export function getStorageItem<T>(
 }
 
 export function setStorageItem(
-  key: string,
+  key: STORAGE_KEY,
   value: unknown,
   storage: Storage = localStorage,
 ): void {

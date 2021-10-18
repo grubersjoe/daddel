@@ -25,7 +25,6 @@ const styles = (theme: Theme) =>
   ({
     root: {
       position: 'relative',
-      mt: 2.5,
       pt: 3.5, // space for legend
       fontSize: theme.typography.pxToRem(14),
     },

@@ -32,7 +32,7 @@ import {
 import ROUTES from '../constants/routes';
 import { joinMatch } from '../services/match';
 import { Game, Match } from '../types';
-import { reorderGames } from '../utils';
+import { reorderGames } from '../utils/games';
 import { parseTime } from '../utils/date';
 import { SnackbarContext } from '../components/Layout';
 import AppBar from '../components/AppBar';

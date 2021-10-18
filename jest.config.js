@@ -3,4 +3,6 @@ module.exports = {
   coverageDirectory: '.coverage',
   coverageReporters: ['lcov', 'text'],
   rootDir: '.',
+  resetMocks: false,
+  setupFiles: ['jest-localstorage-mock'],
 };

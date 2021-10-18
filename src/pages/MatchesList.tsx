@@ -16,7 +16,7 @@ import { MAX_SHOWN_PAST_MATCHES } from '../constants';
 import {
   getStorageItem,
   setStorageItem,
-  STORAGE_KEYS,
+  STORAGE_KEY,
 } from '../utils/local-storage';
 import AppBar from '../components/AppBar';
 import Filter, { MatchFilter } from '../components/Match/Filter';
@@ -65,11 +65,11 @@ const MatchesList: React.FC = () => {
   );
 
   const [showFilter, setShowFilter] = useState(
-    getStorageItem<boolean>(STORAGE_KEYS.matchFilterEnabled) ?? false,
+    getStorageItem<boolean>(STORAGE_KEY.MATCH_FILTER_ENABLED) ?? false,
   );
 
   const [filter, setFilter] = useState<MatchFilter>(
-    getStorageItem<MatchFilter>(STORAGE_KEYS.matchFilter) ?? { games: [] },
+    getStorageItem<MatchFilter>(STORAGE_KEY.MATCH_FILTER) ?? { games: [] },
   );
 
   const filteredFutureMatches = useMemo(
@@ -89,7 +89,7 @@ const MatchesList: React.FC = () => {
     title: showFilter ? 'Filter verstecken' : 'Filter anzeigen',
     onClick: () => {
       setShowFilter(enabled => {
-        setStorageItem(STORAGE_KEYS.matchFilterEnabled, !enabled);
+        setStorageItem(STORAGE_KEY.MATCH_FILTER_ENABLED, !enabled);
         return !enabled;
       });
     },

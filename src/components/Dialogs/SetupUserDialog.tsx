@@ -26,8 +26,8 @@ import { User } from '../../types';
 import { SnackbarContext } from '../Layout';
 
 enum Step {
-  CHECK_INVITATION_CODE,
-  PICK_USERNAME,
+  CheckInvitationCode,
+  PickUsername,
 }
 
 /**
@@ -45,7 +45,7 @@ const SetupUserDialog: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const [isOpen, setIsOpen] = useState(false);
-  const [step, setStep] = useState<Step>(Step.CHECK_INVITATION_CODE);
+  const [step, setStep] = useState<Step>(Step.CheckInvitationCode);
 
   const [nickname, setNickname] = useState('');
   const [invitationCode, setInvitationCode] = useState('');
@@ -57,7 +57,7 @@ const SetupUserDialog: React.FC = () => {
   // Skip first step if user is already invited
   useEffect(() => {
     if (user && user.invited) {
-      setStep(Step.PICK_USERNAME);
+      setStep(Step.PickUsername);
     }
   }, [user]);
 
@@ -122,12 +122,12 @@ const SetupUserDialog: React.FC = () => {
   };
 
   const title =
-    step === Step.CHECK_INVITATION_CODE
+    step === Step.CheckInvitationCode
       ? 'Hast du eine Einladung für Daddel?'
       : 'Wie heißt du?';
 
   switch (step) {
-    case Step.CHECK_INVITATION_CODE:
+    case Step.CheckInvitationCode:
       return (
         <Dialog open={isOpen} key="step-1">
           <DialogTitle>{title}</DialogTitle>
@@ -171,7 +171,7 @@ const SetupUserDialog: React.FC = () => {
         </Dialog>
       );
 
-    case Step.PICK_USERNAME:
+    case Step.PickUsername:
       return (
         <Dialog open={isOpen} key="step-2">
           <DialogTitle>{title}</DialogTitle>

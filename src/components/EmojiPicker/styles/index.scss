@@ -1,0 +1,28 @@
+@use 'sass:math';
+
+@import 'src/styles/mixins';
+
+// The CSS in JS approach from MUI is too slow when rendering thousands of emojis
+// @see https://mui.com/system/basics/#performance-tradeoff
+.emoji-button {
+  @include button-base;
+
+  border-radius: 4px;
+  font-size: inherit;
+
+  @media (pointer: fine) {
+    transition: background-color 150ms ease-in-out;
+    will-change: background-color;
+
+    &:focus-visible,
+    &:hover {
+      background-color: hsl(0, 0%, 30%);
+    }
+  }
+
+  @media (pointer: fine) {
+    &:active {
+      background-color: hsl(0, 0%, 35%);
+    }
+  }
+}

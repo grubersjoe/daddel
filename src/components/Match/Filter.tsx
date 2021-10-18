@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction } from 'react';
 import { Autocomplete, Grid, TextField } from '@mui/material';
 
 import { useGamesCollectionData } from '../../hooks/useGamesCollectionData';
-import { setStorageItem, STORAGE_KEYS } from '../../utils/local-storage';
+import { setStorageItem, STORAGE_KEY } from '../../utils/local-storage';
 import { Game } from '../../types';
 
 export type MatchFilter = {
@@ -35,7 +35,7 @@ const Filter: React.FC<Props> = ({ filter, setFilter }) => {
           loading={gamesLoading}
           onChange={(_event, games) => {
             setFilter({ games });
-            setStorageItem(STORAGE_KEYS.matchFilter, { games });
+            setStorageItem(STORAGE_KEY.MATCH_FILTER, { games });
           }}
           options={options}
           renderInput={props => (
