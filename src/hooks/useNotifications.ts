@@ -1,34 +1,33 @@
 import { useEffect, useState } from 'react';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
+import { httpsCallable } from 'firebase/functions';
+import { getMessaging, getToken } from 'firebase/messaging';
 
-import firebase from '../services/firebase';
 import { User } from '../types';
-import { supportsMessaging } from '../utils';
+import { getCurrentUserId } from '../services/auth';
+import { firebaseApp, functions, getDocRef } from '../services/firebase';
+import useMessagingSupported from './useMessagingSupported';
 
 export default function useNotifications() {
-  if (!supportsMessaging() || !firebase.messaging) {
-    throw new Error('Firebase Messaging not supported on this platform');
-  }
-
-  const { currentUser } = firebase.auth;
-
-  if (!currentUser) {
-    throw new Error('No current user');
-  }
-
   const [user, userLoading] = useDocumentData<User>(
-    firebase.firestore.doc(`users/${currentUser.uid}`),
+    getDocRef('users', getCurrentUserId()),
   );
 
+  const messagingSupported = useMessagingSupported();
   const [deviceRegistered, setDeviceRegistered] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (user && firebase.messaging) {
-      firebase.messaging
-        .getToken({
-          vapidKey: process.env.REACT_APP_VAPID_KEY,
-        })
+    if (!messagingSupported) {
+      return;
+    }
+
+    setLoading(userLoading);
+
+    if (user) {
+      getToken(getMessaging(firebaseApp), {
+        vapidKey: process.env.REACT_APP_VAPID_KEY,
+      })
         .then(fcmToken => {
           setDeviceRegistered(
             user.fcmTokens ? user.fcmTokens.includes(fcmToken) : false,
@@ -41,48 +40,48 @@ export default function useNotifications() {
           }
         });
     }
-    setLoading(userLoading);
-  }, [user, userLoading]);
+  }, [messagingSupported, user, userLoading]);
 
-  function subscribe() {
+  async function subscribe() {
+    if (!messagingSupported) {
+      return Promise.reject('Platform unsupported');
+    }
+
     if (loading) {
       return Promise.reject('Request pending');
     }
 
-    if (!firebase.messaging) {
-      throw new Error('Platform not supported');
-    }
-
     setLoading(true);
 
-    return firebase.messaging
-      .getToken({
-        vapidKey: process.env.REACT_APP_VAPID_KEY,
-      })
+    return getToken(getMessaging(firebaseApp), {
+      vapidKey: process.env.REACT_APP_VAPID_KEY,
+    })
       .then(fcmToken =>
-        firebase.functions.httpsCallable('subscribeToMessaging')({ fcmToken }),
+        httpsCallable(functions, 'subscribeToMessaging')({ fcmToken }),
       )
       .catch(error => Promise.reject(error))
       .finally(() => setLoading(false));
   }
 
   const unsubscribe = () => {
+    if (!messagingSupported) {
+      return Promise.reject('Platform unsupported');
+    }
+
     if (loading) {
       return Promise.reject('Request pending');
     }
 
-    if (!firebase.messaging) {
-      throw new Error('Platform not supported');
-    }
-
     setLoading(true);
 
-    return firebase.messaging
-      .getToken({
-        vapidKey: process.env.REACT_APP_VAPID_KEY,
-      })
+    return getToken(getMessaging(firebaseApp), {
+      vapidKey: process.env.REACT_APP_VAPID_KEY,
+    })
       .then(fcmToken =>
-        firebase.functions.httpsCallable('unsubscribeFromMessaging')({
+        httpsCallable(
+          functions,
+          'unsubscribeFromMessaging',
+        )({
           fcmToken,
         }),
       )

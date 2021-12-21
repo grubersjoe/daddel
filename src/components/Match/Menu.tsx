@@ -1,5 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { logEvent } from 'firebase/analytics';
+import { deleteDoc } from 'firebase/firestore';
 import endOfDay from 'date-fns/endOfDay';
 import isPast from 'date-fns/isPast';
 import { Menu as MuiMenu, MenuItem } from '@mui/material';
@@ -10,9 +12,9 @@ import LinkIcon from '@mui/icons-material/Link';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ShareIcon from '@mui/icons-material/Share';
 
-import { EVENTS } from '../../constants';
-import firebase from '../../services/firebase';
+import { GA_EVENTS } from '../../constants';
 import ROUTES from '../../constants/routes';
+import { analytics, getDocRef } from '../../services/firebase';
 import { Game, Match } from '../../types';
 import { formatDate, formatTime } from '../../utils/date';
 import { AuthUserContext } from '../App';
@@ -46,12 +48,10 @@ const Menu: React.FC<Props> = ({ game, match }) => {
 
   const deleteMatch = () => {
     if (window.confirm('Sicher?')) {
-      firebase.firestore
-        .collection('matches')
-        .doc(match.id)
-        .delete()
-        .then(() => firebase.analytics.logEvent(EVENTS.DELETE_MATCH))
-        .catch(() => dispatchSnack('Fehler', 'error'));
+      deleteDoc(getDocRef<Match>('matches', match.id)).catch(() => {
+        logEvent(analytics, GA_EVENTS.DELETE_MATCH);
+        dispatchSnack('Fehler', 'error');
+      });
     }
     closeMenu();
   };

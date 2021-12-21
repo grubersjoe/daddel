@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { onSnapshot } from 'firebase/firestore';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import SwipeableViews from 'react-swipeable-views';
 import { Link } from 'react-router-dom';
@@ -59,7 +60,7 @@ const MatchesList: React.FC = () => {
     { idField: 'id' },
   );
 
-  futureMatchesQuery(currentDate).onSnapshot(doc =>
+  onSnapshot(futureMatchesQuery(currentDate), doc =>
     setIsRefetching(doc.metadata.fromCache || doc.metadata.hasPendingWrites),
   );
 

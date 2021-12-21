@@ -1,14 +1,22 @@
-import firebase from '../services/firebase';
+import { limit, orderBy, Query, query, where } from 'firebase/firestore';
 
-export const futureMatchesQuery = (referenceDate: Date) =>
-  firebase.firestore
-    .collection('matches')
-    .where('date', '>=', referenceDate)
-    .orderBy('date', 'asc');
+import { Match } from '../types';
+import { getCollectionRef } from '../services/firebase';
 
-export const pastMatchesQuery = (referenceDate: Date, limit: number) =>
-  firebase.firestore
-    .collection('matches')
-    .where('date', '<', referenceDate)
-    .orderBy('date', 'desc')
-    .limit(limit);
+export const futureMatchesQuery = (referenceDate: Date): Query<Match> =>
+  query(
+    getCollectionRef('matches'),
+    where('date', '>=', referenceDate),
+    orderBy('date', 'asc'),
+  );
+
+export const pastMatchesQuery = (
+  referenceDate: Date,
+  maxResults: number,
+): Query<Match> =>
+  query(
+    getCollectionRef('matches'),
+    where('date', '<', referenceDate),
+    orderBy('date', 'desc'),
+    limit(maxResults),
+  );

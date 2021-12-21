@@ -1,8 +1,8 @@
 import React, { FormEvent, useContext, useState } from 'react';
+import { Timestamp, updateDoc } from 'firebase/firestore';
 import { Redirect, StaticContext } from 'react-router';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
-import set from 'date-fns/set';
+import setDate from 'date-fns/set';
 import isValid from 'date-fns/isValid';
 import {
   Box,
@@ -15,13 +15,14 @@ import {
 } from '@mui/material';
 
 import ROUTES from '../constants/routes';
-import firebase from '../services/firebase';
 import { reorderGames } from '../utils';
 import { Game, Match, Player } from '../types';
 import { SnackbarContext } from '../components/Layout';
 import AppBar from '../components/AppBar';
 import PageMetadata from '../components/PageMetadata';
 import DateTimePicker from '../components/DateTimePicker';
+import { useGamesCollectionData } from '../hooks/useGamesCollectionData';
+import { getDocRef } from '../services/firebase';
 
 type LocationState = {
   game?: Omit<Game, 'game'>;
@@ -30,7 +31,7 @@ type LocationState = {
 
 const updatePlayerList = (players: Player[], updatedDate: Date): Player[] =>
   players.map(player => {
-    const updatedValues = {
+    const updateDate = {
       year: updatedDate.getFullYear(),
       month: updatedDate.getMonth(),
       date: updatedDate.getDate(),
@@ -38,8 +39,8 @@ const updatePlayerList = (players: Player[], updatedDate: Date): Player[] =>
 
     return {
       uid: player.uid,
-      from: firebase.getTimestamp(set(player.from.toDate(), updatedValues)),
-      until: firebase.getTimestamp(set(player.until.toDate(), updatedValues)),
+      from: Timestamp.fromDate(setDate(player.from.toDate(), updateDate)),
+      until: Timestamp.fromDate(setDate(player.until.toDate(), updateDate)),
     };
   });
 
@@ -64,10 +65,7 @@ const UpdateMatch: React.FC<
     match?.description ?? '',
   );
 
-  const [games, gamesLoading] = useCollectionData<Game>(
-    firebase.firestore.collection('games').orderBy('name', 'asc'),
-    { idField: 'id' },
-  );
+  const [games, gamesLoading] = useGamesCollectionData();
 
   // Hooks must not be called conditionally.
   // So bailing out is not possible earlier.
@@ -84,16 +82,13 @@ const UpdateMatch: React.FC<
     }
 
     const updatedMatch: Omit<Match, 'id' | 'created' | 'createdBy'> = {
-      date: firebase.getTimestamp(date),
+      date: Timestamp.fromDate(date),
       description,
-      game: firebase.firestore.doc(`games/${gameId}`),
+      game: getDocRef<Game>('games', gameId),
       players: updatePlayerList(match.players, date),
     };
 
-    firebase.firestore
-      .collection('matches')
-      .doc(match.id)
-      .update(updatedMatch)
+    updateDoc<Match>(getDocRef('matches', match.id), updatedMatch)
       .then(() => {
         dispatchSnack('Match aktualisiert');
         history.push(ROUTES.MATCHES_LIST);

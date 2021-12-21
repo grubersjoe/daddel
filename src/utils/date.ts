@@ -1,3 +1,4 @@
+import { Timestamp } from 'firebase/firestore';
 import { de } from 'date-fns/locale';
 import addMinutes from 'date-fns/addMinutes';
 import formatDateFns from 'date-fns/format';
@@ -15,7 +16,7 @@ import {
   MATCH_TIME_OPEN_END,
   TIME_FORMAT,
 } from '../constants/date';
-import { Timestamp, TimeString } from '../types';
+import { TimeString } from '../types';
 
 export function format<R extends string = string>(
   date: Date | number,

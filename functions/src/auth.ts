@@ -1,16 +1,15 @@
-import * as admin from 'firebase-admin';
-import * as functions from 'firebase-functions';
+import { config, logger, region } from 'firebase-functions';
+import { getFirestore } from 'firebase-admin/firestore';
 
-const FIREBASE_REGION = 'europe-west3'; // Frankfurt
+import { FIREBASE_LOCATION } from './constants';
 
-export const isValidInvitationCode = functions
-  .region(FIREBASE_REGION)
-  .https.onCall((data: { code: string }) => ({
-    isValid: data.code === functions.config().daddel.invitation_code,
-  }));
+export const isValidInvitationCode = region(FIREBASE_LOCATION).https.onCall(
+  (data: { code: string }) => ({
+    isValid: data.code === config().daddel.invitation_code,
+  }),
+);
 
-export const onUserCreate = functions
-  .region(FIREBASE_REGION)
+export const onUserCreate = region(FIREBASE_LOCATION)
   .auth.user()
   .onCreate(userRecord => {
     const mailPasswordProvider = userRecord.providerData.find(
@@ -19,31 +18,26 @@ export const onUserCreate = functions
 
     // Normal registration does already check invitation code
     if (!mailPasswordProvider) {
-      admin
-        .firestore()
+      getFirestore()
         .collection('users')
         .doc(userRecord.uid)
         .set({ invited: false }, { merge: true })
         .then(() => {
-          functions.logger.info(
-            `Set invitation status of users/${userRecord.uid}`,
-          );
+          logger.info(`Set invitation status of users/${userRecord.uid}`);
         })
-        .catch(functions.logger.error);
+        .catch(logger.error);
     }
   });
 
-export const onUserDelete = functions
-  .region(FIREBASE_REGION)
+export const onUserDelete = region(FIREBASE_LOCATION)
   .auth.user()
   .onDelete(userRecord =>
-    admin
-      .firestore()
+    getFirestore()
       .collection('users')
       .doc(userRecord.uid)
       .delete()
       .then(() => {
-        functions.logger.info(`Document users/${userRecord.uid} deleted`);
+        logger.info(`Document users/${userRecord.uid} deleted`);
       })
-      .catch(functions.logger.error),
+      .catch(logger.error),
   );

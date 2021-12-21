@@ -4,7 +4,9 @@ import React, {
   useEffect,
   useState,
 } from 'react';
+import { updateDoc } from 'firebase/firestore';
 import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
+import { signOut } from 'firebase/auth';
 import {
   Alert,
   Button,
@@ -13,26 +15,26 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { grey } from '@mui/material/colors';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SignOutIcon from '@mui/icons-material/ExitToApp';
 
 import packageJson from '../../package.json';
-import firebase from '../services/firebase';
-import { User } from '../types';
-import { supportsMessaging } from '../utils';
 import { SnackbarContext } from '../components/Layout';
 import AppBar from '../components/AppBar';
 import PageMetadata from '../components/PageMetadata';
 import NotificationsSettings from '../components/Settings/NotificationsSettings';
-import { grey } from '@mui/material/colors';
+import useMessagingSupported from '../hooks/useMessagingSupported';
+import { getCurrentUserId } from '../services/auth';
+import { auth, getDocRef } from '../services/firebase';
+import { User } from '../types';
 
 const Settings: React.FC = () => {
   const dispatchSnack = useContext(SnackbarContext);
-
-  const { currentUser } = firebase.auth;
+  const messagingSupported = useMessagingSupported();
 
   const [user, userLoading, userError] = useDocumentDataOnce<User>(
-    firebase.firestore.doc(`users/${currentUser?.uid}`),
+    getDocRef('users', getCurrentUserId()),
     { idField: 'uid' },
   );
 
@@ -52,31 +54,29 @@ const Settings: React.FC = () => {
 
   const submitNickname: FormEventHandler = event => {
     event.preventDefault();
-
-    if (!currentUser) {
-      throw new Error('No user authenticated');
-    }
-
     setLoading(true);
-    firebase.firestore
-      .collection('users')
-      .doc(currentUser.uid)
-      .update({ nickname })
+
+    updateDoc(getDocRef('users', getCurrentUserId()), { nickname })
       .then(() => dispatchSnack('Name geändert'))
       .catch(setError)
       .finally(() => setLoading(false));
   };
 
+  /**
+   * NOTE: The document in the "users" collection is deleted automatically
+   * through the onUserDelete cloud function.
+   */
   const deleteAccount: FormEventHandler = event => {
     event.preventDefault();
 
-    if (!currentUser) {
-      throw new Error('No user authenticated');
-    }
-
     if (window.confirm('Konto wirklich löschen?')) {
       setLoading(true);
-      currentUser
+
+      if (!auth.currentUser) {
+        throw new Error('No authorized user');
+      }
+
+      return auth.currentUser
         .delete()
         .catch(setError)
         .finally(() => setLoading(false));
@@ -119,7 +119,7 @@ const Settings: React.FC = () => {
           </Alert>
         )}
 
-        {supportsMessaging() && (
+        {messagingSupported && (
           <Grid container sx={{ mt: 4 }}>
             <Grid item md={7}>
               <NotificationsSettings />
@@ -131,7 +131,7 @@ const Settings: React.FC = () => {
           <Grid item md={7}>
             <Button
               startIcon={<SignOutIcon />}
-              onClick={() => firebase.auth.signOut()}
+              onClick={() => signOut(auth)}
               fullWidth
             >
               Abmelden

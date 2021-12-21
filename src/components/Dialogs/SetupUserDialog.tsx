@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
+import { setDoc } from 'firebase/firestore';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 import {
   Alert,
@@ -17,12 +18,16 @@ import {
   TextField,
 } from '@mui/material';
 
-import { isValidInvitationCode } from '../../services/auth';
-import firebase from '../../services/firebase';
+import { getCurrentUserId, isValidInvitationCode } from '../../services/auth';
+import { getDocRef } from '../../services/firebase';
 import useOnlineStatus from '../../hooks/useOnlineStatus';
 import { User } from '../../types';
-import { AuthUserContext } from '../App';
 import { SnackbarContext } from '../Layout';
+
+enum Step {
+  CHECK_INVITATION_CODE,
+  PICK_USERNAME,
+}
 
 /**
  * Required after Google sing in
@@ -30,7 +35,6 @@ import { SnackbarContext } from '../Layout';
  * 2. Set the user nickname
  */
 const SetupUserDialog: React.FC = () => {
-  const [authUser] = useContext(AuthUserContext);
   const dispatchSnack = useContext(SnackbarContext);
 
   const isOnline = useOnlineStatus();
@@ -39,29 +43,29 @@ const SetupUserDialog: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const [isOpen, setIsOpen] = useState(false);
-  const [step, setStep] = useState<1 | 2>(1);
+  const [step, setStep] = useState<Step>(Step.CHECK_INVITATION_CODE);
 
   const [nickname, setNickname] = useState('');
   const [invitationCode, setInvitationCode] = useState('');
 
   const [user, userLoading, userError] = useDocumentData<User>(
-    firebase.firestore.doc(`users/${authUser?.uid}`),
+    getDocRef('users', getCurrentUserId()),
   );
 
   // Skip first step if user is already invited
   useEffect(() => {
     if (user && user.invited) {
-      setStep(2);
+      setStep(Step.PICK_USERNAME);
     }
   }, [user]);
 
   useEffect(() => {
     const userDataMissing = user && (!user.invited || !user.nickname);
 
-    if (isOnline && authUser && !userLoading && !userError && userDataMissing) {
+    if (isOnline && !userLoading && !userError && userDataMissing) {
       setIsOpen(true);
     }
-  }, [isOnline, authUser, user, userError, userLoading]);
+  }, [isOnline, user, userError, userLoading]);
 
   if (!isOpen) {
     return null;
@@ -73,20 +77,16 @@ const SetupUserDialog: React.FC = () => {
 
   const handleSubmitInvitationCode: FormEventHandler = event => {
     event.preventDefault();
-
-    if (!authUser) {
-      throw new Error('No user authenticated');
-    }
-
     setLoading(true);
 
     isValidInvitationCode(invitationCode)
       .then(isValid => {
         if (isValid) {
-          firebase.firestore
-            .collection('users')
-            .doc(authUser.uid)
-            .set({ invited: true }, { merge: true })
+          setDoc<User>(
+            getDocRef('users', getCurrentUserId()),
+            { invited: true },
+            { merge: true },
+          )
             .then(() => {
               setError(null);
               setStep(2);
@@ -94,7 +94,7 @@ const SetupUserDialog: React.FC = () => {
             .catch(setError);
         } else {
           setError(
-            new Error('Einladungscode ungültig. Bitte probier es erneut.'),
+            new Error('Einladungscode ungültig. Bitte versuche es erneut.'),
           );
         }
       })
@@ -104,17 +104,13 @@ const SetupUserDialog: React.FC = () => {
 
   const handleSubmitNickname: FormEventHandler = event => {
     event.preventDefault();
-
-    if (!authUser) {
-      throw new Error('No user authenticated');
-    }
-
     setLoading(true);
 
-    firebase.firestore
-      .collection('users')
-      .doc(authUser.uid)
-      .set({ nickname }, { merge: true })
+    setDoc<User>(
+      getDocRef<User>('users', getCurrentUserId()),
+      { nickname },
+      { merge: true },
+    )
       .then(() => {
         dispatchSnack('Registrierung abgeschlossen');
         setIsOpen(false);
@@ -124,10 +120,12 @@ const SetupUserDialog: React.FC = () => {
   };
 
   const title =
-    step === 1 ? 'Hast du eine Einladung für Daddel?' : 'Wie heißt du?';
+    step === Step.CHECK_INVITATION_CODE
+      ? 'Hast du eine Einladung für Daddel?'
+      : 'Wie heißt du?';
 
   switch (step) {
-    case 1:
+    case Step.CHECK_INVITATION_CODE:
       return (
         <Dialog open={isOpen} key="step-1">
           <DialogTitle>{title}</DialogTitle>
@@ -171,7 +169,7 @@ const SetupUserDialog: React.FC = () => {
         </Dialog>
       );
 
-    case 2:
+    case Step.PICK_USERNAME:
       return (
         <Dialog open={isOpen} key="step-2">
           <DialogTitle>{title}</DialogTitle>

@@ -1,14 +1,12 @@
-import firebase from 'firebase';
+import { Timestamp } from 'firebase/firestore';
 import getUnixTime from 'date-fns/getUnixTime';
 
 import { isOpenEndDate, parseTime } from './date';
 
-const getTimestamp = firebase.firestore.Timestamp.fromDate;
-
 describe('isOpenEndDate()', () => {
   test('should return true if argument is open end timestamp', () => {
     const date = parseTime('23:59');
-    const firestoreTimestamp = getTimestamp(date);
+    const firestoreTimestamp = Timestamp.fromDate(date);
 
     expect(isOpenEndDate(date)).toBe(true);
     expect(isOpenEndDate(firestoreTimestamp)).toBe(true);
@@ -17,7 +15,7 @@ describe('isOpenEndDate()', () => {
 
   test('should return false if argument is not open end timestamp', () => {
     const date = parseTime('18:30');
-    const firestoreTimestamp = getTimestamp(date);
+    const firestoreTimestamp = Timestamp.fromDate(date);
 
     expect(isOpenEndDate(date)).toBe(false);
     expect(isOpenEndDate(firestoreTimestamp)).toBe(false);

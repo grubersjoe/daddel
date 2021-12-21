@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { getDoc } from 'firebase/firestore';
 import {
   Box,
   Card,
@@ -9,6 +10,7 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
+import { common } from '@mui/material/colors';
 import { Theme } from '@mui/system';
 import { useTheme } from '@mui/material/styles';
 import endOfDay from 'date-fns/endOfDay';
@@ -17,7 +19,6 @@ import isFuture from 'date-fns/isFuture';
 import { getGameBanner } from '../../assets/images/games';
 import { Game, Match, UserMap } from '../../types';
 import { formatDate, formatTime } from '../../utils/date';
-
 import JoinMatchDialog from '../Dialogs/JoinMatchDialog';
 import PageMetadata from '../PageMetadata';
 import TimeAgo from '../TimeAgo';
@@ -26,7 +27,6 @@ import FallbackBanner from './FallbackBanner';
 import MatchCardSkeleton from './MatchCardSkeleton';
 import Menu from './Menu';
 import ProgressBar from './ProgressBar';
-import { common } from '@mui/material/colors';
 
 type Props = {
   match: Match;
@@ -102,7 +102,7 @@ const MatchCard: React.FC<Props> = ({ match, userList, setPageMetadata }) => {
 
   // Retrieve the game via reference
   useEffect(() => {
-    match.game.get().then(game => {
+    getDoc<Game>(match.game).then(game => {
       const data = game.data();
       setGame(data ? ({ ...data, id: game.id } as Game) : null);
     });

@@ -1,12 +1,10 @@
-import firebase from 'firebase';
+import { Timestamp } from 'firebase/firestore';
 import getUnixTime from 'date-fns/getUnixTime';
 
 import { MATCH_TIME_OPEN_END } from '../constants/date';
 import { Player } from '../types';
 import { parseTime } from './date';
 import { calcPlayerTimeBounds } from './match';
-
-const getTimestamp = firebase.firestore.Timestamp.fromDate;
 
 describe('calcPlayerTimeBounds()', () => {
   test('should return initial value for empty player list', () => {
@@ -24,8 +22,8 @@ describe('calcPlayerTimeBounds()', () => {
     const players: Player[] = [
       {
         uid: 'uid',
-        from: getTimestamp(parseTime('17:00')),
-        until: getTimestamp(parseTime('18:00')),
+        from: Timestamp.fromDate(parseTime('17:00')),
+        until: Timestamp.fromDate(parseTime('18:00')),
       },
     ];
 
@@ -42,8 +40,8 @@ describe('calcPlayerTimeBounds()', () => {
     const players: Player[] = [
       {
         uid: 'uid',
-        from: getTimestamp(parseTime('16:00')),
-        until: getTimestamp(parseTime(MATCH_TIME_OPEN_END)),
+        from: Timestamp.fromDate(parseTime('16:00')),
+        until: Timestamp.fromDate(parseTime(MATCH_TIME_OPEN_END)),
       },
     ];
 
@@ -60,18 +58,18 @@ describe('calcPlayerTimeBounds()', () => {
     const players: Player[] = [
       {
         uid: 'uid',
-        from: getTimestamp(parseTime('20:00')),
-        until: getTimestamp(parseTime('22:30')),
+        from: Timestamp.fromDate(parseTime('20:00')),
+        until: Timestamp.fromDate(parseTime('22:30')),
       },
       {
         uid: 'uid',
-        from: getTimestamp(parseTime('20:00')),
-        until: getTimestamp(parseTime('21:30')),
+        from: Timestamp.fromDate(parseTime('20:00')),
+        until: Timestamp.fromDate(parseTime('21:30')),
       },
       {
         uid: 'uid',
-        from: getTimestamp(parseTime('19:00')),
-        until: getTimestamp(parseTime('22:00')),
+        from: Timestamp.fromDate(parseTime('19:00')),
+        until: Timestamp.fromDate(parseTime('22:00')),
       },
     ];
 
@@ -88,13 +86,13 @@ describe('calcPlayerTimeBounds()', () => {
     const players: Player[] = [
       {
         uid: 'uid',
-        from: getTimestamp(parseTime('20:00')),
-        until: getTimestamp(parseTime('22:30')),
+        from: Timestamp.fromDate(parseTime('20:00')),
+        until: Timestamp.fromDate(parseTime('22:30')),
       },
       {
         uid: 'uid',
-        from: getTimestamp(parseTime('19:00')),
-        until: getTimestamp(parseTime(MATCH_TIME_OPEN_END)),
+        from: Timestamp.fromDate(parseTime('19:00')),
+        until: Timestamp.fromDate(parseTime(MATCH_TIME_OPEN_END)),
       },
     ];
 

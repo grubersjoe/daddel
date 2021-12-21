@@ -1,57 +1,47 @@
-import { EVENTS } from '../constants';
+import { logEvent } from 'firebase/analytics';
+import { Timestamp, updateDoc } from 'firebase/firestore';
+
+import { GA_EVENTS } from '../constants';
 import { Match, Player } from '../types';
-import firebase from './firebase';
+import { getCurrentUserId } from './auth';
+import { analytics, getDocRef } from './firebase';
 
 export function joinMatch(
   availFrom: Date,
   availUntil: Date,
   match: Match,
 ): Promise<void> {
-  const { currentUser } = firebase.auth;
-
-  if (!currentUser) {
-    throw new Error('No current user');
-  }
-
   const updatedPlayer: Player = {
-    uid: currentUser.uid,
-    from: firebase.getTimestamp(availFrom),
-    until: firebase.getTimestamp(availUntil),
+    uid: getCurrentUserId(),
+    from: Timestamp.fromDate(availFrom),
+    until: Timestamp.fromDate(availUntil),
   };
 
-  // Check if player is already in lobby
   const indexToUpdate = match.players.findIndex(
-    player => player.uid === currentUser.uid,
+    player => player.uid === getCurrentUserId(),
   );
 
-  const matchData: Pick<Match, 'players'> = {
-    players:
-      indexToUpdate === -1
-        ? match.players.concat(updatedPlayer)
-        : match.players.map((player, index) =>
-            index === indexToUpdate ? updatedPlayer : player,
-          ),
+  const playerAlreadyJoined = indexToUpdate !== -1;
+
+  const updatedMatch: Pick<Match, 'players'> = {
+    players: playerAlreadyJoined
+      ? match.players.map((player, index) =>
+          index === indexToUpdate ? updatedPlayer : player,
+        )
+      : match.players.concat(updatedPlayer),
   };
 
-  return firebase.firestore
-    .collection('matches')
-    .doc(match.id)
-    .update(matchData)
-    .then(() => firebase.analytics.logEvent(EVENTS.JOIN_MATCH));
+  return updateDoc(getDocRef<Match>('matches', match.id), updatedMatch).then(
+    () => logEvent(analytics, GA_EVENTS.JOIN_MATCH),
+  );
 }
 
 export function leaveMatch(match: Match): Promise<void> {
-  const { currentUser } = firebase.auth;
+  const updatedMatch: Pick<Match, 'players'> = {
+    players: match.players.filter(player => player.uid !== getCurrentUserId()),
+  };
 
-  if (!currentUser) {
-    throw new Error('No current user');
-  }
-
-  return firebase.firestore
-    .collection('matches')
-    .doc(match.id)
-    .update({
-      players: match.players.filter(player => player.uid !== currentUser.uid),
-    })
-    .then(() => firebase.analytics.logEvent(EVENTS.LEAVE_MATCH));
+  return updateDoc(getDocRef<Match>('matches', match.id), updatedMatch).then(
+    () => logEvent(analytics, GA_EVENTS.LEAVE_MATCH),
+  );
 }

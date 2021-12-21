@@ -1,4 +1,6 @@
 import React, { FormEventHandler, useState } from 'react';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { setDoc } from 'firebase/firestore';
 import {
   Link as RouterLink,
   RouteComponentProps,
@@ -16,43 +18,73 @@ import {
 } from '@mui/material';
 
 import { isValidInvitationCode } from '../services/auth';
-import firebase from '../services/firebase';
 import ROUTES from '../constants/routes';
 import Logo from '../components/Logo';
 import PageMetadata from '../components/PageMetadata';
+import { auth, getDocRef } from '../services/firebase';
+import { User } from '../types';
 
 const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
 
-  const [invitationCode, setInvitationCode] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [nickname, setNickname] = useState('');
+  const [formState, setFormState] = useState({
+    invitationCode: '',
+    email: '',
+    nickname: '',
+    password: '',
+    passwordRepeated: '',
+  });
 
-  const register: FormEventHandler = async event => {
+  const [errorState, setErrorState] = useState<{
+    auth?: Error;
+    invitationCode?: Error;
+    passwordMismatch?: Error;
+  }>({});
+
+  const setFormStateProp = (prop: keyof typeof formState, value: string) =>
+    setFormState(state => ({ ...state, [prop]: value }));
+
+  const setErrorStateProp = (
+    prop: keyof typeof errorState,
+    value: Error | null,
+  ) => setErrorState(state => ({ ...state, [prop]: value }));
+
+  const onSubmit: FormEventHandler = event => {
     event.preventDefault();
+
+    if (formState.password !== formState.passwordRepeated) {
+      setErrorStateProp(
+        'passwordMismatch',
+        new Error(
+          'Die Passwörter stimmen nicht überein. Bitte versuche es erneut.',
+        ),
+      );
+      return;
+    }
+
+    return register();
+  };
+
+  const register = async () => {
     setLoading(true);
+    setErrorStateProp('invitationCode', null);
 
-    if (await isValidInvitationCode(invitationCode)) {
-      firebase.auth
-        .createUserWithEmailAndPassword(email, password)
-        .then(data => {
-          if (!data?.user?.uid) {
-            throw new Error('Unable to create user');
-          }
-
-          firebase.firestore
-            .collection('users')
-            .doc(data.user.uid)
-            .set({ nickname, invited: true }, { merge: true });
-
-          history.push(ROUTES.MATCHES_LIST);
+    if (await isValidInvitationCode(formState.invitationCode)) {
+      createUserWithEmailAndPassword(auth, formState.email, formState.password)
+        .then(credential => {
+          setDoc<User>(
+            getDocRef('users', credential.user.uid),
+            { nickname: formState.nickname, invited: true },
+            { merge: true },
+          ).then(() => history.push(ROUTES.MATCHES_LIST));
         })
-        .catch(setError)
+        .catch(error => setErrorStateProp('auth', error))
         .finally(() => setLoading(false));
     } else {
-      setError(new Error('Einladungscode ungültig. Bitte probier es erneut.'));
+      setErrorStateProp(
+        'invitationCode',
+        new Error('Einladungscode ungültig. Bitte versuche es erneut.'),
+      );
       setLoading(false);
     }
   };
@@ -64,34 +96,48 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
       <Typography variant="h6">Registrieren</Typography>
       <form
         autoComplete="off"
-        onSubmit={register}
-        onChange={() => setError(null)}
+        onSubmit={onSubmit}
+        onChange={() => setErrorState({})}
       >
         <Grid container spacing={2} flexDirection="column">
-          <Grid item md={9}>
+          <Grid item md={9} sx={{ mb: 2 }}>
             <TextField
               label="Einladungscode"
-              helperText="Du kannst dich nur mit gültigem Einladungscode registrieren."
+              helperText={
+                errorState.invitationCode
+                  ? errorState.invitationCode.message
+                  : 'Du kannst dich nur mit gültigem Einladungscode registrieren.'
+              }
               type="text"
               variant="outlined"
               size="small"
-              onChange={event => setInvitationCode(event.target.value)}
+              onChange={event =>
+                setFormStateProp('invitationCode', event.target.value)
+              }
               fullWidth
               required
+              error={Boolean(errorState.invitationCode)}
             />
           </Grid>
-          {error && (
-            <Grid item md={9} sx={{ mb: 2 }}>
-              <Alert severity="error">Fehler: {error.message}</Alert>
-            </Grid>
-          )}
-          <Grid item md={9} sx={{ mt: 1 }}>
+          <Grid item md={9}>
             <TextField
               label="E-Mail-Adresse"
               type="email"
               variant="outlined"
               size="small"
-              onChange={event => setEmail(event.target.value)}
+              onChange={event => setFormStateProp('email', event.target.value)}
+              fullWidth
+              required
+            />
+          </Grid>
+          <Grid item md={9} sx={{ mb: 2 }}>
+            <TextField
+              label="Nickname"
+              variant="outlined"
+              size="small"
+              onChange={event =>
+                setFormStateProp('nickname', event.target.value)
+              }
               fullWidth
               required
             />
@@ -102,21 +148,38 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
               type="password"
               variant="outlined"
               size="small"
-              onChange={event => setPassword(event.target.value)}
+              onChange={event =>
+                setFormStateProp('password', event.target.value)
+              }
               fullWidth
               required
+              error={Boolean(errorState.passwordMismatch)}
             />
           </Grid>
-          <Grid item md={9}>
+          <Grid item md={9} sx={{ mb: 2 }}>
             <TextField
-              label="Nickname"
+              label="Passwort wiederholen"
+              type="password"
               variant="outlined"
               size="small"
-              onChange={event => setNickname(event.target.value)}
               fullWidth
               required
+              error={Boolean(errorState.passwordMismatch)}
+              onChange={event =>
+                setFormStateProp('passwordRepeated', event.target.value)
+              }
+              helperText={
+                errorState.passwordMismatch
+                  ? errorState.passwordMismatch.message
+                  : undefined
+              }
             />
           </Grid>
+          {errorState.auth && (
+            <Grid item md={9} sx={{ mb: 1 }}>
+              <Alert severity="error">{errorState.auth.message}</Alert>
+            </Grid>
+          )}
           <Grid item md={9}>
             <Button
               type="submit"

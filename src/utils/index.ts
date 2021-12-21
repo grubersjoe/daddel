@@ -1,10 +1,14 @@
-import firebase from '../services/firebase';
 import { UNKNOWN_GAME_ID } from '../constants';
 import { Game, User, UserMap } from '../types';
 
 export function calcUserList(users: User[]): UserMap {
   const userMap = new Map<string, User>();
-  users.forEach(user => userMap.set(user.uid, user));
+  users.forEach(user => {
+    if (!user.uid) {
+      throw new Error('Provided list of users miss the uid.');
+    }
+    userMap.set(user.uid, user);
+  });
 
   return userMap;
 }
@@ -39,12 +43,4 @@ export function updateServiceWorker(): void {
       .getRegistration(`${process.env.PUBLIC_URL}/service-worker.js`)
       .then(registration => registration && registration.update());
   }
-}
-
-export function supportsMessaging(): boolean {
-  return (
-    firebase.messaging !== undefined &&
-    'Notification' in window &&
-    'permissions' in window.navigator
-  );
 }

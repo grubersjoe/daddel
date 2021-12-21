@@ -1,4 +1,9 @@
 import React, { FormEventHandler, useContext, useState } from 'react';
+import {
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithRedirect,
+} from 'firebase/auth';
 import { Link as RouterLink, Redirect, useLocation } from 'react-router-dom';
 import History from 'history';
 import {
@@ -12,13 +17,13 @@ import {
   Typography,
 } from '@mui/material';
 
-import ROUTES from '../constants/routes';
 import GoogleIcon from '../assets/icons/GoogleIcon';
-import firebase from '../services/firebase';
+import ROUTES from '../constants/routes';
 import { AuthUserContext } from '../components/App';
 import Logo from '../components/Logo';
 import PageMetadata from '../components/PageMetadata';
 import Spinner from '../components/Spinner';
+import { auth } from '../services/firebase';
 
 const SignIn: React.FC = () => {
   const location = useLocation<Maybe<{ from: History.Location }>>();
@@ -42,17 +47,15 @@ const SignIn: React.FC = () => {
   const handleEmailLogin: FormEventHandler = event => {
     event.preventDefault();
     setLoading(true);
-    firebase.auth
-      .signInWithEmailAndPassword(email, password)
-      .then()
+
+    signInWithEmailAndPassword(auth, email, password)
       .catch(setError)
       .finally(() => setLoading(false));
   };
 
   const handleGoogleLogin = () => {
     setGoogleLoading(true);
-    firebase.auth
-      .signInWithRedirect(firebase.googleAuthProvider)
+    signInWithRedirect(auth, new GoogleAuthProvider())
       .catch(setError)
       .finally(() => setGoogleLoading(false));
   };

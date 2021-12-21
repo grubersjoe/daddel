@@ -1,13 +1,13 @@
 {
   "name": "daddel",
-  "version": "0.10.2",
+  "version": "0.11.0",
   "private": true,
   "scripts": {
     "build": "react-scripts build",
     "deploy": "npm run build && firebase deploy --except functions",
     "dev": "npm run start",
     "eject": "react-scripts eject",
-    "format": "prettier --write 'src/**/*' 'src/**/*' './*.{js,json,md}'",
+    "format": "prettier --write 'src/**/*' 'functions/src/**/*' './*.{js,json,md}'",
     "lint": "eslint src/ functions/",
     "start:emulators": "firebase emulators:start --only functions",
     "start": "react-scripts start",
@@ -46,19 +46,19 @@
     "@types/react-swipeable-views": "^0.13.1",
     "@types/react-timeago": "^4.1.3",
     "date-fns": "^2.24.0",
-    "firebase": "~8.6.3",
-    "node-sass": "^6.0.1",
+    "firebase": "^9.6.0",
     "prettier": "^2.4.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-firebase-hooks": "^3.0.4",
+    "react-firebase-hooks": "^4.0.0",
     "react-helmet": "^6.1.0",
     "react-router-dom": "^5.3.0",
     "react-scripts": "^4.0.3",
     "react-swipeable-views": "^0.14.0",
     "react-timeago": "^6.2.1",
+    "sass": "^1.45.1",
     "typeface-roboto": "^1.1.13",
-    "typescript": "~4.4.3"
+    "typescript": "~4.5.4"
   },
   "devDependencies": {
     "serve": "^12.0.1"

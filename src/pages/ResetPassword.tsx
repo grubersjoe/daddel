@@ -1,5 +1,6 @@
 import React, { FormEventHandler, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { sendPasswordResetEmail } from 'firebase/auth';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -9,10 +10,10 @@ import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-import firebase from '../services/firebase';
 import ROUTES from '../constants/routes';
 import Logo from '../components/Logo';
 import PageMetadata from '../components/PageMetadata';
+import { auth } from '../services/firebase';
 
 const ResetPassword: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -23,8 +24,7 @@ const ResetPassword: React.FC = () => {
   const resetAccount: FormEventHandler = event => {
     event.preventDefault();
     setLoading(true);
-    firebase.auth
-      .sendPasswordResetEmail(email)
+    sendPasswordResetEmail(auth, email)
       .then(() => setSuccess(true))
       .catch(setError)
       .finally(() => setLoading(false));

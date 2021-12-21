@@ -1,5 +1,4 @@
-import * as admin from 'firebase-admin';
-import * as functions from 'firebase-functions';
+import { initializeApp } from 'firebase-admin/app';
 
 import { isValidInvitationCode, onUserCreate, onUserDelete } from './auth';
 import {
@@ -8,10 +7,7 @@ import {
   unsubscribeFromMessaging,
 } from './messaging';
 
-export const APP_URL: string = functions.config().daddel.app_url;
-export const FIREBASE_REGION = 'europe-west3'; // Frankfurt
-
-admin.initializeApp();
+initializeApp();
 
 // Auth
 export { isValidInvitationCode, onUserCreate, onUserDelete };

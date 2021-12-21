@@ -6,21 +6,20 @@ import LinkIcon from '@mui/icons-material/Link';
 
 import ROUTES from '../constants/routes';
 import useUserList from '../hooks/useUserList';
-import firebase from '../services/firebase';
 import { Match } from '../types';
 import { SnackbarContext } from '../components/Layout';
 import AppBar from '../components/AppBar';
 import MatchCard from '../components/Match/MatchCard';
 import SetupUserDialog from '../components/Dialogs/SetupUserDialog';
 import Spinner from '../components/Spinner';
+import { getDocRef } from '../services/firebase';
 
 const MatchDetail: React.FC = () => {
   const dispatchSnack = useContext(SnackbarContext);
-
   const { match: matchId } = useParams<{ match: string }>();
 
   const [match, loading, error] = useDocumentData<Match>(
-    firebase.firestore.doc(`matches/${matchId}`),
+    getDocRef('matches', matchId),
     { idField: 'id' },
   );
 

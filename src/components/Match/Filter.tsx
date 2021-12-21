@@ -1,10 +1,9 @@
 import React, { Dispatch, SetStateAction } from 'react';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
 import { Autocomplete, Grid, TextField } from '@mui/material';
 
-import firebase from '../../services/firebase';
-import { Game } from '../../types';
+import { useGamesCollectionData } from '../../hooks/useGamesCollectionData';
 import { setStorageItem, STORAGE_KEYS } from '../../utils/local-storage';
+import { Game } from '../../types';
 
 export type MatchFilter = {
   games: Array<Game>;
@@ -16,11 +15,7 @@ type Props = {
 };
 
 const Filter: React.FC<Props> = ({ filter, setFilter }) => {
-  const [games, gamesLoading, gamesError] = useCollectionData<Game>(
-    firebase.firestore.collection('games').orderBy('name', 'asc'),
-    { idField: 'id' },
-  );
-
+  const [games, gamesLoading, gamesError] = useGamesCollectionData();
   const options = games ?? [];
 
   if (gamesError) {

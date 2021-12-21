@@ -1,46 +1,49 @@
-import * as admin from 'firebase-admin';
-import * as functions from 'firebase-functions';
+import { firestore } from 'firebase-admin';
+import { https, logger, region } from 'firebase-functions';
+import { FieldValue, getFirestore } from 'firebase-admin/firestore';
+import { getMessaging, Message } from 'firebase-admin/messaging';
 
+import { APP_URL, FIREBASE_LOCATION } from './constants';
 import { Game, Match, User } from './types';
 import { formatDate, formatTime } from './util/date';
-import { APP_URL } from '.';
+import DocumentReference = firestore.DocumentReference;
 
-const FIREBASE_REGION = 'europe-west3'; // Frankfurt
 const DEFAULT_TOPIC = 'default';
 const MESSAGING_ENABLED = true; // Useful while developing
 
 /**
- * @throws functions.https.HttpsError
+ * @throws https.HttpsError
  */
-function validationMessagingArgs(data: Record<string, unknown>) {
+function assertPayloadIsMessagingToken(
+  data: Record<string, unknown>,
+): data is { fcmToken: string } {
   if (typeof data.fcmToken !== 'string' || data.fcmToken.length === 0) {
-    throw new functions.https.HttpsError(
+    throw new https.HttpsError(
       'invalid-argument',
-      'Missing argument `data.fcmToken`',
+      `Missing or invalid argument data.fcmToken: ${JSON.stringify(data)}`,
     );
   }
+
+  return true;
 }
 
-export const subscribeToMessaging = functions
-  .region(FIREBASE_REGION)
-  .https.onCall((data, context) => {
-    validationMessagingArgs(data);
+export const subscribeToMessaging = region(FIREBASE_LOCATION).https.onCall(
+  (data, context) => {
+    assertPayloadIsMessagingToken(data);
 
     const topic = DEFAULT_TOPIC;
 
-    return admin
-      .messaging()
+    return getMessaging()
       .subscribeToTopic(data.fcmToken, topic)
       .then(() =>
-        admin
-          .firestore()
+        getFirestore()
           .doc(`users/${context.auth?.uid}`)
           .update({
-            fcmTokens: admin.firestore.FieldValue.arrayUnion(data.fcmToken),
+            fcmTokens: FieldValue.arrayUnion(data.fcmToken),
           }),
       )
       .then(() => {
-        functions.logger.info(
+        logger.info(
           `Successfully subscribed ${data.fcmToken} to topic ${topic}`,
         );
 
@@ -48,31 +51,29 @@ export const subscribeToMessaging = functions
       })
       .catch(() => {
         const message = `Error subscribing ${data.fcmToken} to topic ${topic}`;
-        functions.logger.error(message);
-        throw new functions.https.HttpsError('unknown', message);
+        logger.error(message);
+        throw new https.HttpsError('unknown', message);
       });
-  });
+  },
+);
 
-export const unsubscribeFromMessaging = functions
-  .region(FIREBASE_REGION)
-  .https.onCall((data, context) => {
-    validationMessagingArgs(data);
+export const unsubscribeFromMessaging = region(FIREBASE_LOCATION).https.onCall(
+  (data, context) => {
+    assertPayloadIsMessagingToken(data);
 
     const topic = DEFAULT_TOPIC;
 
-    return admin
-      .messaging()
+    return getMessaging()
       .unsubscribeFromTopic(data.fcmToken, topic)
       .then(() =>
-        admin
-          .firestore()
+        getFirestore()
           .doc(`users/${context.auth?.uid}`)
           .update({
-            fcmTokens: admin.firestore.FieldValue.arrayRemove(data.fcmToken),
+            fcmTokens: FieldValue.arrayRemove(data.fcmToken),
           }),
       )
       .then(() => {
-        functions.logger.info(
+        logger.info(
           `Successfully unsubscribed ${data.fcmToken} from topic ${topic}`,
         );
 
@@ -80,34 +81,33 @@ export const unsubscribeFromMessaging = functions
       })
       .catch(() => {
         const message = `Error unsubscribing ${data.fcmToken} from topic ${topic}`;
-        functions.logger.error(message);
-        throw new functions.https.HttpsError('unknown', message);
+        logger.error(message);
+        throw new https.HttpsError('unknown', message);
       });
-  });
+  },
+);
 
-export const onCreateMatch = functions
-  .region(FIREBASE_REGION)
+export const onCreateMatch = region(FIREBASE_LOCATION)
   .firestore.document('matches/{matchId}')
   .onCreate(matchSnap => {
     const match = matchSnap.data() as Match;
 
     if (!MESSAGING_ENABLED) {
-      functions.logger.warn(
+      logger.warn(
         'No messages have been sent, because the feature is disabled.',
       );
 
       return Promise.resolve();
     }
 
-    return admin
-      .firestore()
+    return getFirestore()
       .collection('users')
       .doc(match.createdBy)
       .get()
       .then(userSnap => {
         const user = userSnap.data() as User;
 
-        return match.game
+        return (match.game as unknown as DocumentReference) // DocumentReference in Admin is different to Firestore Web
           .get()
           .then(gameSnap => {
             const game = gameSnap.data() as Game;
@@ -115,7 +115,7 @@ export const onCreateMatch = functions
               match.date,
             )} Uhr`;
 
-            const message: admin.messaging.Message = {
+            const message: Message = {
               notification: {
                 title: 'Daddel – Neues Match',
                 body: `${user.nickname} hat ein neues Match erstellt: ${game.name} am ${date}.`,
@@ -128,21 +128,18 @@ export const onCreateMatch = functions
               },
             };
 
-            return admin
-              .messaging()
+            return getMessaging()
               .send(message)
-              .then(response => {
-                functions.logger.info('Successfully sent message:', response);
-              })
-              .catch(error => {
-                functions.logger.error('Error sending message:', error);
-              });
+              .then(response =>
+                logger.info('Successfully sent message:', response),
+              )
+              .catch(error => logger.error('Error sending message:', error));
           })
-          .catch(error => {
-            functions.logger.error('Unable to retrieve game from match', error);
-          });
+          .catch(error =>
+            logger.error('Unable to retrieve game from match', error),
+          );
       })
-      .catch(error => {
-        functions.logger.error('Unable to retrieve user from match', error);
-      });
+      .catch(error =>
+        logger.error('Unable to retrieve user from match', error),
+      );
   });

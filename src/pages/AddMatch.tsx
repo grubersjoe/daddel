@@ -1,7 +1,8 @@
 import React, { FormEvent, useContext, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import firebaseNS from 'firebase';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
+import { User } from 'firebase/auth';
+import { logEvent } from 'firebase/analytics';
+import { addDoc, Timestamp } from 'firebase/firestore';
 import {
   Box,
   Button,
@@ -20,7 +21,7 @@ import isSameDay from 'date-fns/isSameDay';
 import isValid from 'date-fns/isValid';
 import parseDate from 'date-fns/parse';
 
-import { EVENTS } from '../constants';
+import { GA_EVENTS } from '../constants';
 import {
   DEFAULT_MATCH_LENGTH,
   DEFAULT_MATCH_TIME,
@@ -28,7 +29,6 @@ import {
   TIME_FORMAT,
 } from '../constants/date';
 import ROUTES from '../constants/routes';
-import firebase from '../services/firebase';
 import { joinMatch } from '../services/match';
 import { Game, Match } from '../types';
 import { reorderGames } from '../utils';
@@ -38,6 +38,8 @@ import { SnackbarContext } from '../components/Layout';
 import AppBar from '../components/AppBar';
 import PageMetadata from '../components/PageMetadata';
 import DateTimePicker from '../components/DateTimePicker';
+import { useGamesCollectionData } from '../hooks/useGamesCollectionData';
+import { analytics, getCollectionRef, getDocRef } from '../services/firebase';
 
 const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
   const [authUser] = useContext(AuthUserContext);
@@ -54,10 +56,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
   const [description, setDescription] = useState<string>();
   const [selfJoinMatch, setSelfJoinMatch] = useState(true);
 
-  const [games, gamesLoading] = useCollectionData<Game>(
-    firebase.firestore.collection('games').orderBy('name', 'asc'),
-    { idField: 'id' },
-  );
+  const [games, gamesLoading] = useGamesCollectionData();
 
   // Select first available game as soon as games are loaded
   useEffect(() => {
@@ -66,7 +65,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
     }
   }, [games]);
 
-  const addMatch = (event: FormEvent, currentUser: firebaseNS.User) => {
+  const addMatch = (event: FormEvent, currentUser: User) => {
     event.preventDefault();
 
     if (!date || !gameId) {
@@ -76,17 +75,15 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
     setLoading(true);
 
     const match: Omit<Match, 'id'> = {
-      created: firebase.getTimestamp(),
+      created: Timestamp.fromDate(new Date()),
       createdBy: currentUser.uid,
-      date: firebase.getTimestamp(date),
-      game: firebase.firestore.doc(`games/${gameId}`),
+      date: Timestamp.fromDate(date),
+      game: getDocRef<Game>('games', gameId),
       players: [],
       ...(description && { description }),
     };
 
-    firebase.firestore
-      .collection('matches')
-      .add(match)
+    addDoc<Match>(getCollectionRef('matches'), match)
       .then(doc => {
         if (selfJoinMatch) {
           const defaultAvailUntil = addMinutes(date, DEFAULT_MATCH_LENGTH);
@@ -98,7 +95,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
         }
       })
       .then(() => {
-        firebase.analytics.logEvent(EVENTS.ADD_MATCH);
+        logEvent(analytics, GA_EVENTS.ADD_MATCH);
         history.push(ROUTES.MATCHES_LIST);
       })
       .catch(dispatchError)

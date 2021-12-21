@@ -1,9 +1,8 @@
+import { Timestamp } from 'firebase/firestore';
 import { de } from 'date-fns/locale';
 import format from 'date-fns/format';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import { utcToZonedTime } from 'date-fns-tz';
-
-import { Timestamp } from '../types';
 
 const DATE_FORMAT = 'dd.MM.';
 const TIME_FORMAT = 'HH:mm';

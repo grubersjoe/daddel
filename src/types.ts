@@ -1,4 +1,4 @@
-import firebaseNS from 'firebase';
+import { DocumentReference, Timestamp } from 'firebase/firestore';
 
 declare global {
   type Maybe<T> = T | undefined;
@@ -6,22 +6,19 @@ declare global {
 
 type Uid = string;
 
-export type DocumentReference = firebaseNS.firestore.DocumentReference;
-export type Timestamp = firebaseNS.firestore.Timestamp;
-
 export type Game = {
-  id: string;
+  id?: string;
   maxPlayers?: number;
   name: string;
 };
 
 export type Match = {
-  id: string;
+  id?: string;
   created: Timestamp;
   createdBy: Uid;
   date: Timestamp;
   description?: string;
-  game: DocumentReference;
+  game: DocumentReference<Game>;
   players: Array<Player>;
   maxPlayers?: number; // deprecated
 };
@@ -33,7 +30,7 @@ export type Player = {
 };
 
 export type User = {
-  uid: Uid;
+  uid?: Uid;
   nickname: string;
   invited: boolean;
   fcmTokens?: Array<string>;

@@ -7,9 +7,9 @@ import {
   Typography,
 } from '@mui/material';
 
+import useMessagingSupported from '../../hooks/useMessagingSupported';
 import useNotifications from '../../hooks/useNotifications';
 import { SnackbarContext } from '../Layout';
-import { supportsMessaging } from '../../utils';
 
 const NotificationsSettings: React.FC = () => {
   const {
@@ -19,13 +19,14 @@ const NotificationsSettings: React.FC = () => {
     loading: fcmLoading,
   } = useNotifications();
 
+  const messagingSupported = useMessagingSupported();
   const [permissionState, setPermissionState] =
     useState<PermissionState | null>(null);
 
   const dispatchSnack = useContext(SnackbarContext);
   const loading = fcmLoading || !permissionState;
 
-  if (!supportsMessaging()) {
+  if (!messagingSupported) {
     return null;
   }
 

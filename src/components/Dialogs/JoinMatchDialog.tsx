@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { Timestamp } from 'firebase/firestore';
 import addMinutes from 'date-fns/addMinutes';
+
 import {
   Alert,
   Button,
@@ -14,8 +16,7 @@ import {
 } from '@mui/material';
 
 import { SelectChangeEvent } from '@mui/material/Select/SelectInput';
-
-import firebase from '../../services/firebase';
+import { getCurrentUserId } from '../../services/auth';
 import { joinMatch, leaveMatch } from '../../services/match';
 import {
   DEFAULT_MATCH_LENGTH,
@@ -24,7 +25,7 @@ import {
   MATCH_TIME_LATEST,
   MATCH_TIME_OPEN_END,
 } from '../../constants/date';
-import { Match, Timestamp, TimeString } from '../../types';
+import { Match, TimeString } from '../../types';
 import {
   calcTimeStringsBetweenDates,
   formatTime,
@@ -78,7 +79,7 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
   const [error, setError] = useState<Error | null>(null);
 
   const currentPlayer = match.players.find(
-    player => player.uid === firebase.auth.currentUser?.uid,
+    player => player.uid === getCurrentUserId(),
   );
 
   const currentFrom = currentPlayer
@@ -165,7 +166,7 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
     };
 
   const userInLobby = match.players.find(
-    player => player.uid === firebase.auth.currentUser?.uid,
+    player => player.uid === getCurrentUserId(),
   );
 
   return (

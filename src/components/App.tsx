@@ -5,7 +5,7 @@ import {
   Switch,
   useLocation,
 } from 'react-router-dom';
-import firebaseNS from 'firebase';
+import { signOut, User } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material';
 import CSSBaseline from '@mui/material/CssBaseline';
@@ -13,8 +13,8 @@ import yellow from '@mui/material/colors/yellow';
 
 import { DOMAIN_PROD, REGEX_IPV4 } from '../constants';
 import ROUTES from '../constants/routes';
-import firebase from '../services/firebase';
 import { createTheme } from '../styles/theme';
+import { auth } from '../services/firebase';
 
 import Settings from '../pages/Settings';
 import AddMatch from '../pages/AddMatch';
@@ -29,15 +29,15 @@ import PageMetadata from './PageMetadata';
 import PrivateRoute from './PrivateRoute';
 import Layout from './Layout';
 
-type AuthUserValue = [Maybe<firebaseNS.User> | null, boolean];
+type AuthUserValue = [Maybe<User> | null, boolean];
 
 export const AuthUserContext = React.createContext<AuthUserValue>([null, true]);
 
 const App: React.FC = () => {
-  const [authUser, authLoading, authError] = useAuthState(firebase.auth);
+  const [authUser, authLoading, authError] = useAuthState(auth);
 
   if (authError) {
-    firebase.auth.signOut();
+    signOut(auth).then(() => window.location.reload());
   }
 
   const isAllowedHost =

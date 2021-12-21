@@ -1,12 +1,17 @@
-import firebase from 'firebase/app';
+import { initializeApp } from 'firebase/app';
+import { getAnalytics } from 'firebase/analytics';
+import { getAuth } from 'firebase/auth';
+import {
+  collection,
+  CollectionReference,
+  doc,
+  DocumentData,
+  DocumentReference,
+  getFirestore,
+} from 'firebase/firestore';
+import { getFunctions } from 'firebase/functions';
 
-import 'firebase/analytics';
-import 'firebase/auth';
-import 'firebase/firestore';
-import 'firebase/functions';
-import 'firebase/messaging';
-
-import { FIREBASE_REGION } from '../constants';
+import { FIREBASE_LOCATION } from '../constants';
 
 const configKeys = [
   'REACT_APP_API_KEY',
@@ -24,7 +29,7 @@ configKeys.forEach(key => {
   }
 });
 
-const app = firebase.initializeApp({
+export const firebaseApp = initializeApp({
   apiKey: process.env.REACT_APP_API_KEY,
   appId: process.env.REACT_APP_APP_ID,
   authDomain: process.env.REACT_APP_AUTH_DOMAIN,
@@ -33,45 +38,16 @@ const app = firebase.initializeApp({
   messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
 });
 
-const auth = app.auth();
-auth.languageCode = 'de';
+export const analytics = getAnalytics(firebaseApp);
+export const auth = getAuth(firebaseApp);
+export const firestore = getFirestore(firebaseApp);
+export const functions = getFunctions(firebaseApp, FIREBASE_LOCATION);
 
-const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+export const getCollectionRef = <T = DocumentData>(name: string) =>
+  collection(firestore, name) as unknown as CollectionReference<T>;
 
-const analytics = app.analytics();
-const firestore = app.firestore();
-const functions = app.functions(FIREBASE_REGION);
+export const getDocRef = <T = DocumentData>(path: string, id?: string) => {
+  const ref = id ? doc(firestore, path, id) : doc(firestore, path);
 
-let messaging: firebase.messaging.Messaging | undefined;
-try {
-  // This will throw an error on iOS (unsupported)
-  messaging = app.messaging();
-} catch {}
-
-// Emulators
-if (window.location.hostname === 'localhost') {
-  if (process.env.REACT_APP_USE_EMULATED_FIRESTORE) {
-    firestore.settings({
-      host: 'localhost:8080',
-      ssl: false,
-    });
-  }
-
-  functions.useEmulator('localhost', 5001);
-}
-
-function getTimestamp(date: Date = new Date()): firebase.firestore.Timestamp {
-  return firebase.firestore.Timestamp.fromDate(date);
-}
-
-const exports = {
-  auth,
-  googleAuthProvider,
-  analytics,
-  firestore,
-  functions,
-  messaging,
-  getTimestamp,
+  return ref as unknown as DocumentReference<T>;
 };
-
-export default exports;
