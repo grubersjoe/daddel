@@ -1,4 +1,4 @@
-import React, { FormEventHandler, useContext, useState } from 'react';
+import React, { FormEventHandler, useState } from 'react';
 import {
   GoogleAuthProvider,
   signInWithEmailAndPassword,
@@ -19,15 +19,15 @@ import {
 
 import GoogleIcon from '../assets/icons/GoogleIcon';
 import ROUTES from '../constants/routes';
-import { AuthUserContext } from '../components/App';
 import Logo from '../components/Logo';
 import PageMetadata from '../components/PageMetadata';
 import Spinner from '../components/Spinner';
 import { auth } from '../services/firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 const SignIn: React.FC = () => {
   const location = useLocation<Maybe<{ from: History.Location }>>();
-  const [authUser, authLoading] = useContext(AuthUserContext);
+  const [authUser, authLoading] = useAuthState(auth);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);

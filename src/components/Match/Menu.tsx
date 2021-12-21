@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { logEvent } from 'firebase/analytics';
 import { deleteDoc } from 'firebase/firestore';
 import endOfDay from 'date-fns/endOfDay';
@@ -14,10 +15,9 @@ import ShareIcon from '@mui/icons-material/Share';
 
 import { GA_EVENTS } from '../../constants';
 import ROUTES from '../../constants/routes';
-import { analytics, getDocRef } from '../../services/firebase';
+import { analytics, auth, getDocRef } from '../../services/firebase';
 import { Game, Match } from '../../types';
 import { formatDate, formatTime } from '../../utils/date';
-import { AuthUserContext } from '../App';
 import { SnackbarContext } from '../Layout';
 
 type Props = {
@@ -26,7 +26,7 @@ type Props = {
 };
 
 const Menu: React.FC<Props> = ({ game, match }) => {
-  const [authUser] = useContext(AuthUserContext);
+  const [authUser] = useAuthState(auth);
   const dispatchSnack = useContext(SnackbarContext);
 
   const [anchorElement, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -90,7 +90,7 @@ const Menu: React.FC<Props> = ({ game, match }) => {
     return null;
   }
 
-  const isOwnMatch = authUser.uid === match.createdBy;
+  const matchCreatedByUser = authUser.uid === match.createdBy;
   const isPastMatch = isPast(endOfDay(match.date.toDate()));
 
   return (
@@ -99,7 +99,7 @@ const Menu: React.FC<Props> = ({ game, match }) => {
         <MoreVertIcon />
       </IconButton>
       <MuiMenu anchorEl={anchorElement} open={open} onClose={closeMenu}>
-        {isOwnMatch && !isPastMatch && (
+        {matchCreatedByUser && !isPastMatch && (
           <Link
             to={{
               pathname: ROUTES.EDIT_MATCH,
@@ -112,7 +112,7 @@ const Menu: React.FC<Props> = ({ game, match }) => {
             </MenuItem>
           </Link>
         )}
-        {isOwnMatch && (
+        {matchCreatedByUser && (
           <MenuItem onClick={deleteMatch}>
             <DeleteIcon fontSize="small" sx={{ mr: 1 }} />
             Löschen

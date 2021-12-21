@@ -1,5 +1,6 @@
 import React, { FormEvent, useContext, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { User } from 'firebase/auth';
 import { logEvent } from 'firebase/analytics';
 import { addDoc, Timestamp } from 'firebase/firestore';
@@ -33,16 +34,20 @@ import { joinMatch } from '../services/match';
 import { Game, Match } from '../types';
 import { reorderGames } from '../utils';
 import { parseTime } from '../utils/date';
-import { AuthUserContext } from '../components/App';
 import { SnackbarContext } from '../components/Layout';
 import AppBar from '../components/AppBar';
 import PageMetadata from '../components/PageMetadata';
 import DateTimePicker from '../components/DateTimePicker';
 import { useGamesCollectionData } from '../hooks/useGamesCollectionData';
-import { analytics, getCollectionRef, getDocRef } from '../services/firebase';
+import {
+  analytics,
+  auth,
+  getCollectionRef,
+  getDocRef,
+} from '../services/firebase';
 
 const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
-  const [authUser] = useContext(AuthUserContext);
+  const [authUser] = useAuthState(auth);
   const dispatchSnack = useContext(SnackbarContext);
 
   const dispatchError = () =>
@@ -60,12 +65,16 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
 
   // Select first available game as soon as games are loaded
   useEffect(() => {
-    if (games && games.length > 0) {
+    if (!gameId && games && games.length > 0) {
       setGameId(games[0].id);
     }
-  }, [games]);
+  }, [gameId, games]);
 
-  const addMatch = (event: FormEvent, currentUser: User) => {
+  if (!authUser) {
+    return null;
+  }
+
+  const addMatch = (event: FormEvent, authUser: User) => {
     event.preventDefault();
 
     if (!date || !gameId) {
@@ -76,7 +85,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
 
     const match: Omit<Match, 'id'> = {
       created: Timestamp.fromDate(new Date()),
-      createdBy: currentUser.uid,
+      createdBy: authUser.uid,
       date: Timestamp.fromDate(date),
       game: getDocRef<Game>('games', gameId),
       players: [],
@@ -91,7 +100,10 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
             ? defaultAvailUntil
             : parseTime(MATCH_TIME_LATEST, date);
 
-          return joinMatch(date, availUntil, { id: doc.id, ...match });
+          return joinMatch(authUser, date, availUntil, {
+            id: doc.id,
+            ...match,
+          });
         }
       })
       .then(() => {

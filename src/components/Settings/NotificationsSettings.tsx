@@ -20,6 +20,7 @@ const NotificationsSettings: React.FC = () => {
   } = useNotifications();
 
   const messagingSupported = useMessagingSupported();
+
   const [permissionState, setPermissionState] =
     useState<PermissionState | null>(null);
 
@@ -41,14 +42,13 @@ const NotificationsSettings: React.FC = () => {
       };
     });
 
-  const handleSubscribe: MouseEventHandler = () => {
+  const handleSubscribe: MouseEventHandler = () =>
     subscribe().catch(() =>
       dispatchSnack(
         'Benachrichtigungen konnten nicht aktiviert werden',
         'error',
       ),
     );
-  };
 
   const handleUnsubscribe: MouseEventHandler = () =>
     unsubscribe()

@@ -1,17 +1,16 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { BottomNavigation, BottomNavigationAction } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import MatchesIcon from '@mui/icons-material/SportsEsports';
 import SettingsIcon from '@mui/icons-material/Settings';
 
 import ROUTES from '../constants/routes';
-import { AuthUserContext } from './App';
 
 const Links = [ROUTES.MATCHES_LIST, ROUTES.ADD_MATCH, ROUTES.SETTINGS];
 
-const Navigation: React.FC<RouteComponentProps> = ({ location }) => {
-  const [authUser] = useContext(AuthUserContext);
+const Navigation: React.FC = () => {
+  const location = useLocation();
   const [selected, setSelected] = useState(0);
 
   useEffect(() => {
@@ -20,7 +19,7 @@ const Navigation: React.FC<RouteComponentProps> = ({ location }) => {
     setSelected(activeIndex === -1 ? 0 : activeIndex);
   }, [location.pathname]);
 
-  return authUser ? (
+  return (
     <BottomNavigation
       value={selected}
       onChange={(_, clickedLink) => setSelected(clickedLink)}
@@ -53,7 +52,7 @@ const Navigation: React.FC<RouteComponentProps> = ({ location }) => {
         icon={<SettingsIcon />}
       />
     </BottomNavigation>
-  ) : null;
+  );
 };
 
-export default withRouter(Navigation);
+export default Navigation;

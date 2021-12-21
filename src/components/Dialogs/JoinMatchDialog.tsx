@@ -16,7 +16,6 @@ import {
 } from '@mui/material';
 
 import { SelectChangeEvent } from '@mui/material/Select/SelectInput';
-import { getCurrentUserId } from '../../services/auth';
 import { joinMatch, leaveMatch } from '../../services/match';
 import {
   DEFAULT_MATCH_LENGTH,
@@ -31,6 +30,8 @@ import {
   formatTime,
   parseTime,
 } from '../../utils/date';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '../../services/firebase';
 
 type Props = {
   match: Match;
@@ -74,12 +75,14 @@ const renderSelectOptions = (
 };
 
 const JoinMatchDialog: React.FC<Props> = ({ match }) => {
+  const [authUser] = useAuthState(auth);
+
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   const currentPlayer = match.players.find(
-    player => player.uid === getCurrentUserId(),
+    player => player.uid === authUser?.uid,
   );
 
   const currentFrom = currentPlayer
@@ -132,6 +135,10 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
     }
   }, [state.availFrom, state.availUntil]);
 
+  if (!authUser) {
+    return null;
+  }
+
   const handleJoin = () => {
     setLoading(true);
     setError(null);
@@ -139,7 +146,7 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
     const availFrom = parseTime(state.availFrom, match.date.toDate());
     const availUntil = parseTime(state.availUntil, match.date.toDate());
 
-    joinMatch(availFrom, availUntil, match)
+    joinMatch(authUser, availFrom, availUntil, match)
       .then(() => setOpen(false))
       .catch(setError)
       .finally(() => {
@@ -151,7 +158,7 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
     setLoading(true);
     setError(null);
 
-    leaveMatch(match)
+    leaveMatch(authUser, match)
       .then(() => setOpen(false))
       .catch(setError)
       .finally(() => setLoading(false));
@@ -166,7 +173,7 @@ const JoinMatchDialog: React.FC<Props> = ({ match }) => {
     };
 
   const userInLobby = match.players.find(
-    player => player.uid === getCurrentUserId(),
+    player => player.uid === authUser?.uid,
   );
 
   return (

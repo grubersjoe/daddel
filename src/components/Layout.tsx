@@ -4,6 +4,8 @@ import Box from '@mui/material/Box';
 import { Alert, AlertProps, Snackbar } from '@mui/material';
 
 import Navigation from './Navigation';
+import { auth } from '../services/firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 type DispatchSnack = (
   message: string,
@@ -11,10 +13,12 @@ type DispatchSnack = (
 ) => void;
 
 export const SnackbarContext = React.createContext<DispatchSnack>(
-  _ => undefined,
+  () => undefined,
 );
 
 const Layout: React.FC = ({ children }) => {
+  const [authUser] = useAuthState(auth);
+
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackData, setSnackData] = useState<{
     message: string;
@@ -49,17 +53,19 @@ const Layout: React.FC = ({ children }) => {
           </Alert>
         </Snackbar>
       </main>
-      <Box
-        component="footer"
-        sx={{
-          position: 'fixed',
-          left: 0,
-          bottom: 0,
-          width: '100%',
-        }}
-      >
-        <Navigation />
-      </Box>
+      {authUser && (
+        <Box
+          component="footer"
+          sx={{
+            position: 'fixed',
+            left: 0,
+            bottom: 0,
+            width: '100%',
+          }}
+        >
+          <Navigation />
+        </Box>
+      )}
     </Box>
   );
 };

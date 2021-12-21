@@ -5,6 +5,7 @@ import React, {
   useState,
 } from 'react';
 import { setDoc } from 'firebase/firestore';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 import {
   Alert,
@@ -18,8 +19,8 @@ import {
   TextField,
 } from '@mui/material';
 
-import { getCurrentUserId, isValidInvitationCode } from '../../services/auth';
-import { getDocRef } from '../../services/firebase';
+import { isValidInvitationCode } from '../../services/auth';
+import { auth, getDocRef } from '../../services/firebase';
 import useOnlineStatus from '../../hooks/useOnlineStatus';
 import { User } from '../../types';
 import { SnackbarContext } from '../Layout';
@@ -37,6 +38,7 @@ enum Step {
 const SetupUserDialog: React.FC = () => {
   const dispatchSnack = useContext(SnackbarContext);
 
+  const [authUser] = useAuthState(auth);
   const isOnline = useOnlineStatus();
 
   const [error, setError] = useState<Error | null>(null);
@@ -49,7 +51,7 @@ const SetupUserDialog: React.FC = () => {
   const [invitationCode, setInvitationCode] = useState('');
 
   const [user, userLoading, userError] = useDocumentData<User>(
-    getDocRef('users', getCurrentUserId()),
+    getDocRef('users', authUser?.uid),
   );
 
   // Skip first step if user is already invited
@@ -67,7 +69,7 @@ const SetupUserDialog: React.FC = () => {
     }
   }, [isOnline, user, userError, userLoading]);
 
-  if (!isOpen) {
+  if (!isOpen || !authUser) {
     return null;
   }
 
@@ -83,7 +85,7 @@ const SetupUserDialog: React.FC = () => {
       .then(isValid => {
         if (isValid) {
           setDoc<User>(
-            getDocRef('users', getCurrentUserId()),
+            getDocRef('users', authUser?.uid),
             { invited: true },
             { merge: true },
           )
@@ -107,7 +109,7 @@ const SetupUserDialog: React.FC = () => {
     setLoading(true);
 
     setDoc<User>(
-      getDocRef<User>('users', getCurrentUserId()),
+      getDocRef<User>('users', authUser?.uid),
       { nickname },
       { merge: true },
     )

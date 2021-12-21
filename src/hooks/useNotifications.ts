@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 import { httpsCallable } from 'firebase/functions';
 import { getMessaging, getToken } from 'firebase/messaging';
 
 import { User } from '../types';
-import { getCurrentUserId } from '../services/auth';
-import { firebaseApp, functions, getDocRef } from '../services/firebase';
+import { auth, firebaseApp, functions, getDocRef } from '../services/firebase';
 import useMessagingSupported from './useMessagingSupported';
 
 export default function useNotifications() {
+  const [authUser] = useAuthState(auth);
+
   const [user, userLoading] = useDocumentData<User>(
-    getDocRef('users', getCurrentUserId()),
+    getDocRef('users', authUser?.uid),
   );
 
   const messagingSupported = useMessagingSupported();

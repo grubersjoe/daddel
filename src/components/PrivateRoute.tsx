@@ -1,11 +1,16 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Redirect, Route, RouteProps } from 'react-router-dom';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 import ROUTES from '../constants/routes';
-import { AuthUserContext } from './App';
+import { auth } from '../services/firebase';
 
 const PrivateRoute: React.FC<RouteProps> = ({ children, ...props }) => {
-  const [authUser] = useContext(AuthUserContext);
+  const [authUser, authLoading] = useAuthState(auth);
+
+  if (authLoading) {
+    return null;
+  }
 
   return (
     <Route

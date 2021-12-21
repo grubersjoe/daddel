@@ -9,7 +9,7 @@ import {
   DocumentReference,
   getFirestore,
 } from 'firebase/firestore';
-import { getFunctions } from 'firebase/functions';
+import { connectFunctionsEmulator, getFunctions } from 'firebase/functions';
 
 import { FIREBASE_LOCATION } from '../constants';
 
@@ -51,3 +51,8 @@ export const getDocRef = <T = DocumentData>(path: string, id?: string) => {
 
   return ref as unknown as DocumentReference<T>;
 };
+
+// Emulators
+if (window.location.hostname === 'localhost') {
+  connectFunctionsEmulator(functions, 'localhost', 5001);
+}

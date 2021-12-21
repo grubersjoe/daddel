@@ -5,6 +5,7 @@ import React, {
   useState,
 } from 'react';
 import { updateDoc } from 'firebase/firestore';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
 import { signOut } from 'firebase/auth';
 import {
@@ -25,16 +26,17 @@ import AppBar from '../components/AppBar';
 import PageMetadata from '../components/PageMetadata';
 import NotificationsSettings from '../components/Settings/NotificationsSettings';
 import useMessagingSupported from '../hooks/useMessagingSupported';
-import { getCurrentUserId } from '../services/auth';
 import { auth, getDocRef } from '../services/firebase';
 import { User } from '../types';
 
 const Settings: React.FC = () => {
+  const [authUser] = useAuthState(auth);
   const dispatchSnack = useContext(SnackbarContext);
+
   const messagingSupported = useMessagingSupported();
 
   const [user, userLoading, userError] = useDocumentDataOnce<User>(
-    getDocRef('users', getCurrentUserId()),
+    getDocRef('users', authUser?.uid),
     { idField: 'uid' },
   );
 
@@ -48,6 +50,10 @@ const Settings: React.FC = () => {
     }
   }, [user, nickname]);
 
+  if (!authUser) {
+    return null;
+  }
+
   if (userError) {
     setError(userError);
   }
@@ -56,7 +62,7 @@ const Settings: React.FC = () => {
     event.preventDefault();
     setLoading(true);
 
-    updateDoc(getDocRef('users', getCurrentUserId()), { nickname })
+    updateDoc(getDocRef('users', authUser?.uid), { nickname })
       .then(() => dispatchSnack('Name geändert'))
       .catch(setError)
       .finally(() => setLoading(false));
@@ -72,11 +78,11 @@ const Settings: React.FC = () => {
     if (window.confirm('Konto wirklich löschen?')) {
       setLoading(true);
 
-      if (!auth.currentUser) {
+      if (!authUser) {
         throw new Error('No authorized user');
       }
 
-      return auth.currentUser
+      return authUser
         .delete()
         .catch(setError)
         .finally(() => setLoading(false));

@@ -1,24 +1,25 @@
 import { logEvent } from 'firebase/analytics';
+import { User } from 'firebase/auth';
 import { Timestamp, updateDoc } from 'firebase/firestore';
 
 import { GA_EVENTS } from '../constants';
 import { Match, Player } from '../types';
-import { getCurrentUserId } from './auth';
 import { analytics, getDocRef } from './firebase';
 
 export function joinMatch(
+  user: User,
   availFrom: Date,
   availUntil: Date,
   match: Match,
 ): Promise<void> {
   const updatedPlayer: Player = {
-    uid: getCurrentUserId(),
+    uid: user.uid,
     from: Timestamp.fromDate(availFrom),
     until: Timestamp.fromDate(availUntil),
   };
 
   const indexToUpdate = match.players.findIndex(
-    player => player.uid === getCurrentUserId(),
+    player => player.uid === user.uid,
   );
 
   const playerAlreadyJoined = indexToUpdate !== -1;
@@ -36,9 +37,9 @@ export function joinMatch(
   );
 }
 
-export function leaveMatch(match: Match): Promise<void> {
+export function leaveMatch(user: User, match: Match): Promise<void> {
   const updatedMatch: Pick<Match, 'players'> = {
-    players: match.players.filter(player => player.uid !== getCurrentUserId()),
+    players: match.players.filter(player => player.uid !== user.uid),
   };
 
   return updateDoc(getDocRef<Match>('matches', match.id), updatedMatch).then(
