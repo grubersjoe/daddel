@@ -1,3 +1,5 @@
+// Required for Jest
+// https://jestjs.io/docs/getting-started#using-typescript
 module.exports = {
   presets: [
     [
@@ -8,7 +10,6 @@ module.exports = {
         },
       },
     ],
-    '@babel/preset-react',
     '@babel/preset-typescript',
   ],
 };
