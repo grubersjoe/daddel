@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { onSnapshot } from 'firebase/firestore';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import SwipeableViews from 'react-swipeable-views';
@@ -60,14 +60,8 @@ const MatchesList: React.FC = () => {
     { idField: 'id' },
   );
 
-  useEffect(
-    () =>
-      onSnapshot(futureMatchesQuery(currentDate), doc =>
-        setIsRefetching(
-          doc.metadata.fromCache || doc.metadata.hasPendingWrites,
-        ),
-      ),
-    [currentDate],
+  onSnapshot(futureMatchesQuery(currentDate), doc =>
+    setIsRefetching(doc.metadata.fromCache || doc.metadata.hasPendingWrites),
   );
 
   const [showFilter, setShowFilter] = useState(
