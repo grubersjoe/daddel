@@ -9,7 +9,7 @@
     "eject": "react-scripts eject",
     "format": "prettier --write 'src/**/*' 'functions/src/**/*' './*.{js,json,md}'",
     "lint": "eslint src/ functions/",
-    "start:emulators": "npx firebase emulators:start --only functions",
+    "start:emulators": "GOOGLE_APPLICATION_CREDENTIALS=./credentials.json npx firebase emulators:start --only functions",
     "start": "react-scripts start",
     "start:prod": "npm run build && serve -s build",
     "test": "jest"
