@@ -2,7 +2,7 @@
 import { Game } from '../types';
 import { UNKNOWN_GAME_ID } from '../constants';
 
-export function reorderGames(games: Game[]): Game[] {
+export function reorderGames(games: Array<Game>): Array<Game> {
   const unknownGame = games.find(game => game.id === UNKNOWN_GAME_ID);
 
   return unknownGame

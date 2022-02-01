@@ -52,7 +52,7 @@ const timeOptions = calcTimeStringsBetweenDates(
 const timeOptionsWithOpenEnd = [...timeOptions, MATCH_TIME_OPEN_END];
 
 const renderSelectOptions = (
-  times: TimeString[],
+  times: Array<TimeString>,
   optionsArg = {
     includeOpenEnd: false,
   },

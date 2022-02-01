@@ -8,7 +8,7 @@ import { calcPlayerTimeBounds } from './match';
 
 describe('calcPlayerTimeBounds()', () => {
   test('should return initial value for empty player list', () => {
-    const players: Player[] = [];
+    const players: Array<Player> = [];
     const expected = {
       min: Infinity,
       max: -Infinity,
@@ -19,7 +19,7 @@ describe('calcPlayerTimeBounds()', () => {
   });
 
   test('should return correct bounds for one player', () => {
-    const players: Player[] = [
+    const players: Array<Player> = [
       {
         uid: 'uid',
         from: Timestamp.fromDate(parseTime('17:00')),
@@ -37,7 +37,7 @@ describe('calcPlayerTimeBounds()', () => {
   });
 
   test('should return correct bounds for one player with open end time', () => {
-    const players: Player[] = [
+    const players: Array<Player> = [
       {
         uid: 'uid',
         from: Timestamp.fromDate(parseTime('16:00')),
@@ -55,7 +55,7 @@ describe('calcPlayerTimeBounds()', () => {
   });
 
   test('should return correct bounds for several players', () => {
-    const players: Player[] = [
+    const players: Array<Player> = [
       {
         uid: 'uid',
         from: Timestamp.fromDate(parseTime('20:00')),
@@ -83,7 +83,7 @@ describe('calcPlayerTimeBounds()', () => {
   });
 
   test('should detect open end and keep correct upper bound', () => {
-    const players: Player[] = [
+    const players: Array<Player> = [
       {
         uid: 'uid',
         from: Timestamp.fromDate(parseTime('20:00')),

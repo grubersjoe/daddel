@@ -8,7 +8,7 @@ interface TimeBounds {
   withOpenEnd: boolean;
 }
 
-export function calcPlayerTimeBounds(players: Player[]): TimeBounds {
+export function calcPlayerTimeBounds(players: Array<Player>): TimeBounds {
   const initialValue = {
     min: Infinity,
     max: -Infinity,

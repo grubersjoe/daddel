@@ -75,7 +75,7 @@ export function calcTimeStringsBetweenDates(
   startDate: Date,
   endDate: Date,
   stepInMinutes = DEFAULT_TIME_INCREMENT,
-): TimeString[] {
+): Array<TimeString> {
   let currentDate = roundToNearestMinutes(startDate, {
     nearestTo: DEFAULT_TIME_INCREMENT,
   });

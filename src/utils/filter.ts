@@ -1,11 +1,17 @@
 import { Match } from '../types';
 import { MatchFilter } from '../components/Match/Filter';
 
-export function filterMatches(matches: Match[], filter: MatchFilter): Match[] {
+export function filterMatches(
+  matches: Array<Match>,
+  filter: MatchFilter,
+): Array<Match> {
   return filterByGame(matches, filter);
 }
 
-function filterByGame(matches: Match[], filter: MatchFilter): Match[] {
+function filterByGame(
+  matches: Array<Match>,
+  filter: MatchFilter,
+): Array<Match> {
   return matches.filter(match =>
     filter.games.length > 0
       ? filter.games.some(filterGame => filterGame.id === match.game.id)

@@ -29,7 +29,10 @@ type LocationState = {
   match?: Match;
 };
 
-const updatePlayerList = (players: Player[], updatedDate: Date): Player[] =>
+const updatePlayerList = (
+  players: Array<Player>,
+  updatedDate: Date,
+): Array<Player> =>
   players.map(player => {
     const updateDate = {
       year: updatedDate.getFullYear(),
