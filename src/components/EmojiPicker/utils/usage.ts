@@ -41,7 +41,12 @@ export function getRecentlyUsedEmojis(max = 10): Array<Emoji> {
     .slice(0, max);
 
   if (sorted.length < max) {
-    return getEmojis(sorted.concat(DEFAULT_LIST.slice(0, max - sorted.length)));
+    // Set is used to remove duplicate Emojis
+    const withDefaultEmojis = Array.from(
+      new Set(sorted.concat(DEFAULT_LIST.slice(0, max - sorted.length))),
+    );
+
+    return getEmojis(withDefaultEmojis);
   }
 
   return getEmojis(sorted);
