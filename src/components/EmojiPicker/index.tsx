@@ -1,7 +1,11 @@
-import React, { FunctionComponent, MouseEventHandler, useState } from 'react';
-import { Button, Dialog, Popover } from '@mui/material';
+import React, {
+  FunctionComponent,
+  MouseEventHandler,
+  useCallback,
+  useState,
+} from 'react';
+import { Box, Button, Dialog, Popover, useTheme } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTheme } from '@mui/material/styles';
 
 import { People as PickerIcon } from './assets/icons';
 import { Emoji } from './types';
@@ -11,9 +15,7 @@ interface Props {
   onEmojiClick: (emoji: Emoji) => void;
 }
 
-const EmojiPicker: FunctionComponent<Props> = ({
-  onEmojiClick: onEmojiClickProp,
-}) => {
+const EmojiPicker: FunctionComponent<Props> = ({ onEmojiClick }) => {
   const [anchorElement, setAnchorElement] = useState<HTMLButtonElement | null>(
     null,
   );
@@ -24,19 +26,37 @@ const EmojiPicker: FunctionComponent<Props> = ({
   const onClose = () => setAnchorElement(null);
   const open = Boolean(anchorElement);
 
-  const onEmojiClick = (emoji: Emoji) => {
-    onClose();
-    onEmojiClickProp(emoji);
-  };
+  const handleEmojiClick = useCallback(
+    (emoji: Emoji) => {
+      onClose();
+      onEmojiClick(emoji);
+    },
+    [onEmojiClick],
+  );
 
   const theme = useTheme();
   const xsView = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <>
-      <Button onClick={onClick} sx={{ px: 1.5, py: 1, minWidth: 0 }}>
+      <Button
+        onClick={onClick}
+        sx={{
+          height: 32,
+          px: 1.25,
+          minWidth: 'auto',
+          fontWeight: 700,
+          '&.MuiButton-root': {
+            borderColor: 'rgba(255, 255, 255, 0.3)',
+          },
+        }}
+      >
         <PickerIcon style={{ width: '1rem', height: '1rem' }} />
+        <Box component="span" sx={{ ml: 0.5 }}>
+          +
+        </Box>
       </Button>
+
       {xsView ? (
         <Dialog
           open={open}
@@ -48,7 +68,7 @@ const EmojiPicker: FunctionComponent<Props> = ({
             },
           }}
         >
-          <Picker onEmojiClick={onEmojiClick} />
+          <Picker onEmojiClick={handleEmojiClick} />
         </Dialog>
       ) : (
         <Popover
@@ -56,11 +76,11 @@ const EmojiPicker: FunctionComponent<Props> = ({
           onClose={onClose}
           anchorEl={anchorElement}
           anchorOrigin={{
-            vertical: 48,
+            vertical: 40,
             horizontal: 'left',
           }}
         >
-          <Picker onEmojiClick={onEmojiClick} />
+          <Picker onEmojiClick={handleEmojiClick} />
         </Popover>
       )}
     </>

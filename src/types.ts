@@ -6,13 +6,13 @@ declare global {
 
 type Uid = string;
 
-export type Game = {
+export interface Game {
   id?: string;
   maxPlayers?: number;
   name: string;
-};
+}
 
-export type Match = {
+export interface Match {
   id?: string;
   created: Timestamp;
   createdBy: Uid;
@@ -20,21 +20,26 @@ export type Match = {
   description?: string;
   game: DocumentReference<Game>;
   players: Array<Player>;
-  maxPlayers?: number; // deprecated
-};
+  reactions?: Array<Reaction>;
+}
 
-export type Player = {
+export interface Reaction {
+  emoji: string;
+  userRefs: Array<DocumentReference<User>>;
+}
+
+export interface Player {
   uid: Uid;
   from: Timestamp;
   until: Timestamp;
-};
+}
 
-export type User = {
+export interface User {
   uid?: Uid;
   nickname: string;
   invited: boolean;
   fcmTokens?: Array<string>;
-};
+}
 
 export type UserMap = Map<User['uid'], User>;
 

@@ -17,17 +17,19 @@ import endOfDay from 'date-fns/endOfDay';
 import isFuture from 'date-fns/isFuture';
 
 import { getGameBanner } from '../../assets/images/games';
+import { toggleMatchReaction } from '../../services/reactions';
 import { Game, Match, UserMap } from '../../types';
 import { formatDate, formatTime } from '../../utils/date';
-import JoinMatchDialog from '../Dialogs/JoinMatchDialog';
-import PageMetadata from '../PageMetadata';
-import TimeAgo from '../TimeAgo';
 import Calendar from './Calendar';
-import FallbackBanner from './FallbackBanner';
-import MatchCardSkeleton from './MatchCardSkeleton';
-import Menu from './Menu';
-import ProgressBar from './ProgressBar';
 import EmojiPicker from '../EmojiPicker';
+import FallbackBanner from './FallbackBanner';
+import JoinMatchDialog from '../Dialogs/JoinMatchDialog';
+import MatchCardSkeleton from './MatchCardSkeleton';
+import MatchReactions from './MatchReactions';
+import Menu from './Menu';
+import PageMetadata from '../PageMetadata';
+import ProgressBar from './ProgressBar';
+import TimeAgo from '../TimeAgo';
 
 type Props = {
   match: Match;
@@ -121,6 +123,8 @@ const MatchCard: React.FC<Props> = ({ match, userList, setPageMetadata }) => {
   // It should be able to join a match until the end of its date
   const isJoinable = isFuture(endOfDay(match.date.toDate()));
 
+  const handleEmojiClick = (emoji: string) => toggleMatchReaction(match, emoji);
+
   if (!game || gameBanner === undefined) {
     return <MatchCardSkeleton />;
   }
@@ -206,9 +210,26 @@ const MatchCard: React.FC<Props> = ({ match, userList, setPageMetadata }) => {
             <Box mt={2.5}>
               <Calendar players={match.players} userList={userList} />
             </Box>
-            {isJoinable && (
-              <Box mt={3}>
-                <EmojiPicker onEmojiClick={emoji => console.log({ emoji })} />
+
+            {(isJoinable || true) && (
+              <Box
+                mt={3}
+                mb={0.5}
+                sx={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: 1.25,
+                }}
+              >
+                <EmojiPicker
+                  onEmojiClick={([emoji]) => handleEmojiClick(emoji)}
+                />
+                {match.reactions && (
+                  <MatchReactions
+                    reactions={match.reactions}
+                    onClick={emoji => handleEmojiClick(emoji)}
+                  />
+                )}
               </Box>
             )}
           </CardContent>

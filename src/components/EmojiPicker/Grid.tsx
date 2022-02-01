@@ -22,6 +22,9 @@ const Grid: React.FC<Props> = ({
     return null;
   }
 
+  const getFontSize = (factor: number) =>
+    2 * Math.round((BUTTON_SIZE * factor) / 2);
+
   return (
     <Box mb={3} id={getCategoryContainerId(category)}>
       <Box mb={1}>
@@ -35,7 +38,11 @@ const Grid: React.FC<Props> = ({
           gridAutoRows: BUTTON_SIZE,
           // 10% rounded to the nearest even integer
           gridGap: `${2 * Math.round((BUTTON_SIZE * 0.2) / 2)}px`,
-          fontSize: 2 * Math.round((BUTTON_SIZE * 0.75) / 2),
+          fontSize: getFontSize(0.8),
+
+          '@media (min-width: 600px)': {
+            fontSize: getFontSize(0.7),
+          },
         }}
       >
         {emojis.map(([emoji, description]) => (

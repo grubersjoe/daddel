@@ -5,7 +5,7 @@ import { Box, Button, Grid } from '@mui/material';
 import LinkIcon from '@mui/icons-material/Link';
 
 import ROUTES from '../constants/routes';
-import useUserList from '../hooks/useUserList';
+import useFetchUsers from '../hooks/useFetchUsers';
 import { Match } from '../types';
 import { SnackbarContext } from '../components/Layout';
 import AppBar from '../components/AppBar';
@@ -23,9 +23,9 @@ const MatchDetail: React.FC = () => {
     { idField: 'id' },
   );
 
-  const [userList] = useUserList();
+  const [users] = useFetchUsers();
 
-  if (!userList || loading) {
+  if (!users || loading) {
     return <Spinner />;
   }
 
@@ -70,7 +70,7 @@ const MatchDetail: React.FC = () => {
       <Box p={3} pt={0}>
         <Grid container spacing={5}>
           <Grid item xs={12} md={4} lg={3} key={match.id}>
-            <MatchCard match={match} userList={userList} setPageMetadata />
+            <MatchCard match={match} userList={users} setPageMetadata />
           </Grid>
         </Grid>
       </Box>

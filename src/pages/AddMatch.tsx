@@ -89,6 +89,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
       date: Timestamp.fromDate(date),
       game: getDocRef<Game>('games', gameId),
       players: [],
+      reactions: [],
       ...(description && { description }),
     };
 

@@ -11,19 +11,38 @@ export type UsageDict = {
   [emoji: string]: number;
 };
 
-const DEFAULT_LIST = ['👍', '💩'];
+const DEFAULT_LIST = [
+  '👍',
+  '👎',
+  '😍',
+  '😄',
+  '😜',
+  '🥺',
+  '😏',
+  '🥴',
+  '😲',
+  '🤬',
+  '🧐',
+  '🤷',
+  '🔥',
+  '✨',
+  '🐗',
+  '💩',
+];
+
+const allEmojis = (emojiList as EmojiList).flatMap(({ emojis }) => emojis);
 
 export function getRecentlyUsedEmojis(max = 10): Array<Emoji> {
   const usedEmojis = getUsedEmojisFromStore();
-
-  if (Object.entries(usedEmojis).length === 0) {
-    return getEmojis(DEFAULT_LIST.slice(0, max));
-  }
 
   const sorted = Object.entries(usedEmojis)
     .sort(([, v1], [, v2]) => v2 - v1)
     .map(([emoji]) => emoji)
     .slice(0, max);
+
+  if (sorted.length < max) {
+    return getEmojis(sorted.concat(DEFAULT_LIST.slice(0, max - sorted.length)));
+  }
 
   return getEmojis(sorted);
 }
@@ -40,8 +59,6 @@ export function incrementEmojiUsage([emoji]: Emoji) {
 }
 
 export function getEmojis(chars: Array<string>): Array<Emoji> {
-  const allEmojis = (emojiList as EmojiList).flatMap(({ emojis }) => emojis);
-
   return chars
     .map(char => allEmojis.find(([emoji]) => emoji === char))
     .filter(Boolean) as Array<Emoji>;

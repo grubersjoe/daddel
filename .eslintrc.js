@@ -3,6 +3,12 @@ module.exports = {
   rules: {
     'arrow-body-style': 'error',
     'no-console': 'off',
+    '@typescript-eslint/array-type': [
+      1,
+      {
+        default: 'generic',
+      },
+    ],
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
   },

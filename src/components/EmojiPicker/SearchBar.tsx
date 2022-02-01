@@ -9,36 +9,42 @@ interface Props {
   onClearInput: () => void;
 }
 
-const SearchBar: React.FC<Props> = ({ searchTerm, onChange, onClearInput }) => (
-  <Box mb={2} px={2}>
-    <TextField
-      type="text"
-      value={searchTerm}
-      variant="outlined"
-      size="small"
-      onChange={onChange}
-      placeholder="Emoji suchen"
-      InputProps={{
-        endAdornment: (
-          <InputAdornment
-            position="end"
-            sx={{ color: 'grey.300', cursor: 'default' }}
-            onClick={() => onClearInput()}
-          >
-            {searchTerm ? <ClearIcon /> : <SearchIcon />}
-          </InputAdornment>
-        ),
-      }}
-      sx={{
-        '& .root': {
-          background: 'red',
-          border: 'none',
-        },
-      }}
-      fullWidth
-      required
-    />
-  </Box>
-);
+const SearchBar: React.FC<Props> = ({ searchTerm, onChange, onClearInput }) => {
+  const autoFocus =
+    typeof window === undefined ? false : window.innerWidth > 800;
+
+  return (
+    <Box mb={2} px={2}>
+      <TextField
+        type="text"
+        value={searchTerm}
+        variant="outlined"
+        size="small"
+        onChange={onChange}
+        placeholder="Emoji suchen"
+        InputProps={{
+          autoFocus,
+          endAdornment: (
+            <InputAdornment
+              position="end"
+              sx={{ color: 'grey.300', cursor: 'default' }}
+              onClick={() => onClearInput()}
+            >
+              {searchTerm ? <ClearIcon /> : <SearchIcon />}
+            </InputAdornment>
+          ),
+        }}
+        sx={{
+          '& .root': {
+            background: 'red',
+            border: 'none',
+          },
+        }}
+        fullWidth
+        required
+      />
+    </Box>
+  );
+};
 
 export default React.memo(SearchBar);

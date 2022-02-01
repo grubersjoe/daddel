@@ -8,7 +8,7 @@ import { Alert, Box, Button, Grid, Tab, Tabs, Typography } from '@mui/material';
 import { futureMatchesQuery, pastMatchesQuery } from '../queries/matches';
 import ROUTES from '../constants/routes';
 import useCurrentDate from '../hooks/useCurrentDate';
-import useUserList from '../hooks/useUserList';
+import useFetchUsers from '../hooks/useFetchUsers';
 import { Match } from '../types';
 import { calcNumberOfEnabledFilters, filterMatches } from '../utils/filter';
 
@@ -38,7 +38,7 @@ const TabPanel: React.FC<{
 );
 
 const MatchesList: React.FC = () => {
-  const [userList] = useUserList();
+  const [users] = useFetchUsers();
 
   const [isRefetching, setIsRefetching] = useState(false);
   const [tabIndex, setTabIndex] = useState(0);
@@ -130,17 +130,15 @@ const MatchesList: React.FC = () => {
 
           {!filteredFutureMatches && <p>Lade …</p>}
 
-          {filteredFutureMatches &&
-            filteredFutureMatches.length > 0 &&
-            userList && (
-              <Grid container spacing={5}>
-                {filteredFutureMatches.map(match => (
-                  <Grid item xs={12} sm={6} md={4} lg={3} key={match.id}>
-                    <MatchCard match={match} userList={userList} />
-                  </Grid>
-                ))}
-              </Grid>
-            )}
+          {filteredFutureMatches && filteredFutureMatches.length > 0 && users && (
+            <Grid container spacing={5}>
+              {filteredFutureMatches.map(match => (
+                <Grid item xs={12} sm={6} md={4} lg={3} key={match.id}>
+                  <MatchCard match={match} userList={users} />
+                </Grid>
+              ))}
+            </Grid>
+          )}
 
           {filteredFutureMatches && filteredFutureMatches.length === 0 && (
             <div>
@@ -167,11 +165,11 @@ const MatchesList: React.FC = () => {
 
           {!filteredPastMatches && <MatchCardSkeleton />}
 
-          {filteredPastMatches && filteredPastMatches.length > 0 && userList && (
+          {filteredPastMatches && filteredPastMatches.length > 0 && users && (
             <Grid container spacing={5}>
               {filteredPastMatches.map(match => (
                 <Grid item xs={12} sm={6} md={4} lg={3} key={match.id}>
-                  <MatchCard match={match} userList={userList} />
+                  <MatchCard match={match} userList={users} />
                 </Grid>
               ))}
             </Grid>

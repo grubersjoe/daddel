@@ -81,7 +81,10 @@ const UpdateMatch: React.FC<
       return dispatchError();
     }
 
-    const updatedMatch: Omit<Match, 'id' | 'created' | 'createdBy'> = {
+    const updatedMatch: Omit<
+      Match,
+      'id' | 'created' | 'createdBy' | 'reactions'
+    > = {
       date: Timestamp.fromDate(date),
       description,
       game: getDocRef<Game>('games', gameId),
