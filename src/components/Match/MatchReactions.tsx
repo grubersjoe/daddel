@@ -1,8 +1,16 @@
 import React, { Fragment, FunctionComponent } from 'react';
-import { Box, Button, Fade, Popover, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Fade,
+  Popover,
+  Typography,
+  useTheme,
+} from '@mui/material';
 
 import { Reaction } from '../../types';
 import useFetchUsers from '../../hooks/useFetchUsers';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 interface Props {
   reactions: Array<Reaction>;
@@ -37,6 +45,9 @@ const MatchReactions: FunctionComponent<Props> = ({ reactions, onClick }) => {
     setAnchorElements({});
   };
 
+  const theme = useTheme();
+  const mdViewUp = useMediaQuery(theme.breakpoints.up('md'));
+
   return (
     <>
       {reactions.map(({ emoji, userRefs }) => (
@@ -63,7 +74,7 @@ const MatchReactions: FunctionComponent<Props> = ({ reactions, onClick }) => {
             </Button>
           </Fade>
 
-          {userRefs.length > 0 && (
+          {mdViewUp && userRefs.length > 0 && (
             <Popover
               open={Boolean(anchorElements[emoji])}
               onClose={handlePopoverClose}

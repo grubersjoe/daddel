@@ -11,7 +11,7 @@ export type UsageDict = {
   [emoji: string]: number;
 };
 
-const DEFAULT_LIST = [
+export const DEFAULT_LIST = [
   '👍',
   '👎',
   '😍',

@@ -1,4 +1,4 @@
-import { getEmojis, getRecentlyUsedEmojis } from './usage';
+import { DEFAULT_LIST, getEmojis, getRecentlyUsedEmojis } from './usage';
 
 describe('getEmojis()', () => {
   test('should return correct list of tuples from Emoji JSON', () => {
@@ -11,7 +11,9 @@ describe('getEmojis()', () => {
 
 describe('getRecentlyUsedEmojis()', () => {
   test('should return default Emoji list for empty local storage', () => {
-    expect(getRecentlyUsedEmojis()).toStrictEqual(getEmojis(['👍', '💩']));
+    expect(getRecentlyUsedEmojis(10)).toStrictEqual(
+      getEmojis(DEFAULT_LIST.slice(0, 10)),
+    );
   });
 
   test('should return correctly sorted Emoji list according to usage', () => {
@@ -25,8 +27,10 @@ describe('getRecentlyUsedEmojis()', () => {
       }),
     );
 
-    expect(getRecentlyUsedEmojis()).toStrictEqual(
-      getEmojis(['🥰', '🥳', '🤭', '🥺', '😎']),
+    expect(getRecentlyUsedEmojis(10)).toStrictEqual(
+      getEmojis(
+        ['🥰', '🥳', '🤭', '🥺', '😎'].concat(DEFAULT_LIST.slice(0, 5)),
+      ),
     );
   });
 

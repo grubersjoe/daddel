@@ -211,27 +211,27 @@ const MatchCard: React.FC<Props> = ({ match, userList, setPageMetadata }) => {
               <Calendar players={match.players} userList={userList} />
             </Box>
 
-            {(isJoinable || true) && (
-              <Box
-                mt={3}
-                mb={0.5}
-                sx={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  gap: 1.25,
-                }}
-              >
+            <Box
+              mt={3}
+              mb={0.5}
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 1.25,
+              }}
+            >
+              {isJoinable && (
                 <EmojiPicker
                   onEmojiClick={([emoji]) => handleEmojiClick(emoji)}
                 />
-                {match.reactions && (
-                  <MatchReactions
-                    reactions={match.reactions}
-                    onClick={emoji => handleEmojiClick(emoji)}
-                  />
-                )}
-              </Box>
-            )}
+              )}
+              {match.reactions && (
+                <MatchReactions
+                  reactions={match.reactions}
+                  onClick={emoji => handleEmojiClick(emoji)}
+                />
+              )}
+            </Box>
           </CardContent>
           {isJoinable && (
             <CardActions sx={sx.actions}>
