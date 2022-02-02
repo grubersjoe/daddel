@@ -23,6 +23,9 @@ const listFormatter = new Intl.ListFormat(LOCALE);
 const MatchReactions: FunctionComponent<Props> = ({ reactions, onClick }) => {
   const [users, usersLoading] = useFetchUsers();
 
+  const theme = useTheme();
+  const mdViewUp = useMediaQuery(theme.breakpoints.up('md'));
+
   const [anchorElements, setAnchorElements] = React.useState<{
     [key: string]: HTMLElement | undefined;
   }>({});
@@ -34,12 +37,7 @@ const MatchReactions: FunctionComponent<Props> = ({ reactions, onClick }) => {
     setAnchorElements({ [key]: event.currentTarget });
   };
 
-  const handlePopoverClose = () => {
-    setAnchorElements({});
-  };
-
-  const theme = useTheme();
-  const mdViewUp = useMediaQuery(theme.breakpoints.up('md'));
+  const handlePopoverClose = () => setAnchorElements({});
 
   return (
     <>
@@ -78,6 +76,7 @@ const MatchReactions: FunctionComponent<Props> = ({ reactions, onClick }) => {
               }}
               elevation={16}
               disableRestoreFocus
+              disableScrollLock
               sx={{
                 pointerEvents: 'none',
               }}
