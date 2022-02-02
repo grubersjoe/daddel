@@ -4,8 +4,14 @@ import React, {
   useCallback,
   useState,
 } from 'react';
-import { Box, Button, Dialog, Popover, useTheme } from '@mui/material';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import {
+  Box,
+  Button,
+  Dialog,
+  Popover,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 
 import { People as PickerIcon } from './assets/icons';
 import { Emoji } from './types';

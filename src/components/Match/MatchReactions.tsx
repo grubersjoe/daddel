@@ -5,27 +5,20 @@ import {
   Fade,
   Popover,
   Typography,
+  useMediaQuery,
   useTheme,
 } from '@mui/material';
 
+import { LOCALE } from '../../constants';
 import { Reaction } from '../../types';
 import useFetchUsers from '../../hooks/useFetchUsers';
-import useMediaQuery from '@mui/material/useMediaQuery';
 
 interface Props {
   reactions: Array<Reaction>;
   onClick: (emoji: string) => void;
 }
 
-function prettyPrintNames(names: Array<string>): string {
-  const str = names.slice(0, names.length - 1).join(', ');
-
-  if (str.length > 0) {
-    return str.concat(` und ${names[names.length - 1]}`);
-  }
-
-  return str.concat(names[0]);
-}
+const listFormatter = new Intl.ListFormat(LOCALE);
 
 const MatchReactions: FunctionComponent<Props> = ({ reactions, onClick }) => {
   const [users, usersLoading] = useFetchUsers();
@@ -94,9 +87,10 @@ const MatchReactions: FunctionComponent<Props> = ({ reactions, onClick }) => {
                   <>Lade…</>
                 ) : (
                   <>
-                    {prettyPrintNames(
+                    {listFormatter.format(
                       userRefs.map(
-                        userRef => users.get(userRef.id)?.nickname ?? '⁉️',
+                        userRef =>
+                          users.get(userRef.id)?.nickname ?? 'unbekannt',
                       ),
                     )}
                   </>

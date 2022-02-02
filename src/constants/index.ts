@@ -13,6 +13,7 @@ export const DOMAIN_PROD = process.env.REACT_APP_DOMAIN_PROD;
 export const REGEX_IPV4 =
   /^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\.(?!$)|$)){4}$/;
 
+export const LOCALE = 'de';
 export const UNKNOWN_GAME_ID = process.env.REACT_APP_UNKNOWN_GAME_FIRESTORE_ID;
 export const MAX_SHOWN_PAST_MATCHES = 10;
 

@@ -4,7 +4,7 @@ import { FieldValue, getFirestore } from 'firebase-admin/firestore';
 import { getMessaging, Message } from 'firebase-admin/messaging';
 
 import { APP_URL, FIREBASE_LOCATION } from './constants';
-import { Game, Match, User } from './types';
+import { Game, Match, User } from '../../src/types';
 import { formatDate, formatTime } from './util/date';
 import DocumentReference = firestore.DocumentReference;
 
