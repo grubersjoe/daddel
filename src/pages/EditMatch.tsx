@@ -1,7 +1,11 @@
-import React, { FormEvent, useContext, useState } from 'react';
+import React, { FormEvent, useContext, useEffect, useState } from 'react';
 import { Timestamp, updateDoc } from 'firebase/firestore';
-import { Redirect, StaticContext } from 'react-router';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import {
+  Redirect,
+  RouteComponentProps,
+  useParams,
+  withRouter,
+} from 'react-router-dom';
 import setDate from 'date-fns/set';
 import isValid from 'date-fns/isValid';
 import {
@@ -23,11 +27,7 @@ import PageMetadata from '../components/PageMetadata';
 import DateTimePicker from '../components/DateTimePicker';
 import { useGamesCollectionData } from '../hooks/useGamesCollectionData';
 import { getDocRef } from '../services/firebase';
-
-type LocationState = {
-  game?: Omit<Game, 'game'>;
-  match?: Match;
-};
+import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
 
 const updatePlayerList = (
   players: Array<Player>,
@@ -47,40 +47,52 @@ const updatePlayerList = (
     };
   });
 
-const UpdateMatch: React.FC<
-  RouteComponentProps<Record<string, string>, StaticContext, LocationState>
-> = ({ location, history }) => {
+const EditMatch: React.FC<RouteComponentProps> = ({ history }) => {
   const dispatchSnack = useContext(SnackbarContext);
 
   const dispatchError = () =>
     dispatchSnack('Match konnte nicht bearbeitet werden', 'error');
 
-  const [loading, setLoading] = useState(false);
-
-  // The Game and Match are passed as state through the <Link> component of react-router.
-  // If this page is opened directly location.state will be undefined.
-  const game = location.state?.game;
-  const match = location.state?.match;
-
-  const [gameId, setGameId] = useState<Maybe<Game['id']>>(game?.id);
-  const [date, setDate] = useState<Date | null>(match?.date.toDate() ?? null);
-  const [description, setDescription] = useState<string>(
-    match?.description ?? '',
+  const { id } = useParams<{ id: string }>();
+  const [match, matchLoading, matchError] = useDocumentDataOnce<Match>(
+    getDocRef('matches', id),
+    { idField: 'id' },
   );
 
   const [games, gamesLoading] = useGamesCollectionData();
+  const [loading, setLoading] = useState(false);
 
-  // Hooks must not be called conditionally.
-  // So bailing out is not possible earlier.
-  if (!game || !match) {
+  const [matchState, setMatchState] = useState<{
+    game?: string;
+    date?: Date;
+    description?: string;
+  }>({});
+
+  useEffect(() => {
+    if (match) {
+      setMatchState({
+        game: match.game.id,
+        date: match.date.toDate(),
+        description: match.description,
+      });
+    }
+  }, [match, matchLoading]);
+
+  if (matchError || (!matchLoading && !match)) {
+    dispatchSnack(`Match kann nicht bearbeitet werden`, 'error');
+
     return <Redirect to={ROUTES.MATCHES_LIST} />;
+  }
+
+  if (matchLoading || !match) {
+    return null;
   }
 
   const handleUpdate = (event: FormEvent) => {
     event.preventDefault();
     setLoading(true);
 
-    if (!date || !gameId) {
+    if (!matchState.date || !matchState.game) {
       return dispatchError();
     }
 
@@ -88,10 +100,10 @@ const UpdateMatch: React.FC<
       Match,
       'id' | 'created' | 'createdBy' | 'reactions'
     > = {
-      date: Timestamp.fromDate(date),
-      description,
-      game: getDocRef<Game>('games', gameId),
-      players: updatePlayerList(match.players, date),
+      date: Timestamp.fromDate(matchState.date),
+      game: getDocRef<Game>('games', matchState.game),
+      players: updatePlayerList(match.players, matchState.date),
+      description: matchState.description,
     };
 
     updateDoc<Match>(getDocRef('matches', match.id), updatedMatch)
@@ -110,8 +122,13 @@ const UpdateMatch: React.FC<
       <Container>
         <Box mb="1.5rem">
           <Select
-            value={gameId}
-            onChange={event => setGameId(String(event.target.value))}
+            value={matchState.game}
+            onChange={event =>
+              setMatchState(prev => ({
+                ...prev,
+                game: String(event.target.value),
+              }))
+            }
             variant="outlined"
             disabled={gamesLoading}
             fullWidth
@@ -129,14 +146,27 @@ const UpdateMatch: React.FC<
 
         <form autoComplete="off" onSubmit={handleUpdate}>
           <Box mb="1.5rem">
-            <DateTimePicker date={date} setDate={setDate} />
+            <DateTimePicker
+              date={matchState.date ?? null}
+              onChange={date =>
+                setMatchState(prev => ({
+                  ...prev,
+                  ...(date && { date }),
+                }))
+              }
+            />
           </Box>
           <Box mb="1rem">
             <TextField
               label="Beschreibung (optional)"
-              defaultValue={description}
+              defaultValue={match.description}
               variant="outlined"
-              onChange={event => setDescription(event.target.value)}
+              onChange={event =>
+                setMatchState(prev => ({
+                  ...prev,
+                  description: event.target.value,
+                }))
+              }
               multiline
               rows={2}
               fullWidth
@@ -154,7 +184,10 @@ const UpdateMatch: React.FC<
                   type="submit"
                   color="primary"
                   disabled={
-                    !games || games.length === 0 || !isValid(date) || loading
+                    !games ||
+                    games.length === 0 ||
+                    !isValid(matchState.date) ||
+                    loading
                   }
                   startIcon={
                     loading ? (
@@ -178,4 +211,4 @@ const UpdateMatch: React.FC<
   );
 };
 
-export default withRouter(UpdateMatch);
+export default withRouter(EditMatch);

@@ -148,7 +148,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
             onSubmit={event => addMatch(event, authUser)}
           >
             <Box mb="1.5rem">
-              <DateTimePicker date={date} setDate={setDate} />
+              <DateTimePicker date={date} onChange={setDate} />
             </Box>
             <Box mb="1rem">
               <TextField

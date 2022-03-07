@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { generatePath, Link } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { logEvent } from 'firebase/analytics';
 import { deleteDoc } from 'firebase/firestore';
@@ -31,8 +31,6 @@ const Menu: React.FC<Props> = ({ game, match }) => {
 
   const [anchorElement, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorElement);
-
-  const { game: gameRef, ...matchWithoutRefs } = match;
 
   const openMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -101,10 +99,7 @@ const Menu: React.FC<Props> = ({ game, match }) => {
       <MuiMenu anchorEl={anchorElement} open={open} onClose={closeMenu}>
         {matchCreatedByUser && !isPastMatch && (
           <Link
-            to={{
-              pathname: ROUTES.EDIT_MATCH,
-              state: { game, match: matchWithoutRefs }, // Firestore refs can not be serialized
-            }}
+            to={generatePath(ROUTES.EDIT_MATCH, { id: match.id })}
             style={{ display: 'flex' }}
           >
             <MenuItem>

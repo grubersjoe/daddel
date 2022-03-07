@@ -13,18 +13,18 @@ import { DOMAIN_PROD, REGEX_IPV4 } from '../constants';
 import ROUTES from '../constants/routes';
 import { createTheme } from '../styles/theme';
 
-import Settings from '../pages/Settings';
+import { updateServiceWorker } from '../utils';
 import AddMatch from '../pages/AddMatch';
-import ResetPassword from '../pages/ResetPassword';
-import SignIn from '../pages/SignIn';
-import UpdateMatch from '../pages/UpdateMatch';
-import SignUp from '../pages/SignUp';
+import EditMatch from '../pages/EditMatch';
 import MatchDetail from '../pages/MatchDetail';
 import MatchesList from '../pages/MatchesList';
-import { updateServiceWorker } from '../utils';
+import ResetPassword from '../pages/ResetPassword';
+import Settings from '../pages/Settings';
+import SignIn from '../pages/SignIn';
+import SignUp from '../pages/SignUp';
+import Layout from './Layout';
 import PageMetadata from './PageMetadata';
 import PrivateRoute from './PrivateRoute';
-import Layout from './Layout';
 
 const App: React.FC = () => {
   const isAllowedHost =
@@ -51,7 +51,7 @@ const App: React.FC = () => {
                 <AddMatch />
               </PrivateRoute>
               <PrivateRoute path={ROUTES.EDIT_MATCH}>
-                <UpdateMatch />
+                <EditMatch />
               </PrivateRoute>
               <PrivateRoute path={ROUTES.MATCH_DETAIL}>
                 <MatchDetail />

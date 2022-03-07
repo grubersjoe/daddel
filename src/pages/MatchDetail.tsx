@@ -16,10 +16,10 @@ import { getDocRef } from '../services/firebase';
 
 const MatchDetail: React.FC = () => {
   const dispatchSnack = useContext(SnackbarContext);
-  const { match: matchId } = useParams<{ match: string }>();
+  const { id } = useParams<{ id: string }>();
 
   const [match, loading, error] = useDocumentData<Match>(
-    getDocRef('matches', matchId),
+    getDocRef('matches', id),
     { idField: 'id' },
   );
 
