@@ -1,16 +1,23 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import 'typeface-roboto';
+import { createRoot } from 'react-dom/client';
 
 import App from './components/App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import './styles/global.scss';
 
-ReactDOM.render(
+const node = document.getElementById('root');
+
+if (!node) {
+  throw new Error('Root node #root not found');
+}
+
+const root = createRoot(node);
+
+root.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
-  document.getElementById('root'),
 );
 
 serviceWorkerRegistration.register({

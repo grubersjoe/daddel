@@ -1,11 +1,7 @@
 import React, { FormEventHandler, useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { setDoc } from 'firebase/firestore';
-import {
-  Link as RouterLink,
-  RouteComponentProps,
-  withRouter,
-} from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
   Alert,
   Button,
@@ -18,13 +14,14 @@ import {
 } from '@mui/material';
 
 import { isValidInvitationCode } from '../services/auth';
-import ROUTES from '../constants/routes';
+import routes from '../constants/routes';
 import Logo from '../components/Logo';
 import PageMetadata from '../components/PageMetadata';
 import { auth, getDocRef } from '../services/firebase';
 import { User } from '../types';
 
-const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
+const SignUp: React.FC = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const [formState, setFormState] = useState({
@@ -76,7 +73,7 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
             getDocRef('users', credential.user.uid),
             { nickname: formState.nickname, invited: true },
             { merge: true },
-          ).then(() => history.push(ROUTES.MATCHES_LIST));
+          ).then(() => navigate(routes.matchList));
         })
         .catch(error => setErrorStateProp('auth', error))
         .finally(() => setLoading(false));
@@ -200,7 +197,7 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
       </form>
 
       <Typography sx={{ mt: 4 }}>
-        <Link component={RouterLink} to={ROUTES.ROOT} color="textPrimary">
+        <Link component={RouterLink} to={routes.home} color="textPrimary">
           Zurück zur Anmeldung
         </Link>
       </Typography>
@@ -208,4 +205,4 @@ const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
   );
 };
 
-export default withRouter(SignUp);
+export default SignUp;

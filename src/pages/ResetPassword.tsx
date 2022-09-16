@@ -10,7 +10,7 @@ import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-import ROUTES from '../constants/routes';
+import routes from '../constants/routes';
 import Logo from '../components/Logo';
 import PageMetadata from '../components/PageMetadata';
 import { auth } from '../services/firebase';
@@ -87,7 +87,7 @@ const ResetPassword: React.FC = () => {
       </form>
 
       <Typography sx={{ mt: 2 }}>
-        <Link component={RouterLink} to={ROUTES.ROOT} color="textPrimary">
+        <Link component={RouterLink} to={routes.home} color="textPrimary">
           Zurück zur Anmeldung
         </Link>
       </Typography>

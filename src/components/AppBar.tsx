@@ -1,5 +1,4 @@
-import React, { MouseEventHandler } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import React, { MouseEventHandler, ReactElement } from 'react';
 import FilterIcon from '@mui/icons-material/FilterListRounded';
 import {
   AppBar as MuiAppBar,
@@ -10,7 +9,8 @@ import {
   Typography,
 } from '@mui/material';
 
-type Props = RouteComponentProps & {
+interface Props {
+  children?: ReactElement;
   filter?: {
     color: 'inherit' | 'primary' | 'secondary' | 'default';
     enabled: number;
@@ -18,7 +18,7 @@ type Props = RouteComponentProps & {
     onClick: MouseEventHandler;
   };
   title?: string;
-};
+}
 
 const AppBar: React.FC<Props> = ({ children, filter, title }) => (
   <MuiAppBar position="fixed">
@@ -28,7 +28,7 @@ const AppBar: React.FC<Props> = ({ children, filter, title }) => (
           {title}
         </Typography>
       )}
-      <Box flexGrow={1}>{children}</Box>
+      {children && <Box flexGrow={1}>{children}</Box>}
       <div>
         {filter && (
           <IconButton
@@ -47,4 +47,4 @@ const AppBar: React.FC<Props> = ({ children, filter, title }) => (
   </MuiAppBar>
 );
 
-export default withRouter(AppBar);
+export default AppBar;

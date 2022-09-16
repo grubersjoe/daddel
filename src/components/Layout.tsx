@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 
 import Box from '@mui/material/Box';
 import { Alert, AlertProps, Snackbar } from '@mui/material';
@@ -16,7 +16,11 @@ export const SnackbarContext = React.createContext<DispatchSnack>(
   () => undefined,
 );
 
-const Layout: React.FC = ({ children }) => {
+interface Props {
+  children: ReactElement;
+}
+
+const Layout: React.FC<Props> = ({ children }) => {
   const [authUser] = useAuthState(auth);
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);

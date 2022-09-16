@@ -1,7 +1,8 @@
 import React from 'react';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import MuiDateTimePicker from '@mui/lab/DateTimePicker';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DateTimePicker as MuiDateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+
 import { TextField } from '@mui/material';
 import deLocale from 'date-fns/locale/de';
 
@@ -14,7 +15,7 @@ type Props = {
 
 // noinspection RequiredAttributes
 const DateTimePicker: React.FC<Props> = ({ date, onChange }) => (
-  <LocalizationProvider dateAdapter={AdapterDateFns} locale={deLocale}>
+  <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={deLocale}>
     <MuiDateTimePicker
       label="Datum und Uhrzeit"
       renderInput={props => (
@@ -28,4 +29,5 @@ const DateTimePicker: React.FC<Props> = ({ date, onChange }) => (
     />
   </LocalizationProvider>
 );
+
 export default DateTimePicker;

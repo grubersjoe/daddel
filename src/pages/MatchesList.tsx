@@ -1,12 +1,13 @@
-import React, { useMemo, useState } from 'react';
+import React, { ReactNode, useMemo, useState } from 'react';
 import { onSnapshot } from 'firebase/firestore';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
+// @ts-ignore
 import SwipeableViews from 'react-swipeable-views';
 import { Link } from 'react-router-dom';
 import { Alert, Box, Button, Grid, Tab, Tabs, Typography } from '@mui/material';
 
 import { futureMatchesQuery, pastMatchesQuery } from '../queries/matches';
-import ROUTES from '../constants/routes';
+import routes from '../constants/routes';
 import useCurrentDate from '../hooks/useCurrentDate';
 import useFetchUsers from '../hooks/useFetchUsers';
 import { Match } from '../types';
@@ -29,6 +30,7 @@ const loadingAnimation =
   'pulse 0.75s cubic-bezier(.46,.03,.52,.96) 0s infinite';
 
 const TabPanel: React.FC<{
+  children: ReactNode;
   index: number;
   value: number;
 }> = ({ children, value, index, ...props }) => (
@@ -150,7 +152,7 @@ const MatchesList: React.FC = () => {
               <Button
                 color="primary"
                 component={Link}
-                to={ROUTES.ADD_MATCH}
+                to={routes.addMatch}
                 sx={{ mt: 1 }}
               >
                 Neues Match

@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
-import { Link, Redirect, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 import { Box, Button, Grid } from '@mui/material';
 import LinkIcon from '@mui/icons-material/Link';
 
-import ROUTES from '../constants/routes';
+import routes from '../constants/routes';
 import useFetchUsers from '../hooks/useFetchUsers';
 import { Match } from '../types';
 import { SnackbarContext } from '../components/Layout';
@@ -32,7 +32,7 @@ const MatchDetail: React.FC = () => {
   if ((!loading && !match) || error) {
     dispatchSnack(`Angefragtes Match nicht gefunden`, 'error');
 
-    return <Redirect to={ROUTES.MATCHES_LIST} />;
+    return <Navigate to={routes.matchList} />;
   }
 
   if (!match) {
@@ -44,7 +44,7 @@ const MatchDetail: React.FC = () => {
       <SetupUserDialog />
       <AppBar>
         <>
-          <Button variant="text" component={Link} to={ROUTES.MATCHES_LIST}>
+          <Button variant="text" component={Link} to={routes.matchList}>
             Alle Matches
           </Button>
           <Button

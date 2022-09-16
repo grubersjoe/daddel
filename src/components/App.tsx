@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 import {
   BrowserRouter as Router,
+  Navigate,
   Route,
-  Switch,
+  Routes,
   useLocation,
 } from 'react-router-dom';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material';
@@ -10,7 +11,7 @@ import CSSBaseline from '@mui/material/CssBaseline';
 import yellow from '@mui/material/colors/yellow';
 
 import { DOMAIN_PROD, REGEX_IPV4 } from '../constants';
-import ROUTES from '../constants/routes';
+import routes from '../constants/routes';
 import { createTheme } from '../styles/theme';
 
 import { updateServiceWorker } from '../utils';
@@ -24,7 +25,18 @@ import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
 import Layout from './Layout';
 import PageMetadata from './PageMetadata';
-import PrivateRoute from './PrivateRoute';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '../services/firebase';
+
+const RequireAuth: React.FC<{ children: ReactElement }> = ({ children }) => {
+  const [authUser, authLoading] = useAuthState(auth);
+
+  if (authLoading) {
+    return null;
+  }
+
+  return authUser ? children : <Navigate to={routes.home} />;
+};
 
 const App: React.FC = () => {
   const isAllowedHost =
@@ -46,32 +58,51 @@ const App: React.FC = () => {
         <Router>
           <OnRouteChange />
           <Layout>
-            <Switch>
-              <PrivateRoute path={ROUTES.ADD_MATCH}>
-                <AddMatch />
-              </PrivateRoute>
-              <PrivateRoute path={ROUTES.EDIT_MATCH}>
-                <EditMatch />
-              </PrivateRoute>
-              <PrivateRoute path={ROUTES.MATCH_DETAIL}>
-                <MatchDetail />
-              </PrivateRoute>
-              <PrivateRoute path={ROUTES.MATCHES_LIST} exact>
-                <MatchesList />
-              </PrivateRoute>
-              <PrivateRoute path={ROUTES.SETTINGS}>
-                <Settings />
-              </PrivateRoute>
-              <Route path={ROUTES.REGISTER}>
-                <SignUp />
-              </Route>
-              <Route path={ROUTES.RESET}>
-                <ResetPassword />
-              </Route>
-              <Route path={ROUTES.ROOT}>
-                <SignIn />
-              </Route>
-            </Switch>
+            <Routes>
+              <Route
+                path={routes.addMatch}
+                element={
+                  <RequireAuth>
+                    <AddMatch />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path={routes.editMatch}
+                element={
+                  <RequireAuth>
+                    <EditMatch />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path={routes.matchDetail}
+                element={
+                  <RequireAuth>
+                    <MatchDetail />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path={routes.matchList}
+                element={
+                  <RequireAuth>
+                    <MatchesList />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path={routes.settings}
+                element={
+                  <RequireAuth>
+                    <Settings />
+                  </RequireAuth>
+                }
+              />
+              <Route path={routes.register} element={<SignUp />} />
+              <Route path={routes.resetPassword} element={<ResetPassword />} />
+              <Route path={routes.home} element={<SignIn />} />
+            </Routes>
           </Layout>
         </Router>
       </ThemeProvider>

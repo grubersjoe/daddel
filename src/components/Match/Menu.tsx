@@ -14,7 +14,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ShareIcon from '@mui/icons-material/Share';
 
 import { GA_EVENTS } from '../../constants';
-import ROUTES from '../../constants/routes';
+import routes from '../../constants/routes';
 import { analytics, auth, getDocRef } from '../../services/firebase';
 import { Game, Match } from '../../types';
 import { formatDate, formatTime } from '../../utils/date';
@@ -99,7 +99,7 @@ const Menu: React.FC<Props> = ({ game, match }) => {
       <MuiMenu anchorEl={anchorElement} open={open} onClose={closeMenu}>
         {matchCreatedByUser && !isPastMatch && (
           <Link
-            to={generatePath(ROUTES.EDIT_MATCH, { id: match.id })}
+            to={generatePath(routes.editMatch, { id: match.id })}
             style={{ display: 'flex' }}
           >
             <MenuItem>

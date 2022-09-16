@@ -5,9 +5,9 @@ import AddIcon from '@mui/icons-material/Add';
 import MatchesIcon from '@mui/icons-material/SportsEsports';
 import SettingsIcon from '@mui/icons-material/Settings';
 
-import ROUTES from '../constants/routes';
+import routes from '../constants/routes';
 
-const Links = [ROUTES.MATCHES_LIST, ROUTES.ADD_MATCH, ROUTES.SETTINGS];
+const Links = [routes.matchList, routes.addMatch, routes.settings];
 
 const Navigation: React.FC = () => {
   const location = useLocation();
@@ -32,21 +32,21 @@ const Navigation: React.FC = () => {
     >
       <BottomNavigationAction
         component={Link}
-        to={ROUTES.MATCHES_LIST}
+        to={routes.matchList}
         label="Matches"
         title="Matches"
         icon={<MatchesIcon />}
       />
       <BottomNavigationAction
         component={Link}
-        to={ROUTES.ADD_MATCH}
+        to={routes.addMatch}
         label="Neues Match"
         title="Neues Match"
         icon={<AddIcon />}
       />
       <BottomNavigationAction
         component={Link}
-        to={ROUTES.SETTINGS}
+        to={routes.settings}
         label="Einstellungen"
         title="Einstellungen"
         icon={<SettingsIcon />}

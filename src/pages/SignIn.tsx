@@ -4,8 +4,7 @@ import {
   signInWithEmailAndPassword,
   signInWithRedirect,
 } from 'firebase/auth';
-import { Link as RouterLink, Redirect, useLocation } from 'react-router-dom';
-import History from 'history';
+import { Link as RouterLink, Navigate, useLocation } from 'react-router-dom';
 import {
   Alert,
   Button,
@@ -18,7 +17,7 @@ import {
 } from '@mui/material';
 
 import GoogleIcon from '../assets/icons/GoogleIcon';
-import ROUTES from '../constants/routes';
+import routes from '../constants/routes';
 import Logo from '../components/Logo';
 import PageMetadata from '../components/PageMetadata';
 import Spinner from '../components/Spinner';
@@ -26,7 +25,7 @@ import { auth } from '../services/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 const SignIn: React.FC = () => {
-  const location = useLocation<Maybe<{ from: History.Location }>>();
+  const location = useLocation();
   const [authUser, authLoading] = useAuthState(auth);
 
   const [loading, setLoading] = useState(false);
@@ -37,11 +36,11 @@ const SignIn: React.FC = () => {
   const [googleLoading, setGoogleLoading] = useState(false);
 
   const { from } = location.state ?? {
-    from: { pathname: ROUTES.MATCHES_LIST },
+    from: { pathname: routes.matchList },
   };
 
   if (authUser) {
-    return <Redirect to={from} />;
+    return <Navigate to={from} />;
   }
 
   const handleEmailLogin: FormEventHandler = event => {
@@ -138,12 +137,16 @@ const SignIn: React.FC = () => {
       </form>
 
       <Typography sx={{ mb: 1 }}>Noch kein Konto?</Typography>
-      <Button component={RouterLink} to={ROUTES.REGISTER} sx={{ mb: 4 }}>
+      <Button component={RouterLink} to={routes.register} sx={{ mb: 4 }}>
         Registrieren
       </Button>
 
       <Typography>
-        <Link component={RouterLink} to={ROUTES.RESET} color="textPrimary">
+        <Link
+          component={RouterLink}
+          to={routes.resetPassword}
+          color="textPrimary"
+        >
           Passwort vergessen?
         </Link>
       </Typography>

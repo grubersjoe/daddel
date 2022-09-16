@@ -1,5 +1,4 @@
 import React, { FormEvent, useContext, useEffect, useState } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { User } from 'firebase/auth';
 import { logEvent } from 'firebase/analytics';
@@ -21,6 +20,7 @@ import addMinutes from 'date-fns/addMinutes';
 import isSameDay from 'date-fns/isSameDay';
 import isValid from 'date-fns/isValid';
 import parseDate from 'date-fns/parse';
+import { useNavigate } from 'react-router-dom';
 
 import { GA_EVENTS } from '../constants';
 import {
@@ -29,7 +29,7 @@ import {
   MATCH_TIME_LATEST,
   TIME_FORMAT,
 } from '../constants/date';
-import ROUTES from '../constants/routes';
+import routes from '../constants/routes';
 import { joinMatch } from '../services/match';
 import { Game, Match } from '../types';
 import { reorderGames } from '../utils/games';
@@ -46,7 +46,8 @@ import {
   getDocRef,
 } from '../services/firebase';
 
-const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
+const AddMatch: React.FC = () => {
+  const navigate = useNavigate();
   const [authUser] = useAuthState(auth);
   const dispatchSnack = useContext(SnackbarContext);
 
@@ -109,7 +110,7 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
       })
       .then(() => {
         logEvent(analytics, GA_EVENTS.ADD_MATCH);
-        history.push(ROUTES.MATCHES_LIST);
+        navigate(routes.matchList);
       })
       .catch(dispatchError)
       .finally(() => setLoading(false));
@@ -173,7 +174,11 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
             <Box my="1.5rem">
               <Grid container direction="row" spacing={2}>
                 <Grid item xs>
-                  <Button onClick={history.goBack} disabled={loading} fullWidth>
+                  <Button
+                    onClick={() => window.history.go(-1)}
+                    disabled={loading}
+                    fullWidth
+                  >
                     Abbrechen
                   </Button>
                 </Grid>
@@ -207,4 +212,4 @@ const AddMatch: React.FC<RouteComponentProps> = ({ history }) => {
   );
 };
 
-export default withRouter(AddMatch);
+export default AddMatch;

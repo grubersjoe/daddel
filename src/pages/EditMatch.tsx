@@ -1,11 +1,6 @@
 import React, { FormEvent, useContext, useEffect, useState } from 'react';
 import { Timestamp, updateDoc } from 'firebase/firestore';
-import {
-  Redirect,
-  RouteComponentProps,
-  useParams,
-  withRouter,
-} from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import setDate from 'date-fns/set';
 import isValid from 'date-fns/isValid';
 import {
@@ -18,7 +13,7 @@ import {
   TextField,
 } from '@mui/material';
 
-import ROUTES from '../constants/routes';
+import routes from '../constants/routes';
 import { reorderGames } from '../utils/games';
 import { Game, Match, Player } from '../types';
 import { SnackbarContext } from '../components/Layout';
@@ -47,7 +42,8 @@ const updatePlayerList = (
     };
   });
 
-const EditMatch: React.FC<RouteComponentProps> = ({ history }) => {
+const EditMatch: React.FC = () => {
+  const navigate = useNavigate();
   const dispatchSnack = useContext(SnackbarContext);
 
   const dispatchError = () =>
@@ -81,7 +77,7 @@ const EditMatch: React.FC<RouteComponentProps> = ({ history }) => {
   if (matchError || (!matchLoading && !match)) {
     dispatchSnack(`Match kann nicht bearbeitet werden`, 'error');
 
-    return <Redirect to={ROUTES.MATCHES_LIST} />;
+    return <Navigate to={routes.matchList} />;
   }
 
   if (matchLoading || !match) {
@@ -109,7 +105,7 @@ const EditMatch: React.FC<RouteComponentProps> = ({ history }) => {
     updateDoc<Match>(getDocRef('matches', match.id), updatedMatch)
       .then(() => {
         dispatchSnack('Match aktualisiert');
-        history.push(ROUTES.MATCHES_LIST);
+        navigate(routes.matchList);
       })
       .catch(dispatchError)
       .finally(() => setLoading(false));
@@ -175,7 +171,11 @@ const EditMatch: React.FC<RouteComponentProps> = ({ history }) => {
           <Box my="1.5rem">
             <Grid container direction="row" spacing={2}>
               <Grid item xs>
-                <Button onClick={history.goBack} disabled={loading} fullWidth>
+                <Button
+                  onClick={() => window.history.go(-1)}
+                  disabled={loading}
+                  fullWidth
+                >
                   Abbrechen
                 </Button>
               </Grid>
@@ -211,4 +211,4 @@ const EditMatch: React.FC<RouteComponentProps> = ({ history }) => {
   );
 };
 
-export default withRouter(EditMatch);
+export default EditMatch;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import differenceInMinutes from 'date-fns/differenceInMinutes';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import { Theme, useTheme } from '@mui/material/styles';
@@ -65,7 +65,12 @@ const styles = (theme: Theme) =>
     },
   } as const);
 
-const Label: React.FC<{ left: number }> = ({ left, children }) => (
+interface LabelProps {
+  children: ReactElement | string;
+  left: number;
+}
+
+const Label: React.FC<LabelProps> = ({ left, children }) => (
   <Box
     sx={{
       ...styles(useTheme()).label,
@@ -76,11 +81,13 @@ const Label: React.FC<{ left: number }> = ({ left, children }) => (
   </Box>
 );
 
-const Bar: React.FC<{ left: number; width: number }> = ({
-  left,
-  width,
-  children,
-}) => (
+interface BarProps {
+  children: Array<ReactElement> | ReactElement;
+  left: number;
+  width: number;
+}
+
+const Bar: React.FC<BarProps> = ({ left, width, children }) => (
   <Box
     sx={{
       ...styles(useTheme()).bar,
