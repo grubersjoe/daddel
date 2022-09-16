@@ -1,4 +1,9 @@
-import React, { MouseEventHandler, useContext, useState } from 'react';
+import React, {
+  FunctionComponent,
+  MouseEventHandler,
+  useContext,
+  useState,
+} from 'react';
 import {
   Alert,
   Button,
@@ -11,7 +16,7 @@ import useMessagingSupported from '../../hooks/useMessagingSupported';
 import useNotifications from '../../hooks/useNotifications';
 import { SnackbarContext } from '../Layout';
 
-const NotificationsSettings: React.FC = () => {
+const NotificationsSettings: FunctionComponent = () => {
   const {
     subscribe,
     unsubscribe,

@@ -1,5 +1,6 @@
 import React, {
   FormEventHandler,
+  FunctionComponent,
   useContext,
   useEffect,
   useState,
@@ -35,7 +36,7 @@ enum Step {
  * 1. Validate invitation code
  * 2. Set the user nickname
  */
-const SetupUserDialog: React.FC = () => {
+const SetupUserDialog: FunctionComponent = () => {
   const dispatchSnack = useContext(SnackbarContext);
 
   const [authUser] = useAuthState(auth);

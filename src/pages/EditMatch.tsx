@@ -1,4 +1,10 @@
-import React, { FormEvent, useContext, useEffect, useState } from 'react';
+import React, {
+  FormEvent,
+  FunctionComponent,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { Timestamp, updateDoc } from 'firebase/firestore';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import setDate from 'date-fns/set';
@@ -42,7 +48,7 @@ const updatePlayerList = (
     };
   });
 
-const EditMatch: React.FC = () => {
+const EditMatch: FunctionComponent = () => {
   const navigate = useNavigate();
   const dispatchSnack = useContext(SnackbarContext);
 

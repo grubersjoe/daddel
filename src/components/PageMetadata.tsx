@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { Helmet } from 'react-helmet';
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
 
 const DEFAULT_DESCRIPTION = 'Plane Spieleabende mit Deinen Freunden';
 
-const PageMetadata: React.FC<Props> = ({ title, description }) => (
+const PageMetadata: FunctionComponent<Props> = ({ title, description }) => (
   <Helmet
     title={title ?? 'Daddel'}
     meta={[

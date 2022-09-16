@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { FunctionComponent, useContext } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 import { Box, Button, Grid } from '@mui/material';
@@ -14,7 +14,7 @@ import SetupUserDialog from '../components/Dialogs/SetupUserDialog';
 import Spinner from '../components/Spinner';
 import { getDocRef } from '../services/firebase';
 
-const MatchDetail: React.FC = () => {
+const MatchDetail: FunctionComponent = () => {
   const dispatchSnack = useContext(SnackbarContext);
   const { id } = useParams<{ id: string }>();
 

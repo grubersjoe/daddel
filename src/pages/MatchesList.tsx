@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo, useState } from 'react';
+import React, { FunctionComponent, ReactNode, useMemo, useState } from 'react';
 import { onSnapshot } from 'firebase/firestore';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 // @ts-ignore
@@ -29,7 +29,7 @@ import SetupUserDialog from '../components/Dialogs/SetupUserDialog';
 const loadingAnimation =
   'pulse 0.75s cubic-bezier(.46,.03,.52,.96) 0s infinite';
 
-const TabPanel: React.FC<{
+const TabPanel: FunctionComponent<{
   children: ReactNode;
   index: number;
   value: number;
@@ -39,7 +39,7 @@ const TabPanel: React.FC<{
   </Box>
 );
 
-const MatchesList: React.FC = () => {
+const MatchesList: FunctionComponent = () => {
   const [users] = useFetchUsers();
 
   const [isRefetching, setIsRefetching] = useState(false);

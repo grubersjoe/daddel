@@ -1,5 +1,6 @@
 import React, {
   FormEventHandler,
+  FunctionComponent,
   useContext,
   useEffect,
   useState,
@@ -29,7 +30,7 @@ import useMessagingSupported from '../hooks/useMessagingSupported';
 import { auth, getDocRef } from '../services/firebase';
 import { User } from '../types';
 
-const Settings: React.FC = () => {
+const Settings: FunctionComponent = () => {
   const [authUser] = useAuthState(auth);
   const dispatchSnack = useContext(SnackbarContext);
 

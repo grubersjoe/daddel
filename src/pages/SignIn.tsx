@@ -1,4 +1,4 @@
-import React, { FormEventHandler, useState } from 'react';
+import React, { FormEventHandler, FunctionComponent, useState } from 'react';
 import {
   GoogleAuthProvider,
   signInWithEmailAndPassword,
@@ -24,7 +24,7 @@ import Spinner from '../components/Spinner';
 import { auth } from '../services/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
-const SignIn: React.FC = () => {
+const SignIn: FunctionComponent = () => {
   const location = useLocation();
   const [authUser, authLoading] = useAuthState(auth);
 

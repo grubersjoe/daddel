@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect } from 'react';
+import React, { FunctionComponent, ReactElement, useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Navigate,
@@ -28,7 +28,9 @@ import PageMetadata from './PageMetadata';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../services/firebase';
 
-const RequireAuth: React.FC<{ children: ReactElement }> = ({ children }) => {
+const RequireAuth: FunctionComponent<{ children: ReactElement }> = ({
+  children,
+}) => {
   const [authUser, authLoading] = useAuthState(auth);
 
   if (authLoading) {
@@ -38,7 +40,7 @@ const RequireAuth: React.FC<{ children: ReactElement }> = ({ children }) => {
   return authUser ? children : <Navigate to={routes.home} />;
 };
 
-const App: React.FC = () => {
+const App: FunctionComponent = () => {
   const isAllowedHost =
     [DOMAIN_PROD, 'localhost'].includes(window.location.hostname) ||
     REGEX_IPV4.test(window.location.hostname);
@@ -110,7 +112,7 @@ const App: React.FC = () => {
   );
 };
 
-const OnRouteChange: React.FC = () => {
+const OnRouteChange: FunctionComponent = () => {
   const location = useLocation();
   useEffect(updateServiceWorker, [location.pathname]);
 

@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { FunctionComponent, ReactElement } from 'react';
 import differenceInMinutes from 'date-fns/differenceInMinutes';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import { Theme, useTheme } from '@mui/material/styles';
@@ -70,7 +70,7 @@ interface LabelProps {
   left: number;
 }
 
-const Label: React.FC<LabelProps> = ({ left, children }) => (
+const Label: FunctionComponent<LabelProps> = ({ left, children }) => (
   <Box
     sx={{
       ...styles(useTheme()).label,
@@ -87,7 +87,7 @@ interface BarProps {
   width: number;
 }
 
-const Bar: React.FC<BarProps> = ({ left, width, children }) => (
+const Bar: FunctionComponent<BarProps> = ({ left, width, children }) => (
   <Box
     sx={{
       ...styles(useTheme()).bar,
@@ -101,7 +101,7 @@ const Bar: React.FC<BarProps> = ({ left, width, children }) => (
   </Box>
 );
 
-const Calendar: React.FC<Props> = ({ players, userList }) => {
+const Calendar: FunctionComponent<Props> = ({ players, userList }) => {
   const theme = useTheme();
   const sx = styles(theme);
 

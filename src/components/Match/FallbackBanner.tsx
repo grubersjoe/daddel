@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { Box } from '@mui/material';
 
 import { UNKNOWN_GAME_ID } from '../../constants';
 import { Game } from '../../types';
 
-const FallbackBanner: React.FC<{ game: Game }> = ({ game }) => {
+const FallbackBanner: FunctionComponent<{ game: Game }> = ({ game }) => {
   const isUnknownGame = game.id === UNKNOWN_GAME_ID;
 
   return (

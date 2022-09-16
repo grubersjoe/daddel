@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent, memo } from 'react';
 import { Box, Typography } from '@mui/material';
 
 import { CategoryName, Emoji } from './types';
@@ -12,7 +12,7 @@ export interface Props {
   onEmojiMouseEnter: (emoji: Emoji) => void;
 }
 
-const Grid: React.FC<Props> = ({
+const Grid: FunctionComponent<Props> = ({
   category,
   emojis,
   onEmojiClick,
@@ -60,4 +60,4 @@ const Grid: React.FC<Props> = ({
   );
 };
 
-export default React.memo(Grid);
+export default memo(Grid);

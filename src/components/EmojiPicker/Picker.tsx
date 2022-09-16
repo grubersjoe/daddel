@@ -1,5 +1,7 @@
 import React, {
   ChangeEventHandler,
+  FunctionComponent,
+  memo,
   useCallback,
   useEffect,
   useState,
@@ -44,7 +46,9 @@ const ScrollContainer = styled('div')({
   paddingLeft: 16,
 });
 
-const Picker: React.FC<Props> = ({ onEmojiClick: onEmojiClickProp }) => {
+const Picker: FunctionComponent<Props> = ({
+  onEmojiClick: onEmojiClickProp,
+}) => {
   const [scrollElement, setScrollElement] = useState<HTMLElement | null>(null);
 
   const [activeEmoji, setActiveEmoji] = useState<Emoji | null>(null);
@@ -176,4 +180,4 @@ const Picker: React.FC<Props> = ({ onEmojiClick: onEmojiClickProp }) => {
     </Box>
   );
 };
-export default React.memo(Picker);
+export default memo(Picker);

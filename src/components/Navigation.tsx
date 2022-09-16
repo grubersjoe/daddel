@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { BottomNavigation, BottomNavigationAction } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
@@ -9,7 +9,7 @@ import routes from '../constants/routes';
 
 const Links = [routes.matchList, routes.addMatch, routes.settings];
 
-const Navigation: React.FC = () => {
+const Navigation: FunctionComponent = () => {
   const location = useLocation();
   const [selected, setSelected] = useState(0);
 

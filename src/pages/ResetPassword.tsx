@@ -1,4 +1,4 @@
-import React, { FormEventHandler, useState } from 'react';
+import React, { FormEventHandler, FunctionComponent, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import Alert from '@mui/material/Alert';
@@ -15,7 +15,7 @@ import Logo from '../components/Logo';
 import PageMetadata from '../components/PageMetadata';
 import { auth } from '../services/firebase';
 
-const ResetPassword: React.FC = () => {
+const ResetPassword: FunctionComponent = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [success, setSuccess] = useState(false);

@@ -1,4 +1,8 @@
-import React, { MouseEventHandler, ReactElement } from 'react';
+import React, {
+  FunctionComponent,
+  MouseEventHandler,
+  ReactElement,
+} from 'react';
 import FilterIcon from '@mui/icons-material/FilterListRounded';
 import {
   AppBar as MuiAppBar,
@@ -20,7 +24,7 @@ interface Props {
   title?: string;
 }
 
-const AppBar: React.FC<Props> = ({ children, filter, title }) => (
+const AppBar: FunctionComponent<Props> = ({ children, filter, title }) => (
   <MuiAppBar position="fixed">
     <Toolbar variant="dense">
       {title && (

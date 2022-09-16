@@ -1,4 +1,10 @@
-import React, { FormEvent, useContext, useEffect, useState } from 'react';
+import React, {
+  FormEvent,
+  FunctionComponent,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { User } from 'firebase/auth';
 import { logEvent } from 'firebase/analytics';
@@ -46,7 +52,7 @@ import {
   getDocRef,
 } from '../services/firebase';
 
-const AddMatch: React.FC = () => {
+const AddMatch: FunctionComponent = () => {
   const navigate = useNavigate();
   const [authUser] = useAuthState(auth);
   const dispatchSnack = useContext(SnackbarContext);

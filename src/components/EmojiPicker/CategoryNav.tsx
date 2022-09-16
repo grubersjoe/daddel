@@ -1,4 +1,4 @@
-import React, { FunctionComponent, SVGProps } from 'react';
+import React, { FunctionComponent, memo, SVGProps } from 'react';
 import {
   Box,
   ButtonBase,
@@ -21,7 +21,10 @@ interface ButtonProps extends ButtonBaseProps {
 
 const BUTTON_FONT_SIZE = '20px';
 
-const NavButton: React.FC<ButtonProps> = ({ icon: Icon, ...buttonProps }) => (
+const NavButton: FunctionComponent<ButtonProps> = ({
+  icon: Icon,
+  ...buttonProps
+}) => (
   <ButtonBase
     focusRipple
     sx={{
@@ -44,7 +47,7 @@ const NavButton: React.FC<ButtonProps> = ({ icon: Icon, ...buttonProps }) => (
   </ButtonBase>
 );
 
-const CategoryNav: React.FC<Props> = ({ active }) => {
+const CategoryNav: FunctionComponent<Props> = ({ active }) => {
   const styles: SxProps = {
     '&': {
       position: 'relative',
@@ -97,4 +100,4 @@ const CategoryNav: React.FC<Props> = ({ active }) => {
   );
 };
 
-export default React.memo(CategoryNav);
+export default memo(CategoryNav);

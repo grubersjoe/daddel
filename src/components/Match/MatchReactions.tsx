@@ -1,4 +1,9 @@
-import React, { Fragment, FunctionComponent } from 'react';
+import React, {
+  Fragment,
+  FunctionComponent,
+  MouseEvent,
+  useState,
+} from 'react';
 import {
   Box,
   Button,
@@ -26,14 +31,11 @@ const MatchReactions: FunctionComponent<Props> = ({ reactions, onClick }) => {
   const theme = useTheme();
   const mdViewUp = useMediaQuery(theme.breakpoints.up('md'));
 
-  const [anchorElements, setAnchorElements] = React.useState<{
+  const [anchorElements, setAnchorElements] = useState<{
     [key: string]: HTMLElement | undefined;
   }>({});
 
-  const handlePopoverOpen = (
-    key: string,
-    event: React.MouseEvent<HTMLElement>,
-  ) => {
+  const handlePopoverOpen = (key: string, event: MouseEvent<HTMLElement>) => {
     setAnchorElements({ [key]: event.currentTarget });
   };
 

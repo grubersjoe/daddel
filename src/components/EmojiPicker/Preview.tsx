@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent, memo } from 'react';
 import { Box } from '@mui/material';
 
 import { capitalizeFirstLetter } from '../../utils';
@@ -8,7 +8,7 @@ interface Props {
   emoji: Emoji | null;
 }
 
-const Preview: React.FC<Props> = ({ emoji: emojiProp }) => {
+const Preview: FunctionComponent<Props> = ({ emoji: emojiProp }) => {
   const [emoji, description] = emojiProp ?? [];
 
   return (
@@ -31,4 +31,4 @@ const Preview: React.FC<Props> = ({ emoji: emojiProp }) => {
   );
 };
 
-export default React.memo(Preview);
+export default memo(Preview);

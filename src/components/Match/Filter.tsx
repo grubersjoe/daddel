@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, FunctionComponent, SetStateAction } from 'react';
 import { Autocomplete, Grid, TextField } from '@mui/material';
 
 import { useGamesCollectionData } from '../../hooks/useGamesCollectionData';
@@ -14,7 +14,7 @@ type Props = {
   setFilter: Dispatch<SetStateAction<MatchFilter>>;
 };
 
-const Filter: React.FC<Props> = ({ filter, setFilter }) => {
+const Filter: FunctionComponent<Props> = ({ filter, setFilter }) => {
   const [games, gamesLoading, gamesError] = useGamesCollectionData();
   const options = games ?? [];
 

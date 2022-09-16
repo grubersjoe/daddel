@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
 
-const GoogleIcon: React.FC<SvgIconProps> = props => (
+const GoogleIcon: FunctionComponent<SvgIconProps> = props => (
   <SvgIcon {...props}>
     <path
       d="M23.763 12.276c0-.816-.067-1.636-.208-2.438H12.237v4.62h6.481a5.554 5.554 0 01-2.398 3.647v2.998h3.867c2.27-2.09 3.576-5.176 3.576-8.827z"

@@ -1,4 +1,9 @@
-import React, { ReactElement, useState } from 'react';
+import React, {
+  createContext,
+  FunctionComponent,
+  ReactElement,
+  useState,
+} from 'react';
 
 import Box from '@mui/material/Box';
 import { Alert, AlertProps, Snackbar } from '@mui/material';
@@ -12,15 +17,13 @@ type DispatchSnack = (
   severity?: AlertProps['severity'],
 ) => void;
 
-export const SnackbarContext = React.createContext<DispatchSnack>(
-  () => undefined,
-);
+export const SnackbarContext = createContext<DispatchSnack>(() => undefined);
 
 interface Props {
   children: ReactElement;
 }
 
-const Layout: React.FC<Props> = ({ children }) => {
+const Layout: FunctionComponent<Props> = ({ children }) => {
   const [authUser] = useAuthState(auth);
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Timestamp } from 'firebase/firestore';
 import addMinutes from 'date-fns/addMinutes';
 
@@ -74,7 +74,7 @@ const renderSelectOptions = (
   return options;
 };
 
-const JoinMatchDialog: React.FC<Props> = ({ match }) => {
+const JoinMatchDialog: FunctionComponent<Props> = ({ match }) => {
   const [authUser] = useAuthState(auth);
 
   const [open, setOpen] = useState(false);

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { CircularProgress, Grid } from '@mui/material';
 
-const Spinner: React.FC = () => (
+const Spinner: FunctionComponent = () => (
   <Grid
     container
     alignItems="center"

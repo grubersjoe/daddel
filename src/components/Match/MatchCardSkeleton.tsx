@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Box, Card, CardContent, CardMedia, Skeleton } from '@mui/material';
 import { Theme } from '@mui/system';
@@ -16,7 +16,7 @@ const styles = (theme: Theme) =>
     },
   } as const);
 
-const MatchCardSkeleton: React.FC = () => {
+const MatchCardSkeleton: FunctionComponent = () => {
   const theme = useTheme();
   const sx = styles(theme);
   const cardSx = cardStyles(theme);

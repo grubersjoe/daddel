@@ -1,4 +1,9 @@
-import React, { useContext, useState } from 'react';
+import React, {
+  FunctionComponent,
+  MouseEvent,
+  useContext,
+  useState,
+} from 'react';
 import { generatePath, Link } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { logEvent } from 'firebase/analytics';
@@ -25,14 +30,14 @@ type Props = {
   match: Match;
 };
 
-const Menu: React.FC<Props> = ({ game, match }) => {
+const Menu: FunctionComponent<Props> = ({ game, match }) => {
   const [authUser] = useAuthState(auth);
   const dispatchSnack = useContext(SnackbarContext);
 
   const [anchorElement, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorElement);
 
-  const openMenu = (event: React.MouseEvent<HTMLElement>) => {
+  const openMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 

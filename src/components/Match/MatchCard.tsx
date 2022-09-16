@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getDoc } from 'firebase/firestore';
 import {
@@ -91,13 +91,17 @@ export const styles = (theme: Theme) =>
     },
   } as const);
 
-const Separator: React.FC = () => (
+const Separator: FunctionComponent = () => (
   <Box component="span" sx={{ mx: '0.4em' }}>
     •
   </Box>
 );
 
-const MatchCard: React.FC<Props> = ({ match, userList, setPageMetadata }) => {
+const MatchCard: FunctionComponent<Props> = ({
+  match,
+  userList,
+  setPageMetadata,
+}) => {
   const sx = styles(useTheme());
 
   const [game, setGame] = useState<Game | null>();

@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler } from 'react';
+import React, { ChangeEventHandler, FunctionComponent, memo } from 'react';
 import { Box, InputAdornment, TextField } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import SearchIcon from '@mui/icons-material/Search';
@@ -9,7 +9,11 @@ interface Props {
   onClearInput: () => void;
 }
 
-const SearchBar: React.FC<Props> = ({ searchTerm, onChange, onClearInput }) => {
+const SearchBar: FunctionComponent<Props> = ({
+  searchTerm,
+  onChange,
+  onClearInput,
+}) => {
   const autoFocus =
     typeof window === undefined ? false : window.innerWidth > 800;
 
@@ -47,4 +51,4 @@ const SearchBar: React.FC<Props> = ({ searchTerm, onChange, onClearInput }) => {
   );
 };
 
-export default React.memo(SearchBar);
+export default memo(SearchBar);

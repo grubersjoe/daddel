@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 
 import LinearProgress from '@mui/material/LinearProgress';
 
@@ -32,7 +32,7 @@ function calcBarColor(value: number, max: number) {
   }
 }
 
-export const ProgressBar: React.FC<Props> = ({ value, max }) => {
+export const ProgressBar: FunctionComponent<Props> = ({ value, max }) => {
   value = Math.min(value, max);
 
   return (

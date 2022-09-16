@@ -1,4 +1,4 @@
-import React, { FormEventHandler, useState } from 'react';
+import React, { FormEventHandler, FunctionComponent, useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { setDoc } from 'firebase/firestore';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
@@ -20,7 +20,7 @@ import PageMetadata from '../components/PageMetadata';
 import { auth, getDocRef } from '../services/firebase';
 import { User } from '../types';
 
-const SignUp: React.FC = () => {
+const SignUp: FunctionComponent = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
