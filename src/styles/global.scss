@@ -97,12 +97,3 @@ h6.MuiTypography-h6 {
   margin: 16px;
   width: calc(100% - 32px);
 }
-
-.hide-scrollbar {
-  //noinspection CssUnknownProperty
-  scrollbar-width: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}

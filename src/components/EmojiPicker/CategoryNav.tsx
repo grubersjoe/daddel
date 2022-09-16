@@ -20,6 +20,7 @@ interface ButtonProps extends ButtonBaseProps {
 }
 
 const BUTTON_FONT_SIZE = '20px';
+const BUTTON_PADDING_X = 1.25;
 
 const NavButton: FunctionComponent<ButtonProps> = ({
   icon: Icon,
@@ -29,7 +30,7 @@ const NavButton: FunctionComponent<ButtonProps> = ({
     focusRipple
     sx={{
       py: 1,
-      px: 1.25,
+      px: BUTTON_PADDING_X,
       color: 'grey.300',
       borderRadius: 1,
     }}
@@ -57,7 +58,7 @@ const CategoryNav: FunctionComponent<Props> = ({ active }) => {
       position: 'absolute',
       bottom: -9,
       left: 0,
-      width: `calc(${BUTTON_FONT_SIZE} + 1.25rem)`,
+      width: `calc(${BUTTON_FONT_SIZE} + ${BUTTON_PADDING_X}rem)`,
       height: '2px',
       backgroundColor: 'primary.light',
       transition: 'transform 300ms ease-in-out',
@@ -68,7 +69,7 @@ const CategoryNav: FunctionComponent<Props> = ({ active }) => {
   };
 
   return (
-    <Box sx={{ mb: 2, pt: 1, overflow: 'auto' }} className="hide-scrollbar">
+    <Box sx={{ mb: 2.5, pt: 1, overflow: 'auto' }}>
       <Box
         sx={{
           px: 1,

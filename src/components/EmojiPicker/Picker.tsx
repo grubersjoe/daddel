@@ -28,23 +28,28 @@ interface Props {
   onEmojiClick: (emoji: Emoji) => void;
 }
 
-export const BUTTON_SIZE = 32; // px
+export const BUTTON_SIZE = 34; // px
+export const GRID_GAP = 2 * Math.round((BUTTON_SIZE * 0.3) / 2); // px
 export const MIN_SEARCH_LENGTH = 2; // characters
 export const NUM_COLUMNS = 8;
 
 const calcContainerWidth = () => {
-  const gridGap = 2 * Math.round((BUTTON_SIZE * 0.2) / 2);
   const containerPadding = 2 * 16;
 
-  return (BUTTON_SIZE + gridGap) * NUM_COLUMNS + containerPadding;
+  return (BUTTON_SIZE + GRID_GAP) * NUM_COLUMNS + containerPadding;
 };
 
-const ScrollContainer = styled('div')({
+const ScrollContainer = styled('div')(({ theme }) => ({
   maxHeight: '100%',
   height: 280,
   overflow: 'auto',
   paddingLeft: 16,
-});
+  paddingRight: 16,
+
+  [theme.breakpoints.up('sm')]: {
+    paddingRight: 0,
+  },
+}));
 
 const Picker: FunctionComponent<Props> = ({
   onEmojiClick: onEmojiClickProp,

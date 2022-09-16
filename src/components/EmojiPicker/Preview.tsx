@@ -23,7 +23,7 @@ const Preview: FunctionComponent<Props> = ({ emoji: emojiProp }) => {
         borderColor: 'grey.700',
       }}
     >
-      <Box fontSize="2.25rem">{emoji ?? '☝'}</Box>
+      <Box fontSize="2rem">{emoji ?? '☝'}</Box>
       <Box ml={2}>
         {description ? capitalizeFirstLetter(description) : 'Pick an Emoji'}
       </Box>

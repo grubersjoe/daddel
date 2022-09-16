@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import React, { FunctionComponent, memo } from 'react';
 
-import { BUTTON_SIZE } from './Picker';
+import { BUTTON_SIZE, GRID_GAP } from './Picker';
 import { CategoryName, Emoji } from './types';
 import { getCategoryContainerId } from './utils';
 
@@ -28,7 +28,9 @@ const Grid: FunctionComponent<Props> = ({
   return (
     <Box mb={3} id={getCategoryContainerId(category)}>
       <Box mb={1}>
-        <Typography variant="subtitle2">{category}</Typography>
+        <Typography variant="subtitle2" sx={{ fontSize: `${15 / 16}rem` }}>
+          {category}
+        </Typography>
       </Box>
       <Box
         sx={{
@@ -36,8 +38,7 @@ const Grid: FunctionComponent<Props> = ({
           // min-content does not work together with auto-fit, unfortunately
           gridTemplateColumns: `repeat(auto-fit, ${BUTTON_SIZE}px)`,
           gridAutoRows: BUTTON_SIZE,
-          // 10% rounded to the nearest even integer
-          gridGap: `${2 * Math.round((BUTTON_SIZE * 0.2) / 2)}px`,
+          gridGap: `${GRID_GAP}px`,
           fontSize: getFontSize(0.8),
 
           '@media (min-width: 600px)': {

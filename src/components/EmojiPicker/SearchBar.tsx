@@ -18,7 +18,7 @@ const SearchBar: FunctionComponent<Props> = ({
     typeof window === undefined ? false : window.innerWidth > 800;
 
   return (
-    <Box mb={2} px={2}>
+    <Box mb={3} px={2}>
       <TextField
         type="text"
         value={searchTerm}
