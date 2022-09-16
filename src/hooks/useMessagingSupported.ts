@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import { isSupported } from 'firebase/messaging';
+import { useState } from 'react';
 
 export default function useMessagingSupported(): boolean {
   const [supported, setSupported] = useState<boolean>(false);

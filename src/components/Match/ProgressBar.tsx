@@ -1,8 +1,6 @@
-import React, { FunctionComponent } from 'react';
-
 import LinearProgress from '@mui/material/LinearProgress';
-
 import { green, grey, orange, red, yellow } from '@mui/material/colors';
+import React, { FunctionComponent } from 'react';
 
 type Props = {
   value: number;

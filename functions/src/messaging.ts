@@ -1,11 +1,12 @@
 import { firestore } from 'firebase-admin';
-import { https, logger, region } from 'firebase-functions';
 import { FieldValue, getFirestore } from 'firebase-admin/firestore';
-import { getMessaging, Message } from 'firebase-admin/messaging';
+import { Message, getMessaging } from 'firebase-admin/messaging';
+import { https, logger, region } from 'firebase-functions';
 
-import { APP_URL, FIREBASE_LOCATION } from './constants';
 import { Game, Match, User } from '../../src/types';
+import { APP_URL, FIREBASE_LOCATION } from './constants';
 import { formatDate, formatTime } from './util/date';
+
 import DocumentReference = firestore.DocumentReference;
 
 const DEFAULT_TOPIC = 'default';

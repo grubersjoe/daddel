@@ -1,5 +1,5 @@
-import React, { FunctionComponent } from 'react';
 import { Box } from '@mui/material';
+import React, { FunctionComponent } from 'react';
 
 import { UNKNOWN_GAME_ID } from '../../constants';
 import { Game } from '../../types';

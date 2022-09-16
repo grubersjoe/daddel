@@ -1,10 +1,9 @@
-import React, { FunctionComponent } from 'react';
+import { TextField } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DateTimePicker as MuiDateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-
-import { TextField } from '@mui/material';
 import deLocale from 'date-fns/locale/de';
+import React, { FunctionComponent } from 'react';
 
 import { DEFAULT_TIME_INCREMENT } from '../constants/date';
 

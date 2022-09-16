@@ -1,10 +1,3 @@
-import React, { FormEventHandler, FunctionComponent, useState } from 'react';
-import {
-  GoogleAuthProvider,
-  signInWithEmailAndPassword,
-  signInWithRedirect,
-} from 'firebase/auth';
-import { Link as RouterLink, Navigate, useLocation } from 'react-router-dom';
 import {
   Alert,
   Button,
@@ -15,14 +8,21 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import {
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithRedirect,
+} from 'firebase/auth';
+import React, { FormEventHandler, FunctionComponent, useState } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { Navigate, Link as RouterLink, useLocation } from 'react-router-dom';
 
 import GoogleIcon from '../assets/icons/GoogleIcon';
-import routes from '../constants/routes';
 import Logo from '../components/Logo';
 import PageMetadata from '../components/PageMetadata';
 import Spinner from '../components/Spinner';
+import routes from '../constants/routes';
 import { auth } from '../services/firebase';
-import { useAuthState } from 'react-firebase-hooks/auth';
 
 const SignIn: FunctionComponent = () => {
   const location = useLocation();

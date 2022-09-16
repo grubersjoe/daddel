@@ -1,17 +1,17 @@
+import FilterIcon from '@mui/icons-material/FilterListRounded';
+import {
+  Badge,
+  Box,
+  IconButton,
+  AppBar as MuiAppBar,
+  Toolbar,
+  Typography,
+} from '@mui/material';
 import React, {
   FunctionComponent,
   MouseEventHandler,
   ReactElement,
 } from 'react';
-import FilterIcon from '@mui/icons-material/FilterListRounded';
-import {
-  AppBar as MuiAppBar,
-  Badge,
-  Box,
-  IconButton,
-  Toolbar,
-  Typography,
-} from '@mui/material';
 
 interface Props {
   children?: ReactElement;

@@ -1,9 +1,9 @@
+import AddIcon from '@mui/icons-material/Add';
+import SettingsIcon from '@mui/icons-material/Settings';
+import MatchesIcon from '@mui/icons-material/SportsEsports';
+import { BottomNavigation, BottomNavigationAction } from '@mui/material';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { BottomNavigation, BottomNavigationAction } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import MatchesIcon from '@mui/icons-material/SportsEsports';
-import SettingsIcon from '@mui/icons-material/Settings';
 
 import routes from '../constants/routes';
 

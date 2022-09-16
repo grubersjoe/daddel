@@ -1,5 +1,5 @@
-import { Timestamp } from 'firebase/firestore';
 import getUnixTime from 'date-fns/getUnixTime';
+import { Timestamp } from 'firebase/firestore';
 
 import { isOpenEndDate, parseTime } from './date';
 

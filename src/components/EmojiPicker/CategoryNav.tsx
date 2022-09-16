@@ -1,4 +1,3 @@
-import React, { FunctionComponent, memo, SVGProps } from 'react';
 import {
   Box,
   ButtonBase,
@@ -6,9 +5,10 @@ import {
   ButtonGroup,
   SxProps,
 } from '@mui/material';
+import React, { FunctionComponent, SVGProps, memo } from 'react';
 
-import { CategoryName } from './types';
 import { categoryIcons } from './assets/icons';
+import { CategoryName } from './types';
 import { getCategoryContainerId } from './utils';
 
 interface Props {

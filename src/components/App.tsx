@@ -1,20 +1,18 @@
-import React, { FunctionComponent, ReactElement, useEffect } from 'react';
-import {
-  BrowserRouter as Router,
-  Navigate,
-  Route,
-  Routes,
-  useLocation,
-} from 'react-router-dom';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material';
 import CSSBaseline from '@mui/material/CssBaseline';
 import yellow from '@mui/material/colors/yellow';
+import React, { FunctionComponent, ReactElement, useEffect } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import {
+  Navigate,
+  Route,
+  BrowserRouter as Router,
+  Routes,
+  useLocation,
+} from 'react-router-dom';
 
 import { DOMAIN_PROD, REGEX_IPV4 } from '../constants';
 import routes from '../constants/routes';
-import { createTheme } from '../styles/theme';
-
-import { updateServiceWorker } from '../utils';
 import AddMatch from '../pages/AddMatch';
 import EditMatch from '../pages/EditMatch';
 import MatchDetail from '../pages/MatchDetail';
@@ -23,10 +21,11 @@ import ResetPassword from '../pages/ResetPassword';
 import Settings from '../pages/Settings';
 import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
+import { auth } from '../services/firebase';
+import { createTheme } from '../styles/theme';
+import { updateServiceWorker } from '../utils';
 import Layout from './Layout';
 import PageMetadata from './PageMetadata';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '../services/firebase';
 
 const RequireAuth: FunctionComponent<{ children: ReactElement }> = ({
   children,

@@ -1,12 +1,12 @@
-import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
+import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import {
-  collection,
   CollectionReference,
-  doc,
   DocumentData,
   DocumentReference,
+  collection,
+  doc,
   getFirestore,
 } from 'firebase/firestore';
 import { connectFunctionsEmulator, getFunctions } from 'firebase/functions';

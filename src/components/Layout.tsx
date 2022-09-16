@@ -1,16 +1,15 @@
+import { Alert, AlertProps, Snackbar } from '@mui/material';
+import Box from '@mui/material/Box';
 import React, {
-  createContext,
   FunctionComponent,
   ReactElement,
+  createContext,
   useState,
 } from 'react';
-
-import Box from '@mui/material/Box';
-import { Alert, AlertProps, Snackbar } from '@mui/material';
-
-import Navigation from './Navigation';
-import { auth } from '../services/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
+
+import { auth } from '../services/firebase';
+import Navigation from './Navigation';
 
 type DispatchSnack = (
   message: string,

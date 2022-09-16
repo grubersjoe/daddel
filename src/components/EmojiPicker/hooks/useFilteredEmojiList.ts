@@ -1,6 +1,5 @@
-import emojiList from '../assets/emojis-v13.1.json';
 import { MIN_SEARCH_LENGTH } from '../Picker';
-
+import emojiList from '../assets/emojis-v13.1.json';
 import { Emoji, EmojiList } from '../types';
 
 export default function useFilteredEmojiList(

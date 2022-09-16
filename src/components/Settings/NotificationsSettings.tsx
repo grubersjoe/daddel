@@ -1,9 +1,3 @@
-import React, {
-  FunctionComponent,
-  MouseEventHandler,
-  useContext,
-  useState,
-} from 'react';
 import {
   Alert,
   Button,
@@ -11,6 +5,12 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
+import React, {
+  FunctionComponent,
+  MouseEventHandler,
+  useContext,
+  useState,
+} from 'react';
 
 import useMessagingSupported from '../../hooks/useMessagingSupported';
 import useNotifications from '../../hooks/useNotifications';

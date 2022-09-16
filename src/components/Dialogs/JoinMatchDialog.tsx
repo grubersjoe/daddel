@@ -1,7 +1,3 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { Timestamp } from 'firebase/firestore';
-import addMinutes from 'date-fns/addMinutes';
-
 import {
   Alert,
   Button,
@@ -14,9 +10,12 @@ import {
   InputLabel,
   Select,
 } from '@mui/material';
-
 import { SelectChangeEvent } from '@mui/material/Select/SelectInput';
-import { joinMatch, leaveMatch } from '../../services/match';
+import addMinutes from 'date-fns/addMinutes';
+import { Timestamp } from 'firebase/firestore';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
+
 import {
   DEFAULT_MATCH_LENGTH,
   DEFAULT_MATCH_TIME,
@@ -24,14 +23,14 @@ import {
   MATCH_TIME_LATEST,
   MATCH_TIME_OPEN_END,
 } from '../../constants/date';
+import { auth } from '../../services/firebase';
+import { joinMatch, leaveMatch } from '../../services/match';
 import { Match, TimeString } from '../../types';
 import {
   calcTimeStringsBetweenDates,
   formatTime,
   parseTime,
 } from '../../utils/date';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '../../services/firebase';
 
 type Props = {
   match: Match;

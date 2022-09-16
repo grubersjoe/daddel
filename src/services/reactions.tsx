@@ -1,6 +1,7 @@
-import { auth, getDocRef } from './firebase';
-import { Match, User } from '../types';
 import { updateDoc } from 'firebase/firestore';
+
+import { Match, User } from '../types';
+import { auth, getDocRef } from './firebase';
 
 export function toggleMatchReaction(match: Match, emoji: string) {
   const { currentUser } = auth;

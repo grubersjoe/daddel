@@ -1,6 +1,6 @@
 // Move the "unknown game" entry to the end of the games list
-import { Game } from '../types';
 import { UNKNOWN_GAME_ID } from '../constants';
+import { Game } from '../types';
 
 export function reorderGames(games: Array<Game>): Array<Game> {
   const unknownGame = games.find(game => game.id === UNKNOWN_GAME_ID);

@@ -1,5 +1,5 @@
-import React, { FunctionComponent } from 'react';
 import { CircularProgress, Grid } from '@mui/material';
+import React, { FunctionComponent } from 'react';
 
 const Spinner: FunctionComponent = () => (
   <Grid

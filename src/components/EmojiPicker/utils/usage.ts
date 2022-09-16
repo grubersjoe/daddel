@@ -1,11 +1,10 @@
 import {
+  STORAGE_KEY,
   getStorageItem,
   setStorageItem,
-  STORAGE_KEY,
 } from '../../../utils/local-storage';
-
-import { Emoji, EmojiList } from '../types';
 import emojiList from '../assets/emojis-v13.1.json';
+import { Emoji, EmojiList } from '../types';
 
 export type UsageDict = {
   [emoji: string]: number;

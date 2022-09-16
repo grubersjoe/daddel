@@ -1,7 +1,7 @@
-import { limit, orderBy, Query, query, where } from 'firebase/firestore';
+import { Query, limit, orderBy, query, where } from 'firebase/firestore';
 
-import { Match } from '../types';
 import { getCollectionRef } from '../services/firebase';
+import { Match } from '../types';
 
 export const futureMatchesQuery = (referenceDate: Date): Query<Match> =>
   query(

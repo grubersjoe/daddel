@@ -1,6 +1,3 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { getDoc } from 'firebase/firestore';
 import {
   Box,
   Card,
@@ -11,25 +8,28 @@ import {
   Typography,
 } from '@mui/material';
 import { common } from '@mui/material/colors';
-import { Theme } from '@mui/system';
 import { useTheme } from '@mui/material/styles';
+import { Theme } from '@mui/system';
 import endOfDay from 'date-fns/endOfDay';
 import isFuture from 'date-fns/isFuture';
+import { getDoc } from 'firebase/firestore';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import { getGameBanner } from '../../assets/images/games';
 import { toggleMatchReaction } from '../../services/reactions';
 import { Game, Match, UserMap } from '../../types';
 import { formatDate, formatTime } from '../../utils/date';
-import Calendar from './Calendar';
-import EmojiPicker from '../EmojiPicker';
-import FallbackBanner from './FallbackBanner';
 import JoinMatchDialog from '../Dialogs/JoinMatchDialog';
+import EmojiPicker from '../EmojiPicker';
+import PageMetadata from '../PageMetadata';
+import TimeAgo from '../TimeAgo';
+import Calendar from './Calendar';
+import FallbackBanner from './FallbackBanner';
 import MatchCardSkeleton from './MatchCardSkeleton';
 import MatchReactions from './MatchReactions';
 import Menu from './Menu';
-import PageMetadata from '../PageMetadata';
 import ProgressBar from './ProgressBar';
-import TimeAgo from '../TimeAgo';
 
 type Props = {
   match: Match;

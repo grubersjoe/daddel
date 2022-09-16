@@ -1,7 +1,7 @@
-import React, { ChangeEventHandler, FunctionComponent, memo } from 'react';
-import { Box, InputAdornment, TextField } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import SearchIcon from '@mui/icons-material/Search';
+import { Box, InputAdornment, TextField } from '@mui/material';
+import React, { ChangeEventHandler, FunctionComponent, memo } from 'react';
 
 interface Props {
   searchTerm: string;

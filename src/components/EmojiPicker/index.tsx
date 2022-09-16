@@ -1,9 +1,3 @@
-import React, {
-  FunctionComponent,
-  MouseEventHandler,
-  useCallback,
-  useState,
-} from 'react';
 import {
   Box,
   Button,
@@ -12,10 +6,16 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+import React, {
+  FunctionComponent,
+  MouseEventHandler,
+  useCallback,
+  useState,
+} from 'react';
 
+import Picker from './Picker';
 import { People as PickerIcon } from './assets/icons';
 import { Emoji } from './types';
-import Picker from './Picker';
 
 interface Props {
   onEmojiClick: (emoji: Emoji) => void;

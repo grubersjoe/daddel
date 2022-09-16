@@ -1,6 +1,6 @@
+import { Box, Typography } from '@mui/material';
 import React, { FunctionComponent } from 'react';
 import { Link } from 'react-router-dom';
-import { Box, Typography } from '@mui/material';
 
 import DaddelIcon from '../assets/icons/DaddelIcon';
 

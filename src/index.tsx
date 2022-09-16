@@ -1,6 +1,6 @@
 import React from 'react';
-import 'typeface-roboto';
 import { createRoot } from 'react-dom/client';
+import 'typeface-roboto';
 
 import App from './components/App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';

@@ -1,5 +1,5 @@
-import { useCollectionData } from 'react-firebase-hooks/firestore';
 import { orderBy, query } from 'firebase/firestore';
+import { useCollectionData } from 'react-firebase-hooks/firestore';
 
 import { getCollectionRef } from '../services/firebase';
 import { Game } from '../types';

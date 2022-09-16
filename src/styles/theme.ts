@@ -1,5 +1,5 @@
-import { createTheme as createMuiTheme, Theme } from '@mui/material/styles';
 import { grey } from '@mui/material/colors';
+import { Theme, createTheme as createMuiTheme } from '@mui/material/styles';
 
 export const createTheme = (color: string): Theme =>
   createMuiTheme({

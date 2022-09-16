@@ -1,3 +1,10 @@
+import {
+  Box,
+  Typography,
+  styled,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import React, {
   ChangeEventHandler,
   FunctionComponent,
@@ -7,22 +14,15 @@ import React, {
   useState,
 } from 'react';
 import { InView } from 'react-intersection-observer';
-import {
-  Box,
-  styled,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material';
 
-import './styles/index.scss';
-import { CategoryName, Emoji } from './types';
-import { getRecentlyUsedEmojis, incrementEmojiUsage } from './utils/usage';
-import useFilteredEmojiList from './hooks/useFilteredEmojiList';
 import CategoryNav from './CategoryNav';
 import Grid, { Props as GridProps } from './Grid';
 import Preview from './Preview';
 import SearchBar from './SearchBar';
+import useFilteredEmojiList from './hooks/useFilteredEmojiList';
+import './styles/index.scss';
+import { CategoryName, Emoji } from './types';
+import { getRecentlyUsedEmojis, incrementEmojiUsage } from './utils/usage';
 
 interface Props {
   onEmojiClick: (emoji: Emoji) => void;

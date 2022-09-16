@@ -1,13 +1,3 @@
-import React, {
-  FormEventHandler,
-  FunctionComponent,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
-import { setDoc } from 'firebase/firestore';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { useDocumentData } from 'react-firebase-hooks/firestore';
 import {
   Alert,
   Button,
@@ -19,10 +9,20 @@ import {
   DialogTitle,
   TextField,
 } from '@mui/material';
+import { setDoc } from 'firebase/firestore';
+import React, {
+  FormEventHandler,
+  FunctionComponent,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useDocumentData } from 'react-firebase-hooks/firestore';
 
+import useOnlineStatus from '../../hooks/useOnlineStatus';
 import { isValidInvitationCode } from '../../services/auth';
 import { auth, getDocRef } from '../../services/firebase';
-import useOnlineStatus from '../../hooks/useOnlineStatus';
 import { User } from '../../types';
 import { SnackbarContext } from '../Layout';
 

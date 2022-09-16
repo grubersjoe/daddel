@@ -1,9 +1,13 @@
-import React, { FunctionComponent, ReactElement } from 'react';
+import { Box, Typography } from '@mui/material';
+import { Theme, useTheme } from '@mui/material/styles';
 import differenceInMinutes from 'date-fns/differenceInMinutes';
 import fromUnixTime from 'date-fns/fromUnixTime';
-import { Theme, useTheme } from '@mui/material/styles';
-import { Box, Typography } from '@mui/material';
+import React, { FunctionComponent, ReactElement } from 'react';
 
+import {
+  DEFAULT_TIME_INCREMENT,
+  MATCH_TIME_OPEN_END,
+} from '../../constants/date';
 import { Player, UserMap } from '../../types';
 import {
   calcTimeStringsBetweenDates,
@@ -11,10 +15,6 @@ import {
   isOpenEndDate,
 } from '../../utils/date';
 import { calcPlayerTimeBounds } from '../../utils/match';
-import {
-  DEFAULT_TIME_INCREMENT,
-  MATCH_TIME_OPEN_END,
-} from '../../constants/date';
 
 type Props = {
   players: Array<Player>;

@@ -1,14 +1,3 @@
-import React, {
-  FormEvent,
-  FunctionComponent,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { User } from 'firebase/auth';
-import { logEvent } from 'firebase/analytics';
-import { addDoc, Timestamp } from 'firebase/firestore';
 import {
   Box,
   Button,
@@ -26,8 +15,23 @@ import addMinutes from 'date-fns/addMinutes';
 import isSameDay from 'date-fns/isSameDay';
 import isValid from 'date-fns/isValid';
 import parseDate from 'date-fns/parse';
+import { logEvent } from 'firebase/analytics';
+import { User } from 'firebase/auth';
+import { Timestamp, addDoc } from 'firebase/firestore';
+import React, {
+  FormEvent,
+  FunctionComponent,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate } from 'react-router-dom';
 
+import AppBar from '../components/AppBar';
+import DateTimePicker from '../components/DateTimePicker';
+import { SnackbarContext } from '../components/Layout';
+import PageMetadata from '../components/PageMetadata';
 import { GA_EVENTS } from '../constants';
 import {
   DEFAULT_MATCH_LENGTH,
@@ -36,14 +40,6 @@ import {
   TIME_FORMAT,
 } from '../constants/date';
 import routes from '../constants/routes';
-import { joinMatch } from '../services/match';
-import { Game, Match } from '../types';
-import { reorderGames } from '../utils/games';
-import { parseTime } from '../utils/date';
-import { SnackbarContext } from '../components/Layout';
-import AppBar from '../components/AppBar';
-import PageMetadata from '../components/PageMetadata';
-import DateTimePicker from '../components/DateTimePicker';
 import { useGamesCollectionData } from '../hooks/useGamesCollectionData';
 import {
   analytics,
@@ -51,6 +47,10 @@ import {
   getCollectionRef,
   getDocRef,
 } from '../services/firebase';
+import { joinMatch } from '../services/match';
+import { Game, Match } from '../types';
+import { parseTime } from '../utils/date';
+import { reorderGames } from '../utils/games';
 
 const AddMatch: FunctionComponent = () => {
   const navigate = useNavigate();

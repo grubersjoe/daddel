@@ -1,5 +1,5 @@
-import { config, logger, region } from 'firebase-functions';
 import { getFirestore } from 'firebase-admin/firestore';
+import { config, logger, region } from 'firebase-functions';
 
 import { FIREBASE_LOCATION } from './constants';
 

@@ -1,14 +1,3 @@
-import React, {
-  FormEvent,
-  FunctionComponent,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
-import { Timestamp, updateDoc } from 'firebase/firestore';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import setDate from 'date-fns/set';
-import isValid from 'date-fns/isValid';
 import {
   Box,
   Button,
@@ -18,17 +7,28 @@ import {
   Select,
   TextField,
 } from '@mui/material';
+import isValid from 'date-fns/isValid';
+import setDate from 'date-fns/set';
+import { Timestamp, updateDoc } from 'firebase/firestore';
+import React, {
+  FormEvent,
+  FunctionComponent,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
-import routes from '../constants/routes';
-import { reorderGames } from '../utils/games';
-import { Game, Match, Player } from '../types';
-import { SnackbarContext } from '../components/Layout';
 import AppBar from '../components/AppBar';
-import PageMetadata from '../components/PageMetadata';
 import DateTimePicker from '../components/DateTimePicker';
+import { SnackbarContext } from '../components/Layout';
+import PageMetadata from '../components/PageMetadata';
+import routes from '../constants/routes';
 import { useGamesCollectionData } from '../hooks/useGamesCollectionData';
 import { getDocRef } from '../services/firebase';
-import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
+import { Game, Match, Player } from '../types';
+import { reorderGames } from '../utils/games';
 
 const updatePlayerList = (
   players: Array<Player>,

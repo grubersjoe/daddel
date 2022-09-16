@@ -1,6 +1,3 @@
-import React, { FormEventHandler, FunctionComponent, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import { sendPasswordResetEmail } from 'firebase/auth';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -9,10 +6,13 @@ import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { sendPasswordResetEmail } from 'firebase/auth';
+import React, { FormEventHandler, FunctionComponent, useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 
-import routes from '../constants/routes';
 import Logo from '../components/Logo';
 import PageMetadata from '../components/PageMetadata';
+import routes from '../constants/routes';
 import { auth } from '../services/firebase';
 
 const ResetPassword: FunctionComponent = () => {

@@ -1,14 +1,5 @@
-import React, {
-  FormEventHandler,
-  FunctionComponent,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
-import { updateDoc } from 'firebase/firestore';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
-import { signOut } from 'firebase/auth';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SignOutIcon from '@mui/icons-material/ExitToApp';
 import {
   Alert,
   Button,
@@ -18,12 +9,21 @@ import {
   Typography,
 } from '@mui/material';
 import { grey } from '@mui/material/colors';
-import DeleteIcon from '@mui/icons-material/Delete';
-import SignOutIcon from '@mui/icons-material/ExitToApp';
+import { signOut } from 'firebase/auth';
+import { updateDoc } from 'firebase/firestore';
+import React, {
+  FormEventHandler,
+  FunctionComponent,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
 
 import packageJson from '../../package.json';
-import { SnackbarContext } from '../components/Layout';
 import AppBar from '../components/AppBar';
+import { SnackbarContext } from '../components/Layout';
 import PageMetadata from '../components/PageMetadata';
 import NotificationsSettings from '../components/Settings/NotificationsSettings';
 import useMessagingSupported from '../hooks/useMessagingSupported';

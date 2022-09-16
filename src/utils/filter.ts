@@ -1,5 +1,5 @@
-import { Match } from '../types';
 import { MatchFilter } from '../components/Match/Filter';
+import { Match } from '../types';
 
 export function filterMatches(
   matches: Array<Match>,

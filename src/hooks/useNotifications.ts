@@ -1,11 +1,11 @@
+import { httpsCallable } from 'firebase/functions';
+import { getMessaging, getToken } from 'firebase/messaging';
 import { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
-import { httpsCallable } from 'firebase/functions';
-import { getMessaging, getToken } from 'firebase/messaging';
 
-import { User } from '../types';
 import { auth, firebaseApp, functions, getDocRef } from '../services/firebase';
+import { User } from '../types';
 import useMessagingSupported from './useMessagingSupported';
 
 export default function useNotifications() {

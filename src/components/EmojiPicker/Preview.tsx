@@ -1,5 +1,5 @@
-import React, { FunctionComponent, memo } from 'react';
 import { Box } from '@mui/material';
+import React, { FunctionComponent, memo } from 'react';
 
 import { capitalizeFirstLetter } from '../../utils';
 import { Emoji } from './types';

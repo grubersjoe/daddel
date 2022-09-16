@@ -1,18 +1,18 @@
-import React, { FunctionComponent, useContext } from 'react';
-import { Link, Navigate, useParams } from 'react-router-dom';
-import { useDocumentData } from 'react-firebase-hooks/firestore';
-import { Box, Button, Grid } from '@mui/material';
 import LinkIcon from '@mui/icons-material/Link';
+import { Box, Button, Grid } from '@mui/material';
+import React, { FunctionComponent, useContext } from 'react';
+import { useDocumentData } from 'react-firebase-hooks/firestore';
+import { Link, Navigate, useParams } from 'react-router-dom';
 
+import AppBar from '../components/AppBar';
+import SetupUserDialog from '../components/Dialogs/SetupUserDialog';
+import { SnackbarContext } from '../components/Layout';
+import MatchCard from '../components/Match/MatchCard';
+import Spinner from '../components/Spinner';
 import routes from '../constants/routes';
 import useFetchUsers from '../hooks/useFetchUsers';
-import { Match } from '../types';
-import { SnackbarContext } from '../components/Layout';
-import AppBar from '../components/AppBar';
-import MatchCard from '../components/Match/MatchCard';
-import SetupUserDialog from '../components/Dialogs/SetupUserDialog';
-import Spinner from '../components/Spinner';
 import { getDocRef } from '../services/firebase';
+import { Match } from '../types';
 
 const MatchDetail: FunctionComponent = () => {
   const dispatchSnack = useContext(SnackbarContext);

@@ -1,9 +1,3 @@
-import React, {
-  Fragment,
-  FunctionComponent,
-  MouseEvent,
-  useState,
-} from 'react';
 import {
   Box,
   Button,
@@ -13,10 +7,16 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+import React, {
+  Fragment,
+  FunctionComponent,
+  MouseEvent,
+  useState,
+} from 'react';
 
 import { LOCALE } from '../../constants';
-import { Reaction } from '../../types';
 import useFetchUsers from '../../hooks/useFetchUsers';
+import { Reaction } from '../../types';
 
 interface Props {
   reactions: Array<Reaction>;

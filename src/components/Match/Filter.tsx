@@ -1,9 +1,9 @@
-import React, { Dispatch, FunctionComponent, SetStateAction } from 'react';
 import { Autocomplete, Grid, TextField } from '@mui/material';
+import React, { Dispatch, FunctionComponent, SetStateAction } from 'react';
 
 import { useGamesCollectionData } from '../../hooks/useGamesCollectionData';
-import { setStorageItem, STORAGE_KEY } from '../../utils/local-storage';
 import { Game } from '../../types';
+import { STORAGE_KEY, setStorageItem } from '../../utils/local-storage';
 
 export type MatchFilter = {
   games: Array<Game>;

@@ -1,30 +1,29 @@
-import React, { FunctionComponent, ReactNode, useMemo, useState } from 'react';
+import { Alert, Box, Button, Grid, Tab, Tabs, Typography } from '@mui/material';
 import { onSnapshot } from 'firebase/firestore';
+import React, { FunctionComponent, ReactNode, useMemo, useState } from 'react';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
+import { Link } from 'react-router-dom';
 // @ts-ignore
 import SwipeableViews from 'react-swipeable-views';
-import { Link } from 'react-router-dom';
-import { Alert, Box, Button, Grid, Tab, Tabs, Typography } from '@mui/material';
 
-import { futureMatchesQuery, pastMatchesQuery } from '../queries/matches';
-import routes from '../constants/routes';
-import useCurrentDate from '../hooks/useCurrentDate';
-import useFetchUsers from '../hooks/useFetchUsers';
-import { Match } from '../types';
-import { calcNumberOfEnabledFilters, filterMatches } from '../utils/filter';
-
-import { MAX_SHOWN_PAST_MATCHES } from '../constants';
-import {
-  getStorageItem,
-  setStorageItem,
-  STORAGE_KEY,
-} from '../utils/local-storage';
 import AppBar from '../components/AppBar';
+import SetupUserDialog from '../components/Dialogs/SetupUserDialog';
 import Filter, { MatchFilter } from '../components/Match/Filter';
 import MatchCard from '../components/Match/MatchCard';
 import MatchCardSkeleton from '../components/Match/MatchCardSkeleton';
 import PageMetadata from '../components/PageMetadata';
-import SetupUserDialog from '../components/Dialogs/SetupUserDialog';
+import { MAX_SHOWN_PAST_MATCHES } from '../constants';
+import routes from '../constants/routes';
+import useCurrentDate from '../hooks/useCurrentDate';
+import useFetchUsers from '../hooks/useFetchUsers';
+import { futureMatchesQuery, pastMatchesQuery } from '../queries/matches';
+import { Match } from '../types';
+import { calcNumberOfEnabledFilters, filterMatches } from '../utils/filter';
+import {
+  STORAGE_KEY,
+  getStorageItem,
+  setStorageItem,
+} from '../utils/local-storage';
 
 const loadingAnimation =
   'pulse 0.75s cubic-bezier(.46,.03,.52,.96) 0s infinite';

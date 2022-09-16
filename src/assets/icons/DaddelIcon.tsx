@@ -1,5 +1,5 @@
-import React, { FunctionComponent } from 'react';
 import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
+import React, { FunctionComponent } from 'react';
 
 // See daddel-cropped.svg
 const DaddelIcon: FunctionComponent<SvgIconProps> = props => (

@@ -1,5 +1,5 @@
-import React, { FunctionComponent } from 'react';
 import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
+import React, { FunctionComponent } from 'react';
 
 const GoogleIcon: FunctionComponent<SvgIconProps> = props => (
   <SvgIcon {...props}>

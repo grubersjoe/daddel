@@ -1,7 +1,3 @@
-import React, { FormEventHandler, FunctionComponent, useState } from 'react';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { setDoc } from 'firebase/firestore';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
   Alert,
   Button,
@@ -12,11 +8,15 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { setDoc } from 'firebase/firestore';
+import React, { FormEventHandler, FunctionComponent, useState } from 'react';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
-import { isValidInvitationCode } from '../services/auth';
-import routes from '../constants/routes';
 import Logo from '../components/Logo';
 import PageMetadata from '../components/PageMetadata';
+import routes from '../constants/routes';
+import { isValidInvitationCode } from '../services/auth';
 import { auth, getDocRef } from '../services/firebase';
 import { User } from '../types';
 

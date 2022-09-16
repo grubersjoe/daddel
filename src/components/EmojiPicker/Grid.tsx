@@ -1,9 +1,9 @@
-import React, { FunctionComponent, memo } from 'react';
 import { Box, Typography } from '@mui/material';
+import React, { FunctionComponent, memo } from 'react';
 
+import { BUTTON_SIZE } from './Picker';
 import { CategoryName, Emoji } from './types';
 import { getCategoryContainerId } from './utils';
-import { BUTTON_SIZE } from './Picker';
 
 export interface Props {
   category: CategoryName;
