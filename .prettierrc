@@ -1,8 +1,11 @@
 {
   "arrowParens": "avoid",
+  "importOrder": ["^[./]"],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
   "proseWrap": "always",
-  "tabWidth": 2,
-  "trailingComma": "all",
   "semi": true,
-  "singleQuote": true
+  "singleQuote": true,
+  "tabWidth": 2,
+  "trailingComma": "all"
 }
