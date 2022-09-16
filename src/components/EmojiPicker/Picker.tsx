@@ -26,7 +26,7 @@ interface Props {
   onEmojiClick: (emoji: Emoji) => void;
 }
 
-export const BUTTON_SIZE = 36; // px
+export const BUTTON_SIZE = 32; // px
 export const MIN_SEARCH_LENGTH = 2; // characters
 export const NUM_COLUMNS = 8;
 

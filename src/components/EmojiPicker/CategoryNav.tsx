@@ -65,7 +65,7 @@ const CategoryNav: React.FC<Props> = ({ active }) => {
   };
 
   return (
-    <Box sx={{ mb: 2, pt: 1, overflow: 'auto' }}>
+    <Box sx={{ mb: 2, pt: 1, overflow: 'auto' }} className="hide-scrollbar">
       <Box
         sx={{
           px: 1,
