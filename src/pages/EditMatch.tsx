@@ -105,7 +105,7 @@ const EditMatch: FunctionComponent = () => {
       date: Timestamp.fromDate(matchState.date),
       game: getDocRef<Game>('games', matchState.game),
       players: updatePlayerList(match.players, matchState.date),
-      description: matchState.description,
+      ...(matchState.description && { description: matchState.description }),
     };
 
     updateDoc<Match>(getDocRef('matches', match.id), updatedMatch)
