@@ -97,3 +97,7 @@ h6.MuiTypography-h6 {
   margin: 16px;
   width: calc(100% - 32px);
 }
+
+textarea.MuiInputBase-input {
+  resize: vertical;
+}
