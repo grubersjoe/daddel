@@ -189,6 +189,7 @@ const MatchCard: FunctionComponent<Props> = ({
             )}
           </Grid>
         </CardMedia>
+
         <Box
           display="flex"
           flexGrow={1}
@@ -205,13 +206,14 @@ const MatchCard: FunctionComponent<Props> = ({
               <Typography
                 sx={{
                   lineHeight: 1.3,
+                  whiteSpace: 'pre-line',
                 }}
               >
                 <Link to={`/matches/${match.id}`}>{match.description}</Link>
               </Typography>
             )}
 
-            <Box mt={2.5}>
+            <Box mt={3}>
               <Calendar players={match.players} userList={userList} />
             </Box>
 

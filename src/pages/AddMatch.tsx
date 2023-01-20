@@ -164,7 +164,7 @@ const AddMatch: FunctionComponent = () => {
                 variant="outlined"
                 onChange={event => setDescription(event.target.value)}
                 multiline
-                rows={2}
+                rows={3}
                 fullWidth
               />
             </Box>

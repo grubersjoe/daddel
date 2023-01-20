@@ -170,7 +170,7 @@ const EditMatch: FunctionComponent = () => {
                 }))
               }
               multiline
-              rows={2}
+              rows={3}
               fullWidth
             />
           </Box>
