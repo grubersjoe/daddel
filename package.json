@@ -15,39 +15,39 @@
     "test": "jest"
   },
   "dependencies": {
-    "@emotion/react": "^11.10.5",
-    "@emotion/styled": "^11.10.5",
-    "@mui/icons-material": "^5.10.14",
-    "@mui/material": "^5.10.14",
-    "@mui/system": "^5.10.14",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@mui/icons-material": "^5.11.16",
+    "@mui/material": "^5.12.0",
+    "@mui/system": "^5.12.0",
     "@mui/x-date-pickers": "^5.0.8",
-    "@sindresorhus/slugify": "^2.1.1",
-    "@types/jest": "^29.2.3",
-    "@types/node": "^18.11.9",
-    "@types/react": "^18.0.25",
-    "@types/react-dom": "^18.0.9",
-    "@types/react-helmet": "^6.1.5",
+    "@sindresorhus/slugify": "^2.2.0",
+    "@types/jest": "^29.5.0",
+    "@types/node": "^18.15.11",
+    "@types/react": "^18.0.35",
+    "@types/react-dom": "^18.0.11",
+    "@types/react-helmet": "^6.1.6",
     "@types/react-router-dom": "^5.3.3",
     "@types/react-timeago": "^4.1.3",
     "date-fns": "^2.29.3",
-    "firebase": "^9.14.0",
-    "firebase-tools": "^11.16.1",
+    "firebase": "^9.19.1",
+    "firebase-tools": "^11.27.0",
     "generate-emoji-list": "^1.1.0",
-    "jest-localstorage-mock": "^2.4.22",
-    "prettier": "^2.7.1",
+    "jest-localstorage-mock": "^2.4.26",
+    "prettier": "^2.8.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-firebase-hooks": "^4.0.2",
     "react-helmet": "^6.1.0",
-    "react-intersection-observer": "^9.4.1",
-    "react-router-dom": "^6.4.3",
+    "react-intersection-observer": "^9.4.3",
+    "react-router-dom": "^6.10.0",
     "react-scripts": "^5.0.1",
     "react-swipeable-views": "^0.14.0",
     "react-timeago": "^7.1.0",
-    "sass": "^1.56.1",
-    "serve": "^14.1.2",
+    "sass": "^1.62.0",
+    "serve": "^14.2.0",
     "typeface-roboto": "^1.1.13",
-    "typescript": "~4.9.3"
+    "typescript": "~5.0.4"
   },
   "resolutions": {
     "react": "^18.2.0",
@@ -67,6 +67,6 @@
     ]
   },
   "devDependencies": {
-    "@trivago/prettier-plugin-sort-imports": "^3.4.0"
+    "@trivago/prettier-plugin-sort-imports": "^4.1.1"
   }
 }
