@@ -1,10 +1,12 @@
-import { Alert, Box, Button, Grid, Tab, Tabs, Typography } from '@mui/material';
+import { TabContext } from '@mui/lab';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
+import { Alert, Box, Button, Grid, Typography } from '@mui/material';
+import Tab from '@mui/material/Tab';
 import { onSnapshot } from 'firebase/firestore';
-import React, { FunctionComponent, ReactNode, useMemo, useState } from 'react';
+import React, { FunctionComponent, useMemo, useState } from 'react';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import { Link } from 'react-router-dom';
-// @ts-ignore
-import SwipeableViews from 'react-swipeable-views';
 
 import AppBar from '../components/AppBar';
 import SetupUserDialog from '../components/Dialogs/SetupUserDialog';
@@ -28,21 +30,11 @@ import {
 const loadingAnimation =
   'pulse 0.75s cubic-bezier(.46,.03,.52,.96) 0s infinite';
 
-const TabPanel: FunctionComponent<{
-  children: ReactNode;
-  index: number;
-  value: number;
-}> = ({ children, value, index, ...props }) => (
-  <Box role="tabpanel" hidden={value !== index} p={3} pt={0} {...props}>
-    {children}
-  </Box>
-);
-
 const MatchesList: FunctionComponent = () => {
   const [users] = useFetchUsers();
 
   const [isRefetching, setIsRefetching] = useState(false);
-  const [tabIndex, setTabIndex] = useState(0);
+  const [tabNumber, setTabNumber] = useState<'1' | '2'>('1');
 
   const currentDate = useCurrentDate();
 
@@ -102,19 +94,22 @@ const MatchesList: FunctionComponent = () => {
       <SetupUserDialog />
 
       <AppBar filter={filterConfig}>
-        <Tabs
-          value={tabIndex}
-          onChange={(_event, index) => setTabIndex(index)}
-          variant="fullWidth"
-        >
-          <Tab
-            label="Anstehende"
-            sx={{
-              ...(isRefetching && { animation: loadingAnimation }),
-            }}
-          />
-          <Tab label="Vergangene" />
-        </Tabs>
+        <TabContext value={tabNumber}>
+          <TabList
+            value={tabNumber}
+            onChange={(_event, index) => setTabNumber(index)}
+            variant="fullWidth"
+          >
+            <Tab
+              label="Anstehende"
+              value="1"
+              sx={{
+                ...(isRefetching && { animation: loadingAnimation }),
+              }}
+            />
+            <Tab value="2" label="Vergangene" />
+          </TabList>
+        </TabContext>
       </AppBar>
 
       {showFilter && (
@@ -123,27 +118,30 @@ const MatchesList: FunctionComponent = () => {
         </Box>
       )}
 
-      <SwipeableViews index={tabIndex} onChangeIndex={setTabIndex}>
-        <TabPanel value={tabIndex} index={0}>
+      <TabContext value={tabNumber}>
+        <TabPanel value="1">
           {futureMatchesError && (
             <Alert severity="error">Fehler: {futureMatchesError.message}</Alert>
           )}
 
           {!filteredFutureMatches && <p>Lade …</p>}
 
-          {filteredFutureMatches && filteredFutureMatches.length > 0 && users && (
-            <Grid container spacing={5}>
-              {filteredFutureMatches.map(match => (
-                <Grid item xs={12} sm={6} md={4} lg={3} key={match.id}>
-                  <MatchCard match={match} userList={users} />
-                </Grid>
-              ))}
-            </Grid>
-          )}
+          {filteredFutureMatches &&
+            filteredFutureMatches.length > 0 &&
+            users && (
+              <Grid container spacing={5} sx={{ marginTop: -8 }}>
+                {filteredFutureMatches.map(match => (
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={match.id}>
+                    <MatchCard match={match} userList={users} />
+                  </Grid>
+                ))}
+              </Grid>
+            )}
 
           {filteredFutureMatches && filteredFutureMatches.length === 0 && (
             <div>
-              <Typography paragraph>Wow. Much empty. </Typography>
+              <Typography paragraph>Wow. Much empty.</Typography>
+
               {numberOfEnabledFilters > 0 && (
                 <Typography paragraph>Obacht! Filter ist aktiv.</Typography>
               )}
@@ -159,7 +157,8 @@ const MatchesList: FunctionComponent = () => {
             </div>
           )}
         </TabPanel>
-        <TabPanel value={tabIndex} index={1}>
+
+        <TabPanel value="2">
           {pastMatchesError && (
             <Alert severity="error">Fehler: {pastMatchesError.message}</Alert>
           )}
@@ -167,7 +166,7 @@ const MatchesList: FunctionComponent = () => {
           {!filteredPastMatches && <MatchCardSkeleton />}
 
           {filteredPastMatches && filteredPastMatches.length > 0 && users && (
-            <Grid container spacing={5}>
+            <Grid container spacing={5} sx={{ marginTop: -8 }}>
               {filteredPastMatches.map(match => (
                 <Grid item xs={12} sm={6} md={4} lg={3} key={match.id}>
                   <MatchCard match={match} userList={users} />
@@ -185,7 +184,7 @@ const MatchesList: FunctionComponent = () => {
             </>
           )}
         </TabPanel>
-      </SwipeableViews>
+      </TabContext>
     </>
   );
 };

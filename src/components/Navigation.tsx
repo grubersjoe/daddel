@@ -24,8 +24,8 @@ const Navigation: FunctionComponent = () => {
       value={selected}
       onChange={(_, clickedLink) => setSelected(clickedLink)}
       sx={{
-        borderTop: 'solid 1px',
-        borderTopColor: 'rgba(0, 0, 0, 0.2)',
+        borderTop: 1,
+        borderColor: 'divider',
         backgroundImage:
           'linear-gradient(rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.09))',
       }}

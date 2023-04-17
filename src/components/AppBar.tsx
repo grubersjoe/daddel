@@ -26,28 +26,34 @@ interface Props {
 
 const AppBar: FunctionComponent<Props> = ({ children, filter, title }) => (
   <MuiAppBar position="fixed">
-    <Toolbar variant="dense">
-      {title && (
-        <Typography component="h1" variant="h6">
-          {title}
-        </Typography>
-      )}
-      {children && <Box flexGrow={1}>{children}</Box>}
-      <div>
-        {filter && (
-          <IconButton
-            color={filter.color}
-            title={filter.title}
-            onClick={filter.onClick}
-            size="large"
-          >
-            <Badge badgeContent={filter.enabled} color="primary" variant="dot">
-              <FilterIcon />
-            </Badge>
-          </IconButton>
+    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <Toolbar variant="dense">
+        {title && (
+          <Typography component="h1" variant="h6">
+            {title}
+          </Typography>
         )}
-      </div>
-    </Toolbar>
+        {children && <Box flexGrow={1}>{children}</Box>}
+        <div>
+          {filter && (
+            <IconButton
+              color={filter.color}
+              title={filter.title}
+              onClick={filter.onClick}
+              size="large"
+            >
+              <Badge
+                badgeContent={filter.enabled}
+                color="primary"
+                variant="dot"
+              >
+                <FilterIcon />
+              </Badge>
+            </IconButton>
+          )}
+        </div>
+      </Toolbar>
+    </Box>
   </MuiAppBar>
 );
 

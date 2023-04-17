@@ -3,6 +3,7 @@ import CSSBaseline from '@mui/material/CssBaseline';
 import yellow from '@mui/material/colors/yellow';
 import React, { FunctionComponent, ReactElement } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { HelmetProvider } from 'react-helmet-async';
 import {
   Navigate,
   Route,
@@ -52,57 +53,62 @@ const App: FunctionComponent = () => {
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
-        <CSSBaseline />
-        <PageMetadata />
-        <Router>
-          <Layout>
-            <Routes>
-              <Route
-                path={routes.addMatch}
-                element={
-                  <RequireAuth>
-                    <AddMatch />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path={routes.editMatch}
-                element={
-                  <RequireAuth>
-                    <EditMatch />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path={routes.matchDetail}
-                element={
-                  <RequireAuth>
-                    <MatchDetail />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path={routes.matchList}
-                element={
-                  <RequireAuth>
-                    <MatchesList />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path={routes.settings}
-                element={
-                  <RequireAuth>
-                    <Settings />
-                  </RequireAuth>
-                }
-              />
-              <Route path={routes.register} element={<SignUp />} />
-              <Route path={routes.resetPassword} element={<ResetPassword />} />
-              <Route path={routes.home} element={<SignIn />} />
-            </Routes>
-          </Layout>
-        </Router>
+        <HelmetProvider>
+          <CSSBaseline />
+          <PageMetadata />
+          <Router>
+            <Layout>
+              <Routes>
+                <Route
+                  path={routes.addMatch}
+                  element={
+                    <RequireAuth>
+                      <AddMatch />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path={routes.editMatch}
+                  element={
+                    <RequireAuth>
+                      <EditMatch />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path={routes.matchDetail}
+                  element={
+                    <RequireAuth>
+                      <MatchDetail />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path={routes.matchList}
+                  element={
+                    <RequireAuth>
+                      <MatchesList />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path={routes.settings}
+                  element={
+                    <RequireAuth>
+                      <Settings />
+                    </RequireAuth>
+                  }
+                />
+                <Route path={routes.register} element={<SignUp />} />
+                <Route
+                  path={routes.resetPassword}
+                  element={<ResetPassword />}
+                />
+                <Route path={routes.home} element={<SignIn />} />
+              </Routes>
+            </Layout>
+          </Router>
+        </HelmetProvider>
       </ThemeProvider>
     </StyledEngineProvider>
   );
