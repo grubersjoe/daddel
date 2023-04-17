@@ -11,7 +11,7 @@ import {
 import {
   GoogleAuthProvider,
   signInWithEmailAndPassword,
-  signInWithRedirect,
+  signInWithPopup,
 } from 'firebase/auth';
 import React, { FormEventHandler, FunctionComponent, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -54,7 +54,7 @@ const SignIn: FunctionComponent = () => {
 
   const handleGoogleLogin = () => {
     setGoogleLoading(true);
-    signInWithRedirect(auth, new GoogleAuthProvider())
+    signInWithPopup(auth, new GoogleAuthProvider())
       .catch(setError)
       .finally(() => setGoogleLoading(false));
   };
