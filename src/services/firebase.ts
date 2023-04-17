@@ -14,28 +14,28 @@ import { connectFunctionsEmulator, getFunctions } from 'firebase/functions';
 import { FIREBASE_LOCATION } from '../constants';
 
 const configKeys = [
-  'REACT_APP_API_KEY',
-  'REACT_APP_APP_ID',
-  'REACT_APP_AUTH_DOMAIN',
-  'REACT_APP_MEASUREMENT_ID',
-  'REACT_APP_MESSAGING_SENDER_ID',
-  'REACT_APP_PROJECT_ID',
-  'REACT_APP_VAPID_KEY',
+  'VITE_API_KEY',
+  'VITE_APP_ID',
+  'VITE_AUTH_DOMAIN',
+  'VITE_MEASUREMENT_ID',
+  'VITE_MESSAGING_SENDER_ID',
+  'VITE_PROJECT_ID',
+  'VITE_VAPID_KEY',
 ];
 
 configKeys.forEach(key => {
-  if (!process.env[key]) {
+  if (!import.meta.env[key]) {
     throw new Error(`Environmental variable ${key} is not set`);
   }
 });
 
 export const firebaseApp = initializeApp({
-  apiKey: process.env.REACT_APP_API_KEY,
-  appId: process.env.REACT_APP_APP_ID,
-  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
-  projectId: process.env.REACT_APP_PROJECT_ID,
-  measurementId: process.env.REACT_APP_MEASUREMENT_ID,
-  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+  apiKey: import.meta.env.VITE_API_KEY,
+  appId: import.meta.env.VITE_APP_ID,
+  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_PROJECT_ID,
+  measurementId: import.meta.env.VITE_MEASUREMENT_ID,
+  messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
 });
 
 export const analytics = getAnalytics(firebaseApp);

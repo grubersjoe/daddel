@@ -1,5 +1,17 @@
 module.exports = {
-  extends: ['react-app', 'plugin:@typescript-eslint/recommended'],
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
+  ],
+  parser: '@typescript-eslint/parser',
+  plugins: ['@typescript-eslint', 'react'],
+  settings: {
+    react: {
+      version: 'detect',
+    },
+  },
   rules: {
     'arrow-body-style': 'error',
     'no-console': 'off',
@@ -10,7 +22,6 @@ module.exports = {
       },
     ],
     '@typescript-eslint/ban-ts-comment': 'off',
-    '@typescript-eslint/explicit-module-boundary-types': 'off',
   },
   ignorePatterns: ['functions/lib/**/*'],
 };

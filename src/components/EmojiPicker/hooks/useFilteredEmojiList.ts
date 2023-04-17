@@ -16,7 +16,7 @@ export default function useFilteredEmojiList(
       category,
       emojis:
         searchTerm.length >= MIN_SEARCH_LENGTH
-          ? emojis.filter(([_, description]) =>
+          ? emojis.filter(([, description]) =>
               description.toLowerCase().includes(searchTerm),
             )
           : emojis,

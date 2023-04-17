@@ -1,15 +1,10 @@
 import slugify from '@sindresorhus/slugify';
 
 import { Game } from '../../../types';
-import { supportsWebp } from '../../../utils';
 
-export async function getGameBanner(game: Game): Promise<string | null> {
-  const slug = slugify(game.name, { separator: '-' });
-  const fileName = slug.concat((await supportsWebp()) ? '.webp' : '.jpg');
+export async function getGameBanner(game: Game) {
+  const fileName = slugify(game.name, { separator: '-' }).concat('.jpg');
+  const url = new URL(`./out/${fileName}`, import.meta.url);
 
-  try {
-    return (await import(`./out/${fileName}`)).default;
-  } catch {
-    return null;
-  }
+  return url.pathname === '/undefined' ? null : url;
 }

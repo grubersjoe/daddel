@@ -1,14 +1,13 @@
 import { StyledEngineProvider, ThemeProvider } from '@mui/material';
 import CSSBaseline from '@mui/material/CssBaseline';
 import yellow from '@mui/material/colors/yellow';
-import React, { FunctionComponent, ReactElement, useEffect } from 'react';
+import React, { FunctionComponent, ReactElement } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import {
   Navigate,
   Route,
   BrowserRouter as Router,
   Routes,
-  useLocation,
 } from 'react-router-dom';
 
 import { DOMAIN_PROD, REGEX_IPV4 } from '../constants';
@@ -23,7 +22,6 @@ import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
 import { auth } from '../services/firebase';
 import { createTheme } from '../styles/theme';
-import { updateServiceWorker } from '../utils';
 import Layout from './Layout';
 import PageMetadata from './PageMetadata';
 
@@ -57,7 +55,6 @@ const App: FunctionComponent = () => {
         <CSSBaseline />
         <PageMetadata />
         <Router>
-          <OnRouteChange />
           <Layout>
             <Routes>
               <Route
@@ -109,13 +106,6 @@ const App: FunctionComponent = () => {
       </ThemeProvider>
     </StyledEngineProvider>
   );
-};
-
-const OnRouteChange: FunctionComponent = () => {
-  const location = useLocation();
-  useEffect(updateServiceWorker, [location.pathname]);
-
-  return null;
 };
 
 export default App;

@@ -1,17 +1,15 @@
 {
   "name": "daddel",
-  "version": "0.13.10",
+  "version": "0.14.0",
   "private": true,
   "scripts": {
-    "build": "react-scripts build",
+    "build": "tsc && vite build",
     "deploy": "npm run build && firebase deploy --except functions",
-    "dev": "npm run start",
-    "eject": "react-scripts eject",
+    "dev": "vite",
+    "firebase:emulators": "GOOGLE_APPLICATION_CREDENTIALS=./credentials.json npx firebase emulators:start --only functions",
     "format": "prettier --write 'src/**/*' 'functions/src/**/*' './*.{js,json,md}'",
     "lint": "eslint src/ functions/",
-    "start:emulators": "GOOGLE_APPLICATION_CREDENTIALS=./credentials.json npx firebase emulators:start --only functions",
-    "start": "react-scripts start",
-    "start:prod": "npm run build && serve -s build",
+    "preview": "vite preview",
     "test": "jest"
   },
   "dependencies": {
@@ -22,32 +20,19 @@
     "@mui/system": "^5.12.0",
     "@mui/x-date-pickers": "^5.0.8",
     "@sindresorhus/slugify": "^2.2.0",
-    "@types/jest": "^29.5.0",
-    "@types/node": "^18.15.11",
-    "@types/react": "^18.0.35",
-    "@types/react-dom": "^18.0.11",
-    "@types/react-helmet": "^6.1.6",
-    "@types/react-router-dom": "^5.3.3",
-    "@types/react-timeago": "^4.1.3",
     "date-fns": "^2.29.3",
     "firebase": "^9.19.1",
     "firebase-tools": "^11.27.0",
     "generate-emoji-list": "^1.1.0",
-    "jest-localstorage-mock": "^2.4.26",
-    "prettier": "^2.8.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-firebase-hooks": "^4.0.2",
     "react-helmet": "^6.1.0",
     "react-intersection-observer": "^9.4.3",
     "react-router-dom": "^6.10.0",
-    "react-scripts": "^5.0.1",
     "react-swipeable-views": "^0.14.0",
     "react-timeago": "^7.1.0",
-    "sass": "^1.62.0",
-    "serve": "^14.2.0",
-    "typeface-roboto": "^1.1.13",
-    "typescript": "~5.0.4"
+    "typeface-roboto": "^1.1.13"
   },
   "resolutions": {
     "react": "^18.2.0",
@@ -67,6 +52,25 @@
     ]
   },
   "devDependencies": {
-    "@trivago/prettier-plugin-sort-imports": "^4.1.1"
+    "@trivago/prettier-plugin-sort-imports": "^4.1.1",
+    "@types/jest": "^29.5.0",
+    "@types/node": "^18.15.11",
+    "@types/react": "^18.0.35",
+    "@types/react-dom": "^18.0.11",
+    "@types/react-helmet": "^6.1.6",
+    "@types/react-router-dom": "^5.3.3",
+    "@types/react-timeago": "^4.1.3",
+    "@typescript-eslint/eslint-plugin": "^5.58.0",
+    "@typescript-eslint/parser": "^5.58.0",
+    "@vitejs/plugin-react": "^3.1.0",
+    "eslint": "^8.38.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "jest-localstorage-mock": "^2.4.26",
+    "prettier": "^2.8.7",
+    "sass": "^1.62.0",
+    "serve": "^14.2.0",
+    "typescript": "^5.0.4",
+    "vite": "^4.2.1"
   }
 }

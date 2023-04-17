@@ -3,7 +3,6 @@ import { createRoot } from 'react-dom/client';
 import 'typeface-roboto';
 
 import App from './components/App';
-import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import './styles/global.scss';
 
 const node = document.getElementById('root');
@@ -19,18 +18,3 @@ root.render(
     <App />
   </React.StrictMode>,
 );
-
-serviceWorkerRegistration.register({
-  onUpdate: registration => {
-    const waitingServiceWorker = registration.waiting;
-
-    if (waitingServiceWorker) {
-      waitingServiceWorker.addEventListener('statechange', event => {
-        if ((event.target as ServiceWorker).state === 'activated') {
-          window.location.reload();
-        }
-      });
-      waitingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
-    }
-  },
-});

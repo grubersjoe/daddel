@@ -92,7 +92,7 @@ const SetupUserDialog: FunctionComponent = () => {
           )
             .then(() => {
               setError(null);
-              setStep(2);
+              setStep(Step.PickUsername);
             })
             .catch(setError);
         } else {

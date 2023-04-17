@@ -28,7 +28,7 @@ export default function useNotifications() {
 
     if (user) {
       getToken(getMessaging(firebaseApp), {
-        vapidKey: process.env.REACT_APP_VAPID_KEY,
+        vapidKey: import.meta.env.VITE_VAPID_KEY,
       })
         .then(fcmToken => {
           setDeviceRegistered(
@@ -56,7 +56,7 @@ export default function useNotifications() {
     setLoading(true);
 
     return getToken(getMessaging(firebaseApp), {
-      vapidKey: process.env.REACT_APP_VAPID_KEY,
+      vapidKey: import.meta.env.VITE_VAPID_KEY,
     })
       .then(fcmToken =>
         httpsCallable(functions, 'subscribeToMessaging')({ fcmToken }),
@@ -77,7 +77,7 @@ export default function useNotifications() {
     setLoading(true);
 
     return getToken(getMessaging(firebaseApp), {
-      vapidKey: process.env.REACT_APP_VAPID_KEY,
+      vapidKey: import.meta.env.VITE_VAPID_KEY,
     })
       .then(fcmToken =>
         httpsCallable(

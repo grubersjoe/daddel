@@ -105,7 +105,7 @@ const MatchCard: FunctionComponent<Props> = ({
   const sx = styles(useTheme());
 
   const [game, setGame] = useState<Game | null>();
-  const [gameBanner, setGameBanner] = useState<string | null>();
+  const [gameBanner, setGameBanner] = useState<URL | null>();
 
   // Retrieve the game via reference
   useEffect(() => {
@@ -122,7 +122,7 @@ const MatchCard: FunctionComponent<Props> = ({
     }
   }, [game]);
 
-  const hasBanner = Boolean(gameBanner);
+  const hasBanner = gameBanner !== null;
 
   // It should be able to join a match until the end of its date
   const isJoinable = isFuture(endOfDay(match.date.toDate()));
@@ -139,7 +139,7 @@ const MatchCard: FunctionComponent<Props> = ({
 
       <Card sx={sx.card} raised>
         <CardMedia
-          image={gameBanner ?? undefined}
+          image={hasBanner ? gameBanner.href : undefined}
           sx={{
             ...sx.media,
             ...(!hasBanner && {
