@@ -119,7 +119,7 @@ const MatchesList: FunctionComponent = () => {
       )}
 
       <TabContext value={tabNumber}>
-        <TabPanel value="1">
+        <TabPanel value="1" sx={{ marginTop: -3 }}>
           {futureMatchesError && (
             <Alert severity="error">Fehler: {futureMatchesError.message}</Alert>
           )}
@@ -129,7 +129,7 @@ const MatchesList: FunctionComponent = () => {
           {filteredFutureMatches &&
             filteredFutureMatches.length > 0 &&
             users && (
-              <Grid container spacing={5} sx={{ marginTop: -8 }}>
+              <Grid container spacing={5}>
                 {filteredFutureMatches.map(match => (
                   <Grid item xs={12} sm={6} md={4} lg={3} key={match.id}>
                     <MatchCard match={match} userList={users} />
@@ -158,7 +158,7 @@ const MatchesList: FunctionComponent = () => {
           )}
         </TabPanel>
 
-        <TabPanel value="2">
+        <TabPanel value="2" sx={{ marginTop: -3 }}>
           {pastMatchesError && (
             <Alert severity="error">Fehler: {pastMatchesError.message}</Alert>
           )}
@@ -166,7 +166,7 @@ const MatchesList: FunctionComponent = () => {
           {!filteredPastMatches && <MatchCardSkeleton />}
 
           {filteredPastMatches && filteredPastMatches.length > 0 && users && (
-            <Grid container spacing={5} sx={{ marginTop: -8 }}>
+            <Grid container spacing={5}>
               {filteredPastMatches.map(match => (
                 <Grid item xs={12} sm={6} md={4} lg={3} key={match.id}>
                   <MatchCard match={match} userList={users} />
