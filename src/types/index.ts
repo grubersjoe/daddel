@@ -1,24 +1,20 @@
 import { DocumentReference, Timestamp } from 'firebase/firestore';
 
-declare global {
-  type Maybe<T> = T | undefined;
-}
+export type Maybe<T> = T | undefined;
 
 type Uid = string;
 
-export interface Game {
-  id?: string;
-  maxPlayers?: number;
-  name: string;
+export interface Match extends NewMatch {
+  id: Uid;
+  game: Game;
 }
 
-export interface Match {
-  id?: string;
+export interface NewMatch {
   created: Timestamp;
   createdBy: Uid;
   date: Timestamp;
+  game: Game;
   description?: string;
-  game: DocumentReference<Game>;
   players: Array<Player>;
   reactions?: Array<Reaction>;
 }
@@ -26,6 +22,12 @@ export interface Match {
 export interface Reaction {
   emoji: string;
   userRefs: Array<DocumentReference<User>>;
+}
+
+export interface Game {
+  name: string;
+  steamAppId?: number;
+  maxPlayers?: number;
 }
 
 export interface Player {

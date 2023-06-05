@@ -20,7 +20,7 @@ import useCurrentDate from '../hooks/useCurrentDate';
 import useFetchUsers from '../hooks/useFetchUsers';
 import { futureMatchesQuery, pastMatchesQuery } from '../queries/matches';
 import { Match } from '../types';
-import { calcNumberOfEnabledFilters, filterMatches } from '../utils/filter';
+import { filterMatches } from '../utils/filter';
 import {
   STORAGE_KEY,
   getStorageItem,
@@ -75,7 +75,7 @@ const MatchesList: FunctionComponent = () => {
     [pastMatches, filter],
   );
 
-  const numberOfEnabledFilters = calcNumberOfEnabledFilters(filter);
+  const numberOfEnabledFilters = filter.games.length;
   const filterConfig = {
     color: showFilter ? 'primary' : 'inherit',
     enabled: numberOfEnabledFilters,
@@ -105,6 +105,7 @@ const MatchesList: FunctionComponent = () => {
               value="1"
               sx={{
                 ...(isRefetching && { animation: loadingAnimation }),
+                minHeight: 64,
               }}
             />
             <Tab value="2" label="Vergangene" />
@@ -119,7 +120,7 @@ const MatchesList: FunctionComponent = () => {
       )}
 
       <TabContext value={tabNumber}>
-        <TabPanel value="1" sx={{ marginTop: -3 }}>
+        <TabPanel value="1">
           {futureMatchesError && (
             <Alert severity="error">Fehler: {futureMatchesError.message}</Alert>
           )}
@@ -158,7 +159,7 @@ const MatchesList: FunctionComponent = () => {
           )}
         </TabPanel>
 
-        <TabPanel value="2" sx={{ marginTop: -3 }}>
+        <TabPanel value="2">
           {pastMatchesError && (
             <Alert severity="error">Fehler: {pastMatchesError.message}</Alert>
           )}

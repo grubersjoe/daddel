@@ -30,7 +30,7 @@ const Filter: FunctionComponent<Props> = ({ filter, setFilter }) => {
           disabled={gamesLoading}
           filterSelectedOptions
           getOptionLabel={option => option.name}
-          isOptionEqualToValue={(a, b) => a.id === b.id}
+          isOptionEqualToValue={(a, b) => a.name === b.name}
           multiple
           loading={gamesLoading}
           onChange={(_event, games) => {

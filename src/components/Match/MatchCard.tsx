@@ -12,13 +12,12 @@ import { useTheme } from '@mui/material/styles';
 import { Theme } from '@mui/system';
 import endOfDay from 'date-fns/endOfDay';
 import isFuture from 'date-fns/isFuture';
-import { getDoc } from 'firebase/firestore';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { getGameBanner } from '../../assets/images/games';
 import { toggleMatchReaction } from '../../services/reactions';
-import { Game, Match, UserMap } from '../../types';
+import { Match, UserMap } from '../../types';
 import { formatDate, formatTime } from '../../utils/date';
 import JoinMatchDialog from '../Dialogs/JoinMatchDialog';
 import EmojiPicker from '../EmojiPicker';
@@ -103,33 +102,23 @@ const MatchCard: FunctionComponent<Props> = ({
   setPageMetadata,
 }) => {
   const sx = styles(useTheme());
+  const { game } = match;
+  const [gameBanner, setGameBanner] = useState<URL | null>(null);
 
-  const [game, setGame] = useState<Game | null>();
-  const [gameBanner, setGameBanner] = useState<URL | null>();
-
-  // Retrieve the game via reference
   useEffect(() => {
-    getDoc<Game>(match.game).then(game => {
-      const data = game.data();
-      setGame(data ? ({ ...data, id: game.id } as Game) : null);
-    });
-  }, [match]);
-
-  // Then retrieve game banner
-  useEffect(() => {
-    if (game) {
-      getGameBanner(game).then(setGameBanner);
+    if (game.steamAppId) {
+      getGameBanner(game.steamAppId).then(setGameBanner);
     }
-  }, [game]);
+  }, [game.steamAppId]);
 
-  const hasBanner = gameBanner !== null;
+  const hasBanner = Boolean(gameBanner);
 
   // It should be able to join a match until the end of its date
   const isJoinable = isFuture(endOfDay(match.date.toDate()));
 
   const handleEmojiClick = (emoji: string) => toggleMatchReaction(match, emoji);
 
-  if (!game || gameBanner === undefined) {
+  if (!game) {
     return <MatchCardSkeleton />;
   }
 
@@ -139,7 +128,7 @@ const MatchCard: FunctionComponent<Props> = ({
 
       <Card sx={sx.card} raised>
         <CardMedia
-          image={hasBanner ? gameBanner.href : undefined}
+          image={gameBanner?.href}
           sx={{
             ...sx.media,
             ...(!hasBanner && {

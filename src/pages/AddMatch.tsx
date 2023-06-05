@@ -4,12 +4,10 @@ import {
   Checkbox,
   CircularProgress,
   Container,
-  FormControl,
   FormControlLabel,
   Grid,
-  InputLabel,
-  Select,
   TextField,
+  Typography,
 } from '@mui/material';
 import addMinutes from 'date-fns/addMinutes';
 import isSameDay from 'date-fns/isSameDay';
@@ -22,15 +20,16 @@ import React, {
   FormEvent,
   FunctionComponent,
   useContext,
-  useEffect,
   useState,
 } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate } from 'react-router-dom';
 
 import AppBar from '../components/AppBar';
+import SteamAuthentication from '../components/Auth/SteamAuthentication';
 import DateTimePicker from '../components/DateTimePicker';
 import { SnackbarContext } from '../components/Layout';
+import GameSelect, { GameOption } from '../components/Match/GameSelect';
 import PageMetadata from '../components/PageMetadata';
 import { GA_EVENTS } from '../constants';
 import {
@@ -40,22 +39,20 @@ import {
   TIME_FORMAT,
 } from '../constants/date';
 import routes from '../constants/routes';
-import { useGamesCollectionData } from '../hooks/useGamesCollectionData';
-import {
-  analytics,
-  auth,
-  getCollectionRef,
-  getDocRef,
-} from '../services/firebase';
+import { useSteamUser } from '../hooks/useSteamUser';
+import { analytics, auth, getCollectionRef } from '../services/firebase';
 import { joinMatch } from '../services/match';
-import { Game, Match } from '../types';
+import { NewMatch } from '../types';
+import { isSteamGame } from '../types/guards';
 import { parseTime } from '../utils/date';
-import { reorderGames } from '../utils/games';
 
 const AddMatch: FunctionComponent = () => {
   const navigate = useNavigate();
   const [authUser] = useAuthState(auth);
   const dispatchSnack = useContext(SnackbarContext);
+
+  const { data: steamUser, isPlaceholderData: steamUserLoading } =
+    useSteamUser();
 
   const dispatchError = () =>
     dispatchSnack('Match konnte nicht angelegt werden', 'error');
@@ -63,44 +60,39 @@ const AddMatch: FunctionComponent = () => {
   const defaultDate = parseDate(DEFAULT_MATCH_TIME, TIME_FORMAT, new Date());
 
   const [loading, setLoading] = useState(false);
-  const [gameId, setGameId] = useState<Game['id']>();
+
+  const [game, setGame] = useState<GameOption | null>(null);
   const [date, setDate] = useState<Date | null>(defaultDate);
   const [description, setDescription] = useState<string>();
   const [selfJoinMatch, setSelfJoinMatch] = useState(true);
 
-  const [games, gamesLoading] = useGamesCollectionData();
-
-  // Select first available game as soon as games are loaded
-  useEffect(() => {
-    if (!gameId && games && games.length > 0) {
-      setGameId(games[0].id);
-    }
-  }, [gameId, games]);
-
-  if (!authUser) {
+  if (!authUser || steamUserLoading) {
     return null;
   }
 
   const addMatch = (event: FormEvent, authUser: User) => {
     event.preventDefault();
 
-    if (!date || !gameId) {
+    if (!date || !game) {
       return dispatchError();
     }
 
     setLoading(true);
 
-    const match: Omit<Match, 'id'> = {
+    const match: NewMatch = {
       created: Timestamp.fromDate(new Date()),
       createdBy: authUser.uid,
       date: Timestamp.fromDate(date),
-      game: getDocRef<Game>('games', gameId),
+      game: {
+        name: game.name,
+        ...(isSteamGame(game) && { steamAppId: game.appid }),
+      },
       players: [],
       reactions: [],
       ...(description && { description }),
     };
 
-    addDoc<Match>(getCollectionRef('matches'), match)
+    addDoc(getCollectionRef('matches'), match)
       .then(doc => {
         if (selfJoinMatch) {
           const defaultAvailUntil = addMinutes(date, DEFAULT_MATCH_LENGTH);
@@ -127,29 +119,23 @@ const AddMatch: FunctionComponent = () => {
       <PageMetadata title="Neues Match – Daddel" />
       <AppBar title="Neues Match" />
       <Container>
-        <Box mb="1.5rem">
-          <FormControl variant="outlined" fullWidth required>
-            <InputLabel>Spiel</InputLabel>
-            <Select
-              native
-              value={gameId}
-              onChange={event => setGameId(String(event.target.value))}
-              label="Spiel"
-              disabled={gamesLoading}
-            >
-              {gamesLoading && <option>Lade …</option>}
-              {games &&
-                reorderGames(games).map(game => (
-                  <option key={game.id} value={game.id}>
-                    {game.name}
-                    {game.maxPlayers && ` (${game.maxPlayers} Spieler)`}
-                  </option>
-                ))}
-            </Select>
-          </FormControl>
-        </Box>
+        {steamUser ? (
+          <Box mt={2} mb={3}>
+            <GameSelect onChange={setGame} />
+          </Box>
+        ) : (
+          <Grid container spacing={2} flexDirection="column" mt={0}>
+            <Grid item md={7}>
+              <Typography variant="body1" color="textSecondary" mb={3}>
+                Melde dich bei Steam an, um ein neues Match für eines deiner
+                Spiele anzulegen.
+              </Typography>
+              <SteamAuthentication />
+            </Grid>
+          </Grid>
+        )}
 
-        {authUser && (
+        {steamUser && (
           <form
             autoComplete="off"
             onSubmit={event => addMatch(event, authUser)}
@@ -192,9 +178,7 @@ const AddMatch: FunctionComponent = () => {
                   <Button
                     type="submit"
                     color="primary"
-                    disabled={
-                      !games || games.length === 0 || !isValid(date) || loading
-                    }
+                    disabled={!game?.name || !isValid(date) || loading}
                     startIcon={
                       loading ? (
                         <CircularProgress

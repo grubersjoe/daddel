@@ -1,7 +1,7 @@
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 
 import { getCollectionRef } from '../services/firebase';
-import { User, UserMap } from '../types';
+import { Maybe, User, UserMap } from '../types';
 import { createUserDict } from '../utils';
 
 export default function useFetchUsers(): [

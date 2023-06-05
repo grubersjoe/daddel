@@ -26,6 +26,7 @@ import AppBar from '../components/AppBar';
 import { SnackbarContext } from '../components/Layout';
 import PageMetadata from '../components/PageMetadata';
 import NotificationsSettings from '../components/Settings/NotificationsSettings';
+import SteamSettings from '../components/Settings/SteamSettings';
 import useMessagingSupported from '../hooks/useMessagingSupported';
 import { auth, getDocRef } from '../services/firebase';
 import { User } from '../types';
@@ -94,7 +95,7 @@ const Settings: FunctionComponent = () => {
     <>
       <PageMetadata title="Einstellungen – Daddel" />
       <AppBar title="Einstellungen" />
-      <Container sx={{ mt: -3 }}>
+      <Container sx={{ mt: 2 }}>
         <form
           autoComplete="off"
           onSubmit={submitNickname}
@@ -126,16 +127,25 @@ const Settings: FunctionComponent = () => {
           </Alert>
         )}
 
-        {messagingSupported && (
-          <Grid container sx={{ mt: 4 }}>
-            <Grid item md={7}>
-              <NotificationsSettings />
-            </Grid>
+        <Grid container sx={{ mt: 6 }}>
+          <Grid item md={7}>
+            <SteamSettings />
           </Grid>
+        </Grid>
+
+        {messagingSupported && (
+          <>
+            <Grid container sx={{ mt: 6 }}>
+              <Grid item md={7}>
+                <NotificationsSettings />
+              </Grid>
+            </Grid>
+          </>
         )}
 
-        <Grid container spacing={2} flexDirection="column" sx={{ mt: 5 }}>
+        <Grid container spacing={2} flexDirection="column" sx={{ mt: 6 }}>
           <Grid item md={7}>
+            <Typography variant="h6">Konto</Typography>
             <Button
               startIcon={<SignOutIcon />}
               onClick={() => signOut(auth)}

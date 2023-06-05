@@ -1,5 +1,7 @@
 import { grey } from '@mui/material/colors';
+import { deDE as coreLocale } from '@mui/material/locale';
 import { Theme, createTheme as createMuiTheme } from '@mui/material/styles';
+import { deDE as dateLocale } from '@mui/x-date-pickers/locales';
 
 export const createTheme = (color: string): Theme =>
   createMuiTheme({
@@ -37,4 +39,7 @@ export const createTheme = (color: string): Theme =>
         },
       },
     },
+    // @ts-ignore
+    coreLocale,
+    dateLocale,
   });

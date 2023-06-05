@@ -14,11 +14,7 @@ function filterByGame(
 ): Array<Match> {
   return matches.filter(match =>
     filter.games.length > 0
-      ? filter.games.some(filterGame => filterGame.id === match.game.id)
+      ? filter.games.some(filterGame => filterGame.name === match.game.name)
       : true,
   );
-}
-
-export function calcNumberOfEnabledFilters(filter: MatchFilter): number {
-  return filter.games.length;
 }

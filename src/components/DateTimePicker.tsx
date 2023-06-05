@@ -1,4 +1,3 @@
-import { TextField } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DateTimePicker as MuiDateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -17,9 +16,9 @@ const DateTimePicker: FunctionComponent<Props> = ({ date, onChange }) => (
   <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={deLocale}>
     <MuiDateTimePicker
       label="Datum und Uhrzeit"
-      renderInput={props => (
-        <TextField {...props} variant="outlined" fullWidth required />
-      )}
+      slotProps={{
+        textField: { variant: 'outlined', fullWidth: true, required: true },
+      }}
       value={date}
       onChange={onChange}
       minDate={new Date()}

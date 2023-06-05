@@ -2,6 +2,7 @@ import FilterIcon from '@mui/icons-material/FilterListRounded';
 import {
   Badge,
   Box,
+  Container,
   IconButton,
   AppBar as MuiAppBar,
   Toolbar,
@@ -27,11 +28,13 @@ interface Props {
 const AppBar: FunctionComponent<Props> = ({ children, filter, title }) => (
   <MuiAppBar position="fixed">
     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-      <Toolbar variant="dense">
+      <Toolbar>
         {title && (
-          <Typography component="h1" variant="h6">
-            {title}
-          </Typography>
+          <Container>
+            <Typography component="h1" variant="h6">
+              {title}
+            </Typography>
+          </Container>
         )}
         {children && <Box flexGrow={1}>{children}</Box>}
         <div>

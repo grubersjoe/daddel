@@ -4,7 +4,6 @@ import {
   CircularProgress,
   Container,
   Grid,
-  Select,
   TextField,
 } from '@mui/material';
 import isValid from 'date-fns/isValid';
@@ -23,12 +22,12 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import AppBar from '../components/AppBar';
 import DateTimePicker from '../components/DateTimePicker';
 import { SnackbarContext } from '../components/Layout';
+import GameSelect from '../components/Match/GameSelect';
 import PageMetadata from '../components/PageMetadata';
 import routes from '../constants/routes';
-import { useGamesCollectionData } from '../hooks/useGamesCollectionData';
 import { getDocRef } from '../services/firebase';
 import { Game, Match, Player } from '../types';
-import { reorderGames } from '../utils/games';
+import { isSteamGame } from '../types/guards';
 
 const updatePlayerList = (
   players: Array<Player>,
@@ -61,11 +60,10 @@ const EditMatch: FunctionComponent = () => {
     { idField: 'id' },
   );
 
-  const [games, gamesLoading] = useGamesCollectionData();
   const [loading, setLoading] = useState(false);
 
   const [matchState, setMatchState] = useState<{
-    game?: string;
+    game?: Game;
     date?: Date;
     description?: string;
   }>({});
@@ -73,7 +71,7 @@ const EditMatch: FunctionComponent = () => {
   useEffect(() => {
     if (match) {
       setMatchState({
-        game: match.game.id,
+        game: match.game,
         date: match.date.toDate(),
         description: match.description,
       });
@@ -103,7 +101,7 @@ const EditMatch: FunctionComponent = () => {
       'id' | 'created' | 'createdBy' | 'reactions'
     > = {
       date: Timestamp.fromDate(matchState.date),
-      game: getDocRef<Game>('games', matchState.game),
+      game: matchState.game,
       players: updatePlayerList(match.players, matchState.date),
       ...(matchState.description && { description: matchState.description }),
     };
@@ -122,28 +120,21 @@ const EditMatch: FunctionComponent = () => {
       <PageMetadata title="Match bearbeiten – Daddel" />
       <AppBar title="Match bearbeiten" />
       <Container>
-        <Box mb="1.5rem">
-          <Select
-            value={matchState.game}
-            onChange={event =>
-              setMatchState(prev => ({
-                ...prev,
-                game: String(event.target.value),
-              }))
-            }
-            variant="outlined"
-            disabled={gamesLoading}
-            fullWidth
-            native
-          >
-            {gamesLoading && <option>Lade …</option>}
-            {games &&
-              reorderGames(games).map(game => (
-                <option key={game.id} value={game.id}>
-                  {game.name}
-                </option>
-              ))}
-          </Select>
+        <Box mt={2} mb={3}>
+          <GameSelect
+            defaultValue={match.game}
+            onChange={game => {
+              if (game) {
+                setMatchState(prev => ({
+                  ...prev,
+                  game: {
+                    name: game.name,
+                    ...(isSteamGame(game) && { steamAppId: game.appid }),
+                  },
+                }));
+              }
+            }}
+          />
         </Box>
 
         <form autoComplete="off" onSubmit={handleUpdate}>
@@ -190,8 +181,7 @@ const EditMatch: FunctionComponent = () => {
                   type="submit"
                   color="primary"
                   disabled={
-                    !games ||
-                    games.length === 0 ||
+                    !matchState.game?.name ||
                     !isValid(matchState.date) ||
                     loading
                   }
