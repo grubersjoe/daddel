@@ -23,7 +23,7 @@ const Filter: FunctionComponent<Props> = ({ filter, setFilter }) => {
   }
 
   return (
-    <Grid container spacing={5} sx={{ mb: 5 }}>
+    <Grid container spacing={5} sx={{ mt: -2, mb: 2 }}>
       <Grid item xs={12} lg={4}>
         <Autocomplete<Game, true>
           clearOnEscape
