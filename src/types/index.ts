@@ -14,7 +14,7 @@ export interface NewMatch {
   createdBy: Uid;
   date: Timestamp;
   game: Game;
-  description?: string;
+  description: string | null;
   players: Array<Player>;
   reactions?: Array<Reaction>;
 }
@@ -26,8 +26,8 @@ export interface Reaction {
 
 export interface Game {
   name: string;
-  steamAppId?: number;
-  maxPlayers?: number;
+  steamAppId: number | null;
+  maxPlayers: number | null;
 }
 
 export interface Player {

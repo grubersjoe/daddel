@@ -17,18 +17,18 @@ interface Response {
 }
 
 export const useSteamGames = () => {
-  const { data: user } = useSteamUser();
+  const { data: steamUser } = useSteamUser();
 
   const url = new URL(
     'https://api.jogruber.de/steam/IPlayerService/GetOwnedGames/v0001?format=json&include_appinfo=1',
   );
 
-  if (user) {
-    url.searchParams.append('steamid', user.id);
+  if (steamUser) {
+    url.searchParams.append('steamid', steamUser.id);
   }
 
   return useQuery({
-    queryKey: ['steam-apps', user?.id],
+    queryKey: ['steam-apps', steamUser?.id],
     queryFn: () =>
       axios
         .get<Response>(url.toString())
@@ -36,6 +36,6 @@ export const useSteamGames = () => {
         .then(games =>
           games.sort((a, b) => b.playtime_forever - a.playtime_forever),
         ),
-    enabled: Boolean(user),
+    enabled: Boolean(steamUser),
   });
 };

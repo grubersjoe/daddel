@@ -7,14 +7,13 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import isValid from 'date-fns/isValid';
 import setDate from 'date-fns/set';
 import { Timestamp, updateDoc } from 'firebase/firestore';
 import React, {
   FormEvent,
-  FunctionComponent,
+  Reducer,
   useContext,
-  useEffect,
+  useReducer,
   useState,
 } from 'react';
 import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
@@ -24,15 +23,216 @@ import AppBar from '../components/AppBar';
 import SteamAuthentication from '../components/Auth/SteamAuthentication';
 import DateTimePicker from '../components/DateTimePicker';
 import { SnackbarContext } from '../components/Layout';
-import GameSelect from '../components/Match/GameSelect';
+import GameSelect, { GameOption } from '../components/Match/GameSelect';
 import PageMetadata from '../components/PageMetadata';
 import routes from '../constants/routes';
 import { useSteamUser } from '../hooks/useSteamUser';
 import { getDocRef } from '../services/firebase';
-import { Game, Match, Player } from '../types';
+import { Match, Player } from '../types';
 import { isSteamGame } from '../types/guards';
 
-const updatePlayerList = (
+type Actions =
+  | { type: 'set_game'; game: GameOption }
+  | { type: 'set_date'; date: Date }
+  | { type: 'set_max_players'; maxPlayers: string }
+  | { type: 'set_description'; description: string };
+
+const reducer: Reducer<Match, Actions> = (match, action) => {
+  switch (action.type) {
+    case 'set_game': {
+      return {
+        ...match,
+        game: {
+          ...match.game,
+          name: action.game.name,
+          steamAppId: isSteamGame(action.game) ? action.game.appid : null,
+        },
+      };
+    }
+    case 'set_date': {
+      return {
+        ...match,
+        date: Timestamp.fromDate(action.date),
+        players: updatePlayerDates(match.players, action.date),
+      };
+    }
+    case 'set_max_players': {
+      return {
+        ...match,
+        game: {
+          ...match.game,
+          maxPlayers: action.maxPlayers ? Number(action.maxPlayers) : null,
+        },
+      };
+    }
+    case 'set_description': {
+      return {
+        ...match,
+        description: action.description ?? null,
+      };
+    }
+    default:
+      return match;
+  }
+};
+
+const EditMatch = () => {
+  const { id } = useParams<{ id: string }>();
+  const [match, loading, error] = useDocumentDataOnce<Match>(
+    getDocRef('matches', id),
+    { idField: 'id' },
+  );
+
+  const dispatchSnack = useContext(SnackbarContext);
+  if (error || (!loading && !match)) {
+    dispatchSnack(`Match kann nicht bearbeitet werden`, 'error');
+
+    return <Navigate to={routes.matchList} />;
+  }
+
+  return (
+    <>
+      <PageMetadata title="Match bearbeiten – Daddel" />
+      <AppBar title="Match bearbeiten" />
+      <Container>{match && <EditForm match={match} />}</Container>
+    </>
+  );
+};
+
+interface Props {
+  match: Match;
+}
+
+const EditForm = (props: Props) => {
+  const navigate = useNavigate();
+  const dispatchSnack = useContext(SnackbarContext);
+
+  const { data: steamUser, isLoading: steamUserLoading } = useSteamUser();
+  const [loading, setLoading] = useState(false);
+
+  const [match, dispatch] = useReducer(reducer, props.match);
+
+  if (steamUserLoading) {
+    return null;
+  }
+
+  const handleUpdate = (event: FormEvent) => {
+    event.preventDefault();
+    setLoading(true);
+
+    updateDoc<Match>(getDocRef('matches', match.id), match)
+      .then(() => {
+        dispatchSnack('Match aktualisiert');
+        navigate(routes.matchList);
+      })
+      .catch(() =>
+        dispatchSnack('Match konnte nicht bearbeitet werden', 'error'),
+      )
+      .finally(() => setLoading(false));
+  };
+
+  return (
+    <>
+      {!steamUser && (
+        <Box mt={2} mb={5}>
+          <Typography variant="body1" color="textSecondary" mb={2}>
+            Melde dich bei Steam an, um all deine verfügbaren Spiele anzuzeigen.
+          </Typography>
+          <SteamAuthentication />
+        </Box>
+      )}
+      <Box mt={2} mb={3}>
+        <GameSelect
+          defaultValue={match.game}
+          onChange={game => {
+            if (game) {
+              dispatch({ type: 'set_game', game });
+            }
+          }}
+        />
+      </Box>
+
+      <form autoComplete="off" onSubmit={handleUpdate}>
+        <Box mb={3}>
+          <DateTimePicker
+            date={match.date.toDate()}
+            onChange={date => {
+              if (date) {
+                dispatch({ type: 'set_date', date });
+              }
+            }}
+          />
+        </Box>
+        <Box mb={3}>
+          <TextField
+            type="number"
+            label="Anzahl Spieler"
+            inputProps={{
+              inputMode: 'numeric',
+              min: 2,
+              max: 50,
+            }}
+            value={String(match.game.maxPlayers ?? '')}
+            onChange={event => {
+              dispatch({
+                type: 'set_max_players',
+                maxPlayers: event.target.value,
+              });
+            }}
+            variant="outlined"
+            fullWidth
+          />
+        </Box>
+        <Box mb={3}>
+          <TextField
+            label="Beschreibung (optional)"
+            value={match.description}
+            onChange={event =>
+              dispatch({
+                type: 'set_description',
+                description: event.target.value,
+              })
+            }
+            multiline
+            rows={3}
+            variant="outlined"
+            fullWidth
+          />
+        </Box>
+        <Box my={3}>
+          <Grid container direction="row" spacing={2}>
+            <Grid item xs>
+              <Button
+                onClick={() => window.history.go(-1)}
+                disabled={loading}
+                fullWidth
+              >
+                Abbrechen
+              </Button>
+            </Grid>
+            <Grid item xs>
+              <Button
+                type="submit"
+                color="primary"
+                disabled={!match.game?.name || loading}
+                startIcon={
+                  loading ? (
+                    <CircularProgress color="inherit" size={22} thickness={3} />
+                  ) : null
+                }
+                fullWidth
+              >
+                Speichern
+              </Button>
+            </Grid>
+          </Grid>
+        </Box>
+      </form>
+    </>
+  );
+};
+
+const updatePlayerDates = (
   players: Array<Player>,
   updatedDate: Date,
 ): Array<Player> =>
@@ -49,174 +249,5 @@ const updatePlayerList = (
       until: Timestamp.fromDate(setDate(player.until.toDate(), updateDate)),
     };
   });
-
-const EditMatch: FunctionComponent = () => {
-  const navigate = useNavigate();
-  const dispatchSnack = useContext(SnackbarContext);
-
-  const dispatchError = () =>
-    dispatchSnack('Match konnte nicht bearbeitet werden', 'error');
-
-  const { id } = useParams<{ id: string }>();
-  const [match, matchLoading, matchError] = useDocumentDataOnce<Match>(
-    getDocRef('matches', id),
-    { idField: 'id' },
-  );
-
-  const { data: steamUser } = useSteamUser();
-  const [loading, setLoading] = useState(false);
-
-  const [matchState, setMatchState] = useState<{
-    game?: Game;
-    date?: Date;
-    description?: string;
-  }>({});
-
-  useEffect(() => {
-    if (match) {
-      setMatchState({
-        game: match.game,
-        date: match.date.toDate(),
-        description: match.description,
-      });
-    }
-  }, [match, matchLoading]);
-
-  if (matchError || (!matchLoading && !match)) {
-    dispatchSnack(`Match kann nicht bearbeitet werden`, 'error');
-
-    return <Navigate to={routes.matchList} />;
-  }
-
-  if (matchLoading || !match) {
-    return null;
-  }
-
-  const handleUpdate = (event: FormEvent) => {
-    event.preventDefault();
-    setLoading(true);
-
-    if (!matchState.date || !matchState.game) {
-      return dispatchError();
-    }
-
-    const updatedMatch: Omit<
-      Match,
-      'id' | 'created' | 'createdBy' | 'reactions'
-    > = {
-      date: Timestamp.fromDate(matchState.date),
-      game: matchState.game,
-      players: updatePlayerList(match.players, matchState.date),
-      ...(matchState.description && { description: matchState.description }),
-    };
-
-    updateDoc<Match>(getDocRef('matches', match.id), updatedMatch)
-      .then(() => {
-        dispatchSnack('Match aktualisiert');
-        navigate(routes.matchList);
-      })
-      .catch(dispatchError)
-      .finally(() => setLoading(false));
-  };
-
-  return (
-    <>
-      <PageMetadata title="Match bearbeiten – Daddel" />
-      <AppBar title="Match bearbeiten" />
-      <Container>
-        {!steamUser && (
-          <Box mt={2} mb={5}>
-            <Typography variant="body1" color="textSecondary" mb={2}>
-              Melde dich bei Steam an, um all deine verfügbaren Spiele zu laden.
-            </Typography>
-            <SteamAuthentication />
-          </Box>
-        )}
-        <Box mt={2} mb={3}>
-          <GameSelect
-            defaultValue={match.game}
-            onChange={game => {
-              if (game) {
-                setMatchState(prev => ({
-                  ...prev,
-                  game: {
-                    name: game.name,
-                    ...(isSteamGame(game) && { steamAppId: game.appid }),
-                  },
-                }));
-              }
-            }}
-          />
-        </Box>
-
-        <form autoComplete="off" onSubmit={handleUpdate}>
-          <Box mb="1.5rem">
-            <DateTimePicker
-              date={matchState.date ?? null}
-              onChange={date =>
-                setMatchState(prev => ({
-                  ...prev,
-                  ...(date && { date }),
-                }))
-              }
-            />
-          </Box>
-          <Box mb="1rem">
-            <TextField
-              label="Beschreibung (optional)"
-              defaultValue={match.description}
-              variant="outlined"
-              onChange={event =>
-                setMatchState(prev => ({
-                  ...prev,
-                  description: event.target.value,
-                }))
-              }
-              multiline
-              rows={3}
-              fullWidth
-            />
-          </Box>
-          <Box my="1.5rem">
-            <Grid container direction="row" spacing={2}>
-              <Grid item xs>
-                <Button
-                  onClick={() => window.history.go(-1)}
-                  disabled={loading}
-                  fullWidth
-                >
-                  Abbrechen
-                </Button>
-              </Grid>
-              <Grid item xs>
-                <Button
-                  type="submit"
-                  color="primary"
-                  disabled={
-                    !matchState.game?.name ||
-                    !isValid(matchState.date) ||
-                    loading
-                  }
-                  startIcon={
-                    loading ? (
-                      <CircularProgress
-                        color="inherit"
-                        size={22}
-                        thickness={3}
-                      />
-                    ) : null
-                  }
-                  fullWidth
-                >
-                  Speichern
-                </Button>
-              </Grid>
-            </Grid>
-          </Box>
-        </form>
-      </Container>
-    </>
-  );
-};
 
 export default EditMatch;

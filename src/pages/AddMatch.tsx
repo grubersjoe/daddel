@@ -62,6 +62,7 @@ const AddMatch: FunctionComponent = () => {
 
   const [game, setGame] = useState<GameOption | null>(null);
   const [date, setDate] = useState<Date | null>(defaultDate);
+  const [maxPlayers, setMaxPlayers] = useState<string>('');
   const [description, setDescription] = useState<string>();
   const [selfJoinMatch, setSelfJoinMatch] = useState(true);
 
@@ -78,18 +79,19 @@ const AddMatch: FunctionComponent = () => {
 
     setLoading(true);
 
-    const match: NewMatch = {
+    const match = {
       created: Timestamp.fromDate(new Date()),
       createdBy: authUser.uid,
       date: Timestamp.fromDate(date),
       game: {
         name: game.name,
-        ...(isSteamGame(game) && { steamAppId: game.appid }),
+        steamAppId: isSteamGame(game) ? game.appid : null,
+        maxPlayers: null,
       },
       players: [],
       reactions: [],
-      ...(description && { description }),
-    };
+      description: description ?? null,
+    } satisfies NewMatch;
 
     addDoc(getCollectionRef('matches'), match)
       .then(doc => {
@@ -121,7 +123,8 @@ const AddMatch: FunctionComponent = () => {
         {!steamUser && (
           <Box mt={2} mb={5}>
             <Typography variant="body1" color="textSecondary" mb={2}>
-              Melde dich bei Steam an, um all deine verfügbaren Spiele zu laden.
+              Melde dich bei Steam an, um all deine verfügbaren Spiele
+              anzuzeigen.
             </Typography>
             <SteamAuthentication />
           </Box>
@@ -131,17 +134,32 @@ const AddMatch: FunctionComponent = () => {
         </Box>
 
         <form autoComplete="off" onSubmit={event => addMatch(event, authUser)}>
-          <Box mb="1.5rem">
+          <Box mb={3}>
             <DateTimePicker date={date} onChange={setDate} />
           </Box>
-          <Box mb="1rem">
+          <Box mb={3}>
             <TextField
-              label="Beschreibung (optional)"
-              defaultValue={description}
+              type="number"
+              label="Anzahl Spieler"
+              inputProps={{
+                inputMode: 'numeric',
+                min: 2,
+                max: 50,
+              }}
+              value={maxPlayers}
+              onChange={event => setMaxPlayers(event.target.value)}
               variant="outlined"
+              fullWidth
+            />
+          </Box>
+          <Box mb={3}>
+            <TextField
+              label="Beschreibung"
+              value={description}
               onChange={event => setDescription(event.target.value)}
               multiline
               rows={3}
+              variant="outlined"
               fullWidth
             />
           </Box>
@@ -154,7 +172,7 @@ const AddMatch: FunctionComponent = () => {
             }
             label="Selbst mitspielen"
           />
-          <Box my="1.5rem">
+          <Box my={3}>
             <Grid container direction="row" spacing={2}>
               <Grid item xs>
                 <Button
