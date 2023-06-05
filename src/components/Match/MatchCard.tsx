@@ -7,22 +7,20 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
-import { common } from '@mui/material/colors';
 import { useTheme } from '@mui/material/styles';
 import { Theme } from '@mui/system';
 import endOfDay from 'date-fns/endOfDay';
 import isFuture from 'date-fns/isFuture';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent } from 'react';
 import { Link } from 'react-router-dom';
 
-import { getGameBanner } from '../../assets/images/games';
+import { useSteamApp } from '../../hooks/useSteamApp';
 import { toggleMatchReaction } from '../../services/reactions';
 import { Match, UserMap } from '../../types';
 import { formatDate, formatTime } from '../../utils/date';
 import JoinMatchDialog from '../Dialogs/JoinMatchDialog';
 import EmojiPicker from '../EmojiPicker';
 import PageMetadata from '../PageMetadata';
-import TimeAgo from '../TimeAgo';
 import Calendar from './Calendar';
 import FallbackBanner from './FallbackBanner';
 import MatchCardSkeleton from './MatchCardSkeleton';
@@ -36,7 +34,7 @@ type Props = {
   setPageMetadata?: boolean;
 };
 
-export const styles = (theme: Theme) =>
+export const styles = ({ spacing, breakpoints }: Theme) =>
   ({
     card: {
       height: '100%',
@@ -44,36 +42,43 @@ export const styles = (theme: Theme) =>
       flexDirection: 'column',
     },
     cardContent: {
-      padding: theme.spacing(2),
+      padding: spacing(2),
 
-      [theme.breakpoints.up('lg')]: {
-        padding: `${theme.spacing(2.5)} ${theme.spacing(2.5)} 0`,
+      [breakpoints.up('lg')]: {
+        padding: `${spacing(2.5)} ${spacing(2.5)} 0`,
       },
     },
     media: {
       height: '42vw',
-      backgroundPosition: 'top',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'flex-end',
 
-      [theme.breakpoints.up('sm')]: {
+      [breakpoints.up('sm')]: {
         height: 170,
       },
 
-      [theme.breakpoints.up('lg')]: {
+      [breakpoints.up('lg')]: {
         height: 200,
       },
 
-      [theme.breakpoints.up('xl')]: {
-        height: 220,
+      [breakpoints.up('xl')]: {
+        height: 240,
       },
     },
-    date: {
-      padding: '24px 16px 8px 16px',
-      color: common.white,
-      fontWeight: 500,
-      zIndex: 1,
+    title: {
+      width: '100%',
+      height: spacing(10),
+      display: 'flex',
+      alignItems: 'flex-end',
+      justifyContent: 'space-between',
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis',
+    },
+    titleItem: {
+      padding: `${spacing(4)} ${spacing(2)} ${spacing(1.5)} ${spacing(2)}`,
+      fontWeight: 600,
+      textShadow: '1px 1px 1px #111',
     },
     list: {
       margin: '1rem 0 0',
@@ -81,11 +86,11 @@ export const styles = (theme: Theme) =>
       lineHeight: 1.75,
     },
     actions: {
-      padding: theme.spacing(2),
+      padding: spacing(2),
       paddingTop: 0,
 
-      [theme.breakpoints.up('lg')]: {
-        padding: theme.spacing(2.5),
+      [breakpoints.up('lg')]: {
+        padding: spacing(2.5),
       },
     },
   } as const);
@@ -101,24 +106,24 @@ const MatchCard: FunctionComponent<Props> = ({
   userList,
   setPageMetadata,
 }) => {
-  const sx = styles(useTheme());
+  const theme = useTheme();
+  const sx = styles(theme);
+
   const { game } = match;
-  const [gameBanner, setGameBanner] = useState<URL | null>(null);
+  const { data: steamApp, isInitialLoading: steamAppLoading } = useSteamApp(
+    game.steamAppId,
+  );
 
-  useEffect(() => {
-    if (game.steamAppId) {
-      getGameBanner(game.steamAppId).then(setGameBanner);
-    }
-  }, [game.steamAppId]);
-
-  const hasBanner = Boolean(gameBanner);
+  const image = steamApp
+    ? new URL(steamApp.screenshots[0].path_thumbnail)
+    : null;
 
   // It should be possible to join a match until the end of its date
   const isJoinable = isFuture(endOfDay(match.date.toDate()));
 
   const handleEmojiClick = (emoji: string) => toggleMatchReaction(match, emoji);
 
-  if (!game) {
+  if (!game || steamAppLoading) {
     return <MatchCardSkeleton />;
   }
 
@@ -128,10 +133,10 @@ const MatchCard: FunctionComponent<Props> = ({
 
       <Card sx={sx.card} raised>
         <CardMedia
-          image={gameBanner?.href}
+          image={image?.href}
           sx={{
             ...sx.media,
-            ...(!hasBanner && {
+            ...(!image && {
               background:
                 'linear-gradient(hsl(0deg 0% 28%) 0%, hsl(0deg 0% 24%) 100%)',
             }),
@@ -150,24 +155,22 @@ const MatchCard: FunctionComponent<Props> = ({
               <Menu game={game} match={match} />
             </Box>
 
-            {!hasBanner && <FallbackBanner game={game} />}
+            {!image && <FallbackBanner game={game} />}
 
-            <Grid
-              container
-              item
-              direction="row"
-              justifyContent="space-between"
-              alignItems="flex-end"
+            <Box
               sx={{
-                ...(hasBanner && {
-                  background:
-                    'linear-gradient(transparent, rgba(0, 0, 0, 0.95))',
+                ...sx.title,
+                ...(image && {
+                  background: 'linear-gradient(transparent, rgba(0, 0, 0, 1))',
                 }),
               }}
             >
-              <Typography sx={sx.date}>{formatDate(match.date)}</Typography>
-              <Typography sx={sx.date}>{formatTime(match.date)} Uhr</Typography>
-            </Grid>
+              <Typography sx={sx.titleItem}>{game.name}</Typography>
+              <Typography sx={sx.titleItem}>
+                {formatTime(match.date)} Uhr
+              </Typography>
+            </Box>
+
             {game.maxPlayers && (
               <Grid container item>
                 <ProgressBar
@@ -187,7 +190,7 @@ const MatchCard: FunctionComponent<Props> = ({
         >
           <CardContent sx={sx.cardContent}>
             <Typography color="textSecondary" sx={{ mb: 2 }}>
-              <TimeAgo date={match.date.toDate()} />
+              {formatDate(match.date)}
               <Separator />
               <Link to={`/matches/${match.id}`}>Permalink</Link>
             </Typography>

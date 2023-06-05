@@ -37,13 +37,13 @@ type Actions =
   | { type: 'set_max_players'; maxPlayers: string }
   | { type: 'set_description'; description: string };
 
-const reducer: Reducer<Match, Actions> = (match, action) => {
+const reducer: Reducer<Match, Actions> = (state, action) => {
   switch (action.type) {
     case 'set_game': {
       return {
-        ...match,
+        ...state,
         game: {
-          ...match.game,
+          ...state.game,
           name: action.game.name,
           steamAppId: isSteamGame(action.game) ? action.game.appid : null,
         },
@@ -51,28 +51,28 @@ const reducer: Reducer<Match, Actions> = (match, action) => {
     }
     case 'set_date': {
       return {
-        ...match,
+        ...state,
         date: Timestamp.fromDate(action.date),
-        players: updatePlayerDates(match.players, action.date),
+        players: updatePlayerDates(state.players, action.date),
       };
     }
     case 'set_max_players': {
       return {
-        ...match,
+        ...state,
         game: {
-          ...match.game,
+          ...state.game,
           maxPlayers: action.maxPlayers ? Number(action.maxPlayers) : null,
         },
       };
     }
     case 'set_description': {
       return {
-        ...match,
+        ...state,
         description: action.description ?? null,
       };
     }
     default:
-      return match;
+      return state;
   }
 };
 
@@ -186,7 +186,7 @@ const EditForm = (props: Props) => {
         <Box mb={3}>
           <TextField
             label="Beschreibung (optional)"
-            value={match.description}
+            value={match.description ?? ''}
             onChange={event =>
               dispatch({
                 type: 'set_description',

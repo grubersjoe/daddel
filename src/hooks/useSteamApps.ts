@@ -16,7 +16,7 @@ interface Response {
   };
 }
 
-export const useSteamGames = () => {
+export const useSteamApps = () => {
   const { data: steamUser } = useSteamUser();
 
   const url = new URL(
