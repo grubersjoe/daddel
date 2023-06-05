@@ -11,7 +11,7 @@ interface Props {
 export type GameOption = SteamGame | { name: string };
 
 const GameSelect = (props: Props) => {
-  const { data: games, isLoading: gamesLoading } = useSteamGames();
+  const { data: games, isInitialLoading: gamesLoading } = useSteamGames();
   const [value, setValue] = useState<GameOption | null>(
     props.defaultValue ?? null,
   );
@@ -39,11 +39,8 @@ const GameSelect = (props: Props) => {
       }}
       selectOnFocus
       handleHomeEndKeys
-      renderInput={props => (
-        <TextField {...props} label="Spiel" disabled={gamesLoading} required />
-      )}
+      renderInput={props => <TextField {...props} label="Spiel" required />}
       renderOption={(props, option) => <li {...props}>{option.name}</li>}
-      disabled={gamesLoading}
       loading={gamesLoading}
     />
   );

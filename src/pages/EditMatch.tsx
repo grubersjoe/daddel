@@ -5,6 +5,7 @@ import {
   Container,
   Grid,
   TextField,
+  Typography,
 } from '@mui/material';
 import isValid from 'date-fns/isValid';
 import setDate from 'date-fns/set';
@@ -20,11 +21,13 @@ import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
 import AppBar from '../components/AppBar';
+import SteamAuthentication from '../components/Auth/SteamAuthentication';
 import DateTimePicker from '../components/DateTimePicker';
 import { SnackbarContext } from '../components/Layout';
 import GameSelect from '../components/Match/GameSelect';
 import PageMetadata from '../components/PageMetadata';
 import routes from '../constants/routes';
+import { useSteamUser } from '../hooks/useSteamUser';
 import { getDocRef } from '../services/firebase';
 import { Game, Match, Player } from '../types';
 import { isSteamGame } from '../types/guards';
@@ -60,6 +63,7 @@ const EditMatch: FunctionComponent = () => {
     { idField: 'id' },
   );
 
+  const { data: steamUser } = useSteamUser();
   const [loading, setLoading] = useState(false);
 
   const [matchState, setMatchState] = useState<{
@@ -120,6 +124,14 @@ const EditMatch: FunctionComponent = () => {
       <PageMetadata title="Match bearbeiten – Daddel" />
       <AppBar title="Match bearbeiten" />
       <Container>
+        {!steamUser && (
+          <Box mt={2} mb={5}>
+            <Typography variant="body1" color="textSecondary" mb={2}>
+              Melde dich bei Steam an, um all deine verfügbaren Spiele zu laden.
+            </Typography>
+            <SteamAuthentication />
+          </Box>
+        )}
         <Box mt={2} mb={3}>
           <GameSelect
             defaultValue={match.game}

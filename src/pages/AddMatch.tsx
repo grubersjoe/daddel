@@ -51,8 +51,7 @@ const AddMatch: FunctionComponent = () => {
   const [authUser] = useAuthState(auth);
   const dispatchSnack = useContext(SnackbarContext);
 
-  const { data: steamUser, isPlaceholderData: steamUserLoading } =
-    useSteamUser();
+  const { data: steamUser } = useSteamUser();
 
   const dispatchError = () =>
     dispatchSnack('Match konnte nicht angelegt werden', 'error');
@@ -66,7 +65,7 @@ const AddMatch: FunctionComponent = () => {
   const [description, setDescription] = useState<string>();
   const [selfJoinMatch, setSelfJoinMatch] = useState(true);
 
-  if (!authUser || steamUserLoading) {
+  if (!authUser) {
     return null;
   }
 
@@ -119,84 +118,75 @@ const AddMatch: FunctionComponent = () => {
       <PageMetadata title="Neues Match – Daddel" />
       <AppBar title="Neues Match" />
       <Container>
-        {steamUser ? (
-          <Box mt={2} mb={3}>
-            <GameSelect onChange={setGame} />
+        {!steamUser && (
+          <Box mt={2} mb={5}>
+            <Typography variant="body1" color="textSecondary" mb={2}>
+              Melde dich bei Steam an, um all deine verfügbaren Spiele zu laden.
+            </Typography>
+            <SteamAuthentication />
           </Box>
-        ) : (
-          <Grid container spacing={2} flexDirection="column" mt={0}>
-            <Grid item md={7}>
-              <Typography variant="body1" color="textSecondary" mb={3}>
-                Melde dich bei Steam an, um ein neues Match für eines deiner
-                Spiele anzulegen.
-              </Typography>
-              <SteamAuthentication />
-            </Grid>
-          </Grid>
         )}
+        <Box mt={2} mb={3}>
+          <GameSelect onChange={setGame} />
+        </Box>
 
-        {steamUser && (
-          <form
-            autoComplete="off"
-            onSubmit={event => addMatch(event, authUser)}
-          >
-            <Box mb="1.5rem">
-              <DateTimePicker date={date} onChange={setDate} />
-            </Box>
-            <Box mb="1rem">
-              <TextField
-                label="Beschreibung (optional)"
-                defaultValue={description}
-                variant="outlined"
-                onChange={event => setDescription(event.target.value)}
-                multiline
-                rows={3}
-                fullWidth
-              />
-            </Box>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={selfJoinMatch}
-                  onChange={event => setSelfJoinMatch(event.target.checked)}
-                />
-              }
-              label="Selbst mitspielen"
+        <form autoComplete="off" onSubmit={event => addMatch(event, authUser)}>
+          <Box mb="1.5rem">
+            <DateTimePicker date={date} onChange={setDate} />
+          </Box>
+          <Box mb="1rem">
+            <TextField
+              label="Beschreibung (optional)"
+              defaultValue={description}
+              variant="outlined"
+              onChange={event => setDescription(event.target.value)}
+              multiline
+              rows={3}
+              fullWidth
             />
-            <Box my="1.5rem">
-              <Grid container direction="row" spacing={2}>
-                <Grid item xs>
-                  <Button
-                    onClick={() => window.history.go(-1)}
-                    disabled={loading}
-                    fullWidth
-                  >
-                    Abbrechen
-                  </Button>
-                </Grid>
-                <Grid item xs>
-                  <Button
-                    type="submit"
-                    color="primary"
-                    disabled={!game?.name || !isValid(date) || loading}
-                    startIcon={
-                      loading ? (
-                        <CircularProgress
-                          color="inherit"
-                          size={18}
-                          thickness={3}
-                        />
-                      ) : null
-                    }
-                    fullWidth
-                  >
-                    Hinzufügen
-                  </Button>
-                </Grid>
+          </Box>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={selfJoinMatch}
+                onChange={event => setSelfJoinMatch(event.target.checked)}
+              />
+            }
+            label="Selbst mitspielen"
+          />
+          <Box my="1.5rem">
+            <Grid container direction="row" spacing={2}>
+              <Grid item xs>
+                <Button
+                  onClick={() => window.history.go(-1)}
+                  disabled={loading}
+                  fullWidth
+                >
+                  Abbrechen
+                </Button>
               </Grid>
-            </Box>
-          </form>
-        )}
+              <Grid item xs>
+                <Button
+                  type="submit"
+                  color="primary"
+                  disabled={!game?.name || !isValid(date) || loading}
+                  startIcon={
+                    loading ? (
+                      <CircularProgress
+                        color="inherit"
+                        size={18}
+                        thickness={3}
+                      />
+                    ) : null
+                  }
+                  fullWidth
+                >
+                  Hinzufügen
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
+        </form>
       </Container>
     </>
   );
