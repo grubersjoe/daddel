@@ -41,11 +41,11 @@ export function formatDate(timestamp: Timestamp, smartWeekday = true): string {
     }
 
     if (isToday(date)) {
-      return `Heute ${format(date, DATE_FORMAT, { locale: de })}`;
+      return `Heute`;
     }
 
     if (isTomorrow(date)) {
-      return `Morgen ${format(date, DATE_FORMAT, { locale: de })}`;
+      return `Morgen`;
     }
   }
 
