@@ -67,7 +67,8 @@ const MatchDetail: FunctionComponent = () => {
           </Button>
         </>
       </AppBar>
-      <Box p={3} pt={0}>
+
+      <Box p={3}>
         <Grid container spacing={5}>
           <Grid item xs={12} md={4} lg={3} key={match.id}>
             <MatchCard match={match} userList={users} setPageMetadata />
