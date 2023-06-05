@@ -140,13 +140,11 @@ const MatchesList: FunctionComponent = () => {
             )}
 
           {filteredFutureMatches && filteredFutureMatches.length === 0 && (
-            <div>
+            <>
               <Typography paragraph>Wow. Much empty.</Typography>
-
               {numberOfEnabledFilters > 0 && (
                 <Typography paragraph>Obacht! Filter ist aktiv.</Typography>
               )}
-
               <Button
                 color="primary"
                 component={Link}
@@ -155,7 +153,7 @@ const MatchesList: FunctionComponent = () => {
               >
                 Neues Match
               </Button>
-            </div>
+            </>
           )}
         </TabPanel>
 

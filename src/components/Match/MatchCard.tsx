@@ -113,7 +113,7 @@ const MatchCard: FunctionComponent<Props> = ({
 
   const hasBanner = Boolean(gameBanner);
 
-  // It should be able to join a match until the end of its date
+  // It should be possible to join a match until the end of its date
   const isJoinable = isFuture(endOfDay(match.date.toDate()));
 
   const handleEmojiClick = (emoji: string) => toggleMatchReaction(match, emoji);

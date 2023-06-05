@@ -20,8 +20,12 @@ export const useSteamGames = () => {
   const { data: steamUser } = useSteamUser();
 
   const url = new URL(
-    'https://api.jogruber.de/steam/IPlayerService/GetOwnedGames/v0001?format=json&include_appinfo=1',
+    'https://api.jogruber.de/steam/IPlayerService/GetOwnedGames/v0001',
   );
+
+  url.searchParams.append('format', 'json');
+  url.searchParams.append('include_appinfo', '1');
+  url.searchParams.append('include_played_free_games', '1');
 
   if (steamUser) {
     url.searchParams.append('steamid', steamUser.id);
