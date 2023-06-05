@@ -132,7 +132,7 @@ const MatchesList: FunctionComponent = () => {
             users && (
               <Grid container spacing={5}>
                 {filteredFutureMatches.map(match => (
-                  <Grid item xs={12} sm={6} md={4} lg={3} key={match.id}>
+                  <Grid item xs={12} sm={6} md={5} lg={4} xl={3} key={match.id}>
                     <MatchCard match={match} userList={users} />
                   </Grid>
                 ))}
@@ -167,7 +167,7 @@ const MatchesList: FunctionComponent = () => {
           {filteredPastMatches && filteredPastMatches.length > 0 && users && (
             <Grid container spacing={5}>
               {filteredPastMatches.map(match => (
-                <Grid item xs={12} sm={6} md={4} lg={3} key={match.id}>
+                <Grid item xs={12} sm={6} md={5} lg={4} xl={3} key={match.id}>
                   <MatchCard match={match} userList={users} />
                 </Grid>
               ))}

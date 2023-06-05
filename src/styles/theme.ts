@@ -22,8 +22,8 @@ export const createTheme = (color: string): Theme =>
         xs: 0,
         sm: 600,
         md: 900,
-        lg: 1500, // default 1200
-        xl: 1800, // default 1536
+        lg: 1200,
+        xl: 1536,
       },
     },
     components: {

@@ -34,7 +34,7 @@ type Props = {
   setPageMetadata?: boolean;
 };
 
-export const styles = ({ spacing, breakpoints }: Theme) =>
+export const styles = ({ spacing, breakpoints, palette }: Theme) =>
   ({
     card: {
       height: '100%',
@@ -53,32 +53,28 @@ export const styles = ({ spacing, breakpoints }: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'flex-end',
+      filter: 'drop-shadow(0px 0px 6px #222)',
+      borderBottom: `1px solid hsl(0deg 0% 16%)`,
 
+      // > 600
       [breakpoints.up('sm')]: {
-        height: 170,
+        height: '20vw',
       },
 
+      // > 900
+      [breakpoints.up('md')]: {
+        height: '17vw',
+      },
+
+      // > 1200
       [breakpoints.up('lg')]: {
-        height: 200,
+        height: '14vw',
       },
 
+      // > 1536
       [breakpoints.up('xl')]: {
-        height: 240,
+        height: '10.5vw',
       },
-    },
-    title: {
-      width: '100%',
-      height: spacing(10),
-      display: 'flex',
-      alignItems: 'flex-end',
-      justifyContent: 'space-between',
-      whiteSpace: 'nowrap',
-      textOverflow: 'ellipsis',
-    },
-    titleItem: {
-      padding: `${spacing(4)} ${spacing(2)} ${spacing(1.5)} ${spacing(2)}`,
-      fontWeight: 600,
-      textShadow: '1px 1px 1px #111',
     },
     list: {
       margin: '1rem 0 0',
@@ -114,9 +110,7 @@ const MatchCard: FunctionComponent<Props> = ({
     game.steamAppId,
   );
 
-  const image = steamApp
-    ? new URL(steamApp.screenshots[0].path_thumbnail)
-    : null;
+  const image = steamApp ? new URL(steamApp.header_image) : null;
 
   // It should be possible to join a match until the end of its date
   const isJoinable = isFuture(endOfDay(match.date.toDate()));
@@ -137,8 +131,7 @@ const MatchCard: FunctionComponent<Props> = ({
           sx={{
             ...sx.media,
             ...(!image && {
-              background:
-                'linear-gradient(hsl(0deg 0% 28%) 0%, hsl(0deg 0% 24%) 100%)',
+              background: `linear-gradient(135deg, hsl(0deg 0% 30%) 0%, hsl(0deg 0% 22%) 100%)`,
             }),
           }}
         >
@@ -156,20 +149,6 @@ const MatchCard: FunctionComponent<Props> = ({
             </Box>
 
             {!image && <FallbackBanner game={game} />}
-
-            <Box
-              sx={{
-                ...sx.title,
-                ...(image && {
-                  background: 'linear-gradient(transparent, rgba(0, 0, 0, 1))',
-                }),
-              }}
-            >
-              <Typography sx={sx.titleItem}>{game.name}</Typography>
-              <Typography sx={sx.titleItem}>
-                {formatTime(match.date)} Uhr
-              </Typography>
-            </Box>
 
             {game.maxPlayers && (
               <Grid container item>
@@ -189,11 +168,12 @@ const MatchCard: FunctionComponent<Props> = ({
           justifyContent="space-between"
         >
           <CardContent sx={sx.cardContent}>
-            <Typography color="textSecondary" sx={{ mb: 2 }}>
-              {formatDate(match.date)}
+            <Typography color="textSecondary" mb={2}>
+              {formatDate(match.date)} {formatTime(match.date)} Uhr
               <Separator />
               <Link to={`/matches/${match.id}`}>Permalink</Link>
             </Typography>
+
             {match.description && (
               <Typography
                 sx={{

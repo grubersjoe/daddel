@@ -4,7 +4,6 @@ import fromUnixTime from 'date-fns/fromUnixTime';
 import isBefore from 'date-fns/isBefore';
 import isToday from 'date-fns/isToday';
 import isTomorrow from 'date-fns/isTomorrow';
-import isYesterday from 'date-fns/isYesterday';
 import { de } from 'date-fns/locale';
 import parseDate from 'date-fns/parse';
 import roundToNearestMinutes from 'date-fns/roundToNearestMinutes';
@@ -36,10 +35,6 @@ export function formatDate(timestamp: Timestamp, smartWeekday = true): string {
   const date = timestamp.toDate();
 
   if (smartWeekday) {
-    if (isYesterday(date)) {
-      return `Gestern ${format(date, DATE_FORMAT, { locale: de })}`;
-    }
-
     if (isToday(date)) {
       return `Heute`;
     }
@@ -49,7 +44,7 @@ export function formatDate(timestamp: Timestamp, smartWeekday = true): string {
     }
   }
 
-  return format(date, `EEEE ${DATE_FORMAT}`, { locale: de });
+  return format(date, DATE_FORMAT, { locale: de });
 }
 
 export function formatTime<R extends string = string>(

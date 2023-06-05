@@ -75,7 +75,7 @@ const Menu: FunctionComponent<Props> = ({ game, match }) => {
 
   const shareMatch = (match: Match) => {
     if (navigator.share) {
-      const date = `${formatDate(match.date, false)} um ${formatTime(
+      const date = `${formatDate(match.date, false)} ${formatTime(
         match.date,
       )} Uhr`;
 
