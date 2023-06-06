@@ -21,7 +21,7 @@ import JoinMatchDialog from '../Dialogs/JoinMatchDialog';
 import EmojiPicker from '../EmojiPicker';
 import PageMetadata from '../PageMetadata';
 import Calendar from './Calendar';
-import FallbackBanner from './FallbackBanner';
+import GameBanner from './GameBanner';
 import MatchCardSkeleton from './MatchCardSkeleton';
 import MatchReactions from './MatchReactions';
 import Menu from './Menu';
@@ -133,7 +133,7 @@ const MatchCard: FunctionComponent<Props> = ({
               <Menu game={game} match={match} />
             </Box>
 
-            {!image && <FallbackBanner game={game} />}
+            {!image && <GameBanner game={game} />}
 
             {game.maxPlayers && (
               <Grid container item>

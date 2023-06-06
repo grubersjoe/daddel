@@ -1,16 +1,18 @@
 import { Box } from '@mui/material';
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 
 import { Game } from '../../types';
 
-const FallbackBanner: FunctionComponent<{ game: Game }> = ({ game }) => (
+const GameBanner = ({ game }: { game: Game }) => (
   <Box
-    display="flex"
-    alignItems="center"
-    justifyContent="center"
-    width="100%"
-    height="100%"
-    position="absolute"
+    sx={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '100%',
+      height: '100%',
+      position: 'absolute',
+    }}
   >
     <Box
       sx={{
@@ -26,4 +28,4 @@ const FallbackBanner: FunctionComponent<{ game: Game }> = ({ game }) => (
   </Box>
 );
 
-export default FallbackBanner;
+export default GameBanner;
