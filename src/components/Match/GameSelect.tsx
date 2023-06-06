@@ -21,7 +21,6 @@ const GameSelect = (props: Props) => {
       freeSolo
       options={games ?? []}
       value={value}
-      inputValue={value?.name}
       onChange={(event, option) => {
         const value = typeof option === 'string' ? { name: option } : option;
         setValue(value);
