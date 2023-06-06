@@ -33,6 +33,8 @@ type Props = {
   setPageMetadata?: boolean;
 };
 
+const imageAspectRatio = (616 / 353).toFixed(3);
+
 /**
  * @see https://partner.steamgames.com/doc/store/assets/standard
  */
@@ -56,32 +58,12 @@ export const styles = ({ spacing, breakpoints, palette }: Theme) =>
       },
     },
     media: {
-      height: '51vw',
+      aspectRatio: imageAspectRatio,
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'flex-end',
       filter: 'drop-shadow(0px 0px 6px #222)',
       borderBottom: `1px solid hsl(0deg 0% 16%)`,
-
-      // > 600
-      [breakpoints.up('sm')]: {
-        height: '25vw',
-      },
-
-      // > 900
-      [breakpoints.up('md')]: {
-        height: '17vw',
-      },
-
-      // > 1200
-      [breakpoints.up('lg')]: {
-        height: '13vw',
-      },
-
-      // > 1536
-      [breakpoints.up('xl')]: {
-        height: '10vw',
-      },
     },
     list: {
       margin: '1rem 0 0',
