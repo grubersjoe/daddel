@@ -84,9 +84,18 @@ const EditMatch = () => {
   );
 
   const dispatchSnack = useContext(SnackbarContext);
-  if (error || (!loading && !match)) {
-    dispatchSnack(`Match kann nicht bearbeitet werden`, 'error');
 
+  if (loading) {
+    return null;
+  }
+
+  if (error) {
+    dispatchSnack(`Match konnte nicht gespeichert werden`, 'error');
+    return <Navigate to={routes.matchList} />;
+  }
+
+  if (!match) {
+    dispatchSnack(`Match nicht gefunden`, 'warning');
     return <Navigate to={routes.matchList} />;
   }
 
@@ -94,27 +103,21 @@ const EditMatch = () => {
     <>
       <PageMetadata title="Match bearbeiten – Daddel" />
       <AppBar title="Match bearbeiten" />
-      <Container>{match && <EditForm match={match} />}</Container>
+      <Container>
+        <EditForm match={match} />
+      </Container>
     </>
   );
 };
 
-interface Props {
-  match: Match;
-}
-
-const EditForm = (props: Props) => {
+const EditForm = (props: { match: Match }) => {
   const navigate = useNavigate();
   const dispatchSnack = useContext(SnackbarContext);
 
-  const { data: steamUser, isLoading: steamUserLoading } = useSteamUser();
-  const [loading, setLoading] = useState(false);
+  const { data: steamUser, isLoading: steamLoading } = useSteamUser();
 
   const [match, dispatch] = useReducer(reducer, props.match);
-
-  if (steamUserLoading) {
-    return null;
-  }
+  const [loading, setLoading] = useState(false);
 
   const handleUpdate = (event: FormEvent) => {
     event.preventDefault();

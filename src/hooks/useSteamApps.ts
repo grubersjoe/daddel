@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 import { useSteamUser } from './useSteamUser';
 
@@ -31,7 +31,7 @@ export const useSteamApps = () => {
     url.searchParams.append('steamid', steamUser.id);
   }
 
-  return useQuery({
+  return useQuery<Array<SteamGame>, AxiosError>({
     queryKey: ['steam-apps', steamUser?.id],
     queryFn: () =>
       axios

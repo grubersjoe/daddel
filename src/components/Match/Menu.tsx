@@ -53,7 +53,7 @@ const Menu: FunctionComponent<Props> = ({ game, match }) => {
     if (window.confirm('Sicher?')) {
       deleteDoc(getDocRef<Match>('matches', match.id)).catch(() => {
         logEvent(analytics, GA_EVENTS.DELETE_MATCH);
-        dispatchSnack('Fehler', 'error');
+        dispatchSnack('Match kann nicht gelöscht werden', 'error');
       });
     }
     closeMenu();
