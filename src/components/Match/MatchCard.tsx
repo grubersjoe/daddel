@@ -51,8 +51,6 @@ export const styles = ({ spacing, breakpoints, palette }: Theme) =>
       flexDirection: 'column',
     },
     cardContent: {
-      padding: spacing(2),
-
       [breakpoints.up('lg')]: {
         padding: `${spacing(2.5)} ${spacing(2.5)} 0`,
       },

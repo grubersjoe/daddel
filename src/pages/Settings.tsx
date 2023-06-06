@@ -2,9 +2,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SignOutIcon from '@mui/icons-material/ExitToApp';
 import {
   Alert,
+  Box,
   Button,
   Container,
-  Grid,
   TextField,
   Typography,
 } from '@mui/material';
@@ -96,30 +96,30 @@ const Settings: FunctionComponent = () => {
       <PageMetadata title="Einstellungen – Daddel" />
       <AppBar title="Einstellungen" />
       <Container sx={{ mt: 2 }}>
+        <Typography variant="h6">Nickname</Typography>
         <form
           autoComplete="off"
           onSubmit={submitNickname}
           onChange={() => setError(null)}
         >
-          <Grid container spacing={2} flexDirection="column">
-            <Grid item md={7}>
-              <Typography variant="h6">Nickname</Typography>
-              <TextField
-                variant="outlined"
-                placeholder="Nickname"
-                value={nickname ?? 'Lade …'}
-                onChange={event => setNickname(event.target.value)}
-                disabled={userLoading || Boolean(userError)}
-                fullWidth
-                required
-              />
-            </Grid>
-            <Grid item md={7}>
-              <Button type="submit" disabled={userLoading || loading} fullWidth>
-                Name ändern
-              </Button>
-            </Grid>
-          </Grid>
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <TextField
+              variant="outlined"
+              placeholder="Nickname"
+              value={nickname ?? 'Lade …'}
+              onChange={event => setNickname(event.target.value)}
+              disabled={userLoading || Boolean(userError)}
+              size="small"
+              required
+            />
+            <Button
+              type="submit"
+              disabled={userLoading || loading}
+              sx={{ flexShrink: 0 }}
+            >
+              Name ändern
+            </Button>
+          </Box>
         </form>
         {error && (
           <Alert severity="error" sx={{ mt: 2 }}>
@@ -127,50 +127,33 @@ const Settings: FunctionComponent = () => {
           </Alert>
         )}
 
-        <Grid container sx={{ mt: 6 }}>
-          <Grid item md={7}>
-            <SteamSettings />
-          </Grid>
-        </Grid>
+        <Box mt={5} maxWidth={400}>
+          <SteamSettings />
+        </Box>
 
         {messagingSupported && (
-          <>
-            <Grid container sx={{ mt: 6 }}>
-              <Grid item md={7}>
-                <NotificationsSettings />
-              </Grid>
-            </Grid>
-          </>
+          <Box mt={5} maxWidth={400}>
+            <NotificationsSettings />
+          </Box>
         )}
 
-        <Grid container spacing={2} flexDirection="column" sx={{ mt: 6 }}>
-          <Grid item md={7}>
-            <Typography variant="h6">Konto</Typography>
-            <Button
-              startIcon={<SignOutIcon />}
-              onClick={() => signOut(auth)}
-              fullWidth
-            >
+        <Box mt={5}>
+          <Typography variant="h6">Konto</Typography>
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <Button startIcon={<SignOutIcon />} onClick={() => signOut(auth)}>
               Abmelden
             </Button>
-          </Grid>
-          <Grid item md={7}>
-            <Button
-              startIcon={<DeleteIcon />}
-              onClick={deleteAccount}
-              fullWidth
-            >
+            <Button startIcon={<DeleteIcon />} onClick={deleteAccount}>
               Konto löschen
             </Button>
-          </Grid>
-        </Grid>
-        <Grid container spacing={2} sx={{ mt: 5 }}>
-          <Grid item md={7}>
-            <Typography sx={{ color: grey[500] }}>
-              Daddel {packageJson.version}
-            </Typography>
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
+
+        <Box mt={5}>
+          <Typography sx={{ color: grey[500] }}>
+            Daddel {packageJson.version}
+          </Typography>
+        </Box>
       </Container>
     </>
   );

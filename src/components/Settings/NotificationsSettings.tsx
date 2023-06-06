@@ -87,7 +87,6 @@ const NotificationsSettings: FunctionComponent = () => {
                   <CircularProgress color="inherit" size={18} thickness={3} />
                 )
               }
-              fullWidth
             >
               {loading ? 'Lade …' : 'Benachrichtigungen aktivieren'}
             </Button>
@@ -121,7 +120,6 @@ const NotificationsSettings: FunctionComponent = () => {
                   <CircularProgress color="inherit" size={18} thickness={3} />
                 )
               }
-              fullWidth
             >
               Benachrichtigungen deaktivieren
             </Button>
