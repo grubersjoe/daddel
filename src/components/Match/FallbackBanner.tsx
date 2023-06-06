@@ -14,9 +14,8 @@ const FallbackBanner: FunctionComponent<{ game: Game }> = ({ game }) => (
   >
     <Box
       sx={{
-        margin: '-28px 1em 0 1em',
         textAlign: 'center',
-        fontWeight: 'bold',
+        fontWeight: 600,
         fontSize: 'clamp(1.25rem, 2vw, 1.5rem)',
         lineHeight: 1.4,
         userSelect: 'none',

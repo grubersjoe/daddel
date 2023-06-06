@@ -30,6 +30,14 @@ import {
 const loadingAnimation =
   'pulse 0.75s cubic-bezier(.46,.03,.52,.96) 0s infinite';
 
+const gridConfig = {
+  xs: 12,
+  sm: 12 / 2,
+  md: 12 / 3,
+  lg: 12 / 4,
+  xl: 12 / 5,
+} as const;
+
 const MatchesList: FunctionComponent = () => {
   const [users] = useFetchUsers();
 
@@ -132,7 +140,7 @@ const MatchesList: FunctionComponent = () => {
             users && (
               <Grid container spacing={5}>
                 {filteredFutureMatches.map(match => (
-                  <Grid item xs={12} sm={6} md={5} lg={4} xl={3} key={match.id}>
+                  <Grid item {...gridConfig} key={match.id}>
                     <MatchCard match={match} userList={users} />
                   </Grid>
                 ))}
@@ -167,7 +175,7 @@ const MatchesList: FunctionComponent = () => {
           {filteredPastMatches && filteredPastMatches.length > 0 && users && (
             <Grid container spacing={5}>
               {filteredPastMatches.map(match => (
-                <Grid item xs={12} sm={6} md={5} lg={4} xl={3} key={match.id}>
+                <Grid item {...gridConfig} key={match.id}>
                   <MatchCard match={match} userList={users} />
                 </Grid>
               ))}

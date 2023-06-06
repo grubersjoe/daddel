@@ -14,7 +14,6 @@ import isFuture from 'date-fns/isFuture';
 import React, { FunctionComponent } from 'react';
 import { Link } from 'react-router-dom';
 
-import { useSteamApp } from '../../hooks/useSteamApp';
 import { toggleMatchReaction } from '../../services/reactions';
 import { Match, UserMap } from '../../types';
 import { formatDate, formatTime } from '../../utils/date';
@@ -34,6 +33,14 @@ type Props = {
   setPageMetadata?: boolean;
 };
 
+/**
+ * @see https://partner.steamgames.com/doc/store/assets/standard
+ */
+const getSteamImage = (steamAppId: number) =>
+  new URL(
+    `https://cdn.cloudflare.steamstatic.com/steam/apps/${steamAppId}/capsule_616x353.jpg`,
+  );
+
 export const styles = ({ spacing, breakpoints, palette }: Theme) =>
   ({
     card: {
@@ -49,7 +56,7 @@ export const styles = ({ spacing, breakpoints, palette }: Theme) =>
       },
     },
     media: {
-      height: '42vw',
+      height: '51vw',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'flex-end',
@@ -58,7 +65,7 @@ export const styles = ({ spacing, breakpoints, palette }: Theme) =>
 
       // > 600
       [breakpoints.up('sm')]: {
-        height: '20vw',
+        height: '25vw',
       },
 
       // > 900
@@ -68,12 +75,12 @@ export const styles = ({ spacing, breakpoints, palette }: Theme) =>
 
       // > 1200
       [breakpoints.up('lg')]: {
-        height: '14vw',
+        height: '13vw',
       },
 
       // > 1536
       [breakpoints.up('xl')]: {
-        height: '10.5vw',
+        height: '10vw',
       },
     },
     list: {
@@ -106,18 +113,14 @@ const MatchCard: FunctionComponent<Props> = ({
   const sx = styles(theme);
 
   const { game } = match;
-  const { data: steamApp, isInitialLoading: steamAppLoading } = useSteamApp(
-    game.steamAppId,
-  );
-
-  const image = steamApp ? new URL(steamApp.header_image) : null;
+  const image = game.steamAppId ? getSteamImage(game.steamAppId) : null;
 
   // It should be possible to join a match until the end of its date
   const isJoinable = isFuture(endOfDay(match.date.toDate()));
 
   const handleEmojiClick = (emoji: string) => toggleMatchReaction(match, emoji);
 
-  if (!game || steamAppLoading) {
+  if (!game) {
     return <MatchCardSkeleton />;
   }
 
