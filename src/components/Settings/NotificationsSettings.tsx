@@ -1,10 +1,4 @@
-import {
-  Alert,
-  Button,
-  CircularProgress,
-  Grid,
-  Typography,
-} from '@mui/material';
+import { Alert, Button, Grid, Typography } from '@mui/material';
 import React, {
   FunctionComponent,
   MouseEventHandler,
@@ -14,6 +8,7 @@ import React, {
 
 import useMessagingSupported from '../../hooks/useMessagingSupported';
 import useNotifications from '../../hooks/useNotifications';
+import ButtonProgress from '../ButtonProgress';
 import { SnackbarContext } from '../Layout';
 
 const NotificationsSettings: FunctionComponent = () => {
@@ -82,11 +77,7 @@ const NotificationsSettings: FunctionComponent = () => {
             <Button
               onClick={handleSubscribe}
               disabled={loading || permissionState === 'denied'}
-              startIcon={
-                loading && (
-                  <CircularProgress color="inherit" size={18} thickness={3} />
-                )
-              }
+              startIcon={loading && <ButtonProgress />}
             >
               {loading ? 'Lade …' : 'Benachrichtigungen aktivieren'}
             </Button>
@@ -115,11 +106,7 @@ const NotificationsSettings: FunctionComponent = () => {
             <Button
               onClick={handleUnsubscribe}
               disabled={loading}
-              startIcon={
-                loading && (
-                  <CircularProgress color="inherit" size={18} thickness={3} />
-                )
-              }
+              startIcon={loading && <ButtonProgress />}
             >
               Benachrichtigungen deaktivieren
             </Button>

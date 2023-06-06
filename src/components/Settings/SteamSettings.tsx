@@ -6,7 +6,7 @@ import SteamAuthentication from '../Auth/SteamAuthentication';
 const SteamSettings: FunctionComponent = () => (
   <>
     <Typography variant="h6">Steam-Konto verbinden</Typography>
-    <Typography variant="body1" color="textSecondary" gutterBottom>
+    <Typography variant="body1" color="textSecondary" mb={3}>
       Melde dich bei Steam an, um deine Spiele aufzulisten, wenn du ein Match
       anlegst.
     </Typography>

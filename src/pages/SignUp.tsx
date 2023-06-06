@@ -1,7 +1,6 @@
 import {
   Alert,
   Button,
-  CircularProgress,
   Container,
   Grid,
   Link,
@@ -13,6 +12,7 @@ import { setDoc } from 'firebase/firestore';
 import React, { FormEventHandler, FunctionComponent, useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
+import ButtonProgress from '../components/ButtonProgress';
 import Logo from '../components/Logo';
 import PageMetadata from '../components/PageMetadata';
 import routes from '../constants/routes';
@@ -183,11 +183,7 @@ const SignUp: FunctionComponent = () => {
               color="primary"
               size="large"
               disabled={loading}
-              startIcon={
-                loading ? (
-                  <CircularProgress color="inherit" size={18} thickness={3} />
-                ) : null
-              }
+              startIcon={loading ? <ButtonProgress /> : null}
               fullWidth
             >
               Registrieren

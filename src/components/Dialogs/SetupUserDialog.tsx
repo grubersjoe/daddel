@@ -1,7 +1,6 @@
 import {
   Alert,
   Button,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -24,6 +23,7 @@ import useOnlineStatus from '../../hooks/useOnlineStatus';
 import { isValidInvitationCode } from '../../services/auth';
 import { auth, getDocRef } from '../../services/firebase';
 import { User } from '../../types';
+import ButtonProgress from '../ButtonProgress';
 import { SnackbarContext } from '../Layout';
 
 enum Step {
@@ -159,11 +159,7 @@ const SetupUserDialog: FunctionComponent = () => {
                 variant="text"
                 color="primary"
                 disabled={loading}
-                startIcon={
-                  loading ? (
-                    <CircularProgress color="inherit" size={18} thickness={3} />
-                  ) : null
-                }
+                startIcon={loading ? <ButtonProgress /> : null}
               >
                 Weiter
               </Button>
@@ -201,11 +197,7 @@ const SetupUserDialog: FunctionComponent = () => {
                 variant="text"
                 color="primary"
                 disabled={loading}
-                startIcon={
-                  loading ? (
-                    <CircularProgress color="inherit" size={18} thickness={3} />
-                  ) : null
-                }
+                startIcon={loading ? <ButtonProgress /> : null}
               >
                 Fertig
               </Button>

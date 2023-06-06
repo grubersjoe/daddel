@@ -1,6 +1,5 @@
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
@@ -10,6 +9,7 @@ import { sendPasswordResetEmail } from 'firebase/auth';
 import React, { FormEventHandler, FunctionComponent, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
+import ButtonProgress from '../components/ButtonProgress';
 import Logo from '../components/Logo';
 import PageMetadata from '../components/PageMetadata';
 import routes from '../constants/routes';
@@ -59,11 +59,7 @@ const ResetPassword: FunctionComponent = () => {
               type="submit"
               size="large"
               disabled={loading}
-              startIcon={
-                loading ? (
-                  <CircularProgress color="inherit" size={18} thickness={3} />
-                ) : null
-              }
+              startIcon={loading ? <ButtonProgress /> : null}
               fullWidth
             >
               Zurücksetzen

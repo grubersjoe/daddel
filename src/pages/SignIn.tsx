@@ -18,6 +18,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { Navigate, Link as RouterLink, useLocation } from 'react-router-dom';
 
 import GoogleIcon from '../assets/icons/GoogleIcon';
+import ButtonProgress from '../components/ButtonProgress';
 import Logo from '../components/Logo';
 import PageMetadata from '../components/PageMetadata';
 import Spinner from '../components/Spinner';
@@ -100,11 +101,7 @@ const SignIn: FunctionComponent = () => {
               type="submit"
               size="large"
               disabled={loading}
-              startIcon={
-                loading ? (
-                  <CircularProgress color="inherit" size={18} thickness={3} />
-                ) : null
-              }
+              startIcon={loading ? <ButtonProgress /> : null}
               fullWidth
             >
               Anmelden

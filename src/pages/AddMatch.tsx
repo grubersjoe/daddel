@@ -186,7 +186,7 @@ const AddMatch: FunctionComponent = () => {
               disabled={!game?.name || !isValid(date) || loading}
               startIcon={
                 loading ? (
-                  <CircularProgress color="inherit" size={18} thickness={3} />
+                  <CircularProgress color="inherit" size={16} thickness={4} />
                 ) : null
               }
             >
