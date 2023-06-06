@@ -3,7 +3,7 @@ import CSSBaseline from '@mui/material/CssBaseline';
 import yellow from '@mui/material/colors/yellow';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import React, { FunctionComponent, ReactElement, useEffect } from 'react';
+import React, { FunctionComponent, ReactElement } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { HelmetProvider } from 'react-helmet-async';
 import {
@@ -42,22 +42,15 @@ const RequireAuth: FunctionComponent<{ children: ReactElement }> = ({
   return authUser ? children : <Navigate to={routes.home} />;
 };
 
-function redirectToProdUrl() {
-  const isAllowedHost =
-    [DOMAIN_PROD, 'localhost'].includes(window.location.hostname) ||
-    REGEX_IPV4.test(window.location.hostname);
-
-  if (!isAllowedHost) {
-    window.location.replace(`https://${DOMAIN_PROD}`);
-  }
-}
+const isValidHost = () =>
+  [DOMAIN_PROD, 'localhost'].includes(window.location.hostname) ||
+  REGEX_IPV4.test(window.location.hostname);
 
 const App: FunctionComponent = () => {
-  useEffect(() => {
-    redirectToProdUrl();
-  }, []);
+  if (!isValidHost()) {
+    return (window.location.href = `https://${DOMAIN_PROD}`);
+  }
 
-  // TODO: make this configurable
   const theme = createTheme(yellow[700]);
 
   return (
@@ -117,6 +110,8 @@ const App: FunctionComponent = () => {
                     element={<ResetPassword />}
                   />
                   <Route path={routes.home} element={<SignIn />} />
+
+                  <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </Layout>
             </Router>
