@@ -5,7 +5,6 @@ import {
   CircularProgress,
   Container,
   FormControlLabel,
-  Grid,
   TextField,
   Typography,
 } from '@mui/material';
@@ -137,6 +136,7 @@ const AddMatch: FunctionComponent = () => {
           <Box mb={3}>
             <DateTimePicker date={date} onChange={setDate} />
           </Box>
+
           <Box mb={3}>
             <TextField
               type="number"
@@ -152,6 +152,7 @@ const AddMatch: FunctionComponent = () => {
               fullWidth
             />
           </Box>
+
           <Box mb={3}>
             <TextField
               label="Beschreibung"
@@ -163,6 +164,7 @@ const AddMatch: FunctionComponent = () => {
               fullWidth
             />
           </Box>
+
           <FormControlLabel
             control={
               <Checkbox
@@ -172,37 +174,24 @@ const AddMatch: FunctionComponent = () => {
             }
             label="Selbst mitspielen"
           />
-          <Box my={3}>
-            <Grid container direction="row" spacing={2}>
-              <Grid item xs>
-                <Button
-                  onClick={() => window.history.go(-1)}
-                  disabled={loading}
-                  fullWidth
-                >
-                  Abbrechen
-                </Button>
-              </Grid>
-              <Grid item xs>
-                <Button
-                  type="submit"
-                  color="primary"
-                  disabled={!game?.name || !isValid(date) || loading}
-                  startIcon={
-                    loading ? (
-                      <CircularProgress
-                        color="inherit"
-                        size={18}
-                        thickness={3}
-                      />
-                    ) : null
-                  }
-                  fullWidth
-                >
-                  Hinzufügen
-                </Button>
-              </Grid>
-            </Grid>
+
+          <Box my={3} sx={{ display: 'flex', gap: 2, justifyContent: 'end' }}>
+            <Button onClick={() => window.history.go(-1)} disabled={loading}>
+              Abbrechen
+            </Button>
+
+            <Button
+              type="submit"
+              color="primary"
+              disabled={!game?.name || !isValid(date) || loading}
+              startIcon={
+                loading ? (
+                  <CircularProgress color="inherit" size={18} thickness={3} />
+                ) : null
+              }
+            >
+              Hinzufügen
+            </Button>
           </Box>
         </form>
       </Container>

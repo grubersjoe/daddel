@@ -3,7 +3,6 @@ import {
   Button,
   CircularProgress,
   Container,
-  Grid,
   TextField,
   Typography,
 } from '@mui/material';
@@ -202,33 +201,23 @@ const EditForm = (props: { match: Match }) => {
             fullWidth
           />
         </Box>
-        <Box my={3}>
-          <Grid container direction="row" spacing={2}>
-            <Grid item xs>
-              <Button
-                onClick={() => window.history.go(-1)}
-                disabled={loading}
-                fullWidth
-              >
-                Abbrechen
-              </Button>
-            </Grid>
-            <Grid item xs>
-              <Button
-                type="submit"
-                color="primary"
-                disabled={!match.game?.name || loading}
-                startIcon={
-                  loading ? (
-                    <CircularProgress color="inherit" size={22} thickness={3} />
-                  ) : null
-                }
-                fullWidth
-              >
-                Speichern
-              </Button>
-            </Grid>
-          </Grid>
+        <Box my={3} sx={{ display: 'flex', gap: 2, justifyContent: 'end' }}>
+          <Button onClick={() => window.history.go(-1)} disabled={loading}>
+            Abbrechen
+          </Button>
+
+          <Button
+            type="submit"
+            color="primary"
+            disabled={!match.game?.name || loading}
+            startIcon={
+              loading ? (
+                <CircularProgress color="inherit" size={22} thickness={3} />
+              ) : null
+            }
+          >
+            Speichern
+          </Button>
         </Box>
       </form>
     </>

@@ -1,15 +1,17 @@
-import { CircularProgress, Grid } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 import React, { FunctionComponent } from 'react';
 
 const Spinner: FunctionComponent = () => (
-  <Grid
-    container
-    alignItems="center"
-    justifyContent="center"
-    sx={{ pt: '2rem' }}
+  <Box
+    sx={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      pt: 4,
+    }}
   >
     <CircularProgress />
-  </Grid>
+  </Box>
 );
 
 export default Spinner;
