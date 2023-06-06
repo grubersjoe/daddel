@@ -1,5 +1,6 @@
+import ErrorIcon from '@mui/icons-material/ErrorOutline';
 import FaceIcon from '@mui/icons-material/Face';
-import { Alert, Box, Button, Chip, CircularProgress } from '@mui/material';
+import { Box, Button, Chip, CircularProgress } from '@mui/material';
 import React from 'react';
 
 import { useSteamUser } from '../../hooks/useSteamUser';
@@ -8,12 +9,22 @@ import { signInSteam, signOutFromSteam } from '../../services/auth';
 const SteamAuthentication = () => {
   const { data: steamUser, isLoading, isError, refetch } = useSteamUser();
 
-  if (isError) {
-    return (
-      <Alert severity="error" sx={{ width: 'max-content' }}>
-        Steam nicht erreichbar
-      </Alert>
-    );
+  function label() {
+    if (isError) {
+      return 'Fehler';
+    }
+
+    return steamUser ? 'Abmelden' : 'Bei Steam anmelden';
+  }
+
+  function icon() {
+    if (isError) {
+      return <ErrorIcon />;
+    }
+
+    if (isLoading) {
+      return <CircularProgress color="inherit" size={16} thickness={4} />;
+    }
   }
 
   return (
@@ -31,14 +42,10 @@ const SteamAuthentication = () => {
         onClick={() =>
           steamUser ? signOutFromSteam().then(() => refetch()) : signInSteam()
         }
-        disabled={isLoading}
-        startIcon={
-          isLoading ? (
-            <CircularProgress color="inherit" size={18} thickness={3} />
-          ) : null
-        }
+        disabled={isLoading || isError}
+        startIcon={icon()}
       >
-        {steamUser ? 'Abmelden' : 'Bei Steam anmelden'}
+        {label()}
       </Button>
     </>
   );
