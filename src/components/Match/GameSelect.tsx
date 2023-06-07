@@ -16,31 +16,30 @@ const GameSelect = (props: Props) => {
     props.defaultValue ?? null,
   );
 
+  function handleChange(option: string | GameOption | null) {
+    const value = typeof option === 'string' ? { name: option } : option;
+    setValue(value);
+    props.onChange(value);
+  }
+
   return (
     <MuiAutocomplete<GameOption, false, false, true>
       freeSolo
       options={games ?? []}
       value={value}
-      onChange={(event, option) => {
-        const value = typeof option === 'string' ? { name: option } : option;
-        setValue(value);
-        props.onChange(value);
+      onChange={(_, option, reason) => {
+        handleChange(option);
       }}
-      onInputChange={(event, newValue) => {
-        setValue({ name: newValue });
-        props.onChange({ name: newValue });
-      }}
-      getOptionLabel={option => {
-        if (typeof option === 'string') {
-          return option;
+      onInputChange={(_, option, reason) => {
+        if (reason === 'input') {
+          handleChange(option);
         }
-
-        return option.name;
       }}
-      selectOnFocus
+      getOptionLabel={option =>
+        typeof option === 'string' ? option : option.name
+      }
       handleHomeEndKeys
       renderInput={props => <TextField {...props} label="Spiel" required />}
-      renderOption={(props, option) => <li {...props}>{option.name}</li>}
       loading={gamesLoading}
     />
   );

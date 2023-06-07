@@ -6,6 +6,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import isValid from 'date-fns/isValid';
 import setDate from 'date-fns/set';
 import { Timestamp, updateDoc } from 'firebase/firestore';
 import React, {
@@ -31,7 +32,7 @@ import { Match, Player } from '../types';
 import { isSteamGame } from '../types/guards';
 
 type Actions =
-  | { type: 'set_game'; game: GameOption }
+  | { type: 'set_game'; game: GameOption | null }
   | { type: 'set_date'; date: Date }
   | { type: 'set_max_players'; maxPlayers: string }
   | { type: 'set_description'; description: string };
@@ -43,8 +44,9 @@ const reducer: Reducer<Match, Actions> = (state, action) => {
         ...state,
         game: {
           ...state.game,
-          name: action.game.name,
-          steamAppId: isSteamGame(action.game) ? action.game.appid : null,
+          name: action.game ? action.game.name.trim() : '',
+          steamAppId:
+            action.game && isSteamGame(action.game) ? action.game.appid : null,
         },
       };
     }
@@ -113,7 +115,7 @@ const EditForm = (props: { match: Match }) => {
   const navigate = useNavigate();
   const dispatchSnack = useContext(SnackbarContext);
 
-  const { data: steamUser, isLoading: steamLoading } = useSteamUser();
+  const { data: steamUser } = useSteamUser();
 
   const [match, dispatch] = useReducer(reducer, props.match);
   const [loading, setLoading] = useState(false);
@@ -135,21 +137,11 @@ const EditForm = (props: { match: Match }) => {
 
   return (
     <>
-      {!steamUser && (
-        <Box mt={2} mb={5}>
-          <Typography variant="body1" color="textSecondary" mb={2}>
-            Melde dich bei Steam an, um all deine verfügbaren Spiele anzuzeigen.
-          </Typography>
-          <SteamAuthentication />
-        </Box>
-      )}
       <Box mt={2} mb={3}>
         <GameSelect
           defaultValue={match.game}
           onChange={game => {
-            if (game) {
-              dispatch({ type: 'set_game', game });
-            }
+            dispatch({ type: 'set_game', game });
           }}
         />
       </Box>
@@ -201,6 +193,17 @@ const EditForm = (props: { match: Match }) => {
             fullWidth
           />
         </Box>
+
+        {!steamUser && (
+          <Box mt={2} mb={5}>
+            <Typography variant="body1" color="textSecondary" mb={2}>
+              Melde dich bei Steam an, um all deine verfügbaren Spiele
+              anzuzeigen.
+            </Typography>
+            <SteamAuthentication />
+          </Box>
+        )}
+
         <Box my={3} sx={{ display: 'flex', gap: 2, justifyContent: 'end' }}>
           <Button onClick={() => window.history.go(-1)} disabled={loading}>
             Abbrechen
@@ -209,7 +212,7 @@ const EditForm = (props: { match: Match }) => {
           <Button
             type="submit"
             color="primary"
-            disabled={!match.game?.name || loading}
+            disabled={!match.game.name || !isValid(match.date) || loading}
             startIcon={
               loading ? (
                 <CircularProgress color="inherit" size={22} thickness={3} />

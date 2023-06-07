@@ -12,38 +12,28 @@ import addMinutes from 'date-fns/addMinutes';
 import isSameDay from 'date-fns/isSameDay';
 import isValid from 'date-fns/isValid';
 import parseDate from 'date-fns/parse';
-import { logEvent } from 'firebase/analytics';
-import { User } from 'firebase/auth';
-import { Timestamp, addDoc } from 'firebase/firestore';
-import React, {
-  FormEvent,
-  FunctionComponent,
-  useContext,
-  useState,
-} from 'react';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { useNavigate } from 'react-router-dom';
+import {logEvent} from 'firebase/analytics';
+import {User} from 'firebase/auth';
+import {addDoc, Timestamp} from 'firebase/firestore';
+import React, {FormEvent, FunctionComponent, useContext, useState,} from 'react';
+import {useAuthState} from 'react-firebase-hooks/auth';
+import {useNavigate} from 'react-router-dom';
 
 import AppBar from '../components/AppBar';
 import SteamAuthentication from '../components/Auth/SteamAuthentication';
 import DateTimePicker from '../components/DateTimePicker';
-import { SnackbarContext } from '../components/Layout';
-import GameSelect, { GameOption } from '../components/Match/GameSelect';
+import {SnackbarContext} from '../components/Layout';
+import GameSelect, {GameOption} from '../components/Match/GameSelect';
 import PageMetadata from '../components/PageMetadata';
-import { GA_EVENTS } from '../constants';
-import {
-  DEFAULT_MATCH_LENGTH,
-  DEFAULT_MATCH_TIME,
-  MATCH_TIME_LATEST,
-  TIME_FORMAT,
-} from '../constants/date';
+import {GA_EVENTS} from '../constants';
+import {DEFAULT_MATCH_LENGTH, DEFAULT_MATCH_TIME, MATCH_TIME_LATEST, TIME_FORMAT,} from '../constants/date';
 import routes from '../constants/routes';
-import { useSteamUser } from '../hooks/useSteamUser';
-import { analytics, auth, getCollectionRef } from '../services/firebase';
-import { joinMatch } from '../services/match';
-import { NewMatch } from '../types';
-import { isSteamGame } from '../types/guards';
-import { parseTime } from '../utils/date';
+import {useSteamUser} from '../hooks/useSteamUser';
+import {analytics, auth, getCollectionRef} from '../services/firebase';
+import {joinMatch} from '../services/match';
+import {NewMatch} from '../types';
+import {isSteamGame} from '../types/guards';
+import {parseTime} from '../utils/date';
 
 const AddMatch: FunctionComponent = () => {
   const navigate = useNavigate();
@@ -119,15 +109,6 @@ const AddMatch: FunctionComponent = () => {
       <PageMetadata title="Neues Match – Daddel" />
       <AppBar title="Neues Match" />
       <Container>
-        {!steamUser && (
-          <Box mt={2} mb={5}>
-            <Typography variant="body1" color="textSecondary" mb={2}>
-              Melde dich bei Steam an, um all deine verfügbaren Spiele
-              anzuzeigen.
-            </Typography>
-            <SteamAuthentication />
-          </Box>
-        )}
         <Box mt={2} mb={3}>
           <GameSelect onChange={setGame} />
         </Box>
@@ -174,6 +155,16 @@ const AddMatch: FunctionComponent = () => {
             }
             label="Selbst mitspielen"
           />
+
+          {!steamUser && (
+            <Box mt={2} mb={5}>
+              <Typography variant="body1" color="textSecondary" mb={2}>
+                Melde dich bei Steam an, um all deine verfügbaren Spiele
+                anzuzeigen.
+              </Typography>
+              <SteamAuthentication />
+            </Box>
+          )}
 
           <Box my={3} sx={{ display: 'flex', gap: 2, justifyContent: 'end' }}>
             <Button onClick={() => window.history.go(-1)} disabled={loading}>
