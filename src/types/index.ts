@@ -6,7 +6,6 @@ type Uid = string;
 
 export interface Match extends NewMatch {
   id: Uid;
-  game: Game;
 }
 
 export interface NewMatch {
