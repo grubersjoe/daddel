@@ -6,16 +6,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import isValid from 'date-fns/isValid';
-import setDate from 'date-fns/set';
-import { Timestamp, updateDoc } from 'firebase/firestore';
-import React, {
-  FormEvent,
-  Reducer,
-  useContext,
-  useReducer,
-  useState,
-} from 'react';
+import { updateDoc } from 'firebase/firestore';
+import React, { FormEvent, useContext, useState } from 'react';
 import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
@@ -23,59 +15,13 @@ import AppBar from '../components/AppBar';
 import SteamAuthentication from '../components/Auth/SteamAuthentication';
 import DateTimePicker from '../components/DateTimePicker';
 import { SnackbarContext } from '../components/Layout';
-import GameSelect, { GameOption } from '../components/Match/GameSelect';
+import GameSelect from '../components/Match/GameSelect';
 import PageMetadata from '../components/PageMetadata';
 import routes from '../constants/routes';
 import { useSteamUser } from '../hooks/useSteamUser';
+import { useUpdateMatch } from '../hooks/useUpdateMatch';
 import { getDocRef } from '../services/firebase';
-import { Match, Player } from '../types';
-import { isSteamGame } from '../types/guards';
-
-type Actions =
-  | { type: 'set_game'; game: GameOption | null }
-  | { type: 'set_date'; date: Date }
-  | { type: 'set_max_players'; maxPlayers: string }
-  | { type: 'set_description'; description: string };
-
-const reducer: Reducer<Match, Actions> = (state, action) => {
-  switch (action.type) {
-    case 'set_game': {
-      return {
-        ...state,
-        game: {
-          ...state.game,
-          name: action.game ? action.game.name.trim() : '',
-          steamAppId:
-            action.game && isSteamGame(action.game) ? action.game.appid : null,
-        },
-      };
-    }
-    case 'set_date': {
-      return {
-        ...state,
-        date: Timestamp.fromDate(action.date),
-        players: updatePlayerDates(state.players, action.date),
-      };
-    }
-    case 'set_max_players': {
-      return {
-        ...state,
-        game: {
-          ...state.game,
-          maxPlayers: action.maxPlayers ? Number(action.maxPlayers) : null,
-        },
-      };
-    }
-    case 'set_description': {
-      return {
-        ...state,
-        description: action.description ?? null,
-      };
-    }
-    default:
-      return state;
-  }
-};
+import { Match } from '../types';
 
 const EditMatch = () => {
   const { id } = useParams<{ id: string }>();
@@ -117,7 +63,7 @@ const EditForm = (props: { match: Match }) => {
 
   const { data: steamUser } = useSteamUser();
 
-  const [match, dispatch] = useReducer(reducer, props.match);
+  const [match, dispatch] = useUpdateMatch(props.match);
   const [loading, setLoading] = useState(false);
 
   const handleUpdate = (event: FormEvent) => {
@@ -212,7 +158,7 @@ const EditForm = (props: { match: Match }) => {
           <Button
             type="submit"
             color="primary"
-            disabled={!match.game.name || !isValid(match.date) || loading}
+            disabled={!match.game.name || loading}
             startIcon={
               loading ? (
                 <CircularProgress color="inherit" size={22} thickness={3} />
@@ -226,23 +172,5 @@ const EditForm = (props: { match: Match }) => {
     </>
   );
 };
-
-const updatePlayerDates = (
-  players: Array<Player>,
-  updatedDate: Date,
-): Array<Player> =>
-  players.map(player => {
-    const updateDate = {
-      year: updatedDate.getFullYear(),
-      month: updatedDate.getMonth(),
-      date: updatedDate.getDate(),
-    };
-
-    return {
-      uid: player.uid,
-      from: Timestamp.fromDate(setDate(player.from.toDate(), updateDate)),
-      until: Timestamp.fromDate(setDate(player.until.toDate(), updateDate)),
-    };
-  });
 
 export default EditMatch;
