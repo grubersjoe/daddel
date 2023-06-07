@@ -1,9 +1,5 @@
 const notSet = (name: string) => `Environmental variable ${name} is not set`;
 
-if (!import.meta.env.VITE_UNKNOWN_GAME_FIRESTORE_ID) {
-  throw new Error(notSet('VITE_UNKNOWN_GAME_FIRESTORE_ID'));
-}
-
 if (!import.meta.env.VITE_DOMAIN_PROD) {
   throw new Error(notSet('VITE_DOMAIN_PROD'));
 }
