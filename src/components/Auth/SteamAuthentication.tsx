@@ -7,11 +7,17 @@ import { useSteamUser } from '../../hooks/useSteamUser';
 import { signInSteam, signOutFromSteam } from '../../services/auth';
 
 const SteamAuthentication = () => {
-  const { data: steamUser, isLoading, isError, refetch } = useSteamUser();
+  const {
+    data: steamUser,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useSteamUser();
 
   function label() {
-    if (isError) {
-      return 'Fehler';
+    if (error) {
+      return error.message;
     }
 
     return steamUser ? 'Abmelden' : 'Bei Steam anmelden';
