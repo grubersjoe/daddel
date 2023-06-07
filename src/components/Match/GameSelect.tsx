@@ -27,7 +27,7 @@ const GameSelect = (props: Props) => {
       freeSolo
       options={games ?? []}
       value={value}
-      onChange={(_, option, reason) => {
+      onChange={(_, option) => {
         handleChange(option);
       }}
       onInputChange={(_, option, reason) => {

@@ -43,7 +43,7 @@ const getSteamImage = (steamAppId: number) =>
     `https://cdn.cloudflare.steamstatic.com/steam/apps/${steamAppId}/capsule_616x353.jpg`,
   );
 
-export const styles = ({ spacing, breakpoints, palette }: Theme) =>
+export const styles = ({ spacing, breakpoints }: Theme) =>
   ({
     card: {
       height: '100%',
