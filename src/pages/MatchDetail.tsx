@@ -13,6 +13,7 @@ import routes from '../constants/routes';
 import useFetchUsers from '../hooks/useFetchUsers';
 import { getDocRef } from '../services/firebase';
 import { Match } from '../types';
+import { gridConfig } from './MatchesList';
 
 const MatchDetail: FunctionComponent = () => {
   const dispatchSnack = useContext(SnackbarContext);
@@ -70,7 +71,7 @@ const MatchDetail: FunctionComponent = () => {
 
       <Box p={3}>
         <Grid container spacing={5}>
-          <Grid item xs={12} md={4} lg={3} key={match.id}>
+          <Grid item {...gridConfig} key={match.id}>
             <MatchCard match={match} userList={users} setPageMetadata />
           </Grid>
         </Grid>

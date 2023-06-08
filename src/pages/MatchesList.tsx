@@ -30,7 +30,7 @@ import {
 const loadingAnimation =
   'pulse 0.75s cubic-bezier(.46,.03,.52,.96) 0s infinite';
 
-const gridConfig = {
+export const gridConfig = {
   xs: 12,
   sm: 12 / 2,
   md: 12 / 3,
