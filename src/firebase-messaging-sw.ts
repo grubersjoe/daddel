@@ -1,10 +1,14 @@
 import { initializeApp } from 'firebase/app';
-import { getMessaging } from 'firebase/messaging/sw';
+import { getMessaging, onBackgroundMessage } from 'firebase/messaging/sw';
 
 import { firebaseOptions } from './constants/firebase';
 
-if (typeof window !== 'undefined') {
-  const firebaseApp = initializeApp(firebaseOptions);
+const firebaseApp = initializeApp(firebaseOptions);
+const messaging = getMessaging(firebaseApp);
 
-  getMessaging(firebaseApp);
-}
+onBackgroundMessage(messaging, payload => {
+  console.log(
+    '[firebase-messaging-sw.js] Received background message ',
+    payload,
+  );
+});

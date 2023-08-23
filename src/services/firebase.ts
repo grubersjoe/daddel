@@ -1,11 +1,12 @@
 import { getAnalytics } from 'firebase/analytics';
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { connectAuthEmulator, getAuth } from 'firebase/auth';
 import {
   CollectionReference,
   DocumentData,
   DocumentReference,
   collection,
+  connectFirestoreEmulator,
   doc,
   getFirestore,
 } from 'firebase/firestore';
@@ -17,8 +18,11 @@ import { firebaseOptions } from '../constants/firebase';
 export const firebaseApp = initializeApp(firebaseOptions);
 
 export const analytics = getAnalytics(firebaseApp);
+
 export const auth = getAuth(firebaseApp);
+
 export const firestore = getFirestore(firebaseApp);
+
 export const functions = getFunctions(firebaseApp, FIREBASE_LOCATION);
 
 export const getCollectionRef = <T = DocumentData>(name: string) =>
@@ -32,5 +36,7 @@ export const getDocRef = <T = DocumentData>(path: string, id?: string) => {
 
 // Emulators
 if (window.location.hostname === 'localhost') {
+  connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
+  connectFirestoreEmulator(firestore, 'localhost', 8080);
   connectFunctionsEmulator(functions, 'localhost', 5001);
 }

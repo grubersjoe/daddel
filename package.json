@@ -9,7 +9,7 @@
     "dev": "concurrently npm:dev:*",
     "dev:vite": "vite",
     "dev:vite-public": "vite build -w -c vite-public.config.ts",
-    "firebase:emulators": "GOOGLE_APPLICATION_CREDENTIALS=./credentials.json npx firebase emulators:start --only functions",
+    "firebase:emulators": "GOOGLE_APPLICATION_CREDENTIALS=./credentials.json firebase emulators:start --only auth,firestore,functions",
     "format": "prettier --write 'src/**/*' 'functions/src/**/*' './*.{js,json,md}'",
     "lint": "eslint src/ functions/",
     "preview": "vite preview",
