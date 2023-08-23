@@ -40,7 +40,7 @@ export default function useNotifications() {
           }
         });
     }
-  }, [user]);
+  }, [messagingSupported, user]);
 
   useEffect(() => setLoading(userLoading), [userLoading]);
 
