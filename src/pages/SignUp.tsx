@@ -69,6 +69,7 @@ const SignUp: FunctionComponent = () => {
     if (await isValidInvitationCode(formState.invitationCode)) {
       createUserWithEmailAndPassword(auth, formState.email, formState.password)
         .then(credential => {
+          console.log('set doc');
           setDoc<User>(
             getDocRef('users', credential.user.uid),
             { nickname: formState.nickname, invited: true },

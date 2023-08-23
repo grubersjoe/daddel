@@ -1,146 +1,98 @@
-import { firestore } from 'firebase-admin';
 import { FieldValue, getFirestore } from 'firebase-admin/firestore';
 import { Message, getMessaging } from 'firebase-admin/messaging';
-import { https, logger, region } from 'firebase-functions';
+import { logger } from 'firebase-functions';
+import { defineString } from 'firebase-functions/params';
+import { setGlobalOptions } from 'firebase-functions/v2';
+import { onDocumentCreated } from 'firebase-functions/v2/firestore';
+import { HttpsError, onCall } from 'firebase-functions/v2/https';
 
-import { Game, Match, User } from '../../src/types';
-import { APP_URL, FIREBASE_LOCATION } from './constants';
-import { formatDate, formatTime } from './util/date';
+import { Match, User } from '../../src/types';
+import { formatDate, formatTime } from './utils/date';
 
-import DocumentReference = firestore.DocumentReference;
+setGlobalOptions({ region: 'europe-west3' });
 
-const DEFAULT_TOPIC = 'default';
-const MESSAGING_ENABLED = true; // Useful while developing
+const appUrl = defineString('APP_URL');
+const defaultTopic = 'default';
 
-/**
- * @throws https.HttpsError
- */
-function assertPayloadIsMessagingToken(
-  data: Record<string, unknown>,
-): data is { fcmToken: string } {
-  if (typeof data.fcmToken !== 'string' || data.fcmToken.length === 0) {
-    throw new https.HttpsError(
-      'invalid-argument',
-      `Missing or invalid argument data.fcmToken: ${JSON.stringify(data)}`,
-    );
-  }
+export const subscribeToMessaging = onCall({}, req => {
+  const topic = defaultTopic;
+  const { uid, fcmToken } = req.data;
 
-  return true;
-}
+  return getMessaging()
+    .subscribeToTopic(fcmToken, topic)
+    .then(() =>
+      getFirestore()
+        .doc(`users/${uid}`)
+        .update({
+          fcmTokens: FieldValue.arrayUnion(fcmToken),
+        }),
+    )
+    .then(() => {
+      logger.info(`Successfully subscribed ${fcmToken} to topic ${topic}`);
 
-export const subscribeToMessaging = region(FIREBASE_LOCATION).https.onCall(
-  (data, context) => {
-    assertPayloadIsMessagingToken(data);
+      return { success: true };
+    })
+    .catch(() => {
+      const message = `Error subscribing ${fcmToken} to topic ${topic}`;
+      logger.error(message);
+      throw new HttpsError('unknown', message);
+    });
+});
 
-    const topic = DEFAULT_TOPIC;
+export const unsubscribeFromMessaging = onCall({}, req => {
+  const topic = defaultTopic;
+  const { uid, fcmToken } = req.data;
 
-    return getMessaging()
-      .subscribeToTopic(data.fcmToken, topic)
-      .then(() =>
-        getFirestore()
-          .doc(`users/${context.auth?.uid}`)
-          .update({
-            fcmTokens: FieldValue.arrayUnion(data.fcmToken),
-          }),
-      )
-      .then(() => {
-        logger.info(
-          `Successfully subscribed ${data.fcmToken} to topic ${topic}`,
-        );
+  return getMessaging()
+    .unsubscribeFromTopic(fcmToken, topic)
+    .then(() =>
+      getFirestore()
+        .doc(`users/${uid}`)
+        .update({
+          fcmTokens: FieldValue.arrayRemove(fcmToken),
+        }),
+    )
+    .then(() => {
+      logger.info(`Successfully unsubscribed ${fcmToken} from topic ${topic}`);
 
-        return { success: true };
-      })
-      .catch(() => {
-        const message = `Error subscribing ${data.fcmToken} to topic ${topic}`;
-        logger.error(message);
-        throw new https.HttpsError('unknown', message);
-      });
-  },
-);
+      return { success: true };
+    })
+    .catch(() => {
+      const message = `Error unsubscribing ${fcmToken} from topic ${topic}`;
+      logger.error(message);
+      throw new HttpsError('unknown', message);
+    });
+});
 
-export const unsubscribeFromMessaging = region(FIREBASE_LOCATION).https.onCall(
-  (data, context) => {
-    assertPayloadIsMessagingToken(data);
+export const onCreateMatch = onDocumentCreated('matches/{matchId}', event => {
+  const match = event.data.data() as Match;
 
-    const topic = DEFAULT_TOPIC;
+  return getFirestore()
+    .collection('users')
+    .doc(match.createdBy)
+    .get()
+    .then(userSnapshot => {
+      const user = userSnapshot.data() as User;
 
-    return getMessaging()
-      .unsubscribeFromTopic(data.fcmToken, topic)
-      .then(() =>
-        getFirestore()
-          .doc(`users/${context.auth?.uid}`)
-          .update({
-            fcmTokens: FieldValue.arrayRemove(data.fcmToken),
-          }),
-      )
-      .then(() => {
-        logger.info(
-          `Successfully unsubscribed ${data.fcmToken} from topic ${topic}`,
-        );
+      const date = `${formatDate(match.date)} um ${formatTime(match.date)} Uhr`;
 
-        return { success: true };
-      })
-      .catch(() => {
-        const message = `Error unsubscribing ${data.fcmToken} from topic ${topic}`;
-        logger.error(message);
-        throw new https.HttpsError('unknown', message);
-      });
-  },
-);
+      const message: Message = {
+        notification: {
+          title: 'Daddel – Neues Match',
+          body: `${user.nickname} hat ein neues Match erstellt: ${match.game.name} am ${date}.`,
+        },
+        topic: defaultTopic,
+        webpush: {
+          fcmOptions: {
+            link: `${appUrl.value()}/matches/${match.id}`,
+          },
+        },
+      };
 
-export const onCreateMatch = region(FIREBASE_LOCATION)
-  .firestore.document('matches/{matchId}')
-  .onCreate(matchSnap => {
-    const match = matchSnap.data() as Match;
-
-    if (!MESSAGING_ENABLED) {
-      logger.warn(
-        'No messages have been sent, because the feature is disabled.',
-      );
-
-      return Promise.resolve();
-    }
-
-    return getFirestore()
-      .collection('users')
-      .doc(match.createdBy)
-      .get()
-      .then(userSnap => {
-        const user = userSnap.data() as User;
-
-        return (match.game as unknown as DocumentReference) // DocumentReference in Admin is different to Firestore Web
-          .get()
-          .then(gameSnap => {
-            const game = gameSnap.data() as Game;
-            const date = `${formatDate(match.date)} um ${formatTime(
-              match.date,
-            )} Uhr`;
-
-            const message: Message = {
-              notification: {
-                title: 'Daddel – Neues Match',
-                body: `${user.nickname} hat ein neues Match erstellt: ${game.name} am ${date}.`,
-              },
-              topic: DEFAULT_TOPIC,
-              webpush: {
-                fcmOptions: {
-                  link: `${APP_URL}/matches/${matchSnap.id}`,
-                },
-              },
-            };
-
-            return getMessaging()
-              .send(message)
-              .then(response =>
-                logger.info('Successfully sent message:', response),
-              )
-              .catch(error => logger.error('Error sending message:', error));
-          })
-          .catch(error =>
-            logger.error('Unable to retrieve game from match', error),
-          );
-      })
-      .catch(error =>
-        logger.error('Unable to retrieve user from match', error),
-      );
-  });
+      return getMessaging()
+        .send(message)
+        .then(response => logger.info('Successfully sent message:', response))
+        .catch(error => logger.error('Error sending message:', error));
+    })
+    .catch(error => logger.error('Unable to retrieve user from match', error));
+});

@@ -56,6 +56,7 @@ const SignIn: FunctionComponent = () => {
   const handleGoogleLogin = () => {
     setGoogleLoading(true);
     signInWithPopup(auth, new GoogleAuthProvider())
+      .then(() => {})
       .catch(setError)
       .finally(() => setGoogleLoading(false));
   };

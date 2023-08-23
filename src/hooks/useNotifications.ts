@@ -24,8 +24,6 @@ export default function useNotifications() {
       return;
     }
 
-    setLoading(userLoading);
-
     if (user) {
       getToken(getMessaging(firebaseApp), {
         vapidKey: import.meta.env.VITE_VAPID_KEY,
@@ -42,15 +40,17 @@ export default function useNotifications() {
           }
         });
     }
-  }, [messagingSupported, user, userLoading]);
+  }, [user]);
+
+  useEffect(() => setLoading(userLoading), [userLoading]);
 
   async function subscribe() {
-    if (!messagingSupported) {
-      return Promise.reject('Platform unsupported');
-    }
-
     if (loading) {
       return Promise.reject('Request pending');
+    }
+
+    if (!authUser?.uid) {
+      return Promise.reject('Unauthorized');
     }
 
     setLoading(true);
@@ -59,19 +59,22 @@ export default function useNotifications() {
       vapidKey: import.meta.env.VITE_VAPID_KEY,
     })
       .then(fcmToken =>
-        httpsCallable(functions, 'subscribeToMessaging')({ fcmToken }),
+        httpsCallable(
+          functions,
+          'subscribeToMessaging',
+        )({ uid: authUser.uid, fcmToken }),
       )
       .catch(error => Promise.reject(error))
       .finally(() => setLoading(false));
   }
 
   const unsubscribe = () => {
-    if (!messagingSupported) {
-      return Promise.reject('Platform unsupported');
-    }
-
     if (loading) {
       return Promise.reject('Request pending');
+    }
+
+    if (!authUser?.uid) {
+      return Promise.reject('Unauthorized');
     }
 
     setLoading(true);
@@ -84,6 +87,7 @@ export default function useNotifications() {
           functions,
           'unsubscribeFromMessaging',
         )({
+          uid: authUser.uid,
           fcmToken,
         }),
       )

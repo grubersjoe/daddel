@@ -1,43 +1,44 @@
 import { getFirestore } from 'firebase-admin/firestore';
-import { config, logger, region } from 'firebase-functions';
+import { auth, logger } from 'firebase-functions';
+import { defineString } from 'firebase-functions/params';
+import { setGlobalOptions } from 'firebase-functions/v2';
+import { onDocumentDeleted } from 'firebase-functions/v2/firestore';
+import { onCall } from 'firebase-functions/v2/https';
 
-import { FIREBASE_LOCATION } from './constants';
+setGlobalOptions({ region: 'europe-west3' });
 
-export const isValidInvitationCode = region(FIREBASE_LOCATION).https.onCall(
-  (data: { code: string }) => ({
-    isValid: data.code === config().daddel.invitation_code,
-  }),
-);
+const invitationCode = defineString('INVITATION_CODE');
 
-export const onUserCreate = region(FIREBASE_LOCATION)
-  .auth.user()
-  .onCreate(userRecord => {
-    const mailPasswordProvider = userRecord.providerData.find(
-      provider => provider.providerId === 'password',
-    );
+export const isValidInvitationCode = onCall({}, req => ({
+  isValid: req.data.code === invitationCode.value(),
+}));
 
-    // Normal registration does already check invitation code
-    if (!mailPasswordProvider) {
-      getFirestore()
-        .collection('users')
-        .doc(userRecord.uid)
-        .set({ invited: false }, { merge: true })
-        .then(() => {
-          logger.info(`Set invitation status of users/${userRecord.uid}`);
-        })
-        .catch(logger.error);
-    }
-  });
+export const onUserCreate = auth.user().onCreate(userRecord => {
+  const hasPasswordProvider = userRecord.providerData.some(
+    provider => provider.providerId === 'password',
+  );
 
-export const onUserDelete = region(FIREBASE_LOCATION)
-  .auth.user()
-  .onDelete(userRecord =>
-    getFirestore()
+  // Normal registration already checks the invitation code
+  if (!hasPasswordProvider) {
+    return getFirestore()
       .collection('users')
       .doc(userRecord.uid)
-      .delete()
+      .set({ invited: false }, { merge: true })
       .then(() => {
-        logger.info(`Document users/${userRecord.uid} deleted`);
+        logger.info(`Set invitation status of users/${userRecord.uid}`);
       })
-      .catch(logger.error),
-  );
+      .catch(logger.error);
+  }
+
+  return Promise.resolve();
+});
+export const onUserDelete = onDocumentDeleted('users/{userId}', event =>
+  getFirestore()
+    .collection('users')
+    .doc(event.data.id)
+    .delete()
+    .then(() => {
+      logger.info(`Document users/${event.data.id} deleted`);
+    })
+    .catch(logger.error),
+);
