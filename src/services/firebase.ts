@@ -12,31 +12,9 @@ import {
 import { connectFunctionsEmulator, getFunctions } from 'firebase/functions';
 
 import { FIREBASE_LOCATION } from '../constants';
+import { firebaseOptions } from '../constants/firebase';
 
-const configKeys = [
-  'VITE_API_KEY',
-  'VITE_APP_ID',
-  'VITE_AUTH_DOMAIN',
-  'VITE_MEASUREMENT_ID',
-  'VITE_MESSAGING_SENDER_ID',
-  'VITE_PROJECT_ID',
-  'VITE_VAPID_KEY',
-];
-
-configKeys.forEach(key => {
-  if (!import.meta.env[key]) {
-    throw new Error(`Environmental variable ${key} is not set`);
-  }
-});
-
-export const firebaseApp = initializeApp({
-  apiKey: import.meta.env.VITE_API_KEY,
-  appId: import.meta.env.VITE_APP_ID,
-  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_PROJECT_ID,
-  measurementId: import.meta.env.VITE_MEASUREMENT_ID,
-  messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
-});
+export const firebaseApp = initializeApp(firebaseOptions);
 
 export const analytics = getAnalytics(firebaseApp);
 export const auth = getAuth(firebaseApp);
