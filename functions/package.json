@@ -11,7 +11,7 @@
     "start": "npm run build && npm run shell"
   },
   "engines": {
-    "node": "18"
+    "node": "20"
   },
   "dependencies": {
     "date-fns": "^2.30.0",

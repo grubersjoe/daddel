@@ -12,7 +12,7 @@ import {
 } from 'firebase/firestore';
 import { connectFunctionsEmulator, getFunctions } from 'firebase/functions';
 
-import { FIREBASE_LOCATION } from '../constants';
+import { FIREBASE_REGION } from '../constants';
 import { firebaseOptions } from '../constants/firebase';
 
 export const firebaseApp = initializeApp(firebaseOptions);
@@ -23,7 +23,7 @@ export const auth = getAuth(firebaseApp);
 
 export const firestore = getFirestore(firebaseApp);
 
-export const functions = getFunctions(firebaseApp, FIREBASE_LOCATION);
+export const functions = getFunctions(firebaseApp, FIREBASE_REGION);
 
 export const getCollectionRef = <T = DocumentData>(name: string) =>
   collection(firestore, name) as unknown as CollectionReference<T>;

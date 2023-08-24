@@ -19,8 +19,8 @@ setGlobalOptions({ region: 'europe-west3' });
 const appUrl = defineString('APP_URL');
 const invitationCode = defineString('INVITATION_CODE');
 
-export const onUserCreate = auth.user().onCreate(userRecord => {
-  const hasPasswordProvider = userRecord.providerData.some(
+export const onUserCreate = auth.user().onCreate(user => {
+  const hasPasswordProvider = user.providerData.some(
     provider => provider.providerId === 'password',
   );
 
@@ -28,16 +28,12 @@ export const onUserCreate = auth.user().onCreate(userRecord => {
   if (!hasPasswordProvider) {
     return getFirestore()
       .collection('users')
-      .doc(userRecord.uid)
+      .doc(user.uid)
       .set({ invited: false }, { merge: true })
-      .then(() => {
-        logger.info(`Set invitation status of users/${userRecord.uid}`);
-      })
       .catch(logger.error);
   }
-
-  return Promise.resolve();
 });
+
 export const onUserDelete = onDocumentDeleted('users/{userId}', event =>
   getFirestore()
     .collection('users')
@@ -49,21 +45,21 @@ export const onUserDelete = onDocumentDeleted('users/{userId}', event =>
     .catch(logger.error),
 );
 
-export const isValidInvitationCode = onCall({}, req => ({
+export const isValidInvitationCode = onCall(req => ({
   isValid: req.data.code === invitationCode.value(),
 }));
 
 const defaultMessagingTopic = 'default';
 
-export const subscribeToMessaging = onCall({}, req => {
+export const subscribeToMessaging = onCall(req => {
   const topic = defaultMessagingTopic;
-  const { uid, fcmToken } = req.data;
+  const { fcmToken } = req.data;
 
   return getMessaging()
     .subscribeToTopic(fcmToken, topic)
     .then(() =>
       getFirestore()
-        .doc(`users/${uid}`)
+        .doc(`users/${req.auth.uid}`)
         .update({
           fcmTokens: FieldValue.arrayUnion(fcmToken),
         }),
@@ -73,22 +69,22 @@ export const subscribeToMessaging = onCall({}, req => {
 
       return { success: true };
     })
-    .catch(() => {
-      const message = `Error subscribing ${fcmToken} to topic ${topic}`;
+    .catch(error => {
+      const message = `Error subscribing ${fcmToken} to topic ${topic}: ${error.message}`;
       logger.error(message);
       throw new HttpsError('unknown', message);
     });
 });
 
-export const unsubscribeFromMessaging = onCall({}, req => {
+export const unsubscribeFromMessaging = onCall(req => {
   const topic = defaultMessagingTopic;
-  const { uid, fcmToken } = req.data;
+  const { fcmToken } = req.data;
 
   return getMessaging()
     .unsubscribeFromTopic(fcmToken, topic)
     .then(() =>
       getFirestore()
-        .doc(`users/${uid}`)
+        .doc(`users/${req.auth.uid}`)
         .update({
           fcmTokens: FieldValue.arrayRemove(fcmToken),
         }),
@@ -98,8 +94,8 @@ export const unsubscribeFromMessaging = onCall({}, req => {
 
       return { success: true };
     })
-    .catch(() => {
-      const message = `Error unsubscribing ${fcmToken} from topic ${topic}`;
+    .catch(error => {
+      const message = `Error unsubscribing ${fcmToken} from topic ${topic}: ${error.message}`;
       logger.error(message);
       throw new HttpsError('unknown', message);
     });
@@ -114,7 +110,6 @@ export const onCreateMatch = onDocumentCreated('matches/{matchId}', event => {
     .get()
     .then(userSnapshot => {
       const user = userSnapshot.data() as User;
-
       const date = `${formatDate(match.date)} um ${formatTime(match.date)} Uhr`;
 
       const message: Message = {

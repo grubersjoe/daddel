@@ -13,7 +13,7 @@ import {
   Routes,
 } from 'react-router-dom';
 
-import { DOMAIN_PROD, REGEX_IPV4 } from '../constants';
+import { REGEX_IPV4 } from '../constants';
 import routes from '../constants/routes';
 import AddMatch from '../pages/AddMatch';
 import EditMatch from '../pages/EditMatch';
@@ -43,12 +43,15 @@ const RequireAuth: FunctionComponent<{ children: ReactElement }> = ({
 };
 
 const isValidHost = () =>
-  [DOMAIN_PROD, 'localhost'].includes(window.location.hostname) ||
-  REGEX_IPV4.test(window.location.hostname);
+  [import.meta.env.VITE_DOMAIN_PROD, 'localhost'].includes(
+    window.location.hostname,
+  ) || REGEX_IPV4.test(window.location.hostname);
 
 const App: FunctionComponent = () => {
   if (!isValidHost()) {
-    return (window.location.href = `https://${DOMAIN_PROD}`);
+    return (window.location.href = `https://${
+      import.meta.env.VITE_DOMAIN_PROD
+    }`);
   }
 
   const theme = createTheme(yellow[700]);

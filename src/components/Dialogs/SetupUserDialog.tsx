@@ -134,7 +134,7 @@ const SetupUserDialog: FunctionComponent = () => {
           <DialogTitle>{title}</DialogTitle>
           <form autoComplete="off" onSubmit={handleSubmitInvitationCode}>
             <DialogContent>
-              <DialogContentText>
+              <DialogContentText sx={{ mb: 2 }}>
                 Du kannst die Registrierung nur mit gültigem Einladungscode
                 abschließen.
               </DialogContentText>
@@ -174,7 +174,7 @@ const SetupUserDialog: FunctionComponent = () => {
           <DialogTitle>{title}</DialogTitle>
           <form autoComplete="off" onSubmit={handleSubmitNickname}>
             <DialogContent>
-              <DialogContentText>
+              <DialogContentText sx={{ mb: 2 }}>
                 Super, das hat geklappt. Wähle jetzt deinen Nickname.
               </DialogContentText>
               <TextField
