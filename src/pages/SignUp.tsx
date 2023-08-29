@@ -17,8 +17,8 @@ import Logo from '../components/Logo';
 import PageMetadata from '../components/PageMetadata';
 import routes from '../constants/routes';
 import { isValidInvitationCode } from '../services/auth';
-import { auth, getDocRef } from '../services/firebase';
-import { User } from '../types';
+import { auth } from '../services/firebase';
+import { getUserRef } from '../services/firestore';
 
 const SignUp: FunctionComponent = () => {
   const navigate = useNavigate();
@@ -69,8 +69,8 @@ const SignUp: FunctionComponent = () => {
     if (await isValidInvitationCode(formState.invitationCode)) {
       createUserWithEmailAndPassword(auth, formState.email, formState.password)
         .then(credential => {
-          setDoc<User>(
-            getDocRef('users', credential.user.uid),
+          setDoc(
+            getUserRef(credential.user.uid),
             { nickname: formState.nickname, invited: true },
             { merge: true },
           ).then(() => navigate(routes.matchList));

@@ -19,7 +19,7 @@ import React, {
   useState,
 } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
+import { useDocumentData } from 'react-firebase-hooks/firestore';
 
 import packageJson from '../../package.json';
 import AppBar from '../components/AppBar';
@@ -28,8 +28,8 @@ import PageMetadata from '../components/PageMetadata';
 import NotificationsSettings from '../components/Settings/NotificationsSettings';
 import SteamSettings from '../components/Settings/SteamSettings';
 import useMessagingSupported from '../hooks/useMessagingSupported';
-import { auth, getDocRef } from '../services/firebase';
-import { User } from '../types';
+import { auth } from '../services/firebase';
+import { getUserRef } from '../services/firestore';
 
 const Settings: FunctionComponent = () => {
   const [authUser] = useAuthState(auth);
@@ -37,9 +37,8 @@ const Settings: FunctionComponent = () => {
 
   const messagingSupported = useMessagingSupported();
 
-  const [user, userLoading, userError] = useDocumentDataOnce<User>(
-    getDocRef('users', authUser?.uid),
-    { idField: 'uid' },
+  const [user, userLoading, userError] = useDocumentData(
+    authUser ? getUserRef(authUser.uid) : null,
   );
 
   const [loading, setLoading] = useState(false);
@@ -63,8 +62,7 @@ const Settings: FunctionComponent = () => {
   const submitNickname: FormEventHandler = event => {
     event.preventDefault();
     setLoading(true);
-
-    updateDoc(getDocRef('users', authUser?.uid), { nickname })
+    updateDoc(getUserRef(authUser.uid), { nickname })
       .then(() => dispatchSnack('Name geändert'))
       .catch(setError)
       .finally(() => setLoading(false));

@@ -64,8 +64,8 @@ dependencies:
     specifier: ^18.2.0
     version: 18.2.0(react@18.2.0)
   react-firebase-hooks:
-    specifier: ^4.0.2
-    version: 4.0.2(firebase@9.23.0)(react@18.2.0)
+    specifier: ^5.1.1
+    version: 5.1.1(firebase@9.23.0)(react@18.2.0)
   react-helmet-async:
     specifier: ^2.0.1
     version: 2.0.1(react-dom@18.2.0)(react@18.2.0)
@@ -8979,8 +8979,8 @@ packages:
     resolution: {integrity: sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ==}
     dev: false
 
-  /react-firebase-hooks@4.0.2(firebase@9.23.0)(react@18.2.0):
-    resolution: {integrity: sha512-DwykuPHfnGIHbJYgRxh3sacfdeEyRxlqwBOdwClkA07s9Shi9gqcOWgMzOPbXPbP6o94YDnNW2yP42opgQs7Nw==}
+  /react-firebase-hooks@5.1.1(firebase@9.23.0)(react@18.2.0):
+    resolution: {integrity: sha512-y2UpWs82xs+39q5Rc/wq316ca52QsC0n8m801V+yM4IC4hbfOL4yQPVSh7w+ydstdvjN9F+lvs1WrO2VYxpmdA==}
     peerDependencies:
       firebase: '>= 9.0.0'
       react: ^18.2.0

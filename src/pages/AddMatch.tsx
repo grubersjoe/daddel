@@ -14,7 +14,7 @@ import isValid from 'date-fns/isValid';
 import parseDate from 'date-fns/parse';
 import { logEvent } from 'firebase/analytics';
 import { User } from 'firebase/auth';
-import { Timestamp, addDoc } from 'firebase/firestore';
+import { Timestamp, addDoc, collection } from 'firebase/firestore';
 import React, {
   FormEvent,
   FunctionComponent,
@@ -39,7 +39,7 @@ import {
 } from '../constants/date';
 import routes from '../constants/routes';
 import { useSteamUser } from '../hooks/useSteamUser';
-import { analytics, auth, getCollectionRef } from '../services/firebase';
+import { analytics, auth, firestore } from '../services/firebase';
 import { joinMatch } from '../services/match';
 import { NewMatch } from '../types';
 import { isSteamGame } from '../types/guards';
@@ -92,7 +92,7 @@ const AddMatch: FunctionComponent = () => {
       description: description ?? null,
     } satisfies NewMatch;
 
-    addDoc(getCollectionRef('matches'), match)
+    addDoc(collection(firestore, 'matches'), match)
       .then(doc => {
         if (selfJoinMatch) {
           const defaultAvailUntil = addMinutes(date, DEFAULT_MATCH_LENGTH);

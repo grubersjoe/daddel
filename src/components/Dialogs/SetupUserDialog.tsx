@@ -21,8 +21,8 @@ import { useDocumentData } from 'react-firebase-hooks/firestore';
 
 import useOnlineStatus from '../../hooks/useOnlineStatus';
 import { isValidInvitationCode } from '../../services/auth';
-import { auth, getDocRef } from '../../services/firebase';
-import { User } from '../../types';
+import { auth } from '../../services/firebase';
+import { getUserRef } from '../../services/firestore';
 import ButtonProgress from '../ButtonProgress';
 import { SnackbarContext } from '../Layout';
 
@@ -51,8 +51,8 @@ const SetupUserDialog: FunctionComponent = () => {
   const [nickname, setNickname] = useState('');
   const [invitationCode, setInvitationCode] = useState('');
 
-  const [user, userLoading, userError] = useDocumentData<User>(
-    getDocRef('users', authUser?.uid),
+  const [user, userLoading, userError] = useDocumentData(
+    authUser ? getUserRef(authUser.uid) : null,
   );
 
   // Skip first step if user is already invited
@@ -85,11 +85,7 @@ const SetupUserDialog: FunctionComponent = () => {
     isValidInvitationCode(invitationCode)
       .then(isValid => {
         if (isValid) {
-          setDoc<User>(
-            getDocRef('users', authUser?.uid),
-            { invited: true },
-            { merge: true },
-          )
+          setDoc(getUserRef(authUser.uid), { invited: true }, { merge: true })
             .then(() => {
               setError(null);
               setStep(Step.PickUsername);
@@ -107,13 +103,9 @@ const SetupUserDialog: FunctionComponent = () => {
 
   const handleSubmitNickname: FormEventHandler = event => {
     event.preventDefault();
-    setLoading(true);
 
-    setDoc<User>(
-      getDocRef<User>('users', authUser?.uid),
-      { nickname },
-      { merge: true },
-    )
+    setLoading(true);
+    setDoc(getUserRef(authUser.uid), { nickname }, { merge: true })
       .then(() => {
         dispatchSnack('Registrierung abgeschlossen');
         setIsOpen(false);

@@ -1,7 +1,8 @@
 import { updateDoc } from 'firebase/firestore';
 
-import { Match, User } from '../types';
-import { auth, getDocRef } from './firebase';
+import { Match } from '../types';
+import { auth } from './firebase';
+import { getMatchRef, getUserRef } from './firestore';
 
 export function toggleMatchReaction(match: Match, emoji: string) {
   const { currentUser } = auth;
@@ -24,7 +25,7 @@ export function toggleMatchReaction(match: Match, emoji: string) {
 
   const updatedUserRefs = shouldRemoveReaction
     ? currentUserRefs.filter(userRef => userRef.id !== currentUser.uid)
-    : currentUserRefs.concat(getDocRef<User>('users', currentUser.uid));
+    : currentUserRefs.concat(getUserRef(currentUser.uid));
 
   const updatedReaction = { emoji, userRefs: updatedUserRefs };
 
@@ -36,7 +37,7 @@ export function toggleMatchReaction(match: Match, emoji: string) {
         )
         .filter(({ userRefs }) => userRefs.length > 0);
 
-  return updateDoc(getDocRef<Match>('matches', match.id), {
+  return updateDoc(getMatchRef(match.id), {
     reactions: updatedReactions,
   });
 }
