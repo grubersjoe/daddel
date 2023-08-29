@@ -95,6 +95,12 @@ export const onCreateMatch = onDocumentCreated(
 
     const tokens = await fetchFcmTokens(posterUid);
 
+    console.log({ tokens });
+
+    if (tokens.length === 0) {
+      return;
+    }
+
     return getFirestore()
       .doc(`users/${posterUid}`)
       .get()
@@ -120,9 +126,32 @@ export const onCreateMatch = onDocumentCreated(
         getMessaging()
           .sendEachForMulticast(message)
           .then(batchResponse => {
-            if (batchResponse.failureCount > 0) {
-              logger.error(batchResponse);
-            }
+            const tokensToRemove = [];
+            batchResponse.responses.forEach((response, index) => {
+              const { error } = response;
+
+              if (error) {
+                logger.error(
+                  'Failure sending message to',
+                  tokens[index],
+                  error.message,
+                );
+
+                if (
+                  error.code === 'messaging/invalid-registration-token' ||
+                  error.code === 'messaging/registration-token-not-registered'
+                ) {
+                  tokensToRemove.push(
+                    getFirestore()
+                      .collection('fcmTokens')
+                      .doc(tokens[index])
+                      .delete(),
+                  );
+                }
+              }
+            });
+
+            return Promise.all(tokensToRemove);
           });
       })
       .catch(logger.error);
@@ -135,8 +164,6 @@ export const onCreateMatch = onDocumentCreated(
 const fetchFcmTokens = async (posterUid: string) => {
   const fcmTokens: Array<string> = [];
 
-  console.log({ posterUid });
-
   // An orderBy() clause also filters for existence of the given field.
   // https://firebase.google.com/docs/firestore/query-data/order-limit-data#order_and_limit_data
   await getFirestore()
@@ -148,8 +175,6 @@ const fetchFcmTokens = async (posterUid: string) => {
         fcmTokens.push(doc.id);
       }),
     );
-
-  console.log({ fcmTokens });
 
   return fcmTokens;
 };

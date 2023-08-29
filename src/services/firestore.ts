@@ -4,7 +4,7 @@ import {
   doc,
 } from 'firebase/firestore';
 
-import { Match, Uid, User } from '../types';
+import { FCMToken, Match, Uid, User } from '../types';
 import { firestore } from './firebase';
 
 export const getUserRef = (uid: Uid) =>
@@ -12,6 +12,12 @@ export const getUserRef = (uid: Uid) =>
 
 export const getMatchRef = (id: string) =>
   doc(firestore, `matches/${id}`).withConverter(matchConverter);
+
+
+export const fcmTokenConverter: FirestoreDataConverter<FCMToken> = {
+    toFirestore: token => token,
+    fromFirestore: (snapshot: QueryDocumentSnapshot<FCMToken>) => snapshot.data(),
+};
 
 export const matchConverter: FirestoreDataConverter<Match> = {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

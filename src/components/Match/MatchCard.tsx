@@ -128,14 +128,14 @@ const MatchCard: FunctionComponent<Props> = ({ match, setPageMetadata }) => {
 
             {!image && <GameBanner game={game} />}
 
-            {game.maxPlayers && (
+            {game.maxPlayers ? (
               <Grid container item>
                 <ProgressBar
                   value={match.players.length}
                   max={game.maxPlayers}
                 />
               </Grid>
-            )}
+            ) : null}
           </Grid>
         </CardMedia>
 

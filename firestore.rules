@@ -1,10 +1,15 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /games/{document} {
-    	allow read: if true;
+    match /fcmTokens/{document} {
+      allow read: if true;
       allow create: if request.auth.uid != null;
-    	allow delete,update: if false;
+      allow delete: if request.auth.uid == resource.data.createdBy;
+    }
+    match /games/{document} {
+      allow read: if true;
+      allow create: if request.auth.uid != null;
+      allow delete,update: if false;
     }
     match /matches/{document} {
       allow read: if true;

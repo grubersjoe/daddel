@@ -40,6 +40,11 @@ export interface User {
   fcmTokens?: Array<string>;
 }
 
+export interface FCMToken {
+  token: string;
+  uid: Uid;
+}
+
 // Unfortunately, TypeScript is not able to dynamically generate this type
 export type TimeString =
   | '09:00'
