@@ -9,7 +9,7 @@ import {
   where,
 } from 'firebase/firestore';
 
-import { Game, Match, Uid, User } from '../types';
+import { FCMToken, Game, Match, Uid, User } from '../types';
 import { firestore } from './firebase';
 
 export const getUserRef = (uid: Uid) =>
@@ -32,6 +32,11 @@ export const pastMatchesQuery = (referenceDate: Date, maxResults: number) =>
     orderBy('date', 'desc'),
     limit(maxResults),
   );
+
+export const fcmTokenConverter: FirestoreDataConverter<FCMToken> = {
+  toFirestore: token => token,
+  fromFirestore: (snapshot: QueryDocumentSnapshot<FCMToken>) => snapshot.data(),
+};
 
 export const gameConverter: FirestoreDataConverter<Game> = {
   toFirestore: game => game,

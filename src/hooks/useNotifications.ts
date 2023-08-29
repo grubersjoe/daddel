@@ -1,93 +1,70 @@
+import { doc } from 'firebase/firestore';
 import { httpsCallable } from 'firebase/functions';
-import { getMessaging, getToken } from 'firebase/messaging';
-import { useEffect, useState } from 'react';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import { useState } from 'react';
+import { useDocumentData } from 'react-firebase-hooks/firestore';
+import { useToken } from 'react-firebase-hooks/messaging';
 
-import { auth, firebaseApp, functions } from '../services/firebase';
+import { firestore, functions, messaging } from '../services/firebase';
+import { fcmTokenConverter } from '../services/firestore';
 import useMessagingSupported from './useMessagingSupported';
 
 export default function useNotifications() {
-  const [authUser] = useAuthState(auth);
+  const [token, tokenLoading, tokenError] = useToken(
+    messaging,
+    import.meta.env.VITE_VAPID_KEY,
+  );
 
-  // const [storedTokens, storedTokensLoading] = useDocument(
-  //   doc(firestore, 'fcmTokens', 'nBShXiRGFAhuiPfBaGpt'),
-  // );
+  const storedTokenRef = token
+    ? doc(firestore, `fcmTokens/${token}`).withConverter(fcmTokenConverter)
+    : undefined;
 
-  // console.log({ storedTokens });
+  const [storedToken, storedTokenLoading, storedTokenError] =
+    useDocumentData(storedTokenRef);
 
+  const [functionLoading, setFunctionLoading] = useState(false);
+  const loading = tokenLoading || storedTokenLoading || functionLoading;
+
+  const deviceRegistered = storedToken && storedToken.token === token;
   const messagingSupported = useMessagingSupported();
-  const [deviceRegistered, setDeviceRegistered] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (!messagingSupported) {
-      return;
-    }
-
-    // setLoading(storedTokensLoading);
-
-    getToken(getMessaging(firebaseApp), {
-      vapidKey: import.meta.env.VITE_VAPID_KEY,
-    })
-      .then(fcmToken => {
-        // setDeviceRegistered(
-        //   storedTokens
-        //     ? storedTokens.some(({ token }) => token === fcmToken)
-        //     : false,
-        // );
-      })
-      .catch(error => {
-        // Blocked permissions are not an error
-        if (error.code !== 'messaging/permission-blocked') {
-          throw error;
-        }
-      });
-  }, [messagingSupported]);
 
   async function subscribe() {
+    if (!messagingSupported) {
+      return Promise.reject('Messaging not supported');
+    }
+
     if (loading) {
       return Promise.reject('Request pending');
     }
 
-    setLoading(true);
+    setFunctionLoading(true);
 
-    return getToken(getMessaging(firebaseApp), {
-      vapidKey: import.meta.env.VITE_VAPID_KEY,
-    })
-      .then(fcmToken =>
-        httpsCallable(functions, 'subscribeToMessaging')({ fcmToken }),
-      )
-      .catch(error => {
-        console.error(error);
-        return Promise.reject(error);
-      })
-      .finally(() => setLoading(false));
+    return httpsCallable(
+      functions,
+      'subscribeToMessaging',
+    )({ fcmToken: token }).finally(() => setFunctionLoading(false));
   }
 
-  const unsubscribe = () => {
+  const unsubscribe = async () => {
+    if (!messagingSupported) {
+      return Promise.reject('Messaging not supported');
+    }
+
     if (loading) {
       return Promise.reject('Request pending');
     }
 
-    setLoading(true);
-
-    return getToken(getMessaging(firebaseApp), {
-      vapidKey: import.meta.env.VITE_VAPID_KEY,
-    })
-      .then(fcmToken =>
-        httpsCallable(
-          functions,
-          'unsubscribeFromMessaging',
-        )({
-          fcmToken,
-        }),
-      )
-      .catch(error => {
-        console.error(error);
-        return Promise.reject(error);
-      })
-      .finally(() => setLoading(false));
+    setFunctionLoading(true);
+    return httpsCallable(
+      functions,
+      'unsubscribeFromMessaging',
+    )({ fcmToken: token }).finally(() => setFunctionLoading(false));
   };
 
-  return { subscribe, unsubscribe, deviceRegistered, loading };
+  return {
+    subscribe,
+    unsubscribe,
+    deviceRegistered,
+    loading,
+    error: tokenError ?? storedTokenError,
+  };
 }
