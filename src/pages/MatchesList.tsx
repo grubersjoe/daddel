@@ -1,5 +1,11 @@
 import { Alert, Button, Container, Grid, Typography } from '@mui/material';
-import { onSnapshot, orderBy, query, where } from 'firebase/firestore';
+import {
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from 'firebase/firestore';
 import React, { FunctionComponent, useState } from 'react';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import { Link } from 'react-router-dom';
@@ -10,9 +16,8 @@ import MatchCard from '../components/Match/MatchCard';
 import PageMetadata from '../components/PageMetadata';
 import routes from '../constants/routes';
 import useCurrentDate from '../hooks/useCurrentDate';
-import useFetchUsers from '../hooks/useFetchUsers';
-import { futureMatchesQuery } from '../queries/matches';
-import { getCollectionRef } from '../services/firebase';
+import { firestore } from '../services/firebase';
+import { matchConverter } from '../services/firestore';
 import { Match } from '../types';
 
 export const gridConfig = {
@@ -24,29 +29,25 @@ export const gridConfig = {
 } as const;
 
 const MatchesList: FunctionComponent = () => {
-  const [users] = useFetchUsers();
-
   const [, setIsRefetching] = useState(false);
 
   const currentDate = useCurrentDate();
 
-  const [matches, , matchesError] = useCollectionData<Match>(
-    query(
-      getCollectionRef('matches'),
-      where('date', '>=', currentDate),
-      orderBy('date', 'asc'),
-    ),
-    {
-      idField: 'id',
-      snapshotListenOptions: {
-        includeMetadataChanges: true,
-      },
-    },
+  const matchQuery = query(
+    collection(firestore, 'matches').withConverter(matchConverter),
+    where('date', '>=', currentDate),
+    orderBy('date', 'asc'),
   );
 
-  onSnapshot(futureMatchesQuery(currentDate), doc =>
-    setIsRefetching(doc.metadata.fromCache || doc.metadata.hasPendingWrites),
-  );
+  const [matches, , matchesError] = useCollectionData<Match>(matchQuery, {
+    snapshotListenOptions: {
+      includeMetadataChanges: true,
+    },
+  });
+
+  onSnapshot(matchQuery, doc => {
+    setIsRefetching(doc.metadata.fromCache || doc.metadata.hasPendingWrites);
+  });
 
   return (
     <>
@@ -62,17 +63,15 @@ const MatchesList: FunctionComponent = () => {
           <Alert severity="error">Fehler: {matchesError.message}</Alert>
         )}
 
-        {matches && matches.length > 0 && users && (
+        {matches && matches.length > 0 ? (
           <Grid container spacing={5}>
             {matches.map(match => (
               <Grid item {...gridConfig} key={match.id}>
-                <MatchCard match={match} userList={users} />
+                <MatchCard match={match} />
               </Grid>
             ))}
           </Grid>
-        )}
-
-        {matches && matches.length === 0 && (
+        ) : (
           <>
             <Typography paragraph>Wow. Much empty.</Typography>
             <Button

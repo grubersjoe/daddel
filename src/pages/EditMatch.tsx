@@ -20,14 +20,13 @@ import PageMetadata from '../components/PageMetadata';
 import routes from '../constants/routes';
 import { useSteamUser } from '../hooks/useSteamUser';
 import { useUpdateMatch } from '../hooks/useUpdateMatch';
-import { getDocRef } from '../services/firebase';
+import { getMatchRef } from '../services/firestore';
 import { Match } from '../types';
 
 const EditMatch = () => {
   const { id } = useParams<{ id: string }>();
-  const [match, loading, error] = useDocumentDataOnce<Match>(
-    getDocRef('matches', id),
-    { idField: 'id' },
+  const [match, loading, error] = useDocumentDataOnce(
+    id ? getMatchRef(id) : null,
   );
 
   const dispatchSnack = useContext(SnackbarContext);
@@ -70,7 +69,7 @@ const EditForm = (props: { match: Match }) => {
     event.preventDefault();
     setLoading(true);
 
-    updateDoc<Match>(getDocRef('matches', match.id), match)
+    updateDoc(getMatchRef(match.id), { ...match })
       .then(() => {
         dispatchSnack('Match aktualisiert');
         navigate(routes.matchList);

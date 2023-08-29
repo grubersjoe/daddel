@@ -15,7 +15,7 @@ import React, { FunctionComponent } from 'react';
 import { Link } from 'react-router-dom';
 
 import { toggleMatchReaction } from '../../services/reactions';
-import { Match, UserMap } from '../../types';
+import { Match } from '../../types';
 import { formatDate, formatTime } from '../../utils/date';
 import JoinMatchDialog from '../Dialogs/JoinMatchDialog';
 import EmojiPicker from '../EmojiPicker';
@@ -29,7 +29,6 @@ import ProgressBar from './ProgressBar';
 
 type Props = {
   match: Match;
-  userList: UserMap;
   setPageMetadata?: boolean;
 };
 
@@ -84,11 +83,7 @@ const Separator: FunctionComponent = () => (
   </Box>
 );
 
-const MatchCard: FunctionComponent<Props> = ({
-  match,
-  userList,
-  setPageMetadata,
-}) => {
+const MatchCard: FunctionComponent<Props> = ({ match, setPageMetadata }) => {
   const theme = useTheme();
   const sx = styles(theme);
 
@@ -169,7 +164,7 @@ const MatchCard: FunctionComponent<Props> = ({
             )}
 
             <Box mt={3}>
-              <Calendar players={match.players} userList={userList} />
+              <Calendar players={match.players} />
             </Box>
 
             <Box

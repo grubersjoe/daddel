@@ -20,7 +20,8 @@ import { Link, generatePath } from 'react-router-dom';
 
 import { GA_EVENTS } from '../../constants';
 import routes from '../../constants/routes';
-import { analytics, auth, getDocRef } from '../../services/firebase';
+import { analytics, auth } from '../../services/firebase';
+import { getMatchRef } from '../../services/firestore';
 import { Game, Match } from '../../types';
 import { formatDate, formatTime } from '../../utils/date';
 import { SnackbarContext } from '../Layout';
@@ -51,7 +52,7 @@ const Menu: FunctionComponent<Props> = ({ game, match }) => {
 
   const deleteMatch = () => {
     if (window.confirm('Match löschen?')) {
-      deleteDoc(getDocRef<Match>('matches', match.id)).catch(() => {
+      deleteDoc(getMatchRef(match.id)).catch(() => {
         logEvent(analytics, GA_EVENTS.DELETE_MATCH);
         dispatchSnack('Match kann nicht gelöscht werden', 'error');
       });

@@ -4,7 +4,8 @@ import { Timestamp, updateDoc } from 'firebase/firestore';
 
 import { GA_EVENTS } from '../constants';
 import { Match, Player } from '../types';
-import { analytics, getDocRef } from './firebase';
+import { analytics } from './firebase';
+import { getMatchRef } from './firestore';
 
 export function joinMatch(
   user: User,
@@ -32,8 +33,8 @@ export function joinMatch(
       : match.players.concat(updatedPlayer),
   };
 
-  return updateDoc(getDocRef<Match>('matches', match.id), updatedMatch).then(
-    () => logEvent(analytics, GA_EVENTS.JOIN_MATCH),
+  return updateDoc(getMatchRef(match.id), updatedMatch).then(() =>
+    logEvent(analytics, GA_EVENTS.JOIN_MATCH),
   );
 }
 
@@ -42,7 +43,7 @@ export function leaveMatch(user: User, match: Match): Promise<void> {
     players: match.players.filter(player => player.uid !== user.uid),
   };
 
-  return updateDoc(getDocRef<Match>('matches', match.id), updatedMatch).then(
-    () => logEvent(analytics, GA_EVENTS.LEAVE_MATCH),
+  return updateDoc(getMatchRef(match.id), updatedMatch).then(() =>
+    logEvent(analytics, GA_EVENTS.LEAVE_MATCH),
   );
 }

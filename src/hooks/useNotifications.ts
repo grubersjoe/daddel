@@ -4,15 +4,15 @@ import { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 
-import { auth, firebaseApp, functions, getDocRef } from '../services/firebase';
-import { User } from '../types';
+import { auth, firebaseApp, functions } from '../services/firebase';
+import { getUserRef } from '../services/firestore';
 import useMessagingSupported from './useMessagingSupported';
 
 export default function useNotifications() {
   const [authUser] = useAuthState(auth);
 
-  const [user, userLoading] = useDocumentData<User>(
-    getDocRef('users', authUser?.uid),
+  const [user, userLoading] = useDocumentData(
+    authUser ? getUserRef(authUser.uid) : null,
   );
 
   const messagingSupported = useMessagingSupported();
@@ -59,7 +59,7 @@ export default function useNotifications() {
       )
       .catch(error => {
         console.error(error);
-        Promise.reject(error);
+        return Promise.reject(error);
       })
       .finally(() => setLoading(false));
   }
@@ -84,7 +84,7 @@ export default function useNotifications() {
       )
       .catch(error => {
         console.error(error);
-        Promise.reject(error);
+        return Promise.reject(error);
       })
       .finally(() => setLoading(false));
   };
