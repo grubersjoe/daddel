@@ -15,7 +15,7 @@ const SearchBar: FunctionComponent<Props> = ({
   onClearInput,
 }) => {
   const autoFocus =
-    typeof window === undefined ? false : window.innerWidth > 800;
+    typeof window === 'undefined' ? false : window.innerWidth > 800;
 
   return (
     <Box mb={3} px={2}>

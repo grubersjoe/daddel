@@ -22,7 +22,7 @@ import { useDocumentData } from 'react-firebase-hooks/firestore';
 import useOnlineStatus from '../../hooks/useOnlineStatus';
 import { isValidInvitationCode } from '../../services/auth';
 import { auth } from '../../services/firebase';
-import { getUserRef, userConverter } from '../../services/firestore';
+import { getUserRef } from '../../services/firestore';
 import ButtonProgress from '../ButtonProgress';
 import { SnackbarContext } from '../Layout';
 

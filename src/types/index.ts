@@ -40,8 +40,6 @@ export interface User {
   fcmTokens?: Array<string>;
 }
 
-export type UserMap = Map<Uid, User>;
-
 export interface FCMToken {
   token: string;
   uid: Uid;

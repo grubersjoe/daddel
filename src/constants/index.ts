@@ -1,5 +1,5 @@
 export const FIREBASE_REGION = 'europe-west3'; // Frankfurt
-export const DOMAIN_PROD = import.meta.env.VITE_DOMAIN_PROD;
+
 export const REGEX_IPV4 =
   /^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\.(?!$)|$)){4}$/;
 
