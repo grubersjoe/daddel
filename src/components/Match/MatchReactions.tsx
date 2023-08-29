@@ -15,7 +15,7 @@ import React, {
 } from 'react';
 
 import { LOCALE } from '../../constants';
-import useFetchUsers from '../../hooks/useFetchUsers';
+import useUsers from '../../hooks/useUsers';
 import { Reaction } from '../../types';
 
 interface Props {
@@ -26,7 +26,7 @@ interface Props {
 const listFormatter = new Intl.ListFormat(LOCALE);
 
 const MatchReactions: FunctionComponent<Props> = ({ reactions, onClick }) => {
-  const [users, usersLoading] = useFetchUsers();
+  const [users, usersLoading] = useUsers();
 
   const theme = useTheme();
   const mdViewUp = useMediaQuery(theme.breakpoints.up('md'));
@@ -90,8 +90,7 @@ const MatchReactions: FunctionComponent<Props> = ({ reactions, onClick }) => {
                   <>
                     {listFormatter.format(
                       userRefs.map(
-                        userRef =>
-                          users.get(userRef.id)?.nickname ?? 'unbekannt',
+                        userRef => users[userRef.id]?.nickname ?? 'unbekannt',
                       ),
                     )}
                   </>

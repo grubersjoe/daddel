@@ -10,21 +10,17 @@ import { SnackbarContext } from '../components/Layout';
 import MatchCard from '../components/Match/MatchCard';
 import Spinner from '../components/Spinner';
 import routes from '../constants/routes';
-import useFetchUsers from '../hooks/useFetchUsers';
-import { getDocRef } from '../services/firebase';
-import { Match } from '../types';
+import useUsers from '../hooks/useUsers';
+import { getMatchRef } from '../services/firestore';
 import { gridConfig } from './MatchesList';
 
 const MatchDetail: FunctionComponent = () => {
   const dispatchSnack = useContext(SnackbarContext);
   const { id } = useParams<{ id: string }>();
 
-  const [match, loading, error] = useDocumentData<Match>(
-    getDocRef('matches', id),
-    { idField: 'id' },
-  );
+  const [match, loading, error] = useDocumentData(id ? getMatchRef(id) : null);
 
-  const [users] = useFetchUsers();
+  const [users] = useUsers();
 
   if (!users || loading) {
     return <Spinner />;
@@ -72,7 +68,7 @@ const MatchDetail: FunctionComponent = () => {
       <Box p={3}>
         <Grid container spacing={5}>
           <Grid item {...gridConfig} key={match.id}>
-            <MatchCard match={match} userList={users} setPageMetadata />
+            <MatchCard match={match} setPageMetadata />
           </Grid>
         </Grid>
       </Box>

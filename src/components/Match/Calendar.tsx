@@ -8,7 +8,8 @@ import {
   DEFAULT_TIME_INCREMENT,
   MATCH_TIME_OPEN_END,
 } from '../../constants/date';
-import { Player, UserMap } from '../../types';
+import useUsers from '../../hooks/useUsers';
+import { Player } from '../../types';
 import {
   calcTimeStringsBetweenDates,
   formatTime,
@@ -18,7 +19,6 @@ import { calcPlayerTimeBounds } from '../../utils/match';
 
 type Props = {
   players: Array<Player>;
-  userList: UserMap;
 };
 
 const styles = (theme: Theme) =>
@@ -101,7 +101,9 @@ const Bar: FunctionComponent<BarProps> = ({ left, width, children }) => (
   </Box>
 );
 
-const Calendar: FunctionComponent<Props> = ({ players, userList }) => {
+const Calendar: FunctionComponent<Props> = ({ players }) => {
+  const [users] = useUsers();
+
   const theme = useTheme();
   const sx = styles(theme);
 
@@ -162,7 +164,7 @@ const Calendar: FunctionComponent<Props> = ({ players, userList }) => {
 
         return (
           <Bar width={width} left={left} key={player.uid}>
-            <Box component="span">{userList.get(player.uid)?.nickname}</Box>
+            <Box component="span">{users[player.uid]?.nickname}</Box>
             <Box component="span" sx={sx.time}>
               {formatTime(player.from)} –{' '}
               {untilLabel === MATCH_TIME_OPEN_END ? 'Open end' : untilLabel}

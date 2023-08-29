@@ -1,15 +1,7 @@
 import { getAnalytics } from 'firebase/analytics';
 import { initializeApp } from 'firebase/app';
 import { connectAuthEmulator, getAuth } from 'firebase/auth';
-import {
-  CollectionReference,
-  DocumentData,
-  DocumentReference,
-  collection,
-  connectFirestoreEmulator,
-  doc,
-  getFirestore,
-} from 'firebase/firestore';
+import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
 import { connectFunctionsEmulator, getFunctions } from 'firebase/functions';
 
 import { FIREBASE_REGION } from '../constants';
@@ -24,15 +16,6 @@ export const auth = getAuth(firebaseApp);
 export const firestore = getFirestore(firebaseApp);
 
 export const functions = getFunctions(firebaseApp, FIREBASE_REGION);
-
-export const getCollectionRef = <T = DocumentData>(name: string) =>
-  collection(firestore, name) as unknown as CollectionReference<T>;
-
-export const getDocRef = <T = DocumentData>(path: string, id?: string) => {
-  const ref = id ? doc(firestore, path, id) : doc(firestore, path);
-
-  return ref as unknown as DocumentReference<T>;
-};
 
 // Emulators
 if (window.location.hostname === 'localhost') {

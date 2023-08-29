@@ -1,14 +1,14 @@
-import { orderBy, query } from 'firebase/firestore';
+import { collection, orderBy, query } from 'firebase/firestore';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 
-import { getCollectionRef } from '../services/firebase';
-import { Game } from '../types';
+import { firestore } from '../services/firebase';
+import { gameConverter } from '../services/firestore';
 
 export function useGamesCollectionData() {
-  return useCollectionData<Game>(
-    query(getCollectionRef('games'), orderBy('name', 'asc')),
-    {
-      idField: 'id',
-    },
+  return useCollectionData(
+    query(
+      collection(firestore, 'games').withConverter(gameConverter),
+      orderBy('name', 'asc'),
+    ),
   );
 }

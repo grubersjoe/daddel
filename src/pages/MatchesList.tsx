@@ -17,8 +17,8 @@ import PageMetadata from '../components/PageMetadata';
 import { MAX_SHOWN_PAST_MATCHES } from '../constants';
 import routes from '../constants/routes';
 import useCurrentDate from '../hooks/useCurrentDate';
-import useFetchUsers from '../hooks/useFetchUsers';
-import { futureMatchesQuery, pastMatchesQuery } from '../queries/matches';
+import useUsers from '../hooks/useUsers';
+import { futureMatchesQuery, pastMatchesQuery } from '../services/firestore';
 import { Match } from '../types';
 import { filterMatches } from '../utils/filter';
 import {
@@ -39,7 +39,7 @@ export const gridConfig = {
 } as const;
 
 const MatchesList: FunctionComponent = () => {
-  const [users] = useFetchUsers();
+  const [users] = useUsers();
 
   const [isRefetching, setIsRefetching] = useState(false);
   const [tabNumber, setTabNumber] = useState<'1' | '2'>('1');
@@ -49,7 +49,6 @@ const MatchesList: FunctionComponent = () => {
   const [futureMatches, , futureMatchesError] = useCollectionData<Match>(
     futureMatchesQuery(currentDate),
     {
-      idField: 'id',
       snapshotListenOptions: {
         includeMetadataChanges: true,
       },
@@ -58,7 +57,6 @@ const MatchesList: FunctionComponent = () => {
 
   const [pastMatches, , pastMatchesError] = useCollectionData<Match>(
     pastMatchesQuery(currentDate, MAX_SHOWN_PAST_MATCHES),
-    { idField: 'id' },
   );
 
   onSnapshot(futureMatchesQuery(currentDate), doc =>
@@ -141,7 +139,7 @@ const MatchesList: FunctionComponent = () => {
               <Grid container spacing={5}>
                 {filteredFutureMatches.map(match => (
                   <Grid item {...gridConfig} key={match.id}>
-                    <MatchCard match={match} userList={users} />
+                    <MatchCard match={match} />
                   </Grid>
                 ))}
               </Grid>
@@ -176,7 +174,7 @@ const MatchesList: FunctionComponent = () => {
             <Grid container spacing={5}>
               {filteredPastMatches.map(match => (
                 <Grid item {...gridConfig} key={match.id}>
-                  <MatchCard match={match} userList={users} />
+                  <MatchCard match={match} />
                 </Grid>
               ))}
             </Grid>

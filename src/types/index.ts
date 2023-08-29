@@ -1,11 +1,9 @@
 import { DocumentReference, Timestamp } from 'firebase/firestore';
 
-export type Maybe<T> = T | undefined;
-
-type Uid = string;
+export type Uid = string;
 
 export interface Match extends NewMatch {
-  id: Uid;
+  id: string;
 }
 
 export interface NewMatch {
@@ -36,13 +34,18 @@ export interface Player {
 }
 
 export interface User {
-  uid?: Uid;
+  uid: Uid;
   nickname: string;
   invited: boolean;
   fcmTokens?: Array<string>;
 }
 
-export type UserMap = Map<User['uid'], User>;
+export type UserMap = Map<Uid, User>;
+
+export interface FCMToken {
+  token: string;
+  uid: Uid;
+}
 
 // Unfortunately, TypeScript is not able to dynamically generate this type
 export type TimeString =

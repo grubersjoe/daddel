@@ -2,18 +2,18 @@ import { httpsCallable } from 'firebase/functions';
 import { getMessaging, getToken } from 'firebase/messaging';
 import { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { useDocumentData } from 'react-firebase-hooks/firestore';
 
-import { auth, firebaseApp, functions, getDocRef } from '../services/firebase';
-import { User } from '../types';
+import { auth, firebaseApp, functions } from '../services/firebase';
 import useMessagingSupported from './useMessagingSupported';
 
 export default function useNotifications() {
   const [authUser] = useAuthState(auth);
 
-  const [user, userLoading] = useDocumentData<User>(
-    getDocRef('users', authUser?.uid),
-  );
+  // const [storedTokens, storedTokensLoading] = useDocument(
+  //   doc(firestore, 'fcmTokens', 'nBShXiRGFAhuiPfBaGpt'),
+  // );
+
+  // console.log({ storedTokens });
 
   const messagingSupported = useMessagingSupported();
   const [deviceRegistered, setDeviceRegistered] = useState(false);
@@ -24,25 +24,25 @@ export default function useNotifications() {
       return;
     }
 
-    setLoading(userLoading);
+    // setLoading(storedTokensLoading);
 
-    if (user) {
-      getToken(getMessaging(firebaseApp), {
-        vapidKey: import.meta.env.VITE_VAPID_KEY,
+    getToken(getMessaging(firebaseApp), {
+      vapidKey: import.meta.env.VITE_VAPID_KEY,
+    })
+      .then(fcmToken => {
+        // setDeviceRegistered(
+        //   storedTokens
+        //     ? storedTokens.some(({ token }) => token === fcmToken)
+        //     : false,
+        // );
       })
-        .then(fcmToken => {
-          setDeviceRegistered(
-            user.fcmTokens ? user.fcmTokens.includes(fcmToken) : false,
-          );
-        })
-        .catch(error => {
-          // Blocked permissions are not an error
-          if (error.code !== 'messaging/permission-blocked') {
-            throw error;
-          }
-        });
-    }
-  }, [messagingSupported, user, userLoading]);
+      .catch(error => {
+        // Blocked permissions are not an error
+        if (error.code !== 'messaging/permission-blocked') {
+          throw error;
+        }
+      });
+  }, [messagingSupported]);
 
   async function subscribe() {
     if (loading) {
@@ -59,7 +59,7 @@ export default function useNotifications() {
       )
       .catch(error => {
         console.error(error);
-        Promise.reject(error);
+        return Promise.reject(error);
       })
       .finally(() => setLoading(false));
   }
@@ -84,7 +84,7 @@ export default function useNotifications() {
       )
       .catch(error => {
         console.error(error);
-        Promise.reject(error);
+        return Promise.reject(error);
       })
       .finally(() => setLoading(false));
   };
