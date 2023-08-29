@@ -32,7 +32,7 @@ export default function useNotifications() {
       return Promise.reject('Messaging not supported');
     }
 
-    if (loading) {
+    if (loading || !token) {
       return Promise.reject('Request pending');
     }
 
@@ -49,7 +49,7 @@ export default function useNotifications() {
       return Promise.reject('Messaging not supported');
     }
 
-    if (loading) {
+    if (loading || !token) {
       return Promise.reject('Request pending');
     }
 
