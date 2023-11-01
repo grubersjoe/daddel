@@ -95,7 +95,7 @@ const Settings: FunctionComponent = () => {
     <>
       <PageMetadata title="Einstellungen – Daddel" />
       <AppBar title="Einstellungen" />
-      <Container sx={{ mt: 2 }}>
+      <Container sx={{ mt: 1 }}>
         <Typography variant="h6">Nickname</Typography>
         <form
           autoComplete="off"

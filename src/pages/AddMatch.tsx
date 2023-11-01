@@ -118,8 +118,8 @@ const AddMatch: FunctionComponent = () => {
     <>
       <PageMetadata title="Neues Match – Daddel" />
       <AppBar title="Neues Match" />
-      <Container>
-        <Box mt={2} mb={3}>
+      <Container sx={{ my: 1 }}>
+        <Box mb={3}>
           <GameSelect onChange={setGame} />
         </Box>
 

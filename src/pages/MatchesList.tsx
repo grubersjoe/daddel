@@ -1,32 +1,19 @@
-import { TabContext } from '@mui/lab';
-import TabPanel from '@mui/lab/TabPanel';
-import { Alert, Box, Button, Grid, Tab, Tabs, Typography } from '@mui/material';
-import { onSnapshot } from 'firebase/firestore';
-import React, { FunctionComponent, useMemo, useState } from 'react';
+import { Alert, Button, Container, Grid, Typography } from '@mui/material';
+import { onSnapshot, orderBy, query, where } from 'firebase/firestore';
+import React, { FunctionComponent, useState } from 'react';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import { Link } from 'react-router-dom';
 
 import AppBar from '../components/AppBar';
 import SetupUserDialog from '../components/Dialogs/SetupUserDialog';
-import Filter, { MatchFilter } from '../components/Match/Filter';
 import MatchCard from '../components/Match/MatchCard';
-import MatchCardSkeleton from '../components/Match/MatchCardSkeleton';
 import PageMetadata from '../components/PageMetadata';
-import { MAX_SHOWN_PAST_MATCHES } from '../constants';
 import routes from '../constants/routes';
 import useCurrentDate from '../hooks/useCurrentDate';
 import useFetchUsers from '../hooks/useFetchUsers';
-import { futureMatchesQuery, pastMatchesQuery } from '../queries/matches';
+import { futureMatchesQuery } from '../queries/matches';
 import { Match } from '../types';
-import { filterMatches } from '../utils/filter';
-import {
-  getStorageItem,
-  setStorageItem,
-  STORAGE_KEY,
-} from '../utils/local-storage';
-
-const loadingAnimation =
-  'pulse 0.75s cubic-bezier(.46,.03,.52,.96) 0s infinite';
+import { getCollectionRef } from '../services/firebase';
 
 export const gridConfig = {
   xs: 12,
@@ -39,13 +26,16 @@ export const gridConfig = {
 const MatchesList: FunctionComponent = () => {
   const [users] = useFetchUsers();
 
-  const [isRefetching, setIsRefetching] = useState(false);
-  const [tabNumber, setTabNumber] = useState<'1' | '2'>('1');
+  const [, setIsRefetching] = useState(false);
 
   const currentDate = useCurrentDate();
 
-  const [futureMatches, , futureMatchesError] = useCollectionData<Match>(
-    futureMatchesQuery(currentDate),
+  const [matches, , matchesError] = useCollectionData<Match>(
+    query(
+      getCollectionRef('matches'),
+      where('date', '>=', currentDate),
+      orderBy('date', 'asc'),
+    ),
     {
       idField: 'id',
       snapshotListenOptions: {
@@ -54,140 +44,48 @@ const MatchesList: FunctionComponent = () => {
     },
   );
 
-  const [pastMatches, , pastMatchesError] = useCollectionData<Match>(
-    pastMatchesQuery(currentDate, MAX_SHOWN_PAST_MATCHES),
-    { idField: 'id' },
-  );
-
   onSnapshot(futureMatchesQuery(currentDate), doc =>
     setIsRefetching(doc.metadata.fromCache || doc.metadata.hasPendingWrites),
   );
-
-  const [showFilter, setShowFilter] = useState(
-    getStorageItem<boolean>(STORAGE_KEY.MATCH_FILTER_ENABLED) ?? false,
-  );
-
-  const [filter, setFilter] = useState<MatchFilter>(
-    getStorageItem<MatchFilter>(STORAGE_KEY.MATCH_FILTER) ?? { games: [] },
-  );
-
-  const filteredFutureMatches = useMemo(
-    () => (futureMatches ? filterMatches(futureMatches, filter) : null),
-    [futureMatches, filter],
-  );
-
-  const filteredPastMatches = useMemo(
-    () => (pastMatches ? filterMatches(pastMatches, filter) : null),
-    [pastMatches, filter],
-  );
-
-  const numberOfEnabledFilters = filter.games.length;
-  const filterConfig = {
-    color: showFilter ? 'primary' : 'inherit',
-    enabled: numberOfEnabledFilters,
-    title: showFilter ? 'Filter verstecken' : 'Filter anzeigen',
-    onClick: () => {
-      setShowFilter(enabled => {
-        setStorageItem(STORAGE_KEY.MATCH_FILTER_ENABLED, !enabled);
-        return !enabled;
-      });
-    },
-  } as const;
 
   return (
     <>
       <PageMetadata title="Matches – Daddel" />
       <SetupUserDialog />
 
-      <AppBar filter={filterConfig}>
-        <Tabs
-          value={tabNumber}
-          onChange={(_event, index) => setTabNumber(index)}
-          variant="fullWidth"
-        >
-          <Tab
-            label="Anstehende"
-            value="1"
-            sx={{
-              ...(isRefetching && { animation: loadingAnimation }),
-              minHeight: 64,
-            }}
-          />
-          <Tab value="2" label="Vergangene" />
-        </Tabs>
-      </AppBar>
+      <AppBar title="Matches" />
 
-      {showFilter && (
-        <Box px={3}>
-          <Filter filter={filter} setFilter={setFilter} />
-        </Box>
-      )}
+      <Container maxWidth={false} sx={{ my: 1 }}>
+        {!matches && <p>Lade …</p>}
 
-      <TabContext value={tabNumber}>
-        <TabPanel value="1">
-          {futureMatchesError && (
-            <Alert severity="error">Fehler: {futureMatchesError.message}</Alert>
-          )}
+        {matchesError && (
+          <Alert severity="error">Fehler: {matchesError.message}</Alert>
+        )}
 
-          {!filteredFutureMatches && <p>Lade …</p>}
-
-          {filteredFutureMatches &&
-            filteredFutureMatches.length > 0 &&
-            users && (
-              <Grid container spacing={5}>
-                {filteredFutureMatches.map(match => (
-                  <Grid item {...gridConfig} key={match.id}>
-                    <MatchCard match={match} userList={users} />
-                  </Grid>
-                ))}
+        {matches && matches.length > 0 && users && (
+          <Grid container spacing={5}>
+            {matches.map(match => (
+              <Grid item {...gridConfig} key={match.id}>
+                <MatchCard match={match} userList={users} />
               </Grid>
-            )}
+            ))}
+          </Grid>
+        )}
 
-          {filteredFutureMatches && filteredFutureMatches.length === 0 && (
-            <>
-              <Typography paragraph>Wow. Much empty.</Typography>
-              {numberOfEnabledFilters > 0 && (
-                <Typography paragraph>Obacht! Filter ist aktiv.</Typography>
-              )}
-              <Button
-                color="primary"
-                component={Link}
-                to={routes.addMatch}
-                sx={{ mt: 1 }}
-              >
-                Neues Match
-              </Button>
-            </>
-          )}
-        </TabPanel>
-
-        <TabPanel value="2">
-          {pastMatchesError && (
-            <Alert severity="error">Fehler: {pastMatchesError.message}</Alert>
-          )}
-
-          {!filteredPastMatches && <MatchCardSkeleton />}
-
-          {filteredPastMatches && filteredPastMatches.length > 0 && users && (
-            <Grid container spacing={5}>
-              {filteredPastMatches.map(match => (
-                <Grid item {...gridConfig} key={match.id}>
-                  <MatchCard match={match} userList={users} />
-                </Grid>
-              ))}
-            </Grid>
-          )}
-
-          {filteredPastMatches && filteredPastMatches.length === 0 && (
-            <>
-              <Typography paragraph>Wow. Much empty.</Typography>
-              {numberOfEnabledFilters > 0 && (
-                <Typography paragraph>Obacht! Filter ist aktiv.</Typography>
-              )}
-            </>
-          )}
-        </TabPanel>
-      </TabContext>
+        {matches && matches.length === 0 && (
+          <>
+            <Typography paragraph>Wow. Much empty.</Typography>
+            <Button
+              color="primary"
+              component={Link}
+              to={routes.addMatch}
+              sx={{ mt: 1 }}
+            >
+              Neues Match
+            </Button>
+          </>
+        )}
+      </Container>
     </>
   );
 };

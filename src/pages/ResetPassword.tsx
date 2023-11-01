@@ -31,7 +31,7 @@ const ResetPassword: FunctionComponent = () => {
   };
 
   return (
-    <Container sx={{ mt: -9 }}>
+    <Container sx={{ mt: -8 }}>
       <PageMetadata title="Passwort zurücksetzen – Daddel" />
       <Logo />
       <Typography variant="h6">Passwort zurücksetzen</Typography>

@@ -1,6 +1,4 @@
 export enum STORAGE_KEY {
-  MATCH_FILTER = 'daddel-match-filter',
-  MATCH_FILTER_ENABLED = 'daddel-match-filter-enabled',
   FREQUENTLY_USED_EMOJIS = 'daddel-frequently-used-emojis',
 }
 

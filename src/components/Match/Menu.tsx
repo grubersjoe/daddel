@@ -3,7 +3,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import LinkIcon from '@mui/icons-material/Link';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ShareIcon from '@mui/icons-material/Share';
-import { MenuItem, Menu as MuiMenu } from '@mui/material';
+import { Menu as MuiMenu, MenuItem } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import endOfDay from 'date-fns/endOfDay';
 import isPast from 'date-fns/isPast';
@@ -16,7 +16,7 @@ import React, {
   useState,
 } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { Link, generatePath } from 'react-router-dom';
+import { generatePath, Link } from 'react-router-dom';
 
 import { GA_EVENTS } from '../../constants';
 import routes from '../../constants/routes';
@@ -50,7 +50,7 @@ const Menu: FunctionComponent<Props> = ({ game, match }) => {
   }
 
   const deleteMatch = () => {
-    if (window.confirm('Sicher?')) {
+    if (window.confirm('Match löschen?')) {
       deleteDoc(getDocRef<Match>('matches', match.id)).catch(() => {
         logEvent(analytics, GA_EVENTS.DELETE_MATCH);
         dispatchSnack('Match kann nicht gelöscht werden', 'error');

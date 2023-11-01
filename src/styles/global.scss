@@ -76,18 +76,6 @@ h6.MuiTypography-h6 {
   }
 }
 
-@keyframes pulse {
-  0% {
-    opacity: 0.5;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.5;
-  }
-}
-
 // iOS shows weird outlines
 .MuiDialogContent-root div {
   outline: none !important;

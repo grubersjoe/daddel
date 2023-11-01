@@ -87,7 +87,7 @@ const SignUp: FunctionComponent = () => {
   };
 
   return (
-    <Container sx={{ mt: -9 }}>
+    <Container sx={{ mt: -8 }}>
       <PageMetadata title="Registrieren – Daddel" />
       <Logo />
       <Typography variant="h6">Registrieren</Typography>

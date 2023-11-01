@@ -15,7 +15,7 @@ import {
 } from 'firebase/auth';
 import React, { FormEventHandler, FunctionComponent, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { Navigate, Link as RouterLink, useLocation } from 'react-router-dom';
+import { Link as RouterLink, Navigate, useLocation } from 'react-router-dom';
 
 import GoogleIcon from '../assets/icons/GoogleIcon';
 import ButtonProgress from '../components/ButtonProgress';
@@ -63,7 +63,7 @@ const SignIn: FunctionComponent = () => {
   return authLoading ? (
     <Spinner />
   ) : (
-    <Container sx={{ mt: -9 }}>
+    <Container sx={{ mt: -8 }}>
       <PageMetadata title="Anmelden – Daddel" />
       <Logo />
       <Typography variant="h6">Anmelden</Typography>

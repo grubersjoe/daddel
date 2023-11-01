@@ -50,7 +50,7 @@ const EditMatch = () => {
     <>
       <PageMetadata title="Match bearbeiten – Daddel" />
       <AppBar title="Match bearbeiten" />
-      <Container>
+      <Container sx={{ my: 1 }}>
         <EditForm match={match} />
       </Container>
     </>
@@ -83,7 +83,7 @@ const EditForm = (props: { match: Match }) => {
 
   return (
     <>
-      <Box mt={2} mb={3}>
+      <Box mb={3}>
         <GameSelect
           defaultValue={match.game}
           onChange={game => {

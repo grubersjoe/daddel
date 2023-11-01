@@ -1,5 +1,5 @@
 import LinkIcon from '@mui/icons-material/Link';
-import { Box, Button, Grid } from '@mui/material';
+import { Button, Container, Grid } from '@mui/material';
 import React, { FunctionComponent, useContext } from 'react';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 import { Link, Navigate, useParams } from 'react-router-dom';
@@ -69,13 +69,13 @@ const MatchDetail: FunctionComponent = () => {
         </>
       </AppBar>
 
-      <Box p={3}>
+      <Container sx={{ my: 1 }}>
         <Grid container spacing={5}>
           <Grid item {...gridConfig} key={match.id}>
             <MatchCard match={match} userList={users} setPageMetadata />
           </Grid>
         </Grid>
-      </Box>
+      </Container>
     </>
   );
 };
