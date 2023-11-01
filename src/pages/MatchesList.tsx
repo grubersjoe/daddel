@@ -1,8 +1,6 @@
 import { TabContext } from '@mui/lab';
-import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import { Alert, Box, Button, Grid, Typography } from '@mui/material';
-import Tab from '@mui/material/Tab';
+import { Alert, Box, Button, Grid, Tab, Tabs, Typography } from '@mui/material';
 import { onSnapshot } from 'firebase/firestore';
 import React, { FunctionComponent, useMemo, useState } from 'react';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
@@ -22,9 +20,9 @@ import { futureMatchesQuery, pastMatchesQuery } from '../queries/matches';
 import { Match } from '../types';
 import { filterMatches } from '../utils/filter';
 import {
-  STORAGE_KEY,
   getStorageItem,
   setStorageItem,
+  STORAGE_KEY,
 } from '../utils/local-storage';
 
 const loadingAnimation =
@@ -102,23 +100,21 @@ const MatchesList: FunctionComponent = () => {
       <SetupUserDialog />
 
       <AppBar filter={filterConfig}>
-        <TabContext value={tabNumber}>
-          <TabList
-            value={tabNumber}
-            onChange={(_event, index) => setTabNumber(index)}
-            variant="fullWidth"
-          >
-            <Tab
-              label="Anstehende"
-              value="1"
-              sx={{
-                ...(isRefetching && { animation: loadingAnimation }),
-                minHeight: 64,
-              }}
-            />
-            <Tab value="2" label="Vergangene" />
-          </TabList>
-        </TabContext>
+        <Tabs
+          value={tabNumber}
+          onChange={(_event, index) => setTabNumber(index)}
+          variant="fullWidth"
+        >
+          <Tab
+            label="Anstehende"
+            value="1"
+            sx={{
+              ...(isRefetching && { animation: loadingAnimation }),
+              minHeight: 64,
+            }}
+          />
+          <Tab value="2" label="Vergangene" />
+        </Tabs>
       </AppBar>
 
       {showFilter && (

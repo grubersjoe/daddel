@@ -1,4 +1,4 @@
-import { FirebaseOptions } from '@firebase/app';
+import { FirebaseOptions } from 'firebase/app';
 
 const configKeys = [
   'VITE_API_KEY',
