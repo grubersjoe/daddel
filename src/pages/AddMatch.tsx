@@ -14,7 +14,7 @@ import isValid from 'date-fns/isValid';
 import parseDate from 'date-fns/parse';
 import { logEvent } from 'firebase/analytics';
 import { User } from 'firebase/auth';
-import { Timestamp, addDoc } from 'firebase/firestore';
+import { addDoc, Timestamp } from 'firebase/firestore';
 import React, {
   FormEvent,
   FunctionComponent,
@@ -85,7 +85,7 @@ const AddMatch: FunctionComponent = () => {
       game: {
         name: game.name,
         steamAppId: isSteamGame(game) ? game.appid : null,
-        maxPlayers: null,
+        maxPlayers: Number(maxPlayers),
       },
       players: [],
       reactions: [],
