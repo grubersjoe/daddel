@@ -1,4 +1,3 @@
-import LinkIcon from '@mui/icons-material/Link';
 import { Button, Container, Grid } from '@mui/material';
 import React, { FunctionComponent, useContext } from 'react';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
@@ -14,6 +13,7 @@ import useFetchUsers from '../hooks/useFetchUsers';
 import { getDocRef } from '../services/firebase';
 import { Match } from '../types';
 import { gridConfig } from './MatchesList';
+import ArrowBack from '@mui/icons-material/ArrowBack';
 
 const MatchDetail: FunctionComponent = () => {
   const dispatchSnack = useContext(SnackbarContext);
@@ -45,26 +45,13 @@ const MatchDetail: FunctionComponent = () => {
       <SetupUserDialog />
       <AppBar>
         <>
-          <Button variant="text" component={Link} to={routes.matchList}>
-            Alle Matches
-          </Button>
           <Button
             variant="text"
-            startIcon={<LinkIcon />}
-            sx={{ ml: '1rem' }}
-            onClick={() => {
-              if (navigator.clipboard) {
-                navigator.clipboard
-                  .writeText(`${window.location.origin}/matches/${match.id}`)
-                  .then(() => {
-                    dispatchSnack('In Zwischenablage kopiert');
-                  });
-              } else {
-                dispatchSnack('Aktion nicht unterstützt', 'error');
-              }
-            }}
+            component={Link}
+            to={routes.matchList}
+            startIcon={<ArrowBack />}
           >
-            Link kopieren
+            Übersicht
           </Button>
         </>
       </AppBar>
