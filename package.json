@@ -28,7 +28,7 @@
     "@tanstack/react-query-devtools": "^5.10.0",
     "axios": "^1.6.2",
     "date-fns": "^2.30.0",
-    "firebase": "^9.22.1",
+    "firebase": "^10.7.0",
     "firebase-tools": "^12.9.1",
     "generate-emoji-list": "^1.1.0",
     "oidc-react": "^3.2.0",
