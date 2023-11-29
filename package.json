@@ -26,7 +26,7 @@
     "@sindresorhus/slugify": "^2.2.1",
     "@tanstack/react-query": "^4.29.12",
     "@tanstack/react-query-devtools": "^4.29.12",
-    "axios": "^1.4.0",
+    "axios": "^1.6.2",
     "date-fns": "^2.30.0",
     "firebase": "^9.22.1",
     "firebase-tools": "^12.3.0",
