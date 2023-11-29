@@ -15,7 +15,7 @@ import {
 } from 'firebase/auth';
 import React, { FormEventHandler, FunctionComponent, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { Link as RouterLink, Navigate, useLocation } from 'react-router-dom';
+import { Navigate, Link as RouterLink, useLocation } from 'react-router-dom';
 
 import GoogleIcon from '../assets/icons/GoogleIcon';
 import ButtonProgress from '../components/ButtonProgress';

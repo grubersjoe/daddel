@@ -76,7 +76,7 @@ export const styles = ({ spacing, breakpoints }: Theme) =>
         padding: spacing(2.5),
       },
     },
-  } as const);
+  }) as const;
 
 const Separator: FunctionComponent = () => (
   <Box component="span" sx={{ mx: '0.4em' }}>

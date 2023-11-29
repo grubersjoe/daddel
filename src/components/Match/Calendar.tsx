@@ -63,7 +63,7 @@ const styles = (theme: Theme) =>
         display: 'none',
       },
     },
-  } as const);
+  }) as const;
 
 interface LabelProps {
   children: ReactElement | string;

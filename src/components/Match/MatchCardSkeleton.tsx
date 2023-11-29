@@ -14,7 +14,7 @@ const styles = (theme: Theme) =>
         marginBottom: '8px',
       },
     },
-  } as const);
+  }) as const;
 
 const MatchCardSkeleton: FunctionComponent = () => {
   const theme = useTheme();

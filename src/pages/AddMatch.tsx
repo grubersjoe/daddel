@@ -14,7 +14,7 @@ import isValid from 'date-fns/isValid';
 import parseDate from 'date-fns/parse';
 import { logEvent } from 'firebase/analytics';
 import { User } from 'firebase/auth';
-import { addDoc, Timestamp } from 'firebase/firestore';
+import { Timestamp, addDoc } from 'firebase/firestore';
 import React, {
   FormEvent,
   FunctionComponent,

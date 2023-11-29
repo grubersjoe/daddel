@@ -3,7 +3,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import LinkIcon from '@mui/icons-material/Link';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ShareIcon from '@mui/icons-material/Share';
-import { Menu as MuiMenu, MenuItem } from '@mui/material';
+import { MenuItem, Menu as MuiMenu } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import endOfDay from 'date-fns/endOfDay';
 import isPast from 'date-fns/isPast';
@@ -16,7 +16,7 @@ import React, {
   useState,
 } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { generatePath, Link } from 'react-router-dom';
+import { Link, generatePath } from 'react-router-dom';
 
 import { GA_EVENTS } from '../../constants';
 import routes from '../../constants/routes';

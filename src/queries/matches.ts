@@ -1,4 +1,4 @@
-import { orderBy, Query, query, where } from 'firebase/firestore';
+import { Query, orderBy, query, where } from 'firebase/firestore';
 
 import { getCollectionRef } from '../services/firebase';
 import { Match } from '../types';

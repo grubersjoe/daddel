@@ -1,4 +1,4 @@
-import { AppBar as MuiAppBar, Box, Toolbar, Typography } from '@mui/material';
+import { Box, AppBar as MuiAppBar, Toolbar, Typography } from '@mui/material';
 import React, { FunctionComponent, ReactElement } from 'react';
 
 interface Props {

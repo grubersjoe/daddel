@@ -12,8 +12,8 @@ import routes from '../constants/routes';
 import useCurrentDate from '../hooks/useCurrentDate';
 import useFetchUsers from '../hooks/useFetchUsers';
 import { futureMatchesQuery } from '../queries/matches';
-import { Match } from '../types';
 import { getCollectionRef } from '../services/firebase';
+import { Match } from '../types';
 
 export const gridConfig = {
   xs: 12,
