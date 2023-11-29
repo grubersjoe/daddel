@@ -61,7 +61,7 @@ const App: FunctionComponent = () => {
       <ThemeProvider theme={theme}>
         <HelmetProvider>
           <QueryClientProvider client={queryClient}>
-            <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+            <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
             <CSSBaseline />
             <PageMetadata />
             <Router>

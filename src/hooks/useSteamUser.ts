@@ -7,6 +7,6 @@ export const useSteamUser = () =>
   useQuery<SteamUser | null, AxiosError>({
     queryKey: ['steam-user'],
     queryFn: () => fetchSteamAuthStatus().then(data => data.user),
-    cacheTime: 0,
+    gcTime: 0,
     retry: 1,
   });
