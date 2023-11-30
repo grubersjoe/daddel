@@ -1,4 +1,3 @@
-import { DEFAULT_TIME_INCREMENT } from '../constants/date';
 import { Player } from '../types';
 import { isOpenEndDate } from './date';
 
@@ -22,7 +21,7 @@ export function calcPlayerTimeBounds(players: Array<Player>): TimeBounds {
 
       return {
         min,
-        max: Math.max(bounds.max, min + 4 * DEFAULT_TIME_INCREMENT * 60),
+        max: Math.max(bounds.max, min + 60 * 60),
         withOpenEnd: true,
       };
     }

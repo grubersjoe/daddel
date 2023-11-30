@@ -1,5 +1,5 @@
 import addMinutes from 'date-fns/addMinutes';
-import formatDateFns from 'date-fns/format';
+import format from 'date-fns/format';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import isBefore from 'date-fns/isBefore';
 import isToday from 'date-fns/isToday';
@@ -17,20 +17,6 @@ import {
 } from '../constants/date';
 import { TimeString } from '../types';
 
-export function format<R extends string = string>(
-  date: Date | number,
-  format: string,
-  options?: {
-    locale?: Locale;
-    weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
-    firstWeekContainsDate?: number;
-    useAdditionalWeekYearTokens?: boolean;
-    useAdditionalDayOfYearTokens?: boolean;
-  },
-): R {
-  return formatDateFns(date, format, options) as R;
-}
-
 export function formatDate(timestamp: Timestamp, smartWeekday = true): string {
   const date = timestamp.toDate();
 
@@ -47,19 +33,19 @@ export function formatDate(timestamp: Timestamp, smartWeekday = true): string {
   return format(date, DATE_FORMAT, { locale: de });
 }
 
-export function formatTime<R extends string = string>(
+export function formatTime(
   date: Date | Timestamp | number,
   timeFormat = TIME_FORMAT,
-): R {
+) {
   if (date instanceof Date) {
-    return format<R>(date, timeFormat);
+    return format(date, timeFormat);
   }
 
   if (typeof date === 'number') {
-    return format<R>(fromUnixTime(date), timeFormat);
+    return format(fromUnixTime(date), timeFormat);
   }
 
-  return format<R>(date.toDate(), timeFormat);
+  return format(date.toDate(), timeFormat);
 }
 
 export function parseTime(time: TimeString, referenceDate = new Date()): Date {
@@ -84,14 +70,14 @@ export function calcTimeStringsBetweenDates(
   }
 
   // Initialize with first value
-  const options = [formatTime<TimeString>(currentDate)];
+  const options = [formatTime(currentDate)];
 
   while (isBefore(currentDate, endDate)) {
     currentDate = addMinutes(currentDate, stepInMinutes);
-    options.push(formatTime<TimeString>(currentDate));
+    options.push(formatTime(currentDate));
   }
 
-  return options;
+  return options as Array<TimeString>;
 }
 
 export function isOpenEndDate(date: Date | Timestamp | number): boolean {

@@ -84,22 +84,16 @@ const JoinMatchDialog: FunctionComponent<Props> = ({ match }) => {
     player => player.uid === authUser?.uid,
   );
 
-  const currentFrom = currentPlayer
-    ? formatTime<TimeString>(currentPlayer.from)
-    : null;
-
-  const currentUntil = currentPlayer
-    ? formatTime<TimeString>(currentPlayer.until)
-    : null;
-
-  const matchTime = formatTime<TimeString>(match.date);
+  const currentFrom = currentPlayer ? formatTime(currentPlayer.from) : null;
+  const currentUntil = currentPlayer ? formatTime(currentPlayer.until) : null;
+  const matchTime = formatTime(match.date);
 
   const availFrom =
     timeOptions.find(time => time === currentFrom) ??
     timeOptions.find(time => time === matchTime) ??
     DEFAULT_MATCH_TIME;
 
-  const defaultAvailUntil = formatTime<TimeString>(
+  const defaultAvailUntil = formatTime(
     addMinutes(parseTime(availFrom), DEFAULT_MATCH_LENGTH),
   );
 
