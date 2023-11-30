@@ -9,15 +9,10 @@ import { FIREBASE_REGION } from '../constants';
 import { firebaseOptions } from '../constants/firebase';
 
 export const firebaseApp = initializeApp(firebaseOptions);
-
 export const analytics = getAnalytics(firebaseApp);
-
 export const auth = getAuth(firebaseApp);
-
 export const firestore = getFirestore(firebaseApp);
-
 export const functions = getFunctions(firebaseApp, FIREBASE_REGION);
-
 export const messaging = getMessaging(firebaseApp);
 
 // Emulators

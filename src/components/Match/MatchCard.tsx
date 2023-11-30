@@ -14,7 +14,7 @@ import isFuture from 'date-fns/isFuture';
 import React, { FunctionComponent } from 'react';
 import { Link } from 'react-router-dom';
 
-import { toggleMatchReaction } from '../../services/reactions';
+import { toggleMatchReaction } from '../../services/match';
 import { Match } from '../../types';
 import { formatDate, formatTime } from '../../utils/date';
 import JoinMatchDialog from '../Dialogs/JoinMatchDialog';
