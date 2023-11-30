@@ -3,8 +3,7 @@ import { Timestamp } from 'firebase/firestore';
 import { Reducer, useReducer } from 'react';
 
 import { GameOption } from '../components/Match/GameSelect';
-import { Match, Player } from '../types';
-import { isSteamGame } from '../types/guards';
+import { Match, Player, isSteamGame } from '../types';
 
 type Actions =
   | { type: 'set_game'; game: GameOption | null }

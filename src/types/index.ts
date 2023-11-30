@@ -1,5 +1,8 @@
 import { DocumentReference, Timestamp } from 'firebase/firestore';
 
+import { GameOption } from '../components/Match/GameSelect';
+import { SteamGame } from '../hooks/useSteamApps';
+
 export type Uid = string;
 
 export interface Match extends NewMatch {
@@ -108,3 +111,7 @@ export type TimeString =
   | '23:30'
   | '23:45'
   | '23:59'; // Open end
+
+export function isSteamGame(game: GameOption): game is SteamGame {
+  return (game as SteamGame).appid !== undefined;
+}

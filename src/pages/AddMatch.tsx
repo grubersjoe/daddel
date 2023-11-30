@@ -41,8 +41,7 @@ import routes from '../constants/routes';
 import { useSteamUser } from '../hooks/useSteamUser';
 import { analytics, auth, firestore } from '../services/firebase';
 import { joinMatch } from '../services/match';
-import { NewMatch } from '../types';
-import { isSteamGame } from '../types/guards';
+import { NewMatch, isSteamGame } from '../types';
 import { parseTime } from '../utils/date';
 
 const AddMatch: FunctionComponent = () => {
