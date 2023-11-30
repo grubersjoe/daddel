@@ -100,7 +100,11 @@ const JoinMatchDialog: FunctionComponent<Props> = ({ match }) => {
   const availUntil =
     timeOptionsWithOpenEnd.find(time => time === currentUntil) ??
     timeOptions.find(time => time === defaultAvailUntil) ??
-    timeOptions[timeOptions.length - 1];
+    timeOptions.at(-1);
+
+  if (!availUntil) {
+    throw new Error('Unexpected error: availUntil undefined');
+  }
 
   const [state, setState] = useState<State>({
     availFrom,
@@ -116,14 +120,9 @@ const JoinMatchDialog: FunctionComponent<Props> = ({ match }) => {
       state.availUntil !== MATCH_TIME_OPEN_END &&
       indexAvailFrom >= timeOptions.indexOf(state.availUntil)
     ) {
-      const availUntil =
-        indexAvailFrom + 2 < timeOptions.length
-          ? timeOptions[indexAvailFrom + 2]
-          : MATCH_TIME_OPEN_END;
-
       setState(state => ({
         ...state,
-        availUntil,
+        availUntil: timeOptions[indexAvailFrom + 2] ?? MATCH_TIME_OPEN_END,
       }));
     }
   }, [state.availFrom, state.availUntil]);

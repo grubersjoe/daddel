@@ -134,14 +134,6 @@ const Calendar: FunctionComponent<Props> = ({ players }) => {
     labelStepSize,
   );
 
-  const playerTimeIntervals = players.map(player => ({
-    minuteStart: differenceInMinutes(player.from.toDate(), minDate),
-    minuteEnd: differenceInMinutes(
-      isOpenEndDate(player.until) ? maxDate : player.until.toDate(),
-      minDate,
-    ),
-  }));
-
   return (
     <Box sx={sx.root}>
       {timeLabels.map((label, index) => {
@@ -155,11 +147,15 @@ const Calendar: FunctionComponent<Props> = ({ players }) => {
           )
         );
       })}
-      {players.map((player, index) => {
-        const { minuteEnd, minuteStart } = playerTimeIntervals[index];
+      {players.map(player => {
+        const minuteStart = differenceInMinutes(player.from.toDate(), minDate);
+        const minuteEnd = differenceInMinutes(
+          isOpenEndDate(player.until) ? maxDate : player.until.toDate(),
+          minDate,
+        );
+
         const width = ((minuteEnd - minuteStart) / totalMinutes) * 100;
         const left = (minuteStart / totalMinutes) * 100;
-
         const untilLabel = formatTime(player.until);
 
         return (
