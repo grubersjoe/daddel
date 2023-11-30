@@ -11,7 +11,7 @@ interface Props {
 export type GameOption = SteamGame | { name: string };
 
 const GameSelect = (props: Props) => {
-  const { data: games, isInitialLoading: gamesLoading } = useSteamApps();
+  const { data: games, isLoading: gamesLoading } = useSteamApps();
   const [value, setValue] = useState<GameOption | null>(
     props.defaultValue ?? null,
   );

@@ -11,7 +11,6 @@ type Props = {
   onChange: (date: Date | null) => void;
 };
 
-// noinspection RequiredAttributes
 const DateTimePicker: FunctionComponent<Props> = ({ date, onChange }) => (
   <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={deLocale}>
     <MuiDateTimePicker

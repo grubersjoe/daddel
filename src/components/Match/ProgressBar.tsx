@@ -33,6 +33,10 @@ function calcBarColor(value: number, max: number) {
 export const ProgressBar: FunctionComponent<Props> = ({ value, max }) => {
   value = Math.min(value, max);
 
+  if (value < 1) {
+    return null;
+  }
+
   return (
     <LinearProgress
       sx={{
