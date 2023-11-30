@@ -15,7 +15,7 @@ import SetupUserDialog from '../components/Dialogs/SetupUserDialog';
 import MatchCard from '../components/Match/MatchCard';
 import PageMetadata from '../components/PageMetadata';
 import routes from '../constants/routes';
-import useCurrentDate from '../hooks/useCurrentDate';
+import useToday from '../hooks/useToday';
 import { firestore } from '../services/firebase';
 import { matchConverter } from '../services/firestore';
 import { Match } from '../types';
@@ -31,11 +31,10 @@ export const gridConfig = {
 const MatchesList: FunctionComponent = () => {
   const [, setIsRefetching] = useState(false);
 
-  const currentDate = useCurrentDate();
-
+  const today = useToday();
   const matchQuery = query(
     collection(firestore, 'matches').withConverter(matchConverter),
-    where('date', '>=', currentDate),
+    where('date', '>=', today),
     orderBy('date', 'asc'),
   );
 
