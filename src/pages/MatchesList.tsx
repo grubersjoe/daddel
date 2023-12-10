@@ -56,13 +56,11 @@ const MatchesList: FunctionComponent = () => {
       <AppBar title="Matches" />
 
       <Container maxWidth={false} sx={{ my: 1 }}>
-        {!matches && <p>Lade …</p>}
-
         {matchesError && (
           <Alert severity="error">Fehler: {matchesError.message}</Alert>
         )}
 
-        {matches && matches.length > 0 ? (
+        {matches && matches.length > 0 && (
           <Grid container spacing={5}>
             {matches.map(match => (
               <Grid item {...gridConfig} key={match.id}>
@@ -70,7 +68,9 @@ const MatchesList: FunctionComponent = () => {
               </Grid>
             ))}
           </Grid>
-        ) : (
+        )}
+
+        {matches && matches.length === 0 && (
           <>
             <Typography paragraph>Wow. Much empty.</Typography>
             <Button
