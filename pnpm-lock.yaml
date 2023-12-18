@@ -29,7 +29,7 @@ dependencies:
     version: 5.15.0(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@types/react@18.2.45)(react@18.2.0)
   '@mui/x-date-pickers':
     specifier: ^6.18.5
-    version: 6.18.5(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@mui/material@5.15.0)(@mui/system@5.15.0)(@types/react@18.2.45)(date-fns@3.0.0)(react-dom@18.2.0)(react@18.2.0)
+    version: 6.18.5(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@mui/material@5.15.0)(@mui/system@5.15.0)(@types/react@18.2.45)(date-fns@2.30.0)(react-dom@18.2.0)(react@18.2.0)
   '@sindresorhus/slugify':
     specifier: ^2.2.1
     version: 2.2.1
@@ -43,8 +43,8 @@ dependencies:
     specifier: ^1.6.2
     version: 1.6.2
   date-fns:
-    specifier: ^3.0.0
-    version: 3.0.0
+    specifier: ^2.30.0
+    version: 2.30.0
   firebase:
     specifier: ^10.7.1
     version: 10.7.1
@@ -1596,6 +1596,7 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       regenerator-runtime: 0.14.1
+    dev: false
 
   /@babel/runtime@7.23.6:
     resolution: {integrity: sha512-zHd0eUrf5GZoOWVCXp6koAKQTfZV07eit6bGPmJgnZdnSAvvZee6zniW2XMF7Cmc4ISOOnPy3QaSiIJGJkVEDQ==}
@@ -3192,7 +3193,7 @@ packages:
       react-is: 18.2.0
     dev: false
 
-  /@mui/x-date-pickers@6.18.5(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@mui/material@5.15.0)(@mui/system@5.15.0)(@types/react@18.2.45)(date-fns@3.0.0)(react-dom@18.2.0)(react@18.2.0):
+  /@mui/x-date-pickers@6.18.5(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@mui/material@5.15.0)(@mui/system@5.15.0)(@types/react@18.2.45)(date-fns@2.30.0)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-3jImYIWP2Xgi608yzm/Sz1v0MTjQQYdZSQOEIi3dWBfSAU9B06KXDpqlXfRSpTV+rtsnfYIIyiWlz6Ltk7sUWw==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -3238,7 +3239,7 @@ packages:
       '@mui/utils': 5.15.0(@types/react@18.2.45)(react@18.2.0)
       '@types/react-transition-group': 4.4.10
       clsx: 2.0.0
-      date-fns: 3.0.0
+      date-fns: 2.30.0
       prop-types: 15.8.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -4311,7 +4312,7 @@ packages:
     resolution: {integrity: sha512-Cg7TFGpIr01vOQNODXOOaGz2NpCU5gl8x1qJFbb6hbZxR7XrcE2vtbAsTAbJ7/xwJtUuJEw8K8Zr/AE0LHlesg==}
     engines: {node: '>=10', npm: '>=6'}
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.6
       cosmiconfig: 7.1.0
       resolve: 1.22.8
     dev: false
@@ -5091,12 +5092,7 @@ packages:
     resolution: {integrity: sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==}
     engines: {node: '>=0.11'}
     dependencies:
-      '@babel/runtime': 7.23.2
-    dev: true
-
-  /date-fns@3.0.0:
-    resolution: {integrity: sha512-xjDz3rNN9jp+Lh3P/4MeY4E5HkaRnEnrJCcrdRZnKdn42gJlIe6hwrrwVXePRwVR2kh1UcMnz00erYBnHF8PFA==}
-    dev: false
+      '@babel/runtime': 7.23.6
 
   /debug@2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
