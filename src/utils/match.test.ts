@@ -1,4 +1,4 @@
-import getUnixTime from 'date-fns/getUnixTime';
+import { getUnixTime } from 'date-fns';
 import { Timestamp } from 'firebase/firestore';
 
 import { MATCH_TIME_OPEN_END } from '../constants/date';

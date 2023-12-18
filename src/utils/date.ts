@@ -1,12 +1,14 @@
-import addMinutes from 'date-fns/addMinutes';
-import format from 'date-fns/format';
-import fromUnixTime from 'date-fns/fromUnixTime';
-import isBefore from 'date-fns/isBefore';
-import isToday from 'date-fns/isToday';
-import isTomorrow from 'date-fns/isTomorrow';
+import {
+  addMinutes,
+  format,
+  fromUnixTime,
+  isBefore,
+  isToday,
+  isTomorrow,
+  parse as parseDate,
+  roundToNearestMinutes,
+} from 'date-fns';
 import { de } from 'date-fns/locale';
-import parseDate from 'date-fns/parse';
-import roundToNearestMinutes from 'date-fns/roundToNearestMinutes';
 import { Timestamp } from 'firebase/firestore';
 
 import {

@@ -9,8 +9,7 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { Theme } from '@mui/system';
-import endOfDay from 'date-fns/endOfDay';
-import isFuture from 'date-fns/isFuture';
+import { endOfDay, isFuture } from 'date-fns';
 import React, { FunctionComponent } from 'react';
 import { Link } from 'react-router-dom';
 

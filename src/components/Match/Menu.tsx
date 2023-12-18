@@ -5,8 +5,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ShareIcon from '@mui/icons-material/Share';
 import { MenuItem, Menu as MuiMenu } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
-import endOfDay from 'date-fns/endOfDay';
-import isPast from 'date-fns/isPast';
+import { endOfDay, isPast } from 'date-fns';
 import { logEvent } from 'firebase/analytics';
 import { deleteDoc } from 'firebase/firestore';
 import React, {
