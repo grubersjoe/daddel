@@ -8,10 +8,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import addMinutes from 'date-fns/addMinutes';
-import isSameDay from 'date-fns/isSameDay';
-import isValid from 'date-fns/isValid';
-import parseDate from 'date-fns/parse';
+import { addMinutes, isSameDay, isValid, parse as parseDate } from 'date-fns';
 import { logEvent } from 'firebase/analytics';
 import { User } from 'firebase/auth';
 import { Timestamp, addDoc, collection } from 'firebase/firestore';

@@ -1,7 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import { Theme, useTheme } from '@mui/material/styles';
-import differenceInMinutes from 'date-fns/differenceInMinutes';
-import fromUnixTime from 'date-fns/fromUnixTime';
+import { differenceInMinutes, fromUnixTime } from 'date-fns';
 import React, { FunctionComponent, ReactElement } from 'react';
 
 import {

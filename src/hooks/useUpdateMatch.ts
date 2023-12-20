@@ -1,4 +1,4 @@
-import setDate from 'date-fns/set';
+import { set } from 'date-fns';
 import { Timestamp } from 'firebase/firestore';
 import { Reducer, useReducer } from 'react';
 
@@ -64,8 +64,8 @@ const updatePlayerDates = (
 
     return {
       uid: player.uid,
-      from: Timestamp.fromDate(setDate(player.from.toDate(), updateDate)),
-      until: Timestamp.fromDate(setDate(player.until.toDate(), updateDate)),
+      from: Timestamp.fromDate(set(player.from.toDate(), updateDate)),
+      until: Timestamp.fromDate(set(player.until.toDate(), updateDate)),
     };
   });
 

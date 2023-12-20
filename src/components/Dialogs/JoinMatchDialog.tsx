@@ -11,7 +11,7 @@ import {
   Select,
 } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select/SelectInput';
-import addMinutes from 'date-fns/addMinutes';
+import { addMinutes } from 'date-fns';
 import { Timestamp } from 'firebase/firestore';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
