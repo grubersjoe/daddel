@@ -29,7 +29,7 @@ dependencies:
     version: 5.15.1(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@types/react@18.2.45)(react@18.2.0)
   '@mui/x-date-pickers':
     specifier: ^6.18.5
-    version: 6.18.5(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@mui/material@5.15.1)(@mui/system@5.15.1)(@types/react@18.2.45)(date-fns@3.0.1)(react-dom@18.2.0)(react@18.2.0)
+    version: 6.18.5(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@mui/material@5.15.1)(@mui/system@5.15.1)(@types/react@18.2.45)(date-fns@3.0.5)(react-dom@18.2.0)(react@18.2.0)
   '@sindresorhus/slugify':
     specifier: ^2.2.1
     version: 2.2.1
@@ -43,8 +43,8 @@ dependencies:
     specifier: ^1.6.2
     version: 1.6.2
   date-fns:
-    specifier: ^3.0.1
-    version: 3.0.1
+    specifier: ^3.0.5
+    version: 3.0.5
   firebase:
     specifier: ^10.7.1
     version: 10.7.1
@@ -3234,7 +3234,7 @@ packages:
       react-is: 18.2.0
     dev: false
 
-  /@mui/x-date-pickers@6.18.5(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@mui/material@5.15.1)(@mui/system@5.15.1)(@types/react@18.2.45)(date-fns@3.0.1)(react-dom@18.2.0)(react@18.2.0):
+  /@mui/x-date-pickers@6.18.5(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@mui/material@5.15.1)(@mui/system@5.15.1)(@types/react@18.2.45)(date-fns@3.0.5)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-3jImYIWP2Xgi608yzm/Sz1v0MTjQQYdZSQOEIi3dWBfSAU9B06KXDpqlXfRSpTV+rtsnfYIIyiWlz6Ltk7sUWw==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -3280,7 +3280,7 @@ packages:
       '@mui/utils': 5.15.0(@types/react@18.2.45)(react@18.2.0)
       '@types/react-transition-group': 4.4.10
       clsx: 2.0.0
-      date-fns: 3.0.1
+      date-fns: 3.0.5
       prop-types: 15.8.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -5136,8 +5136,8 @@ packages:
       '@babel/runtime': 7.23.6
     dev: true
 
-  /date-fns@3.0.1:
-    resolution: {integrity: sha512-cr9igCUa0QSqgAMj7JOrYTY6Nh1rmyGrFDko7ADqfmaQqP/I2N4rlfrLl7AWuzDaoIpz6MNjoEcTPzgZYIrhnA==}
+  /date-fns@3.0.5:
+    resolution: {integrity: sha512-Q4Tq5c5s/Zl/zbgdWf6pejn9ru7UwdIlLfvEEg1hVsQNQ7LKt76qIduagIT9OPK7+JCv1mAKherdU6bOqGYDnw==}
     dev: false
 
   /debug@2.6.9:
