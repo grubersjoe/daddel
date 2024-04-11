@@ -1,9 +1,10 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Fade, Typography } from '@mui/material';
 import { Theme, useTheme } from '@mui/material/styles';
 import { differenceInMinutes } from 'date-fns';
-import React, { FunctionComponent, ReactElement } from 'react';
+import React, { FunctionComponent, ReactElement, useState } from 'react';
+import { TransitionGroup } from 'react-transition-group';
 
-import { FIFTEEN_MINUTES, MATCH_TIME_OPEN_END } from '../../constants/date';
+import { FIFTEEN_MINUTES } from '../../constants/date';
 import useUsers from '../../hooks/useUsers';
 import { Player } from '../../types';
 import {
@@ -35,9 +36,6 @@ const styles = (theme: Theme) =>
     bar: {
       position: 'relative',
       top: 0,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
       height: 28, // a round number is preferable here (Skeleton)
       marginBottom: '7px',
       padding: '0.25em 0.75em',
@@ -49,15 +47,10 @@ const styles = (theme: Theme) =>
         marginBottom: '8px',
       },
     },
-    time: {
-      marginLeft: '0.75em',
-      overflow: 'hidden',
+    textOverflow: {
       whiteSpace: 'nowrap',
+      overflow: 'hidden',
       textOverflow: 'ellipsis',
-
-      [theme.breakpoints.down(300)]: {
-        display: 'none',
-      },
     },
   }) as const;
 
@@ -77,25 +70,55 @@ const Label: FunctionComponent<LabelProps> = ({ left, children }) => (
   </Box>
 );
 
-interface BarProps {
-  children: Array<ReactElement> | ReactElement;
+const CalendarBar = ({
+  left,
+  width,
+  name,
+  time,
+}: {
   left: number;
   width: number;
-}
+  name: ReactElement;
+  time: ReactElement;
+}) => {
+  const sx = styles(useTheme());
+  const delay = 400; // ms
+  const [delayHandler, setDelayHandler] = useState<number>();
+  const [isHovered, setIsHovered] = useState(false);
 
-const Bar: FunctionComponent<BarProps> = ({ left, width, children }) => (
-  <Box
-    sx={{
-      ...styles(useTheme()).bar,
-      ...{
-        left: `${left}%`,
-        width: `${width}%`,
-      },
-    }}
-  >
-    {children}
-  </Box>
-);
+  return (
+    <Box
+      onMouseEnter={() => {
+        if (delayHandler === undefined) {
+          setDelayHandler(
+            window.setTimeout(() => {
+              setIsHovered(true);
+            }, delay),
+          );
+        }
+      }}
+      onMouseLeave={() => {
+        clearTimeout(delayHandler);
+        setDelayHandler(undefined);
+        setIsHovered(false);
+      }}
+      sx={{
+        ...sx.bar,
+        ...sx.textOverflow,
+        ...{
+          left: `${left}%`,
+          width: `${width}%`,
+        },
+      }}
+    >
+      <TransitionGroup>
+        <Fade key={isHovered ? 'time' : 'name'} timeout={200} appear={false}>
+          {isHovered ? time : name}
+        </Fade>
+      </TransitionGroup>
+    </Box>
+  );
+};
 
 const Calendar: FunctionComponent<Props> = ({ players }) => {
   const [users] = useUsers();
@@ -149,16 +172,30 @@ const Calendar: FunctionComponent<Props> = ({ players }) => {
 
         const width = ((minuteEnd - minuteStart) / totalMinutes) * 100;
         const left = (minuteStart / totalMinutes) * 100;
-        const untilLabel = formatTime(player.until);
+
+        const name = <span>{users[player.uid]?.nickname ?? 'Unbekannt'}</span>;
+        const time = (
+          <Box
+            width="100%"
+            display="flex"
+            justifyContent="space-between"
+            gap="0.5em"
+          >
+            <Box component="span">{formatTime(player.from)}</Box>
+            <Box component="span" sx={{ ...sx.textOverflow }}>
+              {isOpenEndDate(player.until) ? '∞' : formatTime(player.until)}
+            </Box>
+          </Box>
+        );
 
         return (
-          <Bar width={width} left={left} key={player.uid}>
-            <Box component="span">{users[player.uid]?.nickname}</Box>
-            <Box component="span" sx={sx.time}>
-              {formatTime(player.from)} –{' '}
-              {untilLabel === MATCH_TIME_OPEN_END ? 'Open end' : untilLabel}
-            </Box>
-          </Bar>
+          <CalendarBar
+            width={width}
+            left={left}
+            key={player.uid}
+            name={name}
+            time={time}
+          />
         );
       })}
     </Box>
