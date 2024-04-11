@@ -1,7 +1,6 @@
 import {
   addMinutes,
   format,
-  fromUnixTime,
   isBefore,
   isToday,
   isTomorrow,
@@ -13,13 +12,13 @@ import { Timestamp } from 'firebase/firestore';
 
 import {
   DATE_FORMAT,
-  DEFAULT_TIME_INCREMENT,
+  FIFTEEN_MINUTES,
   MATCH_TIME_OPEN_END,
   TIME_FORMAT,
 } from '../constants/date';
 import { TimeString } from '../types';
 
-export function formatDate(timestamp: Timestamp, smartWeekday = true): string {
+export function formatDate(timestamp: Timestamp, smartWeekday = true) {
   const date = timestamp.toDate();
 
   if (smartWeekday) {
@@ -35,36 +34,29 @@ export function formatDate(timestamp: Timestamp, smartWeekday = true): string {
   return format(date, DATE_FORMAT, { locale: de });
 }
 
-export function formatTime(
-  date: Date | Timestamp | number,
-  timeFormat = TIME_FORMAT,
-) {
+export function formatTime(date: Date | Timestamp, timeFormat = TIME_FORMAT) {
   if (date instanceof Date) {
     return format(date, timeFormat);
-  }
-
-  if (typeof date === 'number') {
-    return format(fromUnixTime(date), timeFormat);
   }
 
   return format(date.toDate(), timeFormat);
 }
 
-export function parseTime(time: TimeString, referenceDate = new Date()): Date {
+export function timeToDate(time: TimeString, referenceDate = new Date()) {
   return parseDate(time, TIME_FORMAT, referenceDate);
 }
 
-export function calcTimeStringsBetweenDates(
+export function timeStringsBetweenDates(
   startDate: Date,
   endDate: Date,
-  stepInMinutes = DEFAULT_TIME_INCREMENT,
-): Array<TimeString> {
+  stepInMinutes = FIFTEEN_MINUTES,
+) {
   let currentDate = roundToNearestMinutes(startDate, {
-    nearestTo: DEFAULT_TIME_INCREMENT,
+    nearestTo: FIFTEEN_MINUTES,
   });
 
   endDate = roundToNearestMinutes(endDate, {
-    nearestTo: DEFAULT_TIME_INCREMENT,
+    nearestTo: FIFTEEN_MINUTES,
   });
 
   if (isBefore(endDate, currentDate)) {
@@ -82,6 +74,6 @@ export function calcTimeStringsBetweenDates(
   return options as Array<TimeString>;
 }
 
-export function isOpenEndDate(date: Date | Timestamp | number): boolean {
+export function isOpenEndDate(date: Date | Timestamp) {
   return formatTime(date) === MATCH_TIME_OPEN_END;
 }

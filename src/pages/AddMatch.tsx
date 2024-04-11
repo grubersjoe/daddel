@@ -29,7 +29,7 @@ import GameSelect, { GameOption } from '../components/Match/GameSelect';
 import PageMetadata from '../components/PageMetadata';
 import { GA_EVENTS } from '../constants';
 import {
-  DEFAULT_MATCH_LENGTH,
+  DEFAULT_MATCH_LENGTH_MINUTES,
   DEFAULT_MATCH_TIME,
   MATCH_TIME_LATEST,
   TIME_FORMAT,
@@ -39,7 +39,7 @@ import { useSteamUser } from '../hooks/useSteamUser';
 import { analytics, auth, firestore } from '../services/firebase';
 import { joinMatch } from '../services/match';
 import { NewMatch, isSteamGame } from '../types';
-import { parseTime } from '../utils/date';
+import { timeToDate } from '../utils/date';
 
 const AddMatch: FunctionComponent = () => {
   const navigate = useNavigate();
@@ -91,10 +91,13 @@ const AddMatch: FunctionComponent = () => {
     addDoc(collection(firestore, 'matches'), match)
       .then(doc => {
         if (selfJoinMatch) {
-          const defaultAvailUntil = addMinutes(date, DEFAULT_MATCH_LENGTH);
+          const defaultAvailUntil = addMinutes(
+            date,
+            DEFAULT_MATCH_LENGTH_MINUTES,
+          );
           const availUntil = isSameDay(defaultAvailUntil, date)
             ? defaultAvailUntil
-            : parseTime(MATCH_TIME_LATEST, date);
+            : timeToDate(MATCH_TIME_LATEST, date);
 
           return joinMatch(authUser, date, availUntil, {
             id: doc.id,

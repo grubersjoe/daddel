@@ -4,7 +4,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { de } from 'date-fns/locale/de';
 import React, { FunctionComponent } from 'react';
 
-import { DEFAULT_TIME_INCREMENT } from '../constants/date';
+import { FIFTEEN_MINUTES } from '../constants/date';
 
 type Props = {
   date: Date | null;
@@ -21,7 +21,7 @@ const DateTimePicker: FunctionComponent<Props> = ({ date, onChange }) => (
       value={date}
       onChange={onChange}
       minDate={new Date()}
-      minutesStep={DEFAULT_TIME_INCREMENT}
+      minutesStep={FIFTEEN_MINUTES}
       ampm={false}
     />
   </LocalizationProvider>

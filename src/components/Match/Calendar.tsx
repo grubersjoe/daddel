@@ -1,20 +1,17 @@
 import { Box, Typography } from '@mui/material';
 import { Theme, useTheme } from '@mui/material/styles';
-import { differenceInMinutes, fromUnixTime } from 'date-fns';
+import { differenceInMinutes } from 'date-fns';
 import React, { FunctionComponent, ReactElement } from 'react';
 
-import {
-  DEFAULT_TIME_INCREMENT,
-  MATCH_TIME_OPEN_END,
-} from '../../constants/date';
+import { FIFTEEN_MINUTES, MATCH_TIME_OPEN_END } from '../../constants/date';
 import useUsers from '../../hooks/useUsers';
 import { Player } from '../../types';
 import {
-  calcTimeStringsBetweenDates,
   formatTime,
   isOpenEndDate,
+  timeStringsBetweenDates,
 } from '../../utils/date';
-import { calcPlayerTimeBounds } from '../../utils/match';
+import { calendarTimeBounds } from '../../utils/match';
 
 type Props = {
   players: Array<Player>;
@@ -114,22 +111,16 @@ const Calendar: FunctionComponent<Props> = ({ players }) => {
     );
   }
 
-  const timeBounds = calcPlayerTimeBounds(players);
-  const minDate = fromUnixTime(timeBounds.min);
-  const maxDate = fromUnixTime(
-    timeBounds.withOpenEnd
-      ? timeBounds.max + DEFAULT_TIME_INCREMENT * 60
-      : timeBounds.max,
-  );
-  const totalMinutes = differenceInMinutes(maxDate, minDate);
+  const timeBounds = calendarTimeBounds(players);
+  const totalMinutes = differenceInMinutes(timeBounds.max, timeBounds.min);
 
+  const numLabels = 4;
   const labelStepSize =
-    Math.round(totalMinutes / 4 / DEFAULT_TIME_INCREMENT) *
-    DEFAULT_TIME_INCREMENT;
+    Math.round(totalMinutes / numLabels / FIFTEEN_MINUTES) * FIFTEEN_MINUTES;
 
-  const timeLabels = calcTimeStringsBetweenDates(
-    minDate,
-    maxDate,
+  const timeLabels = timeStringsBetweenDates(
+    timeBounds.min,
+    timeBounds.max,
     labelStepSize,
   );
 
@@ -147,10 +138,13 @@ const Calendar: FunctionComponent<Props> = ({ players }) => {
         );
       })}
       {players.map(player => {
-        const minuteStart = differenceInMinutes(player.from.toDate(), minDate);
+        const minuteStart = differenceInMinutes(
+          player.from.toDate(),
+          timeBounds.min,
+        );
         const minuteEnd = differenceInMinutes(
-          isOpenEndDate(player.until) ? maxDate : player.until.toDate(),
-          minDate,
+          isOpenEndDate(player.until) ? timeBounds.max : player.until.toDate(),
+          timeBounds.min,
         );
 
         const width = ((minuteEnd - minuteStart) / totalMinutes) * 100;

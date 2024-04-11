@@ -17,7 +17,7 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 import {
-  DEFAULT_MATCH_LENGTH,
+  DEFAULT_MATCH_LENGTH_MINUTES,
   DEFAULT_MATCH_TIME,
   MATCH_TIME_EARLIEST,
   MATCH_TIME_LATEST,
@@ -27,9 +27,9 @@ import { auth } from '../../services/firebase';
 import { joinMatch, leaveMatch } from '../../services/match';
 import { Match, TimeString } from '../../types';
 import {
-  calcTimeStringsBetweenDates,
   formatTime,
-  parseTime,
+  timeStringsBetweenDates,
+  timeToDate,
 } from '../../utils/date';
 
 type Props = {
@@ -43,9 +43,9 @@ type State = {
   availUntil: TimeString;
 };
 
-const timeOptions = calcTimeStringsBetweenDates(
-  parseTime(MATCH_TIME_EARLIEST),
-  parseTime(MATCH_TIME_LATEST),
+const timeOptions = timeStringsBetweenDates(
+  timeToDate(MATCH_TIME_EARLIEST),
+  timeToDate(MATCH_TIME_LATEST),
 );
 
 const timeOptionsWithOpenEnd = [...timeOptions, MATCH_TIME_OPEN_END];
@@ -94,7 +94,7 @@ const JoinMatchDialog: FunctionComponent<Props> = ({ match }) => {
     DEFAULT_MATCH_TIME;
 
   const defaultAvailUntil = formatTime(
-    addMinutes(parseTime(availFrom), DEFAULT_MATCH_LENGTH),
+    addMinutes(timeToDate(availFrom), DEFAULT_MATCH_LENGTH_MINUTES),
   );
 
   const availUntil =
@@ -135,8 +135,8 @@ const JoinMatchDialog: FunctionComponent<Props> = ({ match }) => {
     setLoading(true);
     setError(null);
 
-    const availFrom = parseTime(state.availFrom, match.date.toDate());
-    const availUntil = parseTime(state.availUntil, match.date.toDate());
+    const availFrom = timeToDate(state.availFrom, match.date.toDate());
+    const availUntil = timeToDate(state.availUntil, match.date.toDate());
 
     joinMatch(authUser, availFrom, availUntil, match)
       .then(() => setOpen(false))

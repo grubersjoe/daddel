@@ -1,35 +1,41 @@
+import { addHours, fromUnixTime, min as minDate } from 'date-fns';
+
+import { MATCH_TIME_LATEST } from '../constants/date';
 import { Player } from '../types';
-import { isOpenEndDate } from './date';
+import { isOpenEndDate, timeToDate } from './date';
 
 interface TimeBounds {
-  min: number; // seconds (UNIX timestamp)
-  max: number; // seconds (UNIX timestamp)
-  withOpenEnd: boolean;
+  min: Date;
+  max: Date;
 }
 
-export function calcPlayerTimeBounds(players: Array<Player>): TimeBounds {
-  const initialValue = {
-    min: Infinity,
-    max: -Infinity,
-    withOpenEnd: false,
-  };
+export function calendarTimeBounds(players: Array<Player>): TimeBounds {
+  if (players.length === 0) {
+    throw new Error('List of players is empty');
+  }
 
-  return players.reduce<TimeBounds>((bounds, player) => {
-    // Enlarge upper bound for one hour for open end times
-    if (isOpenEndDate(player.until)) {
-      const min = Math.min(bounds.min, player.from.seconds);
+  const untilExceptOpenEnd = players.filter(p => !isOpenEndDate(p.until));
+  const minFrom = fromUnixTime(Math.min(...players.map(p => p.from.seconds)));
+  const maxUntil = fromUnixTime(
+    Math.max(...untilExceptOpenEnd.map(p => p.until.seconds)),
+  );
 
-      return {
-        min,
-        max: Math.max(bounds.max, min + 60 * 60),
-        withOpenEnd: true,
-      };
-    }
+  const openEndOnly = untilExceptOpenEnd.length === 0;
 
+  if (openEndOnly) {
+    const maxFrom = fromUnixTime(Math.max(...players.map(p => p.from.seconds)));
     return {
-      min: Math.min(bounds.min, player.from.seconds),
-      max: Math.max(bounds.max, player.until.seconds),
-      withOpenEnd: bounds.withOpenEnd,
+      min: minFrom,
+      max: minDate([addHours(maxFrom, 2), timeToDate(MATCH_TIME_LATEST)]),
     };
-  }, initialValue);
+  }
+
+  const withOpenEnd = untilExceptOpenEnd.length < players.length;
+
+  return {
+    min: minFrom,
+    max: withOpenEnd
+      ? minDate([addHours(maxUntil, 0.5), timeToDate(MATCH_TIME_LATEST)])
+      : maxUntil,
+  };
 }

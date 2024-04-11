@@ -3,8 +3,8 @@ import { TimeString } from '../types';
 export const DATE_FORMAT = 'dd.MM.';
 export const TIME_FORMAT = 'HH:mm';
 
-export const DEFAULT_TIME_INCREMENT = 15; // minutes
-export const DEFAULT_MATCH_LENGTH = 120; // minutes
+export const FIFTEEN_MINUTES = 15;
+export const DEFAULT_MATCH_LENGTH_MINUTES = 120;
 export const DEFAULT_MATCH_TIME: TimeString = '18:30';
 
 export const MATCH_TIME_EARLIEST: TimeString = '09:00';
