@@ -114,4 +114,26 @@ describe('calendarTimeBounds()', () => {
 
     expect(calendarTimeBounds(players)).toEqual(expected);
   });
+
+  test('should extend bounds by half an hour if subset of players selected "open end" without time range overlap', () => {
+    const players: Array<Player> = [
+      {
+        uid: 'uid',
+        from: Timestamp.fromDate(timeToDate('18:30')),
+        until: Timestamp.fromDate(timeToDate('20:30')),
+      },
+      {
+        uid: 'uid',
+        from: Timestamp.fromDate(timeToDate('21:00')),
+        until: Timestamp.fromDate(timeToDate(MATCH_TIME_OPEN_END)),
+      },
+    ];
+
+    const expected = {
+      min: timeToDate('18:30'),
+      max: timeToDate('21:30'),
+    };
+
+    expect(calendarTimeBounds(players)).toEqual(expected);
+  });
 });

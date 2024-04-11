@@ -20,9 +20,8 @@ export function calendarTimeBounds(players: Array<Player>): TimeBounds {
     Math.max(...untilExceptOpenEnd.map(p => p.until.seconds)),
   );
 
-  const openEndOnly = untilExceptOpenEnd.length === 0;
-
-  if (openEndOnly) {
+  // Only "open end"
+  if (untilExceptOpenEnd.length === 0) {
     const maxFrom = fromUnixTime(Math.max(...players.map(p => p.from.seconds)));
     return {
       min: minFrom,
@@ -30,12 +29,28 @@ export function calendarTimeBounds(players: Array<Player>): TimeBounds {
     };
   }
 
-  const withOpenEnd = untilExceptOpenEnd.length < players.length;
+  // With "open end"
+  if (untilExceptOpenEnd.length < players.length) {
+    // Times may have no overlap (for example, 18:30-20:30 and 22:00-Open End).
+    // So calculate the correct start point:
+    const maxUntilOrFrom = fromUnixTime(
+      Math.max(
+        ...untilExceptOpenEnd.map(p => p.until.seconds),
+        ...players.map(p => p.from.seconds),
+      ),
+    );
+
+    return {
+      min: minFrom,
+      max: minDate([
+        addHours(maxUntilOrFrom, 0.5),
+        timeToDate(MATCH_TIME_LATEST),
+      ]),
+    };
+  }
 
   return {
     min: minFrom,
-    max: withOpenEnd
-      ? minDate([addHours(maxUntil, 0.5), timeToDate(MATCH_TIME_LATEST)])
-      : maxUntil,
+    max: maxUntil,
   };
 }
