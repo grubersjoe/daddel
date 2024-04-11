@@ -16,8 +16,8 @@ export const functions = getFunctions(firebaseApp, FIREBASE_REGION);
 export const messaging = getMessaging(firebaseApp);
 
 // Emulators
-if (window.location.hostname === 'localhost') {
-  connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
-  connectFirestoreEmulator(firestore, 'localhost', 8080);
-  connectFunctionsEmulator(functions, 'localhost', 5001);
+if (import.meta.env.VITE_USE_EMULATORS.toLowerCase() === 'true') {
+  connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true });
+  connectFirestoreEmulator(firestore, '127.0.0.1', 8080);
+  connectFunctionsEmulator(functions, '127.0.0.1', 5001);
 }
