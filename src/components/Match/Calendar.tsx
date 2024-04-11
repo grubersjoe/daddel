@@ -84,15 +84,16 @@ const CalendarBar = ({
   const sx = styles(useTheme());
   const delay = 400; // ms
   const [delayHandler, setDelayHandler] = useState<number>();
-  const [isHovered, setIsHovered] = useState(false);
+  const [isToggled, setIsToggled] = useState(false);
 
   return (
     <Box
+      onTouchStart={() => setIsToggled(prev => !prev)}
       onMouseEnter={() => {
         if (delayHandler === undefined) {
           setDelayHandler(
             window.setTimeout(() => {
-              setIsHovered(true);
+              setIsToggled(true);
             }, delay),
           );
         }
@@ -100,7 +101,7 @@ const CalendarBar = ({
       onMouseLeave={() => {
         clearTimeout(delayHandler);
         setDelayHandler(undefined);
-        setIsHovered(false);
+        setIsToggled(false);
       }}
       sx={{
         ...sx.bar,
@@ -112,8 +113,8 @@ const CalendarBar = ({
       }}
     >
       <TransitionGroup>
-        <Fade key={isHovered ? 'time' : 'name'} timeout={200} appear={false}>
-          {isHovered ? time : name}
+        <Fade key={isToggled ? 'time' : 'name'} timeout={200} appear={false}>
+          {isToggled ? time : name}
         </Fade>
       </TransitionGroup>
     </Box>
