@@ -31,6 +31,9 @@ export const createTheme = (color: string): Theme =>
         defaultProps: {
           variant: 'outlined',
           color: 'inherit',
+          sx: {
+            whiteSpace: 'nowrap',
+          },
         },
       },
       MuiLink: {
