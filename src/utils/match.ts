@@ -4,7 +4,7 @@ import { MATCH_TIME_LATEST } from '../constants/date';
 import { Player } from '../types';
 import { isOpenEndDate, timeToDate } from './date';
 
-interface TimeBounds {
+export interface TimeBounds {
   min: Date;
   max: Date;
 }

@@ -19,7 +19,7 @@ import { formatDate, formatTime } from '../../utils/date';
 import JoinMatchDialog from '../Dialogs/JoinMatchDialog';
 import EmojiPicker from '../EmojiPicker';
 import PageMetadata from '../PageMetadata';
-import Calendar from './Calendar';
+import Calendar from './Calendar/Calendar';
 import GameBanner from './GameBanner';
 import MatchCardSkeleton from './MatchCardSkeleton';
 import MatchReactions from './MatchReactions';

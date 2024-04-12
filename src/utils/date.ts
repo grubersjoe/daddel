@@ -12,7 +12,7 @@ import { Timestamp } from 'firebase/firestore';
 
 import {
   DATE_FORMAT,
-  FIFTEEN_MINUTES,
+  DEFAULT_TIME_INCREMENT_MINUTES,
   MATCH_TIME_OPEN_END,
   TIME_FORMAT,
 } from '../constants/date';
@@ -49,14 +49,14 @@ export function timeToDate(time: TimeString, referenceDate = new Date()) {
 export function timeStringsBetweenDates(
   startDate: Date,
   endDate: Date,
-  stepInMinutes = FIFTEEN_MINUTES,
+  stepSizeMinutes = DEFAULT_TIME_INCREMENT_MINUTES,
 ) {
   let currentDate = roundToNearestMinutes(startDate, {
-    nearestTo: FIFTEEN_MINUTES,
+    nearestTo: DEFAULT_TIME_INCREMENT_MINUTES,
   });
 
   endDate = roundToNearestMinutes(endDate, {
-    nearestTo: FIFTEEN_MINUTES,
+    nearestTo: DEFAULT_TIME_INCREMENT_MINUTES,
   });
 
   if (isBefore(endDate, currentDate)) {
@@ -67,7 +67,7 @@ export function timeStringsBetweenDates(
   const options = [formatTime(currentDate)];
 
   while (isBefore(currentDate, endDate)) {
-    currentDate = addMinutes(currentDate, stepInMinutes);
+    currentDate = addMinutes(currentDate, stepSizeMinutes);
     options.push(formatTime(currentDate));
   }
 
