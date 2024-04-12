@@ -61,7 +61,7 @@ const MatchesList: FunctionComponent = () => {
         )}
 
         {matches && matches.length > 0 && (
-          <Grid container spacing={5}>
+          <Grid container spacing={4}>
             {matches.map(match => (
               <Grid item {...gridConfig} key={match.id}>
                 <MatchCard match={match} />
