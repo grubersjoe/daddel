@@ -25,13 +25,14 @@ const styles = (theme: Theme) =>
       pt: 3.5, // space for legend
       fontSize: theme.typography.pxToRem(14),
     },
-    label: {
+    timeLabel: {
       position: 'absolute',
       top: 0,
       height: '100%',
       borderLeft: 'solid 1px rgba(255, 255, 255, 0.2)',
       paddingLeft: '0.45em',
       lineHeight: 1,
+      color: theme.palette.grey[300],
     },
     bar: {
       position: 'relative',
@@ -59,10 +60,10 @@ interface LabelProps {
   left: number;
 }
 
-const Label: FunctionComponent<LabelProps> = ({ left, children }) => (
+const TimeLabel: FunctionComponent<LabelProps> = ({ left, children }) => (
   <Box
     sx={{
-      ...styles(useTheme()).label,
+      ...styles(useTheme()).timeLabel,
       ...{ left: `${left}%` },
     }}
   >
@@ -82,27 +83,11 @@ const CalendarBar = ({
   time: ReactElement;
 }) => {
   const sx = styles(useTheme());
-  const delay = 400; // ms
-  const [delayHandler, setDelayHandler] = useState<number>();
   const [isToggled, setIsToggled] = useState(false);
 
   return (
     <Box
-      onTouchStart={() => setIsToggled(prev => !prev)}
-      onMouseEnter={() => {
-        if (delayHandler === undefined) {
-          setDelayHandler(
-            window.setTimeout(() => {
-              setIsToggled(true);
-            }, delay),
-          );
-        }
-      }}
-      onMouseLeave={() => {
-        clearTimeout(delayHandler);
-        setDelayHandler(undefined);
-        setIsToggled(false);
-      }}
+      onClick={() => setIsToggled(prev => !prev)}
       sx={{
         ...sx.bar,
         ...sx.textOverflow,
@@ -110,10 +95,11 @@ const CalendarBar = ({
           left: `${left}%`,
           width: `${width}%`,
         },
+        userSelect: 'none',
       }}
     >
       <TransitionGroup>
-        <Fade key={isToggled ? 'time' : 'name'} timeout={200} appear={false}>
+        <Fade key={isToggled ? 'time' : 'name'} timeout={180}>
           {isToggled ? time : name}
         </Fade>
       </TransitionGroup>
@@ -138,7 +124,7 @@ const Calendar: FunctionComponent<Props> = ({ players }) => {
   const timeBounds = calendarTimeBounds(players);
   const totalMinutes = differenceInMinutes(timeBounds.max, timeBounds.min);
 
-  const numLabels = 4;
+  const numLabels = 5;
   const labelStepSize =
     Math.round(totalMinutes / numLabels / FIFTEEN_MINUTES) * FIFTEEN_MINUTES;
 
@@ -155,9 +141,9 @@ const Calendar: FunctionComponent<Props> = ({ players }) => {
         return (
           // More than about 88% left will run outside of container
           left <= 88 && (
-            <Label left={left} key={left}>
+            <TimeLabel left={left} key={left}>
               {label}
-            </Label>
+            </TimeLabel>
           )
         );
       })}
@@ -174,7 +160,7 @@ const Calendar: FunctionComponent<Props> = ({ players }) => {
         const width = ((minuteEnd - minuteStart) / totalMinutes) * 100;
         const left = (minuteStart / totalMinutes) * 100;
 
-        const name = <span>{users[player.uid]?.nickname ?? 'Unbekannt'}</span>;
+        const name = <span>{users[player.uid]?.nickname ?? ''}</span>;
         const time = (
           <Box
             width="100%"
@@ -184,7 +170,9 @@ const Calendar: FunctionComponent<Props> = ({ players }) => {
           >
             <Box component="span">{formatTime(player.from)}</Box>
             <Box component="span" sx={{ ...sx.textOverflow }}>
-              {isOpenEndDate(player.until) ? '∞' : formatTime(player.until)}
+              {isOpenEndDate(player.until)
+                ? 'Open End'
+                : formatTime(player.until)}
             </Box>
           </Box>
         );
