@@ -2,8 +2,7 @@ import { set } from 'date-fns';
 import { Timestamp } from 'firebase/firestore';
 import { Reducer, useReducer } from 'react';
 
-import { GameOption } from '../components/Match/GameSelect';
-import { Match, Player, isSteamGame } from '../types';
+import { GameOption, Match, Player, isSteamGame } from '../types';
 
 type Actions =
   | { type: 'set_game'; game: GameOption | null }

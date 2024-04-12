@@ -1,13 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 
+import { SteamGame } from '../types';
 import { useSteamUser } from './useSteamUser';
-
-export interface SteamGame {
-  appid: number;
-  name: string;
-  playtime_forever: number;
-}
 
 interface Response {
   response: {

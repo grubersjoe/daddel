@@ -1,6 +1,5 @@
-import { utcToZonedTime } from 'date-fns-tz';
-import format from 'date-fns/format';
-import fromUnixTime from 'date-fns/fromUnixTime';
+import { format, fromUnixTime } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
 import { de } from 'date-fns/locale';
 import { Timestamp } from 'firebase/firestore';
 
@@ -20,5 +19,5 @@ export function formatTime(
     typeof timestamp === 'number' ? timestamp : timestamp.seconds,
   );
 
-  return format(utcToZonedTime(date, TIMEZONE), timeFormat);
+  return format(toZonedTime(date, TIMEZONE), timeFormat);
 }

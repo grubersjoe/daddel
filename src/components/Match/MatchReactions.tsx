@@ -16,10 +16,10 @@ import React, {
 
 import { LOCALE } from '../../constants';
 import useUsers from '../../hooks/useUsers';
-import { Reaction } from '../../types';
+import { MatchReaction } from '../../types';
 
 interface Props {
-  reactions: Array<Reaction>;
+  reactions: Array<MatchReaction>;
   onClick: (emoji: string) => void;
 }
 

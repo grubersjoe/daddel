@@ -1,14 +1,13 @@
 import { Autocomplete as MuiAutocomplete, TextField } from '@mui/material';
 import React, { useState } from 'react';
 
-import { SteamGame, useSteamApps } from '../../hooks/useSteamApps';
+import { useSteamApps } from '../../hooks/useSteamApps';
+import { GameOption } from '../../types';
 
 interface Props {
   defaultValue?: GameOption;
   onChange: (game: GameOption | null) => void;
 }
-
-export type GameOption = SteamGame | { name: string };
 
 const GameSelect = (props: Props) => {
   const { data: games, isLoading: gamesLoading } = useSteamApps();

@@ -1,33 +1,24 @@
-import { DocumentReference, Timestamp } from 'firebase/firestore';
-
-import { GameOption } from '../components/Match/GameSelect';
-import { SteamGame } from '../hooks/useSteamApps';
+import type { DocumentReference, Timestamp } from 'firebase/firestore';
 
 export type Uid = string;
 
-export interface Match extends NewMatch {
+export interface Match extends MatchDraft {
   id: string;
 }
 
-export interface NewMatch {
+export interface MatchDraft {
   created: Timestamp;
   createdBy: Uid;
   date: Timestamp;
   game: Game;
   description: string | null;
   players: Array<Player>;
-  reactions?: Array<Reaction>;
+  reactions?: Array<MatchReaction>;
 }
 
-export interface Reaction {
+export interface MatchReaction {
   emoji: string;
   userRefs: Array<DocumentReference<User>>;
-}
-
-export interface Game {
-  name: string;
-  steamAppId: number | null;
-  maxPlayers: number | null;
 }
 
 export interface Player {
@@ -41,6 +32,20 @@ export interface User {
   nickname: string;
   invited: boolean;
   fcmTokens?: Array<string>;
+}
+
+export interface Game {
+  name: string;
+  steamAppId: number | null;
+  maxPlayers: number | null;
+}
+
+export type GameOption = SteamGame | { name: string };
+
+export interface SteamGame {
+  appid: number;
+  name: string;
+  playtime_forever: number;
 }
 
 export interface FCMToken {

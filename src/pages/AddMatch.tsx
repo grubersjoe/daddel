@@ -25,7 +25,7 @@ import AppBar from '../components/AppBar';
 import SteamAuthentication from '../components/Auth/SteamAuthentication';
 import DateTimePicker from '../components/DateTimePicker';
 import { SnackbarContext } from '../components/Layout';
-import GameSelect, { GameOption } from '../components/Match/GameSelect';
+import GameSelect from '../components/Match/GameSelect';
 import PageMetadata from '../components/PageMetadata';
 import { GA_EVENTS } from '../constants';
 import {
@@ -38,7 +38,7 @@ import routes from '../constants/routes';
 import { useSteamUser } from '../hooks/useSteamUser';
 import { analytics, auth, firestore } from '../services/firebase';
 import { joinMatch } from '../services/match';
-import { NewMatch, isSteamGame } from '../types';
+import { GameOption, MatchDraft, isSteamGame } from '../types';
 import { timeToDate } from '../utils/date';
 
 const AddMatch: FunctionComponent = () => {
@@ -86,7 +86,7 @@ const AddMatch: FunctionComponent = () => {
       players: [],
       reactions: [],
       description: description ?? null,
-    } satisfies NewMatch;
+    } satisfies MatchDraft;
 
     addDoc(collection(firestore, 'matches'), match)
       .then(doc => {
