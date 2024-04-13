@@ -6,7 +6,7 @@ import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { sendPasswordResetEmail } from 'firebase/auth';
-import React, { FormEventHandler, FunctionComponent, useState } from 'react';
+import { FormEventHandler, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
 import ButtonProgress from '../components/ButtonProgress';
@@ -15,7 +15,7 @@ import PageMetadata from '../components/PageMetadata';
 import routes from '../constants/routes';
 import { auth } from '../services/firebase';
 
-const ResetPassword: FunctionComponent = () => {
+const ResetPassword = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [success, setSuccess] = useState(false);

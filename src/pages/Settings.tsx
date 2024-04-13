@@ -11,13 +11,7 @@ import {
 import { grey } from '@mui/material/colors';
 import { signOut } from 'firebase/auth';
 import { updateDoc } from 'firebase/firestore';
-import React, {
-  FormEventHandler,
-  FunctionComponent,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { FormEventHandler, useContext, useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 
@@ -31,7 +25,7 @@ import useMessagingSupported from '../hooks/useMessagingSupported';
 import { auth } from '../services/firebase';
 import { getUserRef } from '../services/firestore';
 
-const Settings: FunctionComponent = () => {
+const Settings = () => {
   const [authUser] = useAuthState(auth);
   const dispatchSnack = useContext(SnackbarContext);
 

@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import React, { FunctionComponent, memo } from 'react';
+import { memo } from 'react';
 
 import { BUTTON_SIZE, GRID_GAP } from './Picker';
 import { CategoryName, Emoji } from './types';
@@ -12,12 +12,7 @@ export interface Props {
   onEmojiMouseEnter: (emoji: Emoji) => void;
 }
 
-const Grid: FunctionComponent<Props> = ({
-  category,
-  emojis,
-  onEmojiClick,
-  onEmojiMouseEnter,
-}) => {
+const Grid = ({ category, emojis, onEmojiClick, onEmojiMouseEnter }: Props) => {
   if (emojis.length === 0) {
     return null;
   }

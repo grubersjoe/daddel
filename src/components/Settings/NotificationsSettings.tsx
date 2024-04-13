@@ -1,17 +1,12 @@
 import { Alert, Button, Grid, Typography } from '@mui/material';
-import React, {
-  FunctionComponent,
-  MouseEventHandler,
-  useContext,
-  useState,
-} from 'react';
+import { MouseEventHandler, useContext, useState } from 'react';
 
 import useMessagingSupported from '../../hooks/useMessagingSupported';
 import useNotifications from '../../hooks/useNotifications';
 import ButtonProgress from '../ButtonProgress';
 import { SnackbarContext } from '../Layout';
 
-const NotificationsSettings: FunctionComponent = () => {
+const NotificationsSettings = () => {
   const {
     subscribe,
     unsubscribe,

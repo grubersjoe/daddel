@@ -1,6 +1,6 @@
 import { Box, Fade } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import React, { ReactElement, useState } from 'react';
+import { ReactElement, useState } from 'react';
 import { TransitionGroup } from 'react-transition-group';
 
 import { styles } from './styles';

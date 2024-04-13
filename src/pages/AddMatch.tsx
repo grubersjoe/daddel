@@ -12,12 +12,7 @@ import { addMinutes, isSameDay, isValid, parse as parseDate } from 'date-fns';
 import { logEvent } from 'firebase/analytics';
 import { User } from 'firebase/auth';
 import { Timestamp, addDoc, collection } from 'firebase/firestore';
-import React, {
-  FormEvent,
-  FunctionComponent,
-  useContext,
-  useState,
-} from 'react';
+import { FormEvent, useContext, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate } from 'react-router-dom';
 
@@ -41,7 +36,7 @@ import { joinMatch } from '../services/match';
 import { GameOption, MatchDraft, isSteamGame } from '../types';
 import { timeToDate } from '../utils/date';
 
-const AddMatch: FunctionComponent = () => {
+const AddMatch = () => {
   const navigate = useNavigate();
   const [authUser] = useAuthState(auth);
   const dispatchSnack = useContext(SnackbarContext);

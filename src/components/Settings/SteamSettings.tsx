@@ -1,9 +1,8 @@
 import { Typography } from '@mui/material';
-import React, { FunctionComponent } from 'react';
 
 import SteamAuthentication from '../Auth/SteamAuthentication';
 
-const SteamSettings: FunctionComponent = () => (
+const SteamSettings = () => (
   <>
     <Typography variant="h6">Steam-Konto verbinden</Typography>
     <Typography variant="body1" color="textSecondary" mb={3}>

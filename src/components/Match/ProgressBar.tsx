@@ -1,11 +1,10 @@
 import LinearProgress from '@mui/material/LinearProgress';
 import { green, grey, orange, red, yellow } from '@mui/material/colors';
-import React, { FunctionComponent } from 'react';
 
-type Props = {
+interface Props {
   value: number;
   max: number;
-};
+}
 
 function calcBarColor(value: number, max: number) {
   const STEPS = 5;
@@ -30,7 +29,7 @@ function calcBarColor(value: number, max: number) {
   }
 }
 
-export const ProgressBar: FunctionComponent<Props> = ({ value, max }) => {
+export const ProgressBar = ({ value, max }: Props) => {
   value = Math.min(value, max);
 
   if (value < 1) {

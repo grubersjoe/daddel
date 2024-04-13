@@ -9,13 +9,7 @@ import {
   TextField,
 } from '@mui/material';
 import { setDoc } from 'firebase/firestore';
-import React, {
-  FormEventHandler,
-  FunctionComponent,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { FormEventHandler, useContext, useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 
@@ -36,7 +30,7 @@ enum Step {
  * 1. Validate invitation code
  * 2. Set the user nickname
  */
-const SetupUserDialog: FunctionComponent = () => {
+const SetupUserDialog = () => {
   const dispatchSnack = useContext(SnackbarContext);
 
   const [authUser] = useAuthState(auth);

@@ -2,14 +2,14 @@ import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
 import MatchesIcon from '@mui/icons-material/SportsEsports';
 import { BottomNavigation, BottomNavigationAction } from '@mui/material';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 import routes from '../constants/routes';
 
 const Links = [routes.matchList, routes.addMatch, routes.settings];
 
-const Navigation: FunctionComponent = () => {
+const Navigation = () => {
   const location = useLocation();
   const [selected, setSelected] = useState(0);
 

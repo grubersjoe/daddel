@@ -1,11 +1,6 @@
 import { Alert, AlertProps, Snackbar } from '@mui/material';
 import Box from '@mui/material/Box';
-import React, {
-  FunctionComponent,
-  ReactElement,
-  createContext,
-  useState,
-} from 'react';
+import { ReactElement, createContext, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 import { auth } from '../services/firebase';
@@ -18,11 +13,7 @@ type DispatchSnack = (
 
 export const SnackbarContext = createContext<DispatchSnack>(() => undefined);
 
-interface Props {
-  children: ReactElement;
-}
-
-const Layout: FunctionComponent<Props> = ({ children }) => {
+const Layout = ({ children }: { children: ReactElement }) => {
   const [authUser] = useAuthState(auth);
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);

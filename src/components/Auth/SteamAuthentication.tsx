@@ -1,7 +1,6 @@
 import ErrorIcon from '@mui/icons-material/ErrorOutline';
 import FaceIcon from '@mui/icons-material/Face';
 import { Box, Button, Chip, CircularProgress } from '@mui/material';
-import React from 'react';
 
 import { useSteamUser } from '../../hooks/useSteamUser';
 import { signInSteam, signOutFromSteam } from '../../services/auth';

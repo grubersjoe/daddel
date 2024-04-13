@@ -1,6 +1,6 @@
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import { Button, Container, Grid } from '@mui/material';
-import React, { FunctionComponent, useContext } from 'react';
+import { useContext } from 'react';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 import { Link, Navigate, useParams } from 'react-router-dom';
 
@@ -14,7 +14,7 @@ import useUsers from '../hooks/useUsers';
 import { getMatchRef } from '../services/firestore';
 import { gridConfig } from './MatchesList';
 
-const MatchDetail: FunctionComponent = () => {
+const MatchDetail = () => {
   const dispatchSnack = useContext(SnackbarContext);
   const { id } = useParams<{ id: string }>();
 

@@ -13,7 +13,7 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
 } from 'firebase/auth';
-import React, { FormEventHandler, FunctionComponent, useState } from 'react';
+import { FormEventHandler, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { Navigate, Link as RouterLink, useLocation } from 'react-router-dom';
 
@@ -25,7 +25,7 @@ import Spinner from '../components/Spinner';
 import routes from '../constants/routes';
 import { auth } from '../services/firebase';
 
-const SignIn: FunctionComponent = () => {
+const SignIn = () => {
   const location = useLocation();
   const [authUser, authLoading] = useAuthState(auth);
 

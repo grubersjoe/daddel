@@ -1,14 +1,13 @@
-import React, { FunctionComponent } from 'react';
 import { Helmet } from 'react-helmet-async';
 
-type Props = {
+interface Props {
   title?: string;
   description?: string;
-};
+}
 
 const DEFAULT_DESCRIPTION = 'Plane Spieleabende mit Deinen Freunden';
 
-const PageMetadata: FunctionComponent<Props> = ({ title, description }) => (
+const PageMetadata = ({ title, description }: Props) => (
   <Helmet
     title={title ?? 'Daddel'}
     meta={[

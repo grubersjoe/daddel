@@ -7,12 +7,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import React, {
-  Fragment,
-  FunctionComponent,
-  MouseEvent,
-  useState,
-} from 'react';
+import { Fragment, MouseEvent, useState } from 'react';
 
 import { LOCALE } from '../../constants';
 import useUsers from '../../hooks/useUsers';
@@ -25,7 +20,7 @@ interface Props {
 
 const listFormatter = new Intl.ListFormat(LOCALE);
 
-const MatchReactions: FunctionComponent<Props> = ({ reactions, onClick }) => {
+const MatchReactions = ({ reactions, onClick }: Props) => {
   const [users, usersLoading] = useUsers();
 
   const theme = useTheme();

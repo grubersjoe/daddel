@@ -5,9 +5,8 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import React, {
+import {
   ChangeEventHandler,
-  FunctionComponent,
   memo,
   useCallback,
   useEffect,
@@ -23,10 +22,6 @@ import useFilteredEmojiList from './hooks/useFilteredEmojiList';
 import './styles/index.scss';
 import { CategoryName, Emoji } from './types';
 import { getRecentlyUsedEmojis, incrementEmojiUsage } from './utils/usage';
-
-interface Props {
-  onEmojiClick: (emoji: Emoji) => void;
-}
 
 export const BUTTON_SIZE = 34; // px
 export const GRID_GAP = 2 * Math.round((BUTTON_SIZE * 0.3) / 2); // px
@@ -51,8 +46,10 @@ const ScrollContainer = styled('div')(({ theme }) => ({
   },
 }));
 
-const Picker: FunctionComponent<Props> = ({
+const Picker = ({
   onEmojiClick: onEmojiClickProp,
+}: {
+  onEmojiClick: (emoji: Emoji) => void;
 }) => {
   const [scrollElement, setScrollElement] = useState<HTMLElement | null>(null);
 

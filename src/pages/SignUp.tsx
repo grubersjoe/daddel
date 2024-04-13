@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { setDoc } from 'firebase/firestore';
-import React, { FormEventHandler, FunctionComponent, useState } from 'react';
+import { FormEventHandler, useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 import ButtonProgress from '../components/ButtonProgress';
@@ -20,7 +20,7 @@ import { isValidInvitationCode } from '../services/auth';
 import { auth } from '../services/firebase';
 import { getUserRef } from '../services/firestore';
 
-const SignUp: FunctionComponent = () => {
+const SignUp = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 

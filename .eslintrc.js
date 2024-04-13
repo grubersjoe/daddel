@@ -13,15 +13,15 @@ module.exports = {
     },
   },
   rules: {
-    'arrow-body-style': 'error',
-    'no-console': 'off',
     '@typescript-eslint/array-type': [
       1,
       {
         default: 'generic',
       },
     ],
-    '@typescript-eslint/ban-ts-comment': 'off',
+    '@typescript-eslint/ban-ts-comment': 0,
+    'arrow-body-style': 1,
+    'react/react-in-jsx-scope': 0,
   },
   ignorePatterns: ['functions/lib/**/*'],
 };

@@ -10,7 +10,6 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { Theme } from '@mui/system';
 import { endOfDay, isFuture } from 'date-fns';
-import React, { FunctionComponent } from 'react';
 import { Link } from 'react-router-dom';
 
 import { toggleMatchReaction } from '../../services/match';
@@ -26,10 +25,10 @@ import MatchReactions from './MatchReactions';
 import Menu from './Menu';
 import ProgressBar from './ProgressBar';
 
-type Props = {
+interface Props {
   match: Match;
   setPageMetadata?: boolean;
-};
+}
 
 const imageAspectRatio = (616 / 353).toFixed(3);
 
@@ -76,13 +75,13 @@ export const styles = ({ spacing, breakpoints }: Theme) =>
     },
   }) as const;
 
-const Separator: FunctionComponent = () => (
+const Separator = () => (
   <Box component="span" sx={{ mx: '0.4em' }}>
     •
   </Box>
 );
 
-const MatchCard: FunctionComponent<Props> = ({ match, setPageMetadata }) => {
+const MatchCard = ({ match, setPageMetadata }: Props) => {
   const theme = useTheme();
   const sx = styles(theme);
 

@@ -1,7 +1,6 @@
 import { Box, CircularProgress } from '@mui/material';
-import React, { FunctionComponent } from 'react';
 
-const Spinner: FunctionComponent = () => (
+const Spinner = () => (
   <Box
     sx={{
       display: 'flex',

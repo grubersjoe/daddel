@@ -13,7 +13,7 @@ import {
 import { SelectChangeEvent } from '@mui/material/Select/SelectInput';
 import { addMinutes } from 'date-fns';
 import { Timestamp } from 'firebase/firestore';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 import {
@@ -32,11 +32,11 @@ import {
   timeToDate,
 } from '../../utils/date';
 
-type Props = {
+interface Props {
   match: Match;
   playerFrom?: Timestamp;
   playerUntil?: Timestamp;
-};
+}
 
 type State = {
   availFrom: TimeString;
@@ -73,7 +73,7 @@ const renderSelectOptions = (
   return options;
 };
 
-const JoinMatchDialog: FunctionComponent<Props> = ({ match }) => {
+const JoinMatchDialog = ({ match }: Props) => {
   const [authUser] = useAuthState(auth);
 
   const [open, setOpen] = useState(false);

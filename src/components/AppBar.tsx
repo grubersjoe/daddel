@@ -1,12 +1,12 @@
 import { Box, AppBar as MuiAppBar, Toolbar, Typography } from '@mui/material';
-import React, { FunctionComponent, ReactElement } from 'react';
+import { ReactElement } from 'react';
 
 interface Props {
   children?: ReactElement;
   title?: string;
 }
 
-const AppBar: FunctionComponent<Props> = ({ children, title }) => (
+const AppBar = ({ children, title }: Props) => (
   <MuiAppBar position="fixed">
     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
       <Toolbar>

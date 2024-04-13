@@ -1,5 +1,5 @@
 import { Autocomplete as MuiAutocomplete, TextField } from '@mui/material';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { useSteamApps } from '../../hooks/useSteamApps';
 import { GameOption } from '../../types';

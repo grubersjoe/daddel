@@ -2,16 +2,15 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { DateTimePicker as MuiDateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { de } from 'date-fns/locale/de';
-import React, { FunctionComponent } from 'react';
 
 import { DEFAULT_TIME_INCREMENT_MINUTES } from '../constants/date';
 
-type Props = {
+interface Props {
   date: Date | null;
   onChange: (date: Date | null) => void;
-};
+}
 
-const DateTimePicker: FunctionComponent<Props> = ({ date, onChange }) => (
+const DateTimePicker = ({ date, onChange }: Props) => (
   <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={de}>
     <MuiDateTimePicker
       label="Datum und Uhrzeit"

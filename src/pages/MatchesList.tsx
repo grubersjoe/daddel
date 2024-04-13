@@ -6,7 +6,7 @@ import {
   query,
   where,
 } from 'firebase/firestore';
-import React, { FunctionComponent, useState } from 'react';
+import { useState } from 'react';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import { Link } from 'react-router-dom';
 
@@ -28,7 +28,7 @@ export const gridConfig = {
   xl: 12 / 5,
 } as const;
 
-const MatchesList: FunctionComponent = () => {
+const MatchesList = () => {
   const [, setIsRefetching] = useState(false);
 
   const today = useToday();

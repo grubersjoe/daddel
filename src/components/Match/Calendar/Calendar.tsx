@@ -1,7 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { differenceInMinutes } from 'date-fns';
-import React from 'react';
 
 import { DEFAULT_TIME_INCREMENT_MINUTES } from '../../../constants/date';
 import useUsers from '../../../hooks/useUsers';

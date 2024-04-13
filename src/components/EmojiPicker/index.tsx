@@ -6,22 +6,17 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import React, {
-  FunctionComponent,
-  MouseEventHandler,
-  useCallback,
-  useState,
-} from 'react';
+import { MouseEventHandler, useCallback, useState } from 'react';
 
 import Picker from './Picker';
 import { People as PickerIcon } from './assets/icons';
 import { Emoji } from './types';
 
-interface Props {
+const EmojiPicker = ({
+  onEmojiClick,
+}: {
   onEmojiClick: (emoji: Emoji) => void;
-}
-
-const EmojiPicker: FunctionComponent<Props> = ({ onEmojiClick }) => {
+}) => {
   const [anchorElement, setAnchorElement] = useState<HTMLButtonElement | null>(
     null,
   );

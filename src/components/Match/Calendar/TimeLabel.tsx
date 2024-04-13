@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 
 import { styles } from './styles';
 

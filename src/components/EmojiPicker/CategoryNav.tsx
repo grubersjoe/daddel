@@ -5,15 +5,11 @@ import {
   ButtonGroup,
   SxProps,
 } from '@mui/material';
-import React, { FunctionComponent, SVGProps, memo } from 'react';
+import { FunctionComponent, SVGProps, memo } from 'react';
 
 import { categoryIcons } from './assets/icons';
 import { CategoryName } from './types';
 import { getCategoryContainerId } from './utils';
-
-interface Props {
-  active?: CategoryName;
-}
 
 interface ButtonProps extends ButtonBaseProps {
   icon: FunctionComponent<SVGProps<SVGSVGElement>>;
@@ -22,10 +18,7 @@ interface ButtonProps extends ButtonBaseProps {
 const BUTTON_FONT_SIZE = '20px';
 const BUTTON_PADDING_X = 1.25;
 
-const NavButton: FunctionComponent<ButtonProps> = ({
-  icon: Icon,
-  ...buttonProps
-}) => (
+const NavButton = ({ icon: Icon, ...buttonProps }: ButtonProps) => (
   <ButtonBase
     focusRipple
     sx={{
@@ -48,7 +41,7 @@ const NavButton: FunctionComponent<ButtonProps> = ({
   </ButtonBase>
 );
 
-const CategoryNav: FunctionComponent<Props> = ({ active }) => {
+const CategoryNav = ({ active }: { active?: CategoryName }) => {
   const styles: SxProps = {
     '&': {
       position: 'relative',

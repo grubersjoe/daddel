@@ -3,7 +3,7 @@ import CSSBaseline from '@mui/material/CssBaseline';
 import yellow from '@mui/material/colors/yellow';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import React, { FunctionComponent, ReactElement } from 'react';
+import { ReactElement } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { HelmetProvider } from 'react-helmet-async';
 import {
@@ -30,9 +30,7 @@ import PageMetadata from './PageMetadata';
 
 const queryClient = new QueryClient();
 
-const RequireAuth: FunctionComponent<{ children: ReactElement }> = ({
-  children,
-}) => {
+const RequireAuth = ({ children }: { children: ReactElement }) => {
   const [authUser, authLoading] = useAuthState(auth);
 
   if (authLoading) {
@@ -47,7 +45,7 @@ const isValidHost = () =>
     window.location.hostname,
   ) || REGEX_IPV4.test(window.location.hostname);
 
-const App: FunctionComponent = () => {
+const App = () => {
   if (!isValidHost()) {
     return (window.location.href = `https://${
       import.meta.env.VITE_DOMAIN_PROD
@@ -61,7 +59,10 @@ const App: FunctionComponent = () => {
       <ThemeProvider theme={theme}>
         <HelmetProvider>
           <QueryClientProvider client={queryClient}>
-            <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
+            <ReactQueryDevtools
+              initialIsOpen={false}
+              buttonPosition="bottom-right"
+            />
             <CSSBaseline />
             <PageMetadata />
             <Router>

@@ -8,12 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import { endOfDay, isPast } from 'date-fns';
 import { logEvent } from 'firebase/analytics';
 import { deleteDoc } from 'firebase/firestore';
-import React, {
-  FunctionComponent,
-  MouseEvent,
-  useContext,
-  useState,
-} from 'react';
+import { MouseEvent, useContext, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { Link, generatePath } from 'react-router-dom';
 
@@ -25,12 +20,12 @@ import { Game, Match } from '../../types';
 import { formatDate, formatTime } from '../../utils/date';
 import { SnackbarContext } from '../Layout';
 
-type Props = {
+interface Props {
   game: Game;
   match: Match;
-};
+}
 
-const Menu: FunctionComponent<Props> = ({ game, match }) => {
+const Menu = ({ game, match }: Props) => {
   const [authUser] = useAuthState(auth);
   const dispatchSnack = useContext(SnackbarContext);
 
