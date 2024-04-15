@@ -1,7 +1,7 @@
 {
   "name": "daddel",
   "author": "Jonathan Gruber <gruberjonathan@gmail.com>",
-  "version": "0.17.6",
+  "version": "0.17.7",
   "private": true,
   "scripts": {
     "build": "tsc && vite build && vite build -c vite-public.config.mts",

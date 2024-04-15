@@ -42,7 +42,7 @@ export function formatTime(date: Date | Timestamp, timeFormat = TIME_FORMAT) {
   return format(date.toDate(), timeFormat);
 }
 
-export function timeToDate(time: TimeString, referenceDate = new Date()) {
+export function timeToDate(time: TimeString, referenceDate: Date) {
   return parseDate(time, TIME_FORMAT, referenceDate);
 }
 

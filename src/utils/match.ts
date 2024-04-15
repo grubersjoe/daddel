@@ -25,7 +25,10 @@ export function calendarTimeBounds(players: Array<Player>): TimeBounds {
     const maxFrom = fromUnixTime(Math.max(...players.map(p => p.from.seconds)));
     return {
       min: minFrom,
-      max: minDate([addHours(maxFrom, 2), timeToDate(MATCH_TIME_LATEST)]),
+      max: minDate([
+        addHours(maxFrom, 2),
+        timeToDate(MATCH_TIME_LATEST, minFrom),
+      ]),
     };
   }
 
@@ -44,7 +47,7 @@ export function calendarTimeBounds(players: Array<Player>): TimeBounds {
       min: minFrom,
       max: minDate([
         addHours(maxUntilOrFrom, 0.5),
-        timeToDate(MATCH_TIME_LATEST),
+        timeToDate(MATCH_TIME_LATEST, minFrom),
       ]),
     };
   }

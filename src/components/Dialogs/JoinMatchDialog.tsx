@@ -43,12 +43,14 @@ type State = {
   availUntil: TimeString;
 };
 
-const timeOptions = timeStringsBetweenDates(
-  timeToDate(MATCH_TIME_EARLIEST),
-  timeToDate(MATCH_TIME_LATEST),
+const today = new Date(); // Each day has the same hours, so that's okay.
+
+export const timeOptions = timeStringsBetweenDates(
+  timeToDate(MATCH_TIME_EARLIEST, today),
+  timeToDate(MATCH_TIME_LATEST, today),
 );
 
-const timeOptionsWithOpenEnd = [...timeOptions, MATCH_TIME_OPEN_END];
+export const timeOptionsWithOpenEnd = [...timeOptions, MATCH_TIME_OPEN_END];
 
 const renderSelectOptions = (
   times: Array<TimeString>,
@@ -94,7 +96,10 @@ const JoinMatchDialog = ({ match }: Props) => {
     DEFAULT_MATCH_TIME;
 
   const defaultAvailUntil = formatTime(
-    addMinutes(timeToDate(availFrom), DEFAULT_MATCH_LENGTH_MINUTES),
+    addMinutes(
+      timeToDate(availFrom, match.date.toDate()),
+      DEFAULT_MATCH_LENGTH_MINUTES,
+    ),
   );
 
   const availUntil =
@@ -122,10 +127,10 @@ const JoinMatchDialog = ({ match }: Props) => {
     ) {
       setState(state => ({
         ...state,
-        availUntil: timeOptions[indexAvailFrom + 2] ?? MATCH_TIME_OPEN_END,
+        availUntil: timeOptions[indexAvailFrom + 2] ?? MATCH_TIME_OPEN_END, // Add half an hour if possible
       }));
     }
-  }, [state.availFrom, state.availUntil]);
+  }, [state.availFrom, state.availUntil, timeOptions]);
 
   if (!authUser) {
     return null;
