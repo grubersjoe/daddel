@@ -18,7 +18,7 @@ export const messaging = getMessaging(firebaseApp);
 // Emulators (but only on localhost!)
 if (
   window.location.hostname === 'localhost' &&
-  import.meta.env.VITE_USE_EMULATORS.toLowerCase() === 'true'
+  (import.meta.env.VITE_USE_EMULATORS ?? '').toLowerCase() === 'true'
 ) {
   connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true });
   connectFirestoreEmulator(firestore, '127.0.0.1', 8080);
