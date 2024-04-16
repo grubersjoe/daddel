@@ -32,7 +32,7 @@ const Calendar = ({ players }: { players: Array<Player> }) => {
   const timeBounds = calendarTimeBounds(players);
   const totalMinutes = differenceInMinutes(timeBounds.max, timeBounds.min);
 
-  const numLabels = 5;
+  const numLabels = 4;
   const stepSizeMinutes =
     Math.round(totalMinutes / numLabels / DEFAULT_TIME_INCREMENT_MINUTES) *
     DEFAULT_TIME_INCREMENT_MINUTES;
