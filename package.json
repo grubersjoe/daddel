@@ -23,12 +23,12 @@
     "@mui/system": "^5.15.15",
     "@mui/x-date-pickers": "^7.2.0",
     "@sindresorhus/slugify": "^2.2.1",
-    "@tanstack/react-query": "^5.29.2",
-    "@tanstack/react-query-devtools": "^5.29.2",
+    "@tanstack/react-query": "^5.31.0",
+    "@tanstack/react-query-devtools": "^5.31.0",
     "axios": "^1.6.8",
     "date-fns": "^3.6.0",
     "firebase": "^10.11.0",
-    "firebase-tools": "^13.7.2",
+    "firebase-tools": "^13.7.3",
     "generate-emoji-list": "^1.1.0",
     "oidc-react": "^3.2.0",
     "react": "^18.2.0",
@@ -78,8 +78,8 @@
     "jest-localstorage-mock": "^2.4.26",
     "prettier": "^3.2.5",
     "sass": "^1.75.0",
-    "serve": "^14.2.0",
+    "serve": "^14.2.2",
     "typescript": "^5.4.5",
-    "vite": "^5.2.9"
+    "vite": "^5.2.10"
   }
 }
