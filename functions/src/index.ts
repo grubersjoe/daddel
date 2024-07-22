@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase-admin';
-import { getFirestore } from 'firebase-admin/firestore';
+import { WriteResult, getFirestore } from 'firebase-admin/firestore';
 import { MulticastMessage, getMessaging } from 'firebase-admin/messaging';
 import { auth, logger } from 'firebase-functions';
 import { defineString } from 'firebase-functions/params';
@@ -33,56 +33,73 @@ export const onUserCreate = auth.user().onCreate(async user => {
   }
 });
 
-export const onUserDelete = onDocumentDeleted('users/{userId}', event =>
-  getFirestore()
-    .doc(`users/${event.data.id}`)
-    .delete()
-    .then(() => logger.info(`Document users/${event.data.id} deleted`))
-    .catch(logger.error),
-);
+export const onUserDelete = onDocumentDeleted('users/{userId}', event => {
+  const { data } = event;
 
-export const isValidInvitationCode = onCall(req => ({
+  if (!data) {
+    logger.error('event.data not available');
+    throw new HttpsError('internal', 'event.data not available');
+  }
+
+  return getFirestore()
+    .doc(`users/${data.id}`)
+    .delete()
+    .then(() => logger.info(`Document users/${data.id} deleted`))
+    .catch(logger.error);
+});
+
+export const isValidInvitationCode = onCall<{ code: string }>(req => ({
   isValid: req.data.code === invitationCode.value(),
 }));
 
-export const subscribeToMessaging = onCall(req => {
+export const subscribeToMessaging = onCall<{ fcmToken: string }>(req => {
+  const { auth } = req;
   const { fcmToken } = req.data;
+
+  if (!auth) {
+    logger.error('req.auth not available');
+    throw new HttpsError('internal', 'req.auth not available');
+  }
 
   return getFirestore()
     .doc(`fcmTokens/${fcmToken}`)
-    .set({ token: fcmToken, uid: req.auth.uid })
+    .set({ token: fcmToken, uid: auth.uid })
     .then(() => {
       logger.info(
-        `Successfully subscribed token ${fcmToken} for user ${req.auth.uid}`,
+        `Successfully subscribed token ${fcmToken} for user ${auth.uid}`,
       );
 
       return { success: true };
     })
     .catch(error => {
-      const message = `Error subscribing token ${fcmToken}: ${error.message}`;
+      const message = `Error subscribing token ${fcmToken}: ${error instanceof Error ? error.message : 'unknown error'}`;
       logger.error(message);
-
       throw new HttpsError('internal', message);
     });
 });
 
-export const unsubscribeFromMessaging = onCall(req => {
+export const unsubscribeFromMessaging = onCall<{ fcmToken: string }>(req => {
+  const { auth } = req;
   const { fcmToken } = req.data;
+
+  if (!auth) {
+    logger.error('req.auth not available');
+    throw new HttpsError('internal', 'req.auth not available');
+  }
 
   return getFirestore()
     .doc(`fcmTokens/${fcmToken}`)
     .delete()
     .then(() => {
       logger.info(
-        `Successfully unsubscribed token ${fcmToken} for user ${req.auth.uid}`,
+        `Successfully unsubscribed token ${fcmToken} for user ${auth.uid}`,
       );
 
       return { success: true };
     })
     .catch(error => {
-      const message = `Error unsubscribing token ${fcmToken}: ${error.message}`;
+      const message = `Error unsubscribing token ${fcmToken}: ${error instanceof Error ? error.message : 'unknown error'}`;
       logger.error(message);
-
       throw new HttpsError('internal', message);
     });
 });
@@ -90,7 +107,14 @@ export const unsubscribeFromMessaging = onCall(req => {
 export const onCreateMatch = onDocumentCreated(
   'matches/{matchId}',
   async event => {
-    const match = event.data.data() as Match;
+    const { data } = event;
+
+    if (!data) {
+      logger.error('data not available');
+      throw new HttpsError('internal', 'data not available');
+    }
+
+    const match = data.data() as Match;
     const posterUid = match.createdBy;
 
     const tokens = await fetchFcmTokens(posterUid);
@@ -123,10 +147,10 @@ export const onCreateMatch = onDocumentCreated(
           },
         };
 
-        getMessaging()
+        return getMessaging()
           .sendEachForMulticast(message)
           .then(batchResponse => {
-            const tokensToRemove = [];
+            const tokensToRemove: Array<Promise<WriteResult>> = [];
             batchResponse.responses.forEach((response, index) => {
               const { error } = response;
 
@@ -141,6 +165,14 @@ export const onCreateMatch = onDocumentCreated(
                   error.code === 'messaging/invalid-registration-token' ||
                   error.code === 'messaging/registration-token-not-registered'
                 ) {
+                  if (!tokens[index]) {
+                    logger.error(`No FCM token for index ${index}`);
+                    throw new HttpsError(
+                      'internal',
+                      `No FCM token for index ${index}`,
+                    );
+                  }
+
                   tokensToRemove.push(
                     getFirestore()
                       .collection('fcmTokens')

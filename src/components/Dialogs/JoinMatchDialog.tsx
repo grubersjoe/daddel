@@ -130,7 +130,7 @@ const JoinMatchDialog = ({ match }: Props) => {
         availUntil: timeOptions[indexAvailFrom + 2] ?? MATCH_TIME_OPEN_END, // Add half an hour if possible
       }));
     }
-  }, [state.availFrom, state.availUntil, timeOptions]);
+  }, [state.availFrom, state.availUntil]);
 
   if (!authUser) {
     return null;
@@ -169,9 +169,7 @@ const JoinMatchDialog = ({ match }: Props) => {
       });
     };
 
-  const userInLobby = match.players.find(
-    player => player.uid === authUser?.uid,
-  );
+  const userInLobby = match.players.find(player => player.uid === authUser.uid);
 
   return (
     <>

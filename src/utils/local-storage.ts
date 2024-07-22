@@ -8,7 +8,7 @@ export function getStorageItem<T>(
 ): T | null {
   try {
     const value = storage.getItem(key);
-    return value ? JSON.parse(value) : null;
+    return value ? (JSON.parse(value) as T) : null;
   } catch (err) {
     return null;
   }
@@ -22,7 +22,6 @@ export function setStorageItem(
   try {
     storage.setItem(key, JSON.stringify(value));
   } catch {
-    // eslint-disable-next-line no-console
     console.error(`Unable to set storage item ${key}.`);
   }
 }

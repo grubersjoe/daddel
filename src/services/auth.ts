@@ -15,7 +15,7 @@ export interface StatusResponse {
 
 export function fetchSteamAuthStatus() {
   return axios
-    .get<StatusResponse>(import.meta.env.VITE_STEAM_AUTH_API, {
+    .get<StatusResponse>(import.meta.env.VITE_STEAM_AUTH_API as string, {
       withCredentials: true,
     })
     .then(res => res.data);
