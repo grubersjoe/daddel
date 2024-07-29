@@ -18,17 +18,17 @@
   "dependencies": {
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
-    "@mui/icons-material": "^5.16.4",
-    "@mui/material": "^5.16.4",
-    "@mui/system": "^5.16.4",
-    "@mui/x-date-pickers": "^7.11.0",
+    "@mui/icons-material": "^5.16.5",
+    "@mui/material": "^5.16.5",
+    "@mui/system": "^5.16.5",
+    "@mui/x-date-pickers": "^7.11.1",
     "@sindresorhus/slugify": "^2.2.1",
-    "@tanstack/react-query": "^5.51.11",
-    "@tanstack/react-query-devtools": "^5.51.11",
+    "@tanstack/react-query": "^5.51.15",
+    "@tanstack/react-query-devtools": "^5.51.15",
     "axios": "^1.7.2",
     "date-fns": "^3.6.0",
     "firebase": "^10.12.4",
-    "firebase-tools": "^13.13.3",
+    "firebase-tools": "^13.14.2",
     "generate-emoji-list": "^1.1.0",
     "oidc-react": "^3.2.0",
     "react": "^18.3.1",
@@ -57,7 +57,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.24.8",
+    "@babel/preset-env": "^7.25.0",
     "@babel/preset-typescript": "^7.24.7",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@types/jest": "^29.5.12",
@@ -67,8 +67,8 @@
     "@types/react-helmet": "^6.1.11",
     "@types/react-router-dom": "^5.3.3",
     "@types/react-transition-group": "^4.4.10",
-    "@typescript-eslint/eslint-plugin": "^7.16.1",
-    "@typescript-eslint/parser": "^7.16.1",
+    "@typescript-eslint/eslint-plugin": "^7.17.0",
+    "@typescript-eslint/parser": "^7.17.0",
     "@vitejs/plugin-react": "^4.3.1",
     "concurrently": "^8.2.1",
     "eslint": "^8.57.0",
@@ -79,7 +79,7 @@
     "prettier": "^3.3.3",
     "sass": "^1.77.8",
     "serve": "^14.2.3",
-    "typescript": "^5.5.3",
-    "vite": "^5.3.4"
+    "typescript": "^5.5.4",
+    "vite": "^5.3.5"
   }
 }
