@@ -58,6 +58,7 @@ export const styles = ({ spacing, breakpoints }: Theme) =>
       justifyContent: 'flex-end',
       filter: 'drop-shadow(0px 0px 6px #222)',
       borderBottom: `1px solid hsl(0deg 0% 16%)`,
+      overflow: 'hidden', // required for Safari, border-radius not working otherwise
     },
     list: {
       margin: '1rem 0 0',
