@@ -81,12 +81,13 @@ const Picker = ({
     }
   }, [searchTerm]);
 
-  const onSearch = useCallback<ChangeEventHandler<HTMLInputElement>>(
-    event => setSearchTerm(event.target.value.trim().toLowerCase()),
-    [],
-  );
+  const onSearch = useCallback<ChangeEventHandler<HTMLInputElement>>(event => {
+    setSearchTerm(event.target.value.trim().toLowerCase());
+  }, []);
 
-  const onClearSearch = useCallback(() => setSearchTerm(''), []);
+  const onClearSearch = useCallback(() => {
+    setSearchTerm('');
+  }, []);
 
   const onEmojiClick = useCallback<GridProps['onEmojiClick']>(
     (emoji, category) => {
@@ -101,7 +102,9 @@ const Picker = ({
   );
 
   const onEmojiMouseEnter = useCallback<GridProps['onEmojiMouseEnter']>(
-    emoji => setActiveEmoji(emoji),
+    emoji => {
+      setActiveEmoji(emoji);
+    },
     [],
   );
 
@@ -144,8 +147,12 @@ const Picker = ({
         onClearInput={onClearSearch}
       />
       <ScrollContainer
-        ref={el => setScrollElement(el)}
-        onMouseLeave={() => setActiveEmoji(null)}
+        ref={el => {
+          setScrollElement(el);
+        }}
+        onMouseLeave={() => {
+          setActiveEmoji(null);
+        }}
       >
         {scrollElement &&
           (numberOfShownEmojis > 0 ? (
@@ -154,9 +161,9 @@ const Picker = ({
                 root={scrollElement}
                 rootMargin={`0px 0px -${BUTTON_SIZE * 2}px 0px`}
                 threshold={[0.05, 1]}
-                onChange={(inView, entry) =>
-                  handleScrollChange(category)(inView, entry)
-                }
+                onChange={(inView, entry) => {
+                  handleScrollChange(category)(inView, entry);
+                }}
                 key={category}
               >
                 <Grid

@@ -22,7 +22,9 @@ const Navigation = () => {
   return (
     <BottomNavigation
       value={selected}
-      onChange={(_, clickedLink) => setSelected(clickedLink)}
+      onChange={(_, clickedLink) => {
+        setSelected(clickedLink as number);
+      }}
       sx={{
         borderTop: 1,
         borderColor: 'divider',

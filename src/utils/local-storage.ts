@@ -2,14 +2,14 @@ export enum STORAGE_KEY {
   FREQUENTLY_USED_EMOJIS = 'daddel-frequently-used-emojis',
 }
 
-export function getStorageItem<T>(
+export function getStorageItem(
   key: STORAGE_KEY,
   storage: Storage = localStorage,
-): T | null {
+): unknown {
   try {
     const value = storage.getItem(key);
     return value ? JSON.parse(value) : null;
-  } catch (err) {
+  } catch {
     return null;
   }
 }

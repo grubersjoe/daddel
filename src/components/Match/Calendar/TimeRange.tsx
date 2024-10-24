@@ -21,7 +21,9 @@ export const TimeRange = ({
 
   return (
     <Box
-      onClick={() => setIsToggled(prev => !prev)}
+      onClick={() => {
+        setIsToggled(prev => !prev);
+      }}
       sx={{
         ...sx.bar,
         ...sx.textOverflow,

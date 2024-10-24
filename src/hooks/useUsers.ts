@@ -17,14 +17,18 @@ const getUserMap = (users: Array<User> | undefined) => {
   return map;
 };
 
-export default function useUsers(): [
-  Record<string, User>,
-  boolean,
-  Error | undefined,
-] {
+export default function useUsers(): {
+  users: Record<string, User>;
+  loading: boolean;
+  error: Error | undefined;
+} {
   const [users, loading, error] = useCollectionData(
     collection(firestore, 'users').withConverter(userConverter),
   );
 
-  return [getUserMap(users), loading, error];
+  return {
+    users: getUserMap(users),
+    loading,
+    error,
+  };
 }

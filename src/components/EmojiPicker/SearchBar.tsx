@@ -28,7 +28,9 @@ const SearchBar = ({ searchTerm, onChange, onClearInput }: Props) => {
             <InputAdornment
               position="end"
               sx={{ color: 'grey.300', cursor: 'default' }}
-              onClick={() => onClearInput()}
+              onClick={() => {
+                onClearInput();
+              }}
             >
               {searchTerm ? <ClearIcon /> : <SearchIcon />}
             </InputAdornment>

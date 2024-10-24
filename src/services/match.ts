@@ -33,9 +33,9 @@ export function joinMatch(
       : match.players.concat(updatedPlayer),
   };
 
-  return updateDoc(getMatchRef(match.id), updatedMatch).then(() =>
-    logEvent(analytics, GA_EVENTS.JOIN_MATCH),
-  );
+  return updateDoc(getMatchRef(match.id), updatedMatch).then(() => {
+    logEvent(analytics, GA_EVENTS.JOIN_MATCH);
+  });
 }
 
 export function leaveMatch(user: User, match: Match): Promise<void> {
@@ -43,16 +43,16 @@ export function leaveMatch(user: User, match: Match): Promise<void> {
     players: match.players.filter(player => player.uid !== user.uid),
   };
 
-  return updateDoc(getMatchRef(match.id), updatedMatch).then(() =>
-    logEvent(analytics, GA_EVENTS.LEAVE_MATCH),
-  );
+  return updateDoc(getMatchRef(match.id), updatedMatch).then(() => {
+    logEvent(analytics, GA_EVENTS.LEAVE_MATCH);
+  });
 }
 
 export function toggleMatchReaction(match: Match, emoji: string) {
   const { currentUser } = auth;
 
   if (!currentUser) {
-    return Promise.reject('No authenticated user');
+    return Promise.reject(new Error('No authenticated user'));
   }
 
   if (match.reactions === undefined) {

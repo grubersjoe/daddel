@@ -20,7 +20,6 @@ import EmojiPicker from '../EmojiPicker';
 import PageMetadata from '../PageMetadata';
 import Calendar from './Calendar/Calendar';
 import GameBanner from './GameBanner';
-import MatchCardSkeleton from './MatchCardSkeleton';
 import MatchReactions from './MatchReactions';
 import Menu from './Menu';
 import ProgressBar from './ProgressBar';
@@ -92,10 +91,6 @@ const MatchCard = ({ match, setPageMetadata }: Props) => {
   const isJoinable = isFuture(endOfDay(match.date.toDate()));
 
   const handleEmojiClick = (emoji: string) => toggleMatchReaction(match, emoji);
-
-  if (!game) {
-    return <MatchCardSkeleton />;
-  }
 
   return (
     <>
@@ -176,13 +171,17 @@ const MatchCard = ({ match, setPageMetadata }: Props) => {
             >
               {isJoinable && (
                 <EmojiPicker
-                  onEmojiClick={([emoji]) => handleEmojiClick(emoji)}
+                  onEmojiClick={([emoji]) => {
+                    void handleEmojiClick(emoji);
+                  }}
                 />
               )}
               {match.reactions && (
                 <MatchReactions
                   reactions={match.reactions}
-                  onClick={emoji => handleEmojiClick(emoji)}
+                  onClick={emoji => {
+                    void handleEmojiClick(emoji);
+                  }}
                 />
               )}
             </Box>

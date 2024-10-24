@@ -35,25 +35,33 @@ const NotificationsSettings = () => {
       status.onchange = function () {
         setPermissionState(this.state);
       };
+    })
+    .catch((error: unknown) => {
+      // eslint-disable-next-line no-console
+      console.error(error);
     });
 
-  const handleSubscribe: MouseEventHandler = () =>
-    subscribe().catch(() =>
+  const handleSubscribe: MouseEventHandler = () => {
+    subscribe().catch(() => {
       dispatchSnack(
         'Benachrichtigungen konnten nicht aktiviert werden',
         'error',
-      ),
-    );
+      );
+    });
+  };
 
-  const handleUnsubscribe: MouseEventHandler = () =>
+  const handleUnsubscribe: MouseEventHandler = () => {
     unsubscribe()
-      .then(() => dispatchSnack('Benachrichtigungen deaktiviert'))
-      .catch(() =>
+      .then(() => {
+        dispatchSnack('Benachrichtigungen deaktiviert');
+      })
+      .catch(() => {
         dispatchSnack(
           'Benachrichtigungen konnten nicht deaktiviert werden',
           'error',
-        ),
-      );
+        );
+      });
+  };
 
   return (
     <Grid container spacing={2} flexDirection="column">

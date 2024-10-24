@@ -57,9 +57,17 @@ const Settings = () => {
     event.preventDefault();
     setLoading(true);
     updateDoc(getUserRef(authUser.uid), { nickname })
-      .then(() => dispatchSnack('Name geändert'))
-      .catch(setError)
-      .finally(() => setLoading(false));
+      .then(() => {
+        dispatchSnack('Name geändert');
+      })
+      .catch((error: unknown) => {
+        if (error instanceof Error) {
+          setError(error);
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   /**
@@ -72,14 +80,16 @@ const Settings = () => {
     if (window.confirm('Konto wirklich löschen?')) {
       setLoading(true);
 
-      if (!authUser) {
-        throw new Error('No authorized user');
-      }
-
-      return authUser
+      authUser
         .delete()
-        .catch(setError)
-        .finally(() => setLoading(false));
+        .catch((error: unknown) => {
+          if (error instanceof Error) {
+            setError(error);
+          }
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
   };
 
@@ -92,14 +102,18 @@ const Settings = () => {
         <form
           autoComplete="off"
           onSubmit={submitNickname}
-          onChange={() => setError(null)}
+          onChange={() => {
+            setError(null);
+          }}
         >
           <Box sx={{ display: 'flex', gap: 2 }}>
             <TextField
               variant="outlined"
               placeholder="Nickname"
               value={nickname ?? 'Lade …'}
-              onChange={event => setNickname(event.target.value)}
+              onChange={event => {
+                setNickname(event.target.value);
+              }}
               disabled={userLoading || Boolean(userError)}
               size="small"
               required
@@ -132,7 +146,12 @@ const Settings = () => {
         <Box mt={5}>
           <Typography variant="h6">Konto</Typography>
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <Button startIcon={<SignOutIcon />} onClick={() => signOut(auth)}>
+            <Button
+              startIcon={<SignOutIcon />}
+              onClick={() => {
+                void signOut(auth);
+              }}
+            >
               Abmelden
             </Button>
             <Button startIcon={<DeleteIcon />} onClick={deleteAccount}>

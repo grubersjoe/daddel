@@ -21,10 +21,13 @@ const EmojiPicker = ({
     null,
   );
 
-  const onClick: MouseEventHandler<HTMLButtonElement> = event =>
+  const onClick: MouseEventHandler<HTMLButtonElement> = event => {
     setAnchorElement(event.currentTarget);
+  };
 
-  const onClose = () => setAnchorElement(null);
+  const onClose = () => {
+    setAnchorElement(null);
+  };
   const open = Boolean(anchorElement);
 
   const handleEmojiClick = useCallback(

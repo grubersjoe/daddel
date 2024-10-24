@@ -10,30 +10,26 @@ import { SnackbarContext } from '../components/Layout';
 import MatchCard from '../components/Match/MatchCard';
 import Spinner from '../components/Spinner';
 import routes from '../constants/routes';
-import useUsers from '../hooks/useUsers';
 import { getMatchRef } from '../services/firestore';
 import { gridConfig } from './MatchesList';
 
 const MatchDetail = () => {
   const dispatchSnack = useContext(SnackbarContext);
   const { id } = useParams<{ id: string }>();
-
   const [match, loading, error] = useDocumentData(id ? getMatchRef(id) : null);
 
-  const [users] = useUsers();
-
-  if (!users || loading) {
+  if (loading) {
     return <Spinner />;
   }
 
-  if ((!loading && !match) || error) {
-    dispatchSnack(`Angefragtes Match nicht gefunden`, 'error');
-
+  if (error) {
+    dispatchSnack(`Fehler`, 'error');
     return <Navigate to={routes.matchList} />;
   }
 
   if (!match) {
-    return null;
+    dispatchSnack(`Angefragtes Match nicht gefunden`, 'error');
+    return <Navigate to={routes.matchList} />;
   }
 
   return (

@@ -42,7 +42,7 @@ const reducer: Reducer<Match, Actions> = (state, action) => {
     case 'set_description': {
       return {
         ...state,
-        description: action.description ?? null,
+        description: action.description,
       };
     }
     default:

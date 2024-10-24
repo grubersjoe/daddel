@@ -69,5 +69,6 @@ export function getEmojis(chars: Array<string>): Array<Emoji> {
 }
 
 function getUsedEmojisFromStore(): UsageDict {
-  return getStorageItem<UsageDict>(STORAGE_KEY.FREQUENTLY_USED_EMOJIS) ?? {};
+  const dict = getStorageItem(STORAGE_KEY.FREQUENTLY_USED_EMOJIS) ?? {};
+  return dict as UsageDict;
 }

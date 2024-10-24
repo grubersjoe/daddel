@@ -6,12 +6,13 @@ import { useToken } from 'react-firebase-hooks/messaging';
 
 import { firestore, functions, messaging } from '../services/firebase';
 import { fcmTokenConverter } from '../services/firestore';
+import { getEnv } from '../utils/env';
 import useMessagingSupported from './useMessagingSupported';
 
 export default function useNotifications() {
   const [token, tokenLoading, tokenError] = useToken(
     messaging,
-    import.meta.env.VITE_VAPID_KEY,
+    getEnv('VITE_VAPID_KEY'),
   );
 
   const storedTokenRef = token
@@ -29,11 +30,11 @@ export default function useNotifications() {
 
   async function subscribe() {
     if (!messagingSupported) {
-      return Promise.reject('Messaging not supported');
+      return Promise.reject(new Error('Messaging not supported'));
     }
 
     if (loading || !token) {
-      return Promise.reject('Request pending');
+      return Promise.reject(new Error('Request pending'));
     }
 
     setFunctionLoading(true);
@@ -41,23 +42,27 @@ export default function useNotifications() {
     return httpsCallable(
       functions,
       'subscribeToMessaging',
-    )({ fcmToken: token }).finally(() => setFunctionLoading(false));
+    )({ fcmToken: token }).finally(() => {
+      setFunctionLoading(false);
+    });
   }
 
   const unsubscribe = async () => {
     if (!messagingSupported) {
-      return Promise.reject('Messaging not supported');
+      return Promise.reject(new Error('Messaging not supported'));
     }
 
     if (loading || !token) {
-      return Promise.reject('Request pending');
+      return Promise.reject(new Error('Request pending'));
     }
 
     setFunctionLoading(true);
     return httpsCallable(
       functions,
       'unsubscribeFromMessaging',
-    )({ fcmToken: token }).finally(() => setFunctionLoading(false));
+    )({ fcmToken: token }).finally(() => {
+      setFunctionLoading(false);
+    });
   };
 
   return {

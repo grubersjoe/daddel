@@ -1,5 +1,7 @@
 import { FirebaseOptions } from 'firebase/app';
 
+import { getEnv } from '../utils/env';
+
 const variableNames = [
   'VITE_API_KEY',
   'VITE_APP_ID',
@@ -19,10 +21,10 @@ variableNames.forEach(key => {
 });
 
 export const firebaseOptions = {
-  apiKey: import.meta.env.VITE_API_KEY,
-  appId: import.meta.env.VITE_APP_ID,
-  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_PROJECT_ID,
-  measurementId: import.meta.env.VITE_MEASUREMENT_ID,
-  messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
+  apiKey: getEnv('VITE_API_KEY'),
+  appId: getEnv('VITE_APP_ID'),
+  authDomain: getEnv('VITE_AUTH_DOMAIN'),
+  projectId: getEnv('VITE_PROJECT_ID'),
+  measurementId: getEnv('VITE_MEASUREMENT_ID'),
+  messagingSenderId: getEnv('VITE_MESSAGING_SENDER_ID'),
 } satisfies FirebaseOptions;

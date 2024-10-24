@@ -40,10 +40,14 @@ const Layout = ({ children }: { children: ReactElement }) => {
           open={snackbarOpen}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           autoHideDuration={5000}
-          onClose={() => setSnackbarOpen(false)}
+          onClose={() => {
+            setSnackbarOpen(false);
+          }}
         >
           <Alert
-            onClose={() => setSnackbarOpen(false)}
+            onClose={() => {
+              setSnackbarOpen(false);
+            }}
             severity={snackData.severity}
           >
             {snackData.message}

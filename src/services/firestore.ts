@@ -13,10 +13,9 @@ export const getUserRef = (uid: Uid) =>
 export const getMatchRef = (id: string) =>
   doc(firestore, `matches/${id}`).withConverter(matchConverter);
 
-
 export const fcmTokenConverter: FirestoreDataConverter<FCMToken> = {
-    toFirestore: token => token,
-    fromFirestore: (snapshot: QueryDocumentSnapshot<FCMToken>) => snapshot.data(),
+  toFirestore: token => token,
+  fromFirestore: (snapshot: QueryDocumentSnapshot<FCMToken>) => snapshot.data(),
 };
 
 export const matchConverter: FirestoreDataConverter<Match> = {

@@ -42,7 +42,7 @@ export const createTheme = (color: string): Theme =>
         },
       },
     },
-    // @ts-ignore
+    // @ts-expect-error we do need this
     coreLocale,
     dateLocale,
   });

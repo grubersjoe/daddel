@@ -130,7 +130,7 @@ const JoinMatchDialog = ({ match }: Props) => {
         availUntil: timeOptions[indexAvailFrom + 2] ?? MATCH_TIME_OPEN_END, // Add half an hour if possible
       }));
     }
-  }, [state.availFrom, state.availUntil, timeOptions]);
+  }, [state.availFrom, state.availUntil]);
 
   if (!authUser) {
     return null;
@@ -144,8 +144,14 @@ const JoinMatchDialog = ({ match }: Props) => {
     const availUntil = timeToDate(state.availUntil, match.date.toDate());
 
     joinMatch(authUser, availFrom, availUntil, match)
-      .then(() => setOpen(false))
-      .catch(setError)
+      .then(() => {
+        setOpen(false);
+      })
+      .catch((error: unknown) => {
+        if (error instanceof Error) {
+          setError(error);
+        }
+      })
       .finally(() => {
         setLoading(false);
       });
@@ -156,9 +162,17 @@ const JoinMatchDialog = ({ match }: Props) => {
     setError(null);
 
     leaveMatch(authUser, match)
-      .then(() => setOpen(false))
-      .catch(setError)
-      .finally(() => setLoading(false));
+      .then(() => {
+        setOpen(false);
+      })
+      .catch((error: unknown) => {
+        if (error instanceof Error) {
+          setError(error);
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const handleTimeChange =
@@ -169,9 +183,7 @@ const JoinMatchDialog = ({ match }: Props) => {
       });
     };
 
-  const userInLobby = match.players.find(
-    player => player.uid === authUser?.uid,
-  );
+  const userInLobby = match.players.find(player => player.uid === authUser.uid);
 
   return (
     <>
@@ -184,12 +196,23 @@ const JoinMatchDialog = ({ match }: Props) => {
           </Grid>
         )}
         <Grid item xs={userInLobby ? 6 : 12}>
-          <Button color="primary" onClick={() => setOpen(true)} fullWidth>
+          <Button
+            color="primary"
+            onClick={() => {
+              setOpen(true);
+            }}
+            fullWidth
+          >
             {userInLobby ? 'Zeit ändern' : 'Mitspielen'}
           </Button>
         </Grid>
       </Grid>
-      <Dialog open={open} onClose={() => setOpen(false)}>
+      <Dialog
+        open={open}
+        onClose={() => {
+          setOpen(false);
+        }}
+      >
         <DialogTitle>Mitspielen</DialogTitle>
         <DialogContent sx={{ pt: 0 }}>
           <DialogContentText>Von wann bis wann hast du Zeit?</DialogContentText>
@@ -229,7 +252,9 @@ const JoinMatchDialog = ({ match }: Props) => {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              setOpen(false);
+            }}
             disabled={loading}
             variant="text"
           >

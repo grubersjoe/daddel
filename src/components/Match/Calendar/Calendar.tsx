@@ -16,7 +16,7 @@ import { TimeRange } from './TimeRange';
 import { styles } from './styles';
 
 const Calendar = ({ players }: { players: Array<Player> }) => {
-  const [users] = useUsers();
+  const { users } = useUsers();
 
   const theme = useTheme();
   const sx = styles(theme);

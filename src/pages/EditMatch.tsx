@@ -74,10 +74,12 @@ const EditForm = (props: { match: Match }) => {
         dispatchSnack('Match aktualisiert');
         navigate(routes.matchList);
       })
-      .catch(() =>
-        dispatchSnack('Match konnte nicht bearbeitet werden', 'error'),
-      )
-      .finally(() => setLoading(false));
+      .catch(() => {
+        dispatchSnack('Match konnte nicht bearbeitet werden', 'error');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -126,12 +128,12 @@ const EditForm = (props: { match: Match }) => {
           <TextField
             label="Beschreibung (optional)"
             value={match.description ?? ''}
-            onChange={event =>
+            onChange={event => {
               dispatch({
                 type: 'set_description',
                 description: event.target.value,
-              })
-            }
+              });
+            }}
             multiline
             rows={3}
             variant="outlined"
@@ -150,7 +152,12 @@ const EditForm = (props: { match: Match }) => {
         )}
 
         <Box my={3} sx={{ display: 'flex', gap: 2, justifyContent: 'end' }}>
-          <Button onClick={() => window.history.go(-1)} disabled={loading}>
+          <Button
+            onClick={() => {
+              window.history.go(-1);
+            }}
+            disabled={loading}
+          >
             Abbrechen
           </Button>
 

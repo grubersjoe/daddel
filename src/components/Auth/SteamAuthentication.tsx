@@ -1,6 +1,7 @@
 import ErrorIcon from '@mui/icons-material/ErrorOutline';
 import FaceIcon from '@mui/icons-material/Face';
 import { Box, Button, Chip, CircularProgress } from '@mui/material';
+import { useState } from 'react';
 
 import { useSteamUser } from '../../hooks/useSteamUser';
 import { signInSteam, signOutFromSteam } from '../../services/auth';
@@ -10,11 +11,16 @@ const SteamAuthentication = () => {
     data: steamUser,
     isLoading,
     isError,
-    error,
+    error: apiError,
     refetch,
   } = useSteamUser();
 
+  const [error, setError] = useState<Error>();
+
   function label() {
+    if (apiError) {
+      return apiError.message;
+    }
     if (error) {
       return error.message;
     }
@@ -44,9 +50,23 @@ const SteamAuthentication = () => {
         </Box>
       )}
       <Button
-        onClick={() =>
-          steamUser ? signOutFromSteam().then(() => refetch()) : signInSteam()
-        }
+        onClick={() => {
+          if (steamUser) {
+            signOutFromSteam()
+              .then(() => refetch())
+              .catch((error: unknown) => {
+                if (error instanceof Error) {
+                  setError(error);
+                }
+              });
+          } else {
+            signInSteam().catch((error: unknown) => {
+              if (error instanceof Error) {
+                setError(error);
+              }
+            });
+          }
+        }}
         disabled={isLoading || isError}
         startIcon={icon()}
       >

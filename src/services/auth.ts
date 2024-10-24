@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { httpsCallable } from 'firebase/functions';
 
+import { getEnv } from '../utils/env';
 import { functions } from './firebase';
 
 export interface SteamUser {
@@ -15,7 +16,7 @@ export interface StatusResponse {
 
 export function fetchSteamAuthStatus() {
   return axios
-    .get<StatusResponse>(import.meta.env.VITE_STEAM_AUTH_API, {
+    .get<StatusResponse>(getEnv('VITE_STEAM_AUTH_API'), {
       withCredentials: true,
     })
     .then(res => res.data);
@@ -35,12 +36,9 @@ export async function signInSteam() {
 }
 
 export function signOutFromSteam() {
-  return axios.get<StatusResponse>(
-    `${import.meta.env.VITE_STEAM_AUTH_API}/logout`,
-    {
-      withCredentials: true,
-    },
-  );
+  return axios.get<StatusResponse>(`${getEnv('VITE_STEAM_AUTH_API')}/logout`, {
+    withCredentials: true,
+  });
 }
 
 export async function isValidInvitationCode(code: string): Promise<boolean> {

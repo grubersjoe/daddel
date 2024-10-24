@@ -25,6 +25,8 @@ import Spinner from '../components/Spinner';
 import routes from '../constants/routes';
 import { auth } from '../services/firebase';
 
+type LocationState = { from: { pathname: string } } | undefined;
+
 const SignIn = () => {
   const location = useLocation();
   const [authUser, authLoading] = useAuthState(auth);
@@ -36,7 +38,7 @@ const SignIn = () => {
   const [password, setPassword] = useState('');
   const [googleLoading, setGoogleLoading] = useState(false);
 
-  const { from } = location.state ?? {
+  const { from } = (location.state as LocationState) ?? {
     from: { pathname: routes.matchList },
   };
 
@@ -49,15 +51,27 @@ const SignIn = () => {
     setLoading(true);
 
     signInWithEmailAndPassword(auth, email, password)
-      .catch(setError)
-      .finally(() => setLoading(false));
+      .catch((error: unknown) => {
+        if (error instanceof Error) {
+          setError(error);
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const handleGoogleLogin = () => {
     setGoogleLoading(true);
     signInWithPopup(auth, new GoogleAuthProvider())
-      .catch(setError)
-      .finally(() => setGoogleLoading(false));
+      .catch((error: unknown) => {
+        if (error instanceof Error) {
+          setError(error);
+        }
+      })
+      .finally(() => {
+        setGoogleLoading(false);
+      });
   };
 
   return authLoading ? (
@@ -70,7 +84,9 @@ const SignIn = () => {
       <form
         autoComplete="off"
         onSubmit={handleEmailLogin}
-        onChange={() => setError(null)}
+        onChange={() => {
+          setError(null);
+        }}
       >
         <Grid container spacing={2} flexDirection="column">
           <Grid item md={9}>
@@ -79,7 +95,9 @@ const SignIn = () => {
               type="email"
               variant="outlined"
               size="small"
-              onChange={event => setEmail(event.target.value)}
+              onChange={event => {
+                setEmail(event.target.value);
+              }}
               fullWidth
               required
             />
@@ -90,7 +108,9 @@ const SignIn = () => {
               type="password"
               variant="outlined"
               size="small"
-              onChange={event => setPassword(event.target.value)}
+              onChange={event => {
+                setPassword(event.target.value);
+              }}
               fullWidth
               required
             />

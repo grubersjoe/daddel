@@ -43,8 +43,9 @@ const AddMatch = () => {
 
   const { data: steamUser } = useSteamUser();
 
-  const dispatchError = () =>
+  const dispatchError = () => {
     dispatchSnack('Match konnte nicht angelegt werden', 'error');
+  };
 
   const defaultDate = parseDate(DEFAULT_MATCH_TIME, TIME_FORMAT, new Date());
 
@@ -64,7 +65,8 @@ const AddMatch = () => {
     event.preventDefault();
 
     if (!date || !game) {
-      return dispatchError();
+      dispatchError();
+      return;
     }
 
     setLoading(true);
@@ -105,7 +107,9 @@ const AddMatch = () => {
         navigate(routes.matchList);
       })
       .catch(dispatchError)
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -117,7 +121,12 @@ const AddMatch = () => {
           <GameSelect onChange={setGame} />
         </Box>
 
-        <form autoComplete="off" onSubmit={event => addMatch(event, authUser)}>
+        <form
+          autoComplete="off"
+          onSubmit={event => {
+            addMatch(event, authUser);
+          }}
+        >
           <Box mb={3}>
             <DateTimePicker date={date} onChange={setDate} />
           </Box>
@@ -132,7 +141,9 @@ const AddMatch = () => {
                 max: 50,
               }}
               value={maxPlayers}
-              onChange={event => setMaxPlayers(event.target.value)}
+              onChange={event => {
+                setMaxPlayers(event.target.value);
+              }}
               variant="outlined"
               fullWidth
             />
@@ -142,7 +153,9 @@ const AddMatch = () => {
             <TextField
               label="Beschreibung"
               value={description}
-              onChange={event => setDescription(event.target.value)}
+              onChange={event => {
+                setDescription(event.target.value);
+              }}
               multiline
               rows={3}
               variant="outlined"
@@ -154,7 +167,9 @@ const AddMatch = () => {
             control={
               <Checkbox
                 checked={selfJoinMatch}
-                onChange={event => setSelfJoinMatch(event.target.checked)}
+                onChange={event => {
+                  setSelfJoinMatch(event.target.checked);
+                }}
               />
             }
             label="Selbst mitspielen"
@@ -171,7 +186,12 @@ const AddMatch = () => {
           )}
 
           <Box my={3} sx={{ display: 'flex', gap: 2, justifyContent: 'end' }}>
-            <Button onClick={() => window.history.go(-1)} disabled={loading}>
+            <Button
+              onClick={() => {
+                window.history.go(-1);
+              }}
+              disabled={loading}
+            >
               Abbrechen
             </Button>
 

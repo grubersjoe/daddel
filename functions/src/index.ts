@@ -8,7 +8,11 @@ import {
   onDocumentCreated,
   onDocumentDeleted,
 } from 'firebase-functions/v2/firestore';
-import { HttpsError, onCall } from 'firebase-functions/v2/https';
+import {
+  CallableRequest,
+  HttpsError,
+  onCall,
+} from 'firebase-functions/v2/https';
 
 import { Match, User } from '../../src/types';
 import { formatDate, formatTime } from './utils';
@@ -29,73 +33,106 @@ export const onUserCreate = auth.user().onCreate(async user => {
     await getFirestore()
       .doc(`users/${user.uid}`)
       .set({ invited: false }, { merge: true })
-      .catch(logger.error);
+      .catch((error: unknown) => {
+        logger.error(error);
+      });
   }
 });
 
-export const onUserDelete = onDocumentDeleted('users/{userId}', event =>
-  getFirestore()
-    .doc(`users/${event.data.id}`)
+export const onUserDelete = onDocumentDeleted('users/{userId}', event => {
+  const { data } = event;
+  if (data === undefined) {
+    return;
+  }
+
+  return getFirestore()
+    .doc(`users/${data.id}`)
     .delete()
-    .then(() => logger.info(`Document users/${event.data.id} deleted`))
-    .catch(logger.error),
+    .then(() => {
+      logger.info(`Document users/${data.id} deleted`);
+    })
+    .catch((error: unknown) => {
+      logger.error(error);
+    });
+});
+
+export const isValidInvitationCode = onCall(
+  (req: CallableRequest<{ code: string }>) => ({
+    isValid: req.data.code === invitationCode.value(),
+  }),
 );
 
-export const isValidInvitationCode = onCall(req => ({
-  isValid: req.data.code === invitationCode.value(),
-}));
+export const subscribeToMessaging = onCall(
+  (req: CallableRequest<{ fcmToken: string }>) => {
+    const { auth, data } = req;
+    const { fcmToken } = data;
 
-export const subscribeToMessaging = onCall(req => {
-  const { fcmToken } = req.data;
-
-  return getFirestore()
-    .doc(`fcmTokens/${fcmToken}`)
-    .set({ token: fcmToken, uid: req.auth.uid })
-    .then(() => {
-      logger.info(
-        `Successfully subscribed token ${fcmToken} for user ${req.auth.uid}`,
-      );
-
-      return { success: true };
-    })
-    .catch(error => {
-      const message = `Error subscribing token ${fcmToken}: ${error.message}`;
+    if (!auth) {
+      const message = `auth is undefined'}`;
       logger.error(message);
+      throw new HttpsError('unauthenticated', message);
+    }
 
-      throw new HttpsError('internal', message);
-    });
-});
+    return getFirestore()
+      .doc(`fcmTokens/${fcmToken}`)
+      .set({ token: fcmToken, uid: auth.uid })
+      .then(() => {
+        logger.info(
+          `Successfully subscribed token ${fcmToken} for user ${auth.uid}`,
+        );
 
-export const unsubscribeFromMessaging = onCall(req => {
-  const { fcmToken } = req.data;
+        return { success: true };
+      })
+      .catch((error: unknown) => {
+        const message = `Error subscribing token ${fcmToken}: ${error instanceof Error ? error.message : 'unknown'}`;
+        logger.error(message);
+        throw new HttpsError('internal', message);
+      });
+  },
+);
 
-  return getFirestore()
-    .doc(`fcmTokens/${fcmToken}`)
-    .delete()
-    .then(() => {
-      logger.info(
-        `Successfully unsubscribed token ${fcmToken} for user ${req.auth.uid}`,
-      );
+export const unsubscribeFromMessaging = onCall(
+  (req: CallableRequest<{ fcmToken: string }>) => {
+    const { auth, data } = req;
+    const { fcmToken } = data;
 
-      return { success: true };
-    })
-    .catch(error => {
-      const message = `Error unsubscribing token ${fcmToken}: ${error.message}`;
+    if (!auth) {
+      const message = `auth is undefined'}`;
       logger.error(message);
+      throw new HttpsError('unauthenticated', message);
+    }
 
-      throw new HttpsError('internal', message);
-    });
-});
+    return getFirestore()
+      .doc(`fcmTokens/${fcmToken}`)
+      .delete()
+      .then(() => {
+        logger.info(
+          `Successfully unsubscribed token ${fcmToken} for user ${auth.uid}`,
+        );
 
-export const onCreateMatch = onDocumentCreated(
+        return { success: true };
+      })
+      .catch((error: unknown) => {
+        const message = `Error unsubscribing token ${fcmToken}: ${error instanceof Error ? error.message : 'unknown'}`;
+        logger.error(message);
+
+        throw new HttpsError('internal', message);
+      });
+  },
+);
+
+export const onCreateMatch = onDocumentCreated<'matches/{matchId}'>(
   'matches/{matchId}',
   async event => {
-    const match = event.data.data() as Match;
+    const { data } = event;
+    if (data === undefined) {
+      return;
+    }
+
+    const match = data.data() as Match;
     const posterUid = match.createdBy;
 
     const tokens = await fetchFcmTokens(posterUid);
-
-    console.log({ tokens });
 
     if (tokens.length === 0) {
       return;
@@ -123,14 +160,16 @@ export const onCreateMatch = onDocumentCreated(
           },
         };
 
-        getMessaging()
+        return getMessaging()
           .sendEachForMulticast(message)
           .then(batchResponse => {
-            const tokensToRemove = [];
+            const tokensToRemove: Array<
+              Promise<FirebaseFirestore.WriteResult>
+            > = [];
+
             batchResponse.responses.forEach((response, index) => {
               const { error } = response;
-
-              if (error) {
+              if (error !== undefined) {
                 logger.error(
                   'Failure sending message to',
                   tokens[index],
@@ -154,7 +193,9 @@ export const onCreateMatch = onDocumentCreated(
             return Promise.all(tokensToRemove);
           });
       })
-      .catch(logger.error);
+      .catch((error: unknown) => {
+        logger.error(error);
+      });
   },
 );
 
@@ -170,11 +211,11 @@ const fetchFcmTokens = async (posterUid: string) => {
     .collection('fcmTokens')
     .where('uid', '!=', posterUid)
     .get()
-    .then(snapshot =>
+    .then(snapshot => {
       snapshot.forEach(doc => {
         fcmTokens.push(doc.id);
-      }),
-    );
+      });
+    });
 
   return fcmTokens;
 };

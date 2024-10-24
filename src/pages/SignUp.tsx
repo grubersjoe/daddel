@@ -38,13 +38,16 @@ const SignUp = () => {
     passwordMismatch?: Error;
   }>({});
 
-  const setFormStateProp = (prop: keyof typeof formState, value: string) =>
+  const setFormStateProp = (prop: keyof typeof formState, value: string) => {
     setFormState(state => ({ ...state, [prop]: value }));
+  };
 
   const setErrorStateProp = (
     prop: keyof typeof errorState,
     value: Error | null,
-  ) => setErrorState(state => ({ ...state, [prop]: value }));
+  ) => {
+    setErrorState(state => ({ ...state, [prop]: value }));
+  };
 
   const onSubmit: FormEventHandler = event => {
     event.preventDefault();
@@ -59,7 +62,10 @@ const SignUp = () => {
       return;
     }
 
-    return register();
+    register().catch((error: unknown) => {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    });
   };
 
   const register = async () => {
@@ -68,15 +74,23 @@ const SignUp = () => {
 
     if (await isValidInvitationCode(formState.invitationCode)) {
       createUserWithEmailAndPassword(auth, formState.email, formState.password)
-        .then(credential => {
+        .then(credential =>
           setDoc(
             getUserRef(credential.user.uid),
             { nickname: formState.nickname, invited: true },
             { merge: true },
-          ).then(() => navigate(routes.matchList));
+          ).then(() => {
+            navigate(routes.matchList);
+          }),
+        )
+        .catch((error: unknown) => {
+          if (error instanceof Error) {
+            setErrorStateProp('auth', error);
+          }
         })
-        .catch(error => setErrorStateProp('auth', error))
-        .finally(() => setLoading(false));
+        .finally(() => {
+          setLoading(false);
+        });
     } else {
       setErrorStateProp(
         'invitationCode',
@@ -93,8 +107,12 @@ const SignUp = () => {
       <Typography variant="h6">Registrieren</Typography>
       <form
         autoComplete="off"
-        onSubmit={onSubmit}
-        onChange={() => setErrorState({})}
+        onSubmit={event => {
+          onSubmit(event);
+        }}
+        onChange={() => {
+          setErrorState({});
+        }}
       >
         <Grid container spacing={2} flexDirection="column">
           <Grid item md={9} sx={{ mb: 2 }}>
@@ -108,9 +126,9 @@ const SignUp = () => {
               type="text"
               variant="outlined"
               size="small"
-              onChange={event =>
-                setFormStateProp('invitationCode', event.target.value)
-              }
+              onChange={event => {
+                setFormStateProp('invitationCode', event.target.value);
+              }}
               fullWidth
               required
               error={Boolean(errorState.invitationCode)}
@@ -122,7 +140,9 @@ const SignUp = () => {
               type="email"
               variant="outlined"
               size="small"
-              onChange={event => setFormStateProp('email', event.target.value)}
+              onChange={event => {
+                setFormStateProp('email', event.target.value);
+              }}
               fullWidth
               required
             />
@@ -132,9 +152,9 @@ const SignUp = () => {
               label="Nickname"
               variant="outlined"
               size="small"
-              onChange={event =>
-                setFormStateProp('nickname', event.target.value)
-              }
+              onChange={event => {
+                setFormStateProp('nickname', event.target.value);
+              }}
               fullWidth
               required
             />
@@ -145,9 +165,9 @@ const SignUp = () => {
               type="password"
               variant="outlined"
               size="small"
-              onChange={event =>
-                setFormStateProp('password', event.target.value)
-              }
+              onChange={event => {
+                setFormStateProp('password', event.target.value);
+              }}
               fullWidth
               required
               error={Boolean(errorState.passwordMismatch)}
@@ -162,9 +182,9 @@ const SignUp = () => {
               fullWidth
               required
               error={Boolean(errorState.passwordMismatch)}
-              onChange={event =>
-                setFormStateProp('passwordRepeated', event.target.value)
-              }
+              onChange={event => {
+                setFormStateProp('passwordRepeated', event.target.value);
+              }}
               helperText={
                 errorState.passwordMismatch
                   ? errorState.passwordMismatch.message

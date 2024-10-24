@@ -44,8 +44,12 @@ const Grid = ({ category, emojis, onEmojiClick, onEmojiMouseEnter }: Props) => {
         {emojis.map(([emoji, description]) => (
           <button
             className="emoji-button"
-            onClick={() => onEmojiClick([emoji, description], category)}
-            onMouseEnter={() => onEmojiMouseEnter([emoji, description])}
+            onClick={() => {
+              onEmojiClick([emoji, description], category);
+            }}
+            onMouseEnter={() => {
+              onEmojiMouseEnter([emoji, description]);
+            }}
             key={description}
           >
             {emoji}

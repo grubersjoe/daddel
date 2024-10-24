@@ -55,31 +55,33 @@ const Menu = ({ game, match }: Props) => {
   };
 
   const copyPermalink = (match: Match) => {
-    if (navigator.clipboard) {
-      navigator.clipboard
-        .writeText(`${window.location.origin}/matches/${match.id}`)
-        .then(() => {
-          dispatchSnack('In Zwischenablage kopiert');
-        });
-    } else {
-      dispatchSnack('Aktion nicht unterstützt', 'error');
-    }
-
-    closeMenu();
+    navigator.clipboard
+      .writeText(`${window.location.origin}/matches/${match.id}`)
+      .then(() => {
+        dispatchSnack('In Zwischenablage kopiert');
+        closeMenu();
+      })
+      .catch((error: unknown) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      });
   };
 
   const shareMatch = (match: Match) => {
-    if (navigator.share) {
-      const date = `${formatDate(match.date, false)} ${formatTime(
-        match.date,
-      )} Uhr`;
+    const date = `${formatDate(match.date, false)} ${formatTime(
+      match.date,
+    )} Uhr`;
 
-      navigator.share({
+    navigator
+      .share({
         title: `${game.name} am ${date}`,
         url: `${window.location.origin}/matches/${match.id}`,
         text: `Spiel mit: ${game.name} am ${date}`,
+      })
+      .catch((error: unknown) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
       });
-    }
 
     closeMenu();
   };
@@ -113,11 +115,19 @@ const Menu = ({ game, match }: Props) => {
             Löschen
           </MenuItem>
         )}
-        <MenuItem onClick={() => copyPermalink(match)}>
+        <MenuItem
+          onClick={() => {
+            copyPermalink(match);
+          }}
+        >
           <LinkIcon fontSize="small" sx={{ mr: 1 }} />
           Permalink
         </MenuItem>
-        <MenuItem onClick={() => shareMatch(match)}>
+        <MenuItem
+          onClick={() => {
+            shareMatch(match);
+          }}
+        >
           <ShareIcon fontSize="small" sx={{ mr: 1 }} />
           Teilen
         </MenuItem>

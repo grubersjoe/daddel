@@ -118,5 +118,6 @@ export type TimeString =
   | '23:59'; // Open end
 
 export function isSteamGame(game: GameOption): game is SteamGame {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   return (game as SteamGame).appid !== undefined;
 }

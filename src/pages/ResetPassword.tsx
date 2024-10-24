@@ -25,9 +25,17 @@ const ResetPassword = () => {
     event.preventDefault();
     setLoading(true);
     sendPasswordResetEmail(auth, email)
-      .then(() => setSuccess(true))
-      .catch(setError)
-      .finally(() => setLoading(false));
+      .then(() => {
+        setSuccess(true);
+      })
+      .catch((error: unknown) => {
+        if (error instanceof Error) {
+          setError(error);
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -38,7 +46,9 @@ const ResetPassword = () => {
       <form
         autoComplete="off"
         onSubmit={resetAccount}
-        onChange={() => setError(null)}
+        onChange={() => {
+          setError(null);
+        }}
       >
         <Grid container spacing={2} flexDirection="column">
           <Grid item md={9}>
@@ -47,7 +57,9 @@ const ResetPassword = () => {
               type="email"
               variant="outlined"
               size="small"
-              onChange={event => setEmail(event.target.value)}
+              onChange={event => {
+                setEmail(event.target.value);
+              }}
               fullWidth
               required
             />

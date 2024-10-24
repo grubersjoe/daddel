@@ -25,6 +25,7 @@ import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
 import { auth } from '../services/firebase';
 import { createTheme } from '../styles/theme';
+import { getEnv } from '../utils/env';
 import Layout from './Layout';
 import PageMetadata from './PageMetadata';
 
@@ -40,16 +41,17 @@ const RequireAuth = ({ children }: { children: ReactElement }) => {
   return authUser ? children : <Navigate to={routes.home} />;
 };
 
-const isValidHost = () =>
-  [import.meta.env.VITE_DOMAIN_PROD, 'localhost'].includes(
-    window.location.hostname,
-  ) || REGEX_IPV4.test(window.location.hostname);
+const isValidHost = () => {
+  return (
+    [getEnv('VITE_DOMAIN_PROD'), 'localhost'].includes(
+      window.location.hostname,
+    ) || REGEX_IPV4.test(window.location.hostname)
+  );
+};
 
 const App = () => {
   if (!isValidHost()) {
-    return (window.location.href = `https://${
-      import.meta.env.VITE_DOMAIN_PROD
-    }`);
+    return (window.location.href = `https://${getEnv('VITE_DOMAIN_PROD')}`);
   }
 
   const theme = createTheme(yellow[700]);

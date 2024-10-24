@@ -84,15 +84,25 @@ const SetupUserDialog = () => {
               setError(null);
               setStep(Step.PickUsername);
             })
-            .catch(setError);
+            .catch((error: unknown) => {
+              if (error instanceof Error) {
+                setError(error);
+              }
+            });
         } else {
           setError(
             new Error('Einladungscode ungültig. Bitte versuche es erneut.'),
           );
         }
       })
-      .catch(setError)
-      .finally(() => setLoading(false));
+      .catch((error: unknown) => {
+        if (error instanceof Error) {
+          setError(error);
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const handleSubmitNickname: FormEventHandler = event => {
@@ -104,8 +114,14 @@ const SetupUserDialog = () => {
         dispatchSnack('Registrierung abgeschlossen');
         setIsOpen(false);
       })
-      .catch(setError)
-      .finally(() => setLoading(false));
+      .catch((error: unknown) => {
+        if (error instanceof Error) {
+          setError(error);
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const title =
@@ -129,7 +145,9 @@ const SetupUserDialog = () => {
                 type="text"
                 variant="outlined"
                 size="small"
-                onChange={event => setInvitationCode(event.target.value)}
+                onChange={event => {
+                  setInvitationCode(event.target.value);
+                }}
                 fullWidth
                 required
               />
@@ -167,7 +185,9 @@ const SetupUserDialog = () => {
                 label="Nickname"
                 variant="outlined"
                 size="small"
-                onChange={event => setNickname(event.target.value)}
+                onChange={event => {
+                  setNickname(event.target.value);
+                }}
                 fullWidth
                 required
               />

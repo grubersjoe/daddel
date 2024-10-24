@@ -21,7 +21,7 @@ interface Props {
 const listFormatter = new Intl.ListFormat(LOCALE);
 
 const MatchReactions = ({ reactions, onClick }: Props) => {
-  const [users, usersLoading] = useUsers();
+  const { users, loading } = useUsers();
 
   const theme = useTheme();
   const mdViewUp = useMediaQuery(theme.breakpoints.up('md'));
@@ -34,7 +34,9 @@ const MatchReactions = ({ reactions, onClick }: Props) => {
     setAnchorElements({ [key]: event.currentTarget });
   };
 
-  const handlePopoverClose = () => setAnchorElements({});
+  const handlePopoverClose = () => {
+    setAnchorElements({});
+  };
 
   return (
     <>
@@ -42,9 +44,15 @@ const MatchReactions = ({ reactions, onClick }: Props) => {
         <Fragment key={emoji}>
           <Fade in={true}>
             <Button
-              onClick={() => onClick(emoji)}
-              onMouseEnter={event => handlePopoverOpen(emoji, event)}
-              onMouseLeave={() => handlePopoverClose()}
+              onClick={() => {
+                onClick(emoji);
+              }}
+              onMouseEnter={event => {
+                handlePopoverOpen(emoji, event);
+              }}
+              onMouseLeave={() => {
+                handlePopoverClose();
+              }}
               sx={{
                 px: 1.25,
                 py: 0.75,
@@ -79,7 +87,7 @@ const MatchReactions = ({ reactions, onClick }: Props) => {
               }}
             >
               <Typography variant="body2" sx={{ px: 1, py: 0.75 }}>
-                {usersLoading || !users ? (
+                {loading ? (
                   <>Lade…</>
                 ) : (
                   <>
