@@ -1,18 +1,14 @@
 import { initializeApp } from 'firebase-admin';
 import { getFirestore } from 'firebase-admin/firestore';
 import { MulticastMessage, getMessaging } from 'firebase-admin/messaging';
-import { auth, logger } from 'firebase-functions';
-import { defineString } from 'firebase-functions/params';
-import { setGlobalOptions } from 'firebase-functions/v2';
+import { logger, setGlobalOptions } from 'firebase-functions';
 import {
   onDocumentCreated,
   onDocumentDeleted,
-} from 'firebase-functions/v2/firestore';
-import {
-  CallableRequest,
-  HttpsError,
-  onCall,
-} from 'firebase-functions/v2/https';
+} from 'firebase-functions/firestore';
+import { CallableRequest, HttpsError, onCall } from 'firebase-functions/https';
+import { defineString } from 'firebase-functions/params';
+import { auth } from 'firebase-functions/v1';
 
 import { Match, User } from '../../src/types';
 import { formatDate, formatTime } from './utils';
