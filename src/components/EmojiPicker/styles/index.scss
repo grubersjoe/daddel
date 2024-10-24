@@ -1,11 +1,11 @@
 @use 'sass:math';
 
-@import 'src/styles/mixins';
+@use 'src/styles/mixins';
 
 // The CSS in JS approach from MUI is too slow when rendering thousands of emojis
 // @see https://mui.com/system/basics/#performance-tradeoff
 .emoji-button {
-  @include button-base;
+  @include mixins.button-base;
 
   border-radius: 4px;
   font-size: inherit;
