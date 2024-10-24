@@ -1,9 +1,16 @@
-import { StyledEngineProvider, ThemeProvider } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Container,
+  StyledEngineProvider,
+  ThemeProvider,
+} from '@mui/material';
 import CSSBaseline from '@mui/material/CssBaseline';
 import yellow from '@mui/material/colors/yellow';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ReactElement } from 'react';
+import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { HelmetProvider } from 'react-helmet-async';
 import {
@@ -13,6 +20,7 @@ import {
   Routes,
 } from 'react-router-dom';
 
+import thisIsFineGif from '../assets/this-is-fine.gif';
 import { REGEX_IPV4 } from '../constants';
 import routes from '../constants/routes';
 import AddMatch from '../pages/AddMatch';
@@ -69,56 +77,58 @@ const App = () => {
             <PageMetadata />
             <Router>
               <Layout>
-                <Routes>
-                  <Route
-                    path={routes.addMatch}
-                    element={
-                      <RequireAuth>
-                        <AddMatch />
-                      </RequireAuth>
-                    }
-                  />
-                  <Route
-                    path={routes.editMatch}
-                    element={
-                      <RequireAuth>
-                        <EditMatch />
-                      </RequireAuth>
-                    }
-                  />
-                  <Route
-                    path={routes.matchDetail}
-                    element={
-                      <RequireAuth>
-                        <MatchDetail />
-                      </RequireAuth>
-                    }
-                  />
-                  <Route
-                    path={routes.matchList}
-                    element={
-                      <RequireAuth>
-                        <MatchesList />
-                      </RequireAuth>
-                    }
-                  />
-                  <Route
-                    path={routes.settings}
-                    element={
-                      <RequireAuth>
-                        <Settings />
-                      </RequireAuth>
-                    }
-                  />
-                  <Route path={routes.register} element={<SignUp />} />
-                  <Route
-                    path={routes.resetPassword}
-                    element={<ResetPassword />}
-                  />
-                  <Route path={routes.home} element={<SignIn />} />
+                <ErrorBoundary FallbackComponent={ErrorComponent}>
+                  <Routes>
+                    <Route
+                      path={routes.addMatch}
+                      element={
+                        <RequireAuth>
+                          <AddMatch />
+                        </RequireAuth>
+                      }
+                    />
+                    <Route
+                      path={routes.editMatch}
+                      element={
+                        <RequireAuth>
+                          <EditMatch />
+                        </RequireAuth>
+                      }
+                    />
+                    <Route
+                      path={routes.matchDetail}
+                      element={
+                        <RequireAuth>
+                          <MatchDetail />
+                        </RequireAuth>
+                      }
+                    />
+                    <Route
+                      path={routes.matchList}
+                      element={
+                        <RequireAuth>
+                          <MatchesList />
+                        </RequireAuth>
+                      }
+                    />
+                    <Route
+                      path={routes.settings}
+                      element={
+                        <RequireAuth>
+                          <Settings />
+                        </RequireAuth>
+                      }
+                    />
+                    <Route path={routes.register} element={<SignUp />} />
+                    <Route
+                      path={routes.resetPassword}
+                      element={<ResetPassword />}
+                    />
+                    <Route path={routes.home} element={<SignIn />} />
 
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                  </Routes>
+                </ErrorBoundary>
               </Layout>
             </Router>
           </QueryClientProvider>
@@ -127,5 +137,26 @@ const App = () => {
     </StyledEngineProvider>
   );
 };
+
+const ErrorComponent = ({ error }: FallbackProps) => (
+  <>
+    <PageMetadata title="Fehler" />
+    <Container>
+      <Box
+        sx={{ display: 'flex', flexDirection: 'column', gap: 4, width: 480 }}
+      >
+        <img
+          src={thisIsFineGif}
+          alt="This is fine.gif"
+          style={{ borderRadius: 4 }}
+        />
+        <Alert severity="error">
+          Fehler:{' '}
+          {error instanceof Error ? error.message : 'unbekannter Fehler'}
+        </Alert>
+      </Box>
+    </Container>
+  </>
+);
 
 export default App;
