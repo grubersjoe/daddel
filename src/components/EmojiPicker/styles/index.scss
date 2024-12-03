@@ -1,6 +1,6 @@
 @use 'sass:math';
 
-@use 'src/styles/mixins';
+@use '../../../styles/mixins';
 
 // The CSS in JS approach from MUI is too slow when rendering thousands of emojis
 // @see https://mui.com/system/basics/#performance-tradeoff
