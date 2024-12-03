@@ -41,6 +41,7 @@ export const ProgressBar = ({ value, max }: Props) => {
       sx={{
         width: '100%',
         height: 8,
+        filter: 'drop-shadow(0 0 10px rgba(0, 0, 0, 0.75))',
         backgroundColor: grey[700],
         '& .MuiLinearProgress-bar': {
           backgroundColor: calcBarColor(value, max),
