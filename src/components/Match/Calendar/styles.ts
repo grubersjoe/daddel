@@ -25,6 +25,7 @@ export const styles = (theme: Theme) =>
       color: theme.palette.getContrastText(theme.palette.grey[300]),
       backgroundColor: theme.palette.grey[300],
       borderRadius: '4px',
+      userSelect: 'none',
 
       [theme.breakpoints.up('lg')]: {
         marginBottom: '8px',

@@ -158,7 +158,7 @@ const MatchCard = ({ match, setPageMetadata }: Props) => {
             )}
 
             <Box mt={3}>
-              <Calendar players={match.players} />
+              <Calendar players={match.players} maxPlayers={game.maxPlayers} />
             </Box>
 
             <Box

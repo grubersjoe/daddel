@@ -1,22 +1,28 @@
 import { Box, Fade } from '@mui/material';
+import { orange } from '@mui/material/colors';
 import { useTheme } from '@mui/material/styles';
 import { ReactElement, useState } from 'react';
 import { TransitionGroup } from 'react-transition-group';
 
 import { styles } from './styles';
 
+interface Props {
+  width: number;
+  offset: number;
+  name: string;
+  time: ReactElement;
+  exceedsLobby: boolean;
+}
+
 export const TimeRange = ({
   width,
   offset,
   name,
   time,
-}: {
-  width: number;
-  offset: number;
-  name: string;
-  time: ReactElement;
-}) => {
-  const sx = styles(useTheme());
+  exceedsLobby,
+}: Props) => {
+  const theme = useTheme();
+  const sx = styles(theme);
   const [isToggled, setIsToggled] = useState(false);
 
   return (
@@ -31,7 +37,9 @@ export const TimeRange = ({
           width: `${width}%`,
           left: `${offset}%`,
         },
-        userSelect: 'none',
+        ...(exceedsLobby && {
+          backgroundColor: orange[200],
+        }),
       }}
     >
       <TransitionGroup>

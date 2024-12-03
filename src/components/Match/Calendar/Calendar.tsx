@@ -15,7 +15,12 @@ import { TimeLabel } from './TimeLabel';
 import { TimeRange } from './TimeRange';
 import { styles } from './styles';
 
-const Calendar = ({ players }: { players: Array<Player> }) => {
+interface Props {
+  players: Array<Player>;
+  maxPlayers: number | null;
+}
+
+const Calendar = ({ players, maxPlayers }: Props) => {
   const { users } = useUsers();
 
   const theme = useTheme();
@@ -56,7 +61,7 @@ const Calendar = ({ players }: { players: Array<Player> }) => {
           )
         );
       })}
-      {players.map(player => {
+      {players.map((player, index) => {
         const minuteStart = differenceInMinutes(
           player.from.toDate(),
           timeBounds.min,
@@ -92,6 +97,7 @@ const Calendar = ({ players }: { players: Array<Player> }) => {
             offset={offset}
             name={users[player.uid]?.nickname ?? ''}
             time={time}
+            exceedsLobby={maxPlayers ? index > maxPlayers - 1 : false}
           />
         );
       })}
