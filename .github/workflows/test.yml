@@ -35,7 +35,7 @@ jobs:
         run: pnpm run test
 
       - name: Run type checks (TypeScript)
-        run: pnpm run tsc
+        run: pnpm exec tsc
 
       - name: Run linter (ESLint)
         run: pnpm run lint
