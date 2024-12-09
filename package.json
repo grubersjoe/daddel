@@ -37,7 +37,7 @@
     "react-firebase-hooks": "^5.1.1",
     "react-helmet-async": "^2.0.5",
     "react-intersection-observer": "^9.13.1",
-    "react-router-dom": "^6.28.0",
+    "react-router-dom": "^7.0.2",
     "react-transition-group": "^4.4.5",
     "typeface-roboto": "^1.1.13"
   },
