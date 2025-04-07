@@ -20,7 +20,7 @@
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^5.16.8",
     "@mui/material": "^5.16.8",
-    "@mui/system": "^5.16.8",
+    "@mui/system": "^7.0.1",
     "@mui/x-date-pickers": "^7.28.2",
     "@sindresorhus/slugify": "^2.2.1",
     "@tanstack/react-query": "^5.71.1",
