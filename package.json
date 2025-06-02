@@ -23,7 +23,7 @@
     "@mui/system": "^5.16.8",
     "@mui/x-date-pickers": "^7.28.2",
     "@sindresorhus/slugify": "^2.2.1",
-    "@tanstack/react-query": "^5.71.1",
+    "@tanstack/react-query": "^5.79.0",
     "@tanstack/react-query-devtools": "^5.71.1",
     "axios": "^1.8.4",
     "date-fns": "^4.1.0",
