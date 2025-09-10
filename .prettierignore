@@ -1,8 +1,9 @@
 build/
 .DS_Store
 *.directory
-*.sh
+*.gif
 *.jpg
 *.png
+*.sh
 *.svg
 *.webp

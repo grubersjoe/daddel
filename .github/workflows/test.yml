@@ -1,27 +1,30 @@
-name: CI
+name: Tests
 
-on: [push, pull_request, workflow_dispatch]
+on:
+  - push
+  - pull_request
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
+      - uses: actions/checkout@v5.0.0
 
-      - uses: pnpm/action-setup@v3
+      - uses: actions/setup-node@v4.4.0
+        with:
+          node-version: node
+
+      - uses: pnpm/action-setup@v4.1.0
         name: Install pnpm
         with:
-          version: 8
+          version: latest
           run_install: false
 
       - name: Get pnpm store directory
         shell: bash
         run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v4.2.4
         name: Setup pnpm cache
         with:
           path: ${{ env.STORE_PATH }}
@@ -29,13 +32,16 @@ jobs:
           restore-keys: ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install -r --ignore-scripts
+
+      - name: Check formatting (Prettier)
+        run: pnpx prettier -c .
 
       - name: Run unit tests
-        run: pnpm run test
+        run: pnpm test
 
       - name: Run type checks (TypeScript)
-        run: pnpm exec tsc
+        run: pnpm tsc
 
       - name: Run linter (ESLint)
-        run: pnpm run lint
+        run: pnpm lint
