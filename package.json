@@ -10,8 +10,8 @@
     "dev:vite": "vite",
     "dev:vite-public": "vite build -w -c vite-public.config.mts",
     "firebase:emulators": "GOOGLE_APPLICATION_CREDENTIALS=./credentials.json firebase emulators:start --only auth,firestore,functions",
-    "format": "prettier --write 'src/**/*' 'functions/src/**/*' './*.{js,json,md}'",
-    "lint": "eslint src/ functions/",
+    "format": "prettier --write .",
+    "lint": "eslint .",
     "preview": "vite preview",
     "test": "jest"
   },

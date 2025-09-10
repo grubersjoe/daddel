@@ -26,9 +26,9 @@ const MatchReactions = ({ reactions, onClick }: Props) => {
   const theme = useTheme();
   const mdViewUp = useMediaQuery(theme.breakpoints.up('md'));
 
-  const [anchorElements, setAnchorElements] = useState<{
-    [key: string]: HTMLElement | undefined;
-  }>({});
+  const [anchorElements, setAnchorElements] = useState<
+    Record<string, HTMLElement | undefined>
+  >({});
 
   const handlePopoverOpen = (key: string, event: MouseEvent<HTMLElement>) => {
     setAnchorElements({ [key]: event.currentTarget });

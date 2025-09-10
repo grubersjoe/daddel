@@ -1,0 +1,10 @@
+packages:
+  - .
+  - functions
+onlyBuiltDependencies:
+  - '@firebase/util'
+  - '@parcel/watcher'
+  - esbuild
+  - protobufjs
+  - re2
+  - unrs-resolver

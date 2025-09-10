@@ -1,42 +1,33 @@
 // @ts-check
-import { fixupPluginRules } from '@eslint/compat';
 import eslint from '@eslint/js';
+import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
-import react from 'eslint-plugin-react/configs/recommended.js';
+import { defineConfig } from 'eslint/config';
 import globals from 'globals';
 import typescript from 'typescript-eslint';
 
-export default typescript.config(
+export default defineConfig(
   eslint.configs.recommended,
-  ...typescript.configs.strictTypeChecked,
-  {
-    ignores: [
-      'build/',
-      'public/',
-      'functions/lib',
-      'functions/rollup.config.mjs',
-      'eslint.config.mjs',
-      'vite*',
-    ],
-  },
+  typescript.configs.strictTypeChecked,
+  typescript.configs.stylisticTypeChecked,
+  react.configs.flat.recommended,
+  react.configs.flat['jsx-runtime'],
+  reactHooks.configs['recommended-latest'],
   {
     rules: {
-      '@typescript-eslint/restrict-template-expressions': 'off',
       'no-console': 'error',
+      '@typescript-eslint/array-type': ['error', { default: 'generic' }],
+      '@typescript-eslint/non-nullable-type-assertion-style': 'off',
+      '@typescript-eslint/restrict-template-expressions': 'off',
     },
     languageOptions: {
-      parserOptions: {
-        project: true,
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
-  },
-  {
-    ...react,
-    languageOptions: {
-      ...react.languageOptions,
       globals: {
         ...globals.browser,
+        ...globals.node,
+      },
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
       },
     },
     settings: {
@@ -44,23 +35,17 @@ export default typescript.config(
         version: 'detect',
       },
     },
-    rules: {
-      '@typescript-eslint/array-type': [
-        1,
-        {
-          default: 'generic',
-        },
-      ],
-      'react/display-name': 1,
-      'react/react-in-jsx-scope': 0,
-    },
   },
   {
-    plugins: {
-      'react-hooks': fixupPluginRules(reactHooks),
-    },
-    rules: {
-      ...reactHooks.configs.recommended.rules,
-    },
+    ignores: [
+      'build/',
+      'public/',
+      'functions/lib',
+      'functions/rollup.config.mjs',
+      'babel.config.js',
+      'eslint.config.mjs',
+      'jest.config.js',
+      'vite*',
+    ],
   },
 );

@@ -38,10 +38,10 @@ interface Props {
   playerUntil?: Timestamp;
 }
 
-type State = {
+interface State {
   availFrom: TimeString;
   availUntil: TimeString;
-};
+}
 
 const today = new Date(); // Each day has the same hours, so that's okay.
 

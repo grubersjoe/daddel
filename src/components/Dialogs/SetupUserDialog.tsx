@@ -51,7 +51,7 @@ const SetupUserDialog = () => {
 
   // Skip first step if user is already invited
   useEffect(() => {
-    if (user && user.invited) {
+    if (user?.invited) {
       setStep(Step.PickUsername);
     }
   }, [user]);

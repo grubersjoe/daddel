@@ -6,9 +6,7 @@ import {
 import emojiList from '../assets/emojis-v13.1.json';
 import { Emoji, EmojiList } from '../types';
 
-export type UsageDict = {
-  [emoji: string]: number;
-};
+export type UsageDict = Record<string, number>;
 
 export const DEFAULT_LIST = [
   '👍',

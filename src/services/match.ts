@@ -55,9 +55,7 @@ export function toggleMatchReaction(match: Match, emoji: string) {
     return Promise.reject(new Error('No authenticated user'));
   }
 
-  if (match.reactions === undefined) {
-    match.reactions = [];
-  }
+  match.reactions ??= [];
 
   const currentUserRefs =
     match.reactions.find(reaction => reaction.emoji === emoji)?.userRefs ?? [];
