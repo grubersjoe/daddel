@@ -23,9 +23,9 @@
     "@rollup/plugin-node-resolve": "^15.3.0",
     "@rollup/plugin-typescript": "^12.1.1",
     "firebase-tools": "^13.23.0",
-    "rollup": "^4.50.2",
+    "rollup": "^4.52.4",
     "rollup-plugin-peer-deps-external": "^2.2.4",
-    "typescript": "^5.6.3"
+    "typescript": "^5.9.3"
   },
   "private": true
 }
